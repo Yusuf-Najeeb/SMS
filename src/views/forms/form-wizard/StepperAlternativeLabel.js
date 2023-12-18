@@ -171,6 +171,7 @@ const StepperAlternativeLabel = () => {
               <CustomTextField
                 fullWidth
                 label='Date of birth'
+                type='date'
                 placeholder=' Select Date of birth'
                 id='stepper-alternative-account-password-2'
               />

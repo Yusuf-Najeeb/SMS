@@ -10,9 +10,7 @@ import Typography from '@mui/material/Typography'
 const InvoiceList = () => {
   return (
     <Grid>
-      <Grid item xs={12}>
-        <Typography variant='h6'>Linear Stepper with Validation</Typography>
-      </Grid>
+      <Grid item xs={12}></Grid>
       <Grid item xs={12}>
         <StepperAlternativeLabel />
       </Grid>

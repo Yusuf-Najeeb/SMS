@@ -85,42 +85,43 @@ const defaultColumns = [
       <Typography component={LinkStyled} href={`/apps/invoice/preview/${row.id}`}>{`#${row.id}`}</Typography>
     )
   },
-  {
-    flex: 0.1,
-    minWidth: 80,
-    field: 'invoiceStatus',
-    renderHeader: () => <Icon icon='tabler:trending-up' />,
-    renderCell: ({ row }) => {
-      const { dueDate, balance, invoiceStatus } = row
-      const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
 
-      return (
-        <Tooltip
-          title={
-            <div>
-              <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-                {invoiceStatus}
-              </Typography>
-              <br />
-              <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-                Balance:
-              </Typography>{' '}
-              {balance}
-              <br />
-              <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-                Due Date:
-              </Typography>{' '}
-              {dueDate}
-            </div>
-          }
-        >
-          <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
-            <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
-          </CustomAvatar>
-        </Tooltip>
-      )
-    }
-  },
+  // {
+  //   flex: 0.1,
+  //   minWidth: 80,
+  //   field: 'invoiceStatus',
+  //   renderHeader: () => <Icon icon='tabler:trending-up' />,
+  //   renderCell: ({ row }) => {
+  //     const { dueDate, balance, invoiceStatus } = row
+  //     const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
+
+  //     return (
+  //       <Tooltip
+  //         title={
+  //           <div>
+  //             <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //               {invoiceStatus}
+  //             </Typography>
+  //             <br />
+  //             <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //               Balance:
+  //             </Typography>{' '}
+  //             {balance}
+  //             <br />
+  //             <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //               Due Date:
+  //             </Typography>{' '}
+  //             {dueDate}
+  //           </div>
+  //         }
+  //       >
+  //         <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
+  //           <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
+  //         </CustomAvatar>
+  //       </Tooltip>
+  //     )
+  //   }
+  // },
   {
     flex: 0.25,
     field: 'name',
@@ -168,6 +169,42 @@ const defaultColumns = [
         <Typography sx={{ color: 'text.secondary' }}>{row.balance}</Typography>
       ) : (
         <CustomChip rounded size='small' skin='light' color='success' label='Paid' />
+      )
+    }
+  },
+  {
+    flex: 0.1,
+    minWidth: 80,
+    field: 'invoiceStatus',
+    renderHeader: () => <Icon icon='tabler:trending-up' />,
+    renderCell: ({ row }) => {
+      const { dueDate, balance, invoiceStatus } = row
+      const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
+
+      return (
+        <Tooltip
+          title={
+            <div>
+              <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+                {invoiceStatus}
+              </Typography>
+              <br />
+              <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+                Balance:
+              </Typography>{' '}
+              {balance}
+              <br />
+              <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+                Due Date:
+              </Typography>{' '}
+              {dueDate}
+            </div>
+          }
+        >
+          <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
+            <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
+          </CustomAvatar>
+        </Tooltip>
       )
     }
   }
@@ -276,7 +313,7 @@ const InvoiceList = () => {
   return (
     <DatePickerWrapper>
       <Grid container spacing={6}>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Card>
             <CardHeader title='Filters' />
             <CardContent>
@@ -322,10 +359,10 @@ const InvoiceList = () => {
               </Grid>
             </CardContent>
           </Card>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Card>
-            <TableHeader value={value} selectedRows={selectedRows} handleFilter={handleFilter} />
+            {/* <TableHeader value={value} selectedRows={selectedRows} handleFilter={handleFilter} /> */}
             <DataGrid
               autoHeight
               pagination
