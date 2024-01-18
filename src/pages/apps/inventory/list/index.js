@@ -81,9 +81,9 @@ const defaultColumns = [
     field: 'id',
     minWidth: 100,
     headerName: 'ID',
-    renderCell: ({ row }) => (
-      <Typography component={LinkStyled} href={`/apps/invoice/preview/${row.id}`}>{`#${row.id}`}</Typography>
-    )
+    // renderCell: ({ row }) => (
+    //   <Typography component={LinkStyled} href={`/apps/invoice/preview/${row.id}`}>{`#${row.id}`}</Typography>
+    // )
   },
   {
     flex: 0.1,

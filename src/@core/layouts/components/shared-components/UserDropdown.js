@@ -18,7 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Icon from 'src/@core/components/icon'
 
 // ** Context
-import { useAuth } from 'src/hooks/useAuth'
+//import { useAuth } from 'src/hooks/useAuth'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -44,7 +44,7 @@ const UserDropdown = props => {
 
   // ** Hooks
   const router = useRouter()
-  const { logout } = useAuth()
+  // const { logout } = useAuth()
 
   // ** Vars
   const { direction } = settings

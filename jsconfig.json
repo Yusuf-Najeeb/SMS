@@ -1,1 +1,3 @@
-{"compilerOptions":{"baseUrl":"."},"include":["src"]}
+{"compilerOptions":{
+  "jsx": "react","baseUrl":"."
+},"include":["src"]}

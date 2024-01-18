@@ -29,7 +29,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
+//import { useAuth } from 'src/hooks/useAuth'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
@@ -95,7 +95,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
-  const auth = useAuth()
+  //const auth = useAuth()
   const theme = useTheme()
   const bgColors = useBgColor()
   const { settings } = useSettings()
@@ -117,12 +117,12 @@ const LoginPage = () => {
 
   const onSubmit = data => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
-      })
-    })
+    //   auth.login({ email, password, rememberMe }, () => {
+    //     setError('email', {
+    //       type: 'manual',
+    //       message: 'Email or Password is invalid'
+    //     })
+    //   })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 

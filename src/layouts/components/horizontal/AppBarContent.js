@@ -10,7 +10,7 @@ import NotificationDropdown from 'src/@core/layouts/components/shared-components
 import ShortcutsDropdown from 'src/@core/layouts/components/shared-components/ShortcutsDropdown'
 
 // ** Hook Import
-import { useAuth } from 'src/hooks/useAuth'
+//import { useAuth } from 'src/hooks/useAuth'
 
 const notifications = [
   {
@@ -113,20 +113,20 @@ const AppBarContent = props => {
   const { hidden, settings, saveSettings } = props
 
   // ** Hook
-  const auth = useAuth()
+  //const auth = useAuth()
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {auth.user && <Autocomplete hidden={hidden} settings={settings} />}
+      {/* {auth.user && <Autocomplete hidden={hidden} settings={settings} />} */}
       <LanguageDropdown settings={settings} saveSettings={saveSettings} />
       <ModeToggler settings={settings} saveSettings={saveSettings} />
-      {auth.user && (
+   
         <>
           <ShortcutsDropdown settings={settings} shortcuts={shortcuts} />
           <NotificationDropdown settings={settings} notifications={notifications} />
           <UserDropdown settings={settings} />
         </>
-      )}
+    
     </Box>
   )
 }

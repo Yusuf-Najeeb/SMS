@@ -72,6 +72,11 @@ const navigation = () => {
       path: '/apps/classroom/list'
     },
     {
+      title: 'Result Manager',
+      icon: 'tabler:mail',
+      path: '/apps/result-manager/list'
+    },
+    {
       sectionTitle: 'Accounts '
     },
     {
@@ -96,7 +101,22 @@ const navigation = () => {
       icon: 'tabler:mail',
       path: '/apps/inventory/list'
     },
-
+    {
+      sectionTitle: 'library '
+    },
+    {
+      title: 'Library',
+      icon: 'tabler:mail',
+      path: '/apps/library/list'
+    },
+    {
+      sectionTitle: 'Exam '
+    },
+    {
+      title: 'Exam',
+      icon: 'tabler:mail',
+      path: '/apps/exam/list'
+    },
     {
       sectionTitle: 'Settings '
     },

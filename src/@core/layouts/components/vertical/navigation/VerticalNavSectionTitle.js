@@ -30,7 +30,7 @@ const VerticalNavSectionTitle = props => {
   const { navCollapsed } = settings
 
   return (
-    <CanViewNavSectionTitle navTitle={item}>
+    <CanViewNavSectionTitle>
       <ListSubheader
         className='nav-section-title'
         sx={{

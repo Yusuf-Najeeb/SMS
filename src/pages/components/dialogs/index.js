@@ -22,8 +22,8 @@ import * as source from 'src/views/components/dialogs/DialogSourceCode'
 
 const Dialog = () => {
   return (
-    <Grid container spacing={6} className='match-height'>
-      <Grid item xs={12} md={6}>
+    <Grid >
+      {/* <Grid item xs={12} md={6}>
         <CardSnippet
           title='Simple Dialog'
           code={{
@@ -65,20 +65,15 @@ const Dialog = () => {
           </Typography>
           <DialogTransition />
         </CardSnippet>
-      </Grid>
+      </Grid> */}
       <Grid item xs={12} md={6}>
-        <CardSnippet
-          title='Form Dialog'
-          code={{
-            tsx: null,
-            jsx: source.DialogFormJSXCode
-          }}
-        >
-          <Typography sx={{ mb: 4 }}>Form dialogs allow users to fill out form fields within a dialog.</Typography>
+        
+        
+          {/* <Typography sx={{ mb: 4 }}>Form dialogs allow users to fill out form fields within a dialog.</Typography> */}
           <DialogForm />
-        </CardSnippet>
+        
       </Grid>
-      <Grid item xs={12} md={6}>
+      {/* <Grid item xs={12} md={6}>
         <CardSnippet
           title='Customized Dialog'
           code={{
@@ -165,7 +160,7 @@ const Dialog = () => {
           </Typography>
           <DialogsScroll />
         </CardSnippet>
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }

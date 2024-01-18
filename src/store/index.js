@@ -8,7 +8,8 @@ import email from 'src/store/apps/email'
 import invoice from 'src/store/apps/invoice'
 import calendar from 'src/store/apps/calendar'
 import permissions from 'src/store/apps/permissions'
-
+import staff from '../../src/store/apps/staff'
+import student from '../../src/store/apps/Student'
 export const store = configureStore({
   reducer: {
     user,
@@ -16,7 +17,9 @@ export const store = configureStore({
     email,
     invoice,
     calendar,
-    permissions
+    permissions,
+    staff,
+    student
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

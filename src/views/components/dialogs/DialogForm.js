@@ -8,10 +8,16 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
-
+import TextField from '@mui/material/TextField'
+import Grid from '@mui/material/Grid'
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
+import IconButton from '@mui/material/IconButton'
 
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+import { padding } from '@mui/system'
 const DialogForm = () => {
   // ** State
   const [open, setOpen] = useState(false)
@@ -20,9 +26,9 @@ const DialogForm = () => {
 
   return (
     <Fragment>
-      <Button variant='outlined' onClick={handleClickOpen}>
-        Open form dialog
-      </Button>
+      <Grid  onClick={handleClickOpen} style={ {padding: '10px'}}>
+      <Icon icon='tabler:edit' fontSize={20} />
+      </Grid>
       <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
         <DialogTitle id='form-dialog-title'>Subscribe</DialogTitle>
         <DialogContent>
