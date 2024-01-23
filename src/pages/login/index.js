@@ -1,5 +1,6 @@
 // ** React Imports
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -99,6 +100,7 @@ const LoginPage = () => {
   // ** Hooks
   //const auth = useAuth()
   const theme = useTheme()
+  const router = useRouter()
   const bgColors = useBgColor()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
