@@ -17,7 +17,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 //import { useAppDispatch, useAppSelector } from '../../../hooks'
 import NoData from '../../../@core/components/emptyData/NoData'
 // import { deleteRole, fetchRoles } from '../../../store/apps/roles/asyncthunk'
-// import CustomSpinner from '../../../@core/components/custom-spinner'
+import CustomSpinner from '../../../@core/components/custom-spinner'
 // import { formatFirstLetter } from '../../../@core/utils/format'
 // import DeleteDialog from '../../../@core/components/delete-dialog'
 //import EditRole from './EditRole'
@@ -26,7 +26,7 @@ import editStaff from '../../../views/users/staff/editStaff'
 import { useStaff } from '../../../hooks/useStaff'
 //import PageHeader from '../component/PageHeader'
 import PageHeader from '../component/PageHeader'
-import CreateStaff from '../../../views/users/staff/createStaff'
+import CreateStaff from './CreateStaff'
 
 const StaffTable = () => {
   //   const dispatch = useAppDispatch()
@@ -36,7 +36,7 @@ const StaffTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   //   const [role, setRole] = useState(null)
   const [addRoleOpen, setaddRoleOpen] = useState(false)
-  const [refetch, setFetch] = useState(false)
+  //const [refetch, setFetch] = useState(false)
 
   const [openEditDrawer, setEditDrawer] = useState(false)
   //   const [deleteModal, setDeleteModal] = useState(false)
@@ -62,11 +62,11 @@ const StaffTable = () => {
 
   const updateFetch = () => setFetch(!refetch)
 
-  const ondeleteClick = () => {
-    dispatch(deleteRole(selectedRole))
-    updateFetch()
-    doCancelDelete()
-  }
+  // const ondeleteClick = () => {
+  //   dispatch(deleteRole(selectedRole))
+  //   updateFetch()
+  //   doCancelDelete()
+  // }
 
   //   const setRoleToEdit = prod => {
   //     setEditDrawer(true)
@@ -127,16 +127,16 @@ const StaffTable = () => {
               </TableRow>
             ) : (
               <Fragment>
-                {StaffData?.map((role, i) => (
-                  <TableRow hover role='checkbox' key={role.id}>
+                {StaffData?.map((staff, i) => (
+                  <TableRow hover staff='checkbox' key={staff.id}>
                     <TableCell align='left'>{i + 1}</TableCell>
-                    <TableCell align='left'>{formatFirstLetter(role?.name)}</TableCell>
+                    <TableCell align='left'>{formatFirstLetter(staff?.name)}</TableCell>
 
                     <TableCell align='left' sx={{ display: 'flex' }}>
-                      <IconButton size='small' onClick={() => setRoleToEdit(role)}>
+                      <IconButton size='small' onClick={() => setstaffToEdit(staff)}>
                         <Icon icon='tabler:edit' />
                       </IconButton>
-                      <IconButton size='small' onClick={() => doDelete(role)}>
+                      <IconButton size='small' onClick={() => doDelete(staff)}>
                         <Icon icon='tabler:trash' />
                       </IconButton>
                     </TableCell>
@@ -177,7 +177,7 @@ const StaffTable = () => {
         />
       )}
 
-      {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} refetchRoles={updateFetch} />}
+      {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} />}
     </div>
   )
 }

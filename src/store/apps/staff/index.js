@@ -1,6 +1,6 @@
 // ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchRoles } from './asyncthunk'
+import { fetchStaffs } from './asyncthunk'
 
 const initialState = {
   loading: false,
@@ -18,15 +18,15 @@ export const staffsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers(builder) {
-    builder.addCase(fetchRoles.pending, state => {
+    builder.addCase(fetchStaffs.pending, state => {
       state.loading = true
     })
-    builder.addCase(fetchRoles.fulfilled, (state, action) => {
+    builder.addCase(fetchStaffs.fulfilled, (state, action) => {
       state.loading = false
       state.StaffData = action?.payload?.data?.data
       state.paging = action?.payload?.data?.paging
     })
-    builder.addCase(fetchRoles.rejected, state => {
+    builder.addCase(fetchStaffs.rejected, state => {
       state.loading = false
     })
   }

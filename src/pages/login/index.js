@@ -125,14 +125,11 @@ const LoginPage = () => {
 
     const resp = loginUser(data)
       .then(res => {
-        console.log(res, 'res')
         if (res) {
-          console.log(resp, 'login response')
           router.replace('/apps/invoice/list/')
         }
       })
       .catch(error => {
-        console.log(error, 'error')
         //notifyError('A network Error occured, please try again')
       })
   }

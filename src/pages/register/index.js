@@ -488,7 +488,7 @@ const Register = () => {
                 </Grid>
               </Grid>
 
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
+              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, mt: 3 }}>
                 Sign up
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>

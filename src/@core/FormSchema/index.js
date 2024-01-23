@@ -109,5 +109,6 @@ export const signUpSchema = yup.object().shape({
   phone: yup.string().required('phone is required'),
   identificationNumber: yup.string().required('Identification Number is required'),
   dateOfBirth: yup.string().required('Date of Birth is required'),
-  residentialAddress: yup.string().required('residentialAddress is required')
+  residentialAddress: yup.string().required('residentialAddress is required'),
+  branch: yup.string().required('branch is required')
 })
