@@ -1,6 +1,6 @@
 // ** React Imports
 import { useState } from 'react'
-
+import { useRouter } from 'next/router'
 // ** Next Import
 import Link from 'next/link'
 
@@ -11,11 +11,15 @@ import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
+import { MenuItem, Grid } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel from '@mui/material/FormControlLabel'
+import DatePicker from 'react-datepicker'
 
+import 'react-datepicker/dist/react-datepicker.css'
+import { notifyError } from '../../@core/components/toasts/notifyError'
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -26,10 +30,20 @@ import Icon from 'src/@core/components/icon'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Hooks
-import { useSettings } from 'src/@core/hooks/useSettings'
 
+// ** Third Party Imports
+
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+//import signUpSchema from '../../@core/FormSchema/index'
+import { signUpSchema } from 'src/@core/FormSchema'
+import { useAppDispatch } from '../../hooks'
+import { useSettings } from 'src/@core/hooks/useSettings'
+import useBgColor from 'src/@core/hooks/useBgColor'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import { formatDateToYYYMMMDDD } from '../../@core/utils/format'
+import { RegisterUser } from '../../store/apps/auth/asyncthunk'
 
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
@@ -75,14 +89,73 @@ const Register = () => {
   // ** States
   const [showPassword, setShowPassword] = useState(false)
 
+  const [state, setState] = useState({
+    password: '',
+    password2: '',
+    showPassword: false,
+    showPassword2: false
+  })
+  const defaultValues = {
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    email: '',
+    password: '',
+    title: '',
+    status: '',
+    phone: '',
+    identificationNumber: '',
+    dateOfBirth: '',
+    residentialAddress: '',
+    branch: ''
+  }
   // ** Hooks
+  // const theme = useTheme()
+  // const { settings } = useSettings()
+  // const hidden = useMediaQuery(theme.breakpoints.down('md'))
+  const {
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    defaultValues,
+    mode: 'onBlur',
+    resolver: yupResolver(signUpSchema)
+  })
+
+  // ** Hooks
+  const dispatch = useAppDispatch()
+  const router = useRouter()
   const theme = useTheme()
+  const bgColors = useBgColor()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
   // ** Vars
   const { skin } = settings
+
   const imageSource = skin === 'bordered' ? 'auth-v2-register-illustration-bordered' : 'auth-v2-register-illustration'
+
+  const onSubmit = async data => {
+    //const { username, password } = data
+    console.log('register')
+    const { dateOfBirth, ...resData } = data
+    const formatedDate = formatDateToYYYMMMDDD(dateOfBirth)
+    const payload = {
+      ...resData,
+      dateOfBirth: formatedDate
+    }
+    try {
+      const resp = await dispatch(RegisterUser(payload))
+      if (resp.payload?.success) {
+        router.replace('/apps/invoice/list/')
+      }
+    } catch (error) {
+      console.log(error)
+      notifyError('A network Error occured, please try again')
+    }
+  }
 
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
@@ -116,8 +189,8 @@ const Register = () => {
             justifyContent: 'center'
           }}
         >
-          <Box sx={{ width: '100%', maxWidth: 400 }}>
-            <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
+          <Box sx={{ width: '100%', maxWidth: 650 }}>
+            <svg width={30} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
               <path
                 fillRule='evenodd'
                 clipRule='evenodd'
@@ -151,40 +224,270 @@ const Register = () => {
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>Make your app management easy and fun!</Typography>
             </Box>
-            <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-              <CustomTextField autoFocus fullWidth sx={{ mb: 4 }} label='Username' placeholder='johndoe' />
-              <CustomTextField fullWidth label='Email' sx={{ mb: 4 }} placeholder='user@email.com' />
-              <CustomTextField
-                fullWidth
-                label='Password'
-                id='auth-login-v2-password'
-                type={showPassword ? 'text' : 'password'}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onMouseDown={e => e.preventDefault()}
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                sx={{ mb: 4, mt: 1.5, '& .MuiFormControlLabel-label': { fontSize: theme.typography.body2.fontSize } }}
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <Typography sx={{ color: 'text.secondary' }}>I agree to</Typography>
-                    <Typography component={LinkStyled} href='/' onClick={e => e.preventDefault()} sx={{ ml: 1 }}>
-                      privacy policy & terms
-                    </Typography>
-                  </Box>
-                }
-              />
+            <form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={6}>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='firstName'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='First Name'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.firstName)}
+                        {...(errors.firstName && { helperText: errors.firstName.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='lastName'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Last Name'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.lastName)}
+                        {...(errors.lastName && { helperText: errors.lastName.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='middleName'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Middle Name'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.middleName)}
+                        {...(errors.middleName && { helperText: errors.middleName.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='email'
+                    type='email'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Email'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.email)}
+                        {...(errors.email && { helperText: errors.email.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='password'
+                    type='password'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        value={value}
+                        onBlur={onBlur}
+                        label='Password'
+                        onChange={onChange}
+                        id='auth-login-v2-password'
+                        error={Boolean(errors.password)}
+                        {...(errors.password && { helperText: errors.password.message })}
+                        type={showPassword ? 'text' : 'password'}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <IconButton
+                                edge='end'
+                                onMouseDown={e => e.preventDefault()}
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='title'
+                    type='text'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Title'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.title)}
+                        {...(errors.title && { helperText: errors.title.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='status'
+                    type='text'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Status'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.status)}
+                        {...(errors.status && { helperText: errors.status.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='phone'
+                    type='text'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Phone Number'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.phone)}
+                        {...(errors.phone && { helperText: errors.phone.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='identificationNumber'
+                    type='text'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Identification Number'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.identificationNumber)}
+                        {...(errors.identificationNumber && { helperText: errors.identificationNumber.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='dateOfBirth'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <DatePicker
+                        selected={value}
+                        popperPlacement='bottom-end'
+                        onChange={e => onChange(e)}
+                        label='Date of Birth'
+                        error={Boolean(errors.dateOfBirth)}
+                        {...(errors.dateOfBirth && { helperText: 'Date is required' })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='residentialAddress'
+                    type='text'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Residential Address'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.residentialAddress)}
+                        {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='branch'
+                    type='text'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        fullWidth
+                        autoFocus
+                        label='Branch'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.branch)}
+                        {...(errors.branch && { helperText: errors.branch.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
                 Sign up
               </Button>

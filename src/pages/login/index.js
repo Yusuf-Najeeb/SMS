@@ -27,6 +27,8 @@ import Icon from 'src/@core/components/icon'
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { loginUser } from '../../store/apps/auth/asyncthunk'
+import { notifyError } from '../../@core/components/toasts/notifyError'
 
 // ** Hooks
 //import { useAuth } from 'src/hooks/useAuth'
@@ -86,8 +88,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'admin',
-  email: 'admin@vuexy.com'
+  password: '',
+  email: ''
 }
 
 const LoginPage = () => {
@@ -115,14 +117,22 @@ const LoginPage = () => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = data => {
+  const onSubmit = async data => {
     const { email, password } = data
-    //   auth.login({ email, password, rememberMe }, () => {
-    //     setError('email', {
-    //       type: 'manual',
-    //       message: 'Email or Password is invalid'
-    //     })
-    //   })
+    console.log(data)
+
+    const resp = loginUser(data)
+      .then(res => {
+        console.log(res, 'res')
+        if (res) {
+          console.log(resp, 'login response')
+          router.replace('/apps/invoice/list/')
+        }
+      })
+      .catch(error => {
+        console.log(error, 'error')
+        //notifyError('A network Error occured, please try again')
+      })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 

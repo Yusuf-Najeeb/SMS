@@ -10,6 +10,7 @@ import calendar from 'src/store/apps/calendar'
 import permissions from 'src/store/apps/permissions'
 import staff from '../../src/store/apps/staff'
 import student from '../../src/store/apps/Student'
+import auth from   'src/store/apps/auth'
 export const store = configureStore({
   reducer: {
     user,
@@ -19,7 +20,8 @@ export const store = configureStore({
     calendar,
     permissions,
     staff,
-    student
+    student,
+    auth
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

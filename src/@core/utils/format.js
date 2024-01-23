@@ -16,6 +16,15 @@ const isToday = date => {
   )
 }
 
+export const formatDateToYYYMMMDDD = d => {
+  const date = new Date(d)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0') // Months are zero-based
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
 export const formatDate = (value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) => {
   if (!value) return value
 

@@ -1,6 +1,11 @@
 const navigation = () => {
   return [
     {
+      title: 'Sign-up',
+      icon: 'tabler:mail',
+      path: '/signup'
+    },
+    {
       sectionTitle: 'Staff Manager'
     },
     {

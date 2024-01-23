@@ -3,7 +3,7 @@ import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { notifyError } from '../../../@core/components/toasts/notifyError'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-export const fetchStudent = createAsyncThunk('fetchStudent/', async vals => {
+export const fetchStudents = createAsyncThunk('fetchStudent/', async vals => {
   try {
     const response = await axios.get('/api/students/allstudents', vals)
 
@@ -99,23 +99,6 @@ export const fetchStudentByHouseMaster = async email => {
     // }
   }
 }
-
-export const fetchRoles = createAsyncThunk('roles/fetchItems', async email => {
-  try {
-    const response = await axios.get(`/role`, {
-      params: {
-        page: query.page,
-        limit: query.limit
-      }
-    })
-
-    return response
-  } catch (error) {
-    console.log(error, 'errorrrr')
-
-    // notifyError('Error Fetching Salary Items')
-  }
-})
 
 export const updateStudent = createAsyncThunk('updateStudent', async query => {
   try {
