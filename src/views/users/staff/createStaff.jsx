@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -22,7 +23,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { signUpSchema } from 'src/@core/Formschema'
 
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { createStaffs } from '../../../store/apps/staff/asyncthunk'
 import { useAppDispatch } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
@@ -40,7 +41,7 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const CreateStaff = ({ open, closeModal }) => {
+const CreateStaff = ({ open, closeModal, refetchStaff }) => {
   const [showPassword, setShowPassword] = useState(false)
 
   const defaultValues = {
@@ -68,10 +69,12 @@ const CreateStaff = ({ open, closeModal }) => {
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(signUpSchema) })
 
   const onSubmit = async data => {
-    const res = await dispatch(fetchStaffs(data))
-
+    console.log(data, 'data')
+    const res = await dispatch(createStaffs(data))
+    console.log(res, 'res')
     reset()
     closeModal()
+    refetchStaff()
   }
 
   return (

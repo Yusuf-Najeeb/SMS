@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
-import Paper from '@mui/material/Paper'
+import Card from '@mui/material/Card'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
@@ -14,31 +14,50 @@ import Icon from 'src/@core/components/icon'
 import TablePagination from '@mui/material/TablePagination'
 
 import CustomChip from 'src/@core/components/mui/chip'
+
 //import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { useDispatch } from 'react-redux'
 import NoData from '../../../@core/components/emptyData/NoData'
+
 // import { deleteRole, fetchRoles } from '../../../store/apps/roles/asyncthunk'
 import CustomSpinner from '../../../@core/components/custom-spinner'
-// import { formatFirstLetter } from '../../../@core/utils/format'
+
+import { formatFirstLetter } from '../../../../src/@core/utils/format'
+//import { formatFirstLetter } from '../../../@core/utils/format'
 // import DeleteDialog from '../../../@core/components/delete-dialog'
 //import EditRole from './EditRole'
-import editStaff from '../../../views/users/staff/editStaff'
+import EditStaff from './EditStaff'
+import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+
 //import { useStaff } from '../../../hooks/useRoles'
 import { useStaff } from '../../../hooks/useStaff'
+
 //import PageHeader from '../component/PageHeader'
 import PageHeader from '../component/PageHeader'
 import CreateStaff from './CreateStaff'
 
 const StaffTable = () => {
   //   const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
 
   const [StaffData, loading, paging] = useStaff()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [staff, setStaff] = useState(null)
+  const [addStaffOP, setStaffOpen] = useState(false)
+  const [refetch, setFetch] = useState(false)
+  const [openEditDrawer, setEditDrawer] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [selectedDepartment, setSelectedDepartment] = useState(null)
+
+  const [roleToView, setRoleToView] = useState(null)
   //   const [role, setRole] = useState(null)
   const [addRoleOpen, setaddRoleOpen] = useState(false)
-  //const [refetch, setFetch] = useState(false)
 
-  const [openEditDrawer, setEditDrawer] = useState(false)
+  const setActiveDepartment = value => {
+    setStaff(value)
+    setOpenCanvas(true)
+  }
   //   const [deleteModal, setDeleteModal] = useState(false)
   //   const [selectedRole, setSelectedRole] = useState(null)
 
@@ -49,16 +68,16 @@ const StaffTable = () => {
   //     setOpenCanvas(true)
   //}
 
-  //   // are you sure ou want to delete funtion
-  //   const doDelete = value => {
-  //     setDeleteModal(true)
-  //     setSelectedRole(value?.id)
-  //   }
+  // are you sure ou want to delete funtion
+  const doDelete = value => {
+    setDeleteModal(true)
+    setSelectedDepartment(value?.id)
+  }
 
-  //   const doCancelDelete = () => {
-  //     setDeleteModal(false)
-  //     setSelectedRole(null)
-  //   }
+  const doCancelDelete = () => {
+    setDeleteModal(false)
+    setSelectedDepartment(null)
+  }
 
   const updateFetch = () => setFetch(!refetch)
 
@@ -67,11 +86,16 @@ const StaffTable = () => {
   //   updateFetch()
   //   doCancelDelete()
   // }
+  const ondeleteClick = () => {
+    dispatch(deleteDepartment(selectedDepartment))
+    updateFetch()
+    doCancelDelete()
+  }
 
-  //   const setRoleToEdit = prod => {
-  //     setEditDrawer(true)
-  //     setRoleToView(prod)
-  //   }
+  const setStafffToEdit = prod => {
+    setEditDrawer(true)
+    setRoleToView(prod)
+  }
 
   const handleChangePage = newPage => {
     setPage(newPage)
@@ -85,16 +109,16 @@ const StaffTable = () => {
   const toggleRoleDrawer = () => setaddRoleOpen(!addRoleOpen)
   const toggleEditDrawer = () => setEditDrawer(!openEditDrawer)
 
-  //   useEffect(() => {
-  //     dispatch(fetchRoles({ page: page + 1, limit: 10 }))
+  const toogleStaffDrawer = () => setStaffOpen(!addStaffOP)
 
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [page, refetch])
-
+  useEffect(() => {
+    dispatch(fetchStaffs({ page: page + 1, limit: 10 }))
+  }, [page, refetch])
+  console.log(StaffData)
   return (
     <div>
-      <PageHeader action='Create Staff List' toggle={toggleRoleDrawer} />
-      <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
+      <PageHeader action='Create Staff List' toggle={toogleStaffDrawer} />
+      <TableContainer component={Card} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
@@ -105,14 +129,16 @@ const StaffTable = () => {
                 NAME
               </TableCell>
               <TableCell align='left' sx={{ minWidth: 100 }}>
-                Email
+                EMAIL
               </TableCell>
               <TableCell align='left' sx={{ minWidth: 100 }}>
-                Password
+                Title
               </TableCell>
+
               <TableCell align='left' sx={{ minWidth: 100 }}>
-                Phone Number
+                IDENTIFICATION NUMBER
               </TableCell>
+
               <TableCell align='left' sx={{ minWidth: 100 }}>
                 ACTIONS
               </TableCell>
@@ -128,12 +154,16 @@ const StaffTable = () => {
             ) : (
               <Fragment>
                 {StaffData?.map((staff, i) => (
-                  <TableRow hover staff='checkbox' key={staff.id}>
+                  <TableRow hover role='checkbox' key={staff?.id}>
                     <TableCell align='left'>{i + 1}</TableCell>
-                    <TableCell align='left'>{formatFirstLetter(staff?.name)}</TableCell>
+                    <TableCell align='left'>{`${staff?.firstName} ${staff?.lastName}`}</TableCell>
+                    <TableCell align='left'>{staff.email}</TableCell>
+                    <TableCell align='left'>{staff?.title}</TableCell>
+
+                    <TableCell align='left'>{staff?.identificationNumber}</TableCell>
 
                     <TableCell align='left' sx={{ display: 'flex' }}>
-                      <IconButton size='small' onClick={() => setstaffToEdit(staff)}>
+                      <IconButton size='small' onClick={() => setStafffToEdit(staff)}>
                         <Icon icon='tabler:edit' />
                       </IconButton>
                       <IconButton size='small' onClick={() => doDelete(staff)}>
@@ -165,19 +195,21 @@ const StaffTable = () => {
         rowsPerPageOptions={[5, 10, 20]}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-
-      {/* <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
+      {/* 
+      <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
 
       {openEditDrawer && (
-        <editStaff
+        <EditStaff
           open={openEditDrawer}
           closeModal={toggleEditDrawer}
-          refetchRoles={updateFetch}
-          selectedRole={roleToView}
+          refetchStaff={updateFetch}
+          selectedStaff={roleToView}
         />
       )}
 
-      {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} />}
+      {/* {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} />} */}
+
+      {addStaffOP && <CreateStaff open={addStaffOP} closeModal={toogleStaffDrawer} refetchStaff={updateFetch} />}
     </div>
   )
 }

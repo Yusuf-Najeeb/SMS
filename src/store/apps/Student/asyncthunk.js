@@ -19,6 +19,7 @@ export const fetchStudents = createAsyncThunk('fetchStudent/', async vals => {
     // }
   }
 })
+
 export const fetchStudentByEmail = async email => {
   try {
     const response = await axios.get(`/api/students/getstudent/${email}`)
@@ -35,6 +36,7 @@ export const fetchStudentByEmail = async email => {
     // }
   }
 }
+
 export const fetchStudentByExam = async email => {
   try {
     const response = await axios.get(`/api/students/getstudentexam/${email}`)
@@ -51,6 +53,7 @@ export const fetchStudentByExam = async email => {
     // }
   }
 }
+
 export const fetchStudentBySubjectTeacher = async email => {
   try {
     const response = await axios.get(`/api/students/getstudentsubjectsandteachers/${email}`)
@@ -67,6 +70,7 @@ export const fetchStudentBySubjectTeacher = async email => {
     // }
   }
 }
+
 export const fetchStudentByRoom = async email => {
   try {
     const response = await axios.get(`/api/students/getstudentroom/${email}`)
@@ -83,6 +87,7 @@ export const fetchStudentByRoom = async email => {
     // }
   }
 }
+
 export const fetchStudentByHouseMaster = async email => {
   try {
     const response = await axios.get(`/api/students/getstudentroomstaff/${email}`)

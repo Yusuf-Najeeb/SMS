@@ -1,5 +1,6 @@
 import { useAppSelector } from '.'
 import { useMemo } from 'react'
+
 export const useStudent = () => {
   const StudentData = useAppSelector(store => store.student.StudentData)
   const loading = useAppSelector(store => store.student.loading)

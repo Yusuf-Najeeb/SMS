@@ -15,12 +15,12 @@ import { styled } from '@mui/material/styles'
 import { CircularProgress } from '@mui/material'
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
-// import { useForm, Controller } from 'react-hook-form'
-// import { yupResolver } from '@hookform/resolvers/yup'
-// import axios from 'axios'
-// import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
-// import { notifyError } from '../../../@core/components/toasts/notifyError'
-// import { requireName } from 'src/@core/Formschema'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import axios from 'axios'
+import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { notifyError } from '../../../@core/components/toasts/notifyError'
+import { signUpSchema } from 'src/@core/Formschema'
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -41,36 +41,36 @@ const defaultValues = {
   name: ''
 }
 
-const editStaff = ({ open, closeModal, refetchRoles, selectedRole }) => {
-  //   const {
-  //     control,
-  //     setValue,
-  //     reset,
-  //     handleSubmit,
-  //     formState: { errors, isSubmitting }
-  //   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(requireName) })
+const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
+  const {
+    control,
+    setValue,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(signUpSchema) })
 
-  //   const onSubmit = async values => {
-  //     try {
-  //       const { data } = await axios.put(`role/${selectedRole.id}`, values)
+  const onSubmit = async values => {
+    try {
+      const { data } = await axios.patch(`/staffs/updatestaff/${selectedStaff.id}`, values)
 
-  //       if (data.success) {
-  //         notifySuccess('Role updated successfully')
+      if (data.success) {
+        notifySuccess('Staff updated successfully')
 
-  //         closeModal()
-  //         refetchRoles()
-  //       }
-  //     } catch (error) {
-  //       console.log(error, 'error')
-  //       notifyError('Error updating role')
-  //     }
-  //   }
+        closeModal()
+        refetchStaff()
+      }
+    } catch (error) {
+      console.log(error, 'error')
+      notifyError('Error updating staff')
+    }
+  }
 
-  //   useEffect(() => {
-  //     setValue('name', selectedRole.name)
+  useEffect(() => {
+    setValue('name', selectedStaff.name)
 
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Dialog
@@ -130,4 +130,4 @@ const editStaff = ({ open, closeModal, refetchRoles, selectedRole }) => {
   )
 }
 
-export default editStaff
+export default EditStaff

@@ -1,5 +1,6 @@
 //import RolesTable from '../../../views/users/roles/AllRoles'
-import StaffTable from '../../../../views/users/staff/allStaff'
+import StaffTable from '../../../../views/users/staff/AllStaff'
+
 const StaffHome = () => {
   return <StaffTable />
 }

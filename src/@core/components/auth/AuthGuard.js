@@ -9,6 +9,7 @@
 
 const AuthGuard = props => {
   const { children } = props
+
   //const auth = useAuth()
   // const router = useRouter()
   // useEffect(

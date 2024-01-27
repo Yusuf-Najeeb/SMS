@@ -1,7 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { notifySuccess } from 'src/@core/components/toasts/notifySuccess'
+
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+
 export const RegisterUser = createAsyncThunk('auth/Register', async values => {
   try {
     const { data } = await axios({
@@ -40,11 +42,13 @@ export const loginUser = async values => {
       }
     })
     if (data) {
-      const userObject = JSON.stringify(data?.admin)
-      localStorage.setItem('authToken', data?.token)
+      console.log(data, 'loginData')
+      const userObject = JSON.stringify(data?.data?.admin)
+      localStorage.setItem('authToken', data?.data?.token)
       localStorage.setItem('authUser', userObject)
       notifySuccess('Login successful')
     }
+
     return {
       data: data,
       success: true

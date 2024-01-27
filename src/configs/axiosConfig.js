@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 //import checkTokenExp from 'src/@core/utils/checkTokenExp'
 import GetToken from 'src/@core/utils/getToken'
 
@@ -36,11 +37,11 @@ axios.interceptors.response.use(
   function (error) {
     // console.log('moved to errored', error)
 
-    if (error?.response?.statusText === 'Unauthorized') {
-      window.localStorage.removeItem('accessToken')
+    // if (error?.response?.statusText === 'Unauthorized') {
+    //   window.localStorage.removeItem('accessToken')
 
-      window.location.href = '/login'
-    }
+    //   window.location.href = '/login'
+    // }
 
     return Promise.reject(error)
   }

@@ -39,8 +39,8 @@ export const authSlice = createSlice({
     //   state.error = action.error.message || 'Error Login'
     // })
     builder.addCase(RegisterUser.fulfilled, (state, action) => {
-      const { token, superAdmin } = action.payload.data
-      const userObject = JSON.stringify(action.payload.data.superAdmin)
+      const { token, superAdmin } = action.payload.data.data
+      const userObject = JSON.stringify(action.payload.data.data.superAdmin)
 
       localStorage.setItem('authUser', userObject)
       localStorage.setItem('authToken', token)

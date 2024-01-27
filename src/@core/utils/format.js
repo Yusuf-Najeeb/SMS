@@ -16,15 +16,6 @@ const isToday = date => {
   )
 }
 
-export const formatDateToYYYMMMDDD = d => {
-  const date = new Date(d)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0') // Months are zero-based
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}
-
 export const formatDate = (value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) => {
   if (!value) return value
 
@@ -96,4 +87,102 @@ export const formatCVC = (value, cardNumber, Payment) => {
   const maxLength = issuer === 'amex' ? 4 : 3
 
   return clearValue.slice(0, maxLength)
+}
+
+export const formatFirstLetter = letter => {
+  const formattedString = letter[0].toUpperCase() + letter.slice(1)
+
+  return formattedString
+}
+
+export const formatAndReturnFirstLetter = letter => {
+  const formattedString = letter[0].toUpperCase()
+
+  return formattedString
+}
+
+export const formatDateToYYYMMDDD = date => {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    const dateValue = new Date(date)
+    const year = dateValue.getFullYear()
+    const month = (dateValue.getMonth() + 1).toString().padStart(2, '0') // Month is zero-indexed
+    const day = dateValue.getDate().toString().padStart(2, '0')
+
+    return `${year}-${month}-${day}`
+  }
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0') // Month is zero-indexed
+  const day = date.getDate().toString().padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+export const formatMonthYear = date => {
+  // Check if date is a valid Date object
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    // If not, return a default value or handle the situation as needed
+
+    const year = date.slice(0, 4)
+    const month = date.slice(4)
+
+    const newDate = new Date(`${year}-${month}-01`) // Assuming day is always the first of the month
+    const options = { month: 'long', year: 'numeric' }
+
+    return newDate.toLocaleDateString('en-US', options)
+  }
+
+  const options = { month: 'long', year: 'numeric' }
+
+  const formattedDate = date.toLocaleDateString('en-US', options)
+
+  return formattedDate
+}
+
+export const parseClass = item => {
+  if (item === 'off' || !item || item === '') {
+    return 'bg-info'
+  } else if (item === 'morning') {
+    return 'bg-primary'
+  } else if (item === 'night' || 'evening') {
+    return 'bg-danger'
+  } else {
+    return 'bg-secondary'
+  }
+}
+
+export const parseRoster = result => {
+  let rosters = []
+  result.forEach(item => {
+    const parsedSchedule = item.schedule ? JSON.parse(item.schedule) : []
+    parsedSchedule.forEach(schedule => {
+      if (schedule.duty !== '') {
+        rosters = [
+          ...rosters,
+          {
+            title: ` ${formatFirstLetter(item.user.firstname)} ${formatAndReturnFirstLetter(item.user.lastname)}  ${
+              schedule.duty ? '[' + schedule.duty + ']' : ''
+            }`,
+            date: `${item.period.substring(0, 4)}-${item.period.substring(4)}-${
+              schedule.date !== '' ? schedule.date?.toString().padStart(2, '0') : ''
+            }`,
+
+            className: parseClass(schedule.duty)
+          }
+        ]
+      }
+    })
+  })
+
+  return rosters
+}
+
+export const getFirstId = arrayOfObjects => {
+  for (const obj of arrayOfObjects) {
+    if (obj && obj.id !== undefined) {
+      return obj.id
+    }
+  }
+
+  // Return a default value (or throw an error) if no id is found
+  return null
 }

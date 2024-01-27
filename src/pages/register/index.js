@@ -1,6 +1,7 @@
 // ** React Imports
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+
 // ** Next Import
 import Link from 'next/link'
 
@@ -20,6 +21,7 @@ import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import { notifyError } from '../../@core/components/toasts/notifyError'
+
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -35,14 +37,16 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+
 //import signUpSchema from '../../@core/FormSchema/index'
 import { signUpSchema } from 'src/@core/FormSchema'
 import { useAppDispatch } from '../../hooks'
 import { useSettings } from 'src/@core/hooks/useSettings'
 import useBgColor from 'src/@core/hooks/useBgColor'
+
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
-import { formatDateToYYYMMMDDD } from '../../@core/utils/format'
+import { formatDateToYYYMMDDD } from '../../@core/utils/format'
 import { RegisterUser } from '../../store/apps/auth/asyncthunk'
 
 // ** Styled Components
@@ -95,6 +99,7 @@ const Register = () => {
     showPassword: false,
     showPassword2: false
   })
+
   const defaultValues = {
     firstName: '',
     lastName: '',
@@ -109,6 +114,7 @@ const Register = () => {
     residentialAddress: '',
     branch: ''
   }
+
   // ** Hooks
   // const theme = useTheme()
   // const { settings } = useSettings()
@@ -141,10 +147,11 @@ const Register = () => {
     //const { username, password } = data
     console.log('register')
     const { dateOfBirth, ...resData } = data
-    const formatedDate = formatDateToYYYMMMDDD(dateOfBirth)
+    console.log(data, 'data')
+    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
     const payload = {
       ...resData,
-      dateOfBirth: formatedDate
+      dateOfBirth: formattedDate
     }
     try {
       const resp = await dispatch(RegisterUser(payload))
