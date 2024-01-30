@@ -29,7 +29,7 @@ const StudentTable = () => {
   const [StudentData, loading, paging] = useStudent()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [addStudentOpen, setaddStudentOpen] = useState(false)
+  const [addStudentOpen, setStudentOpen] = useState(false)
   const [refetch, setFetch] = useState(false)
   const [student, setStudent] = useState(null)
 
