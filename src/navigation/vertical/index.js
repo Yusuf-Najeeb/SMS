@@ -8,11 +8,11 @@ const navigation = () => {
       icon: 'tabler:mail',
       path: '/apps/invoice/list'
     },
-    {
-      title: 'New Staff',
-      icon: 'tabler:mail',
-      path: '/apps/new-staff/list'
-    },
+    // {
+    //   title: 'New Staff',
+    //   icon: 'tabler:mail',
+    //   path: '/apps/new-staff/list'
+    // },
     {
       title: 'Staff Attendance',
       icon: 'tabler:mail',
@@ -27,11 +27,11 @@ const navigation = () => {
       icon: 'tabler:mail',
       path: '/apps/student/list'
     },
-    {
-      title: 'New Student',
-      icon: 'tabler:mail',
-      path: '/apps/newStudent/list'
-    },
+    // {
+    //   title: 'New Student',
+    //   icon: 'tabler:mail',
+    //   path: '/apps/newStudent/list'
+    // },
     {
       title: 'Student Attendence',
       icon: 'tabler:mail',
