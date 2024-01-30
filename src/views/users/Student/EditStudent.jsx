@@ -62,7 +62,6 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
     residentialAddress: '',
     branch: ''
   }
-  console.log(selectedStaff)
   const dispatch = useAppDispatch()
 
   const {
@@ -91,16 +90,6 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
 
   useEffect(() => {
     setValue('firstName', selectedStaff.firstName)
-    setValue('lastName', selectedStaff.lastName)
-    setValue('middleName', selectedStaff.middleName)
-    setValue('email', selectedStaff.email)
-    setValue('title', selectedStaff.title)
-    setValue('status', selectedStaff.status)
-    setValue('phone', selectedStaff.phone)
-    setValue('identificationNumber', selectedStaff.identificationNumber)
-    setValue('dateOfBirth', selectedStaff.dateOfBirth)
-    setValue('residentialAddress', selectedStaff.residentialAddress)
-    setValue('branch', selectedStaff.branch)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -203,7 +192,40 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                   )}
                 />
               </Grid>
-
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='password'
+                  type='password'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      value={value}
+                      onBlur={onBlur}
+                      label='Password'
+                      onChange={onChange}
+                      id='auth-login-v2-password'
+                      error={Boolean(errors.password)}
+                      {...(errors.password && { helperText: errors.password.message })}
+                      type={showPassword ? 'text' : 'password'}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton
+                              edge='end'
+                              onMouseDown={e => e.preventDefault()}
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='title'

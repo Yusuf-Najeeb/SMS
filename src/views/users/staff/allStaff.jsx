@@ -19,20 +19,17 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { useDispatch } from 'react-redux'
 import NoData from '../../../@core/components/emptyData/NoData'
 
-// import { deleteRole, fetchRoles } from '../../../store/apps/roles/asyncthunk'
 import CustomSpinner from '../../../@core/components/custom-spinner'
 
 import { formatFirstLetter } from '../../../../src/@core/utils/format'
-//import { formatFirstLetter } from '../../../@core/utils/format'
-// import DeleteDialog from '../../../@core/components/delete-dialog'
-//import EditRole from './EditRole'
-import EditStaff from './EditStaff'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 
-//import { useStaff } from '../../../hooks/useRoles'
+import DeleteDialog from '../../../@core/components/delete-dialog'
+
+import EditStaff from './EditStaff'
+import { fetchStaffs, deleteStaff } from '../../../store/apps/staff/asyncthunk'
+
 import { useStaff } from '../../../hooks/useStaff'
 
-//import PageHeader from '../component/PageHeader'
 import PageHeader from '../component/PageHeader'
 import CreateStaff from './CreateStaff'
 
@@ -48,13 +45,13 @@ const StaffTable = () => {
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
-  const [selectedDepartment, setSelectedDepartment] = useState(null)
+  const [selectStaff, setselectStaff] = useState(null)
 
   const [roleToView, setRoleToView] = useState(null)
   //   const [role, setRole] = useState(null)
   const [addRoleOpen, setaddRoleOpen] = useState(false)
 
-  const setActiveDepartment = value => {
+  const setActiveStaff = value => {
     setStaff(value)
     setOpenCanvas(true)
   }
@@ -71,12 +68,12 @@ const StaffTable = () => {
   // are you sure ou want to delete funtion
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedDepartment(value?.id)
+    setselectStaff(value?.email)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedDepartment(null)
+    setselectStaff(null)
   }
 
   const updateFetch = () => setFetch(!refetch)
@@ -86,10 +83,15 @@ const StaffTable = () => {
   //   updateFetch()
   //   doCancelDelete()
   // }
-  const ondeleteClick = () => {
-    dispatch(deleteDepartment(selectedDepartment))
-    updateFetch()
-    doCancelDelete()
+  const ondeleteClick = async () => {
+    const res = await dispatch(deleteStaff(selectStaff))
+    console.log(res, 'res')
+    if (res.payload.status) {
+      updateFetch()
+      doCancelDelete()
+    }
+    //updateFetch()
+    // doCancelDelete()
   }
 
   const setStafffToEdit = prod => {
@@ -112,12 +114,12 @@ const StaffTable = () => {
   const toogleStaffDrawer = () => setStaffOpen(!addStaffOP)
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: page + 1, limit: 10 }))
+    dispatch(fetchStaffs())
   }, [page, refetch])
-  console.log(StaffData)
+  console.log(StaffData, 'All staff')
   return (
     <div>
-      <PageHeader action='Create Staff List' toggle={toogleStaffDrawer} />
+      <PageHeader action='Create ' toggle={toogleStaffDrawer} />
       <TableContainer component={Card} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
@@ -195,8 +197,8 @@ const StaffTable = () => {
         rowsPerPageOptions={[5, 10, 20]}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* 
-      <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
+
+      <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
 
       {openEditDrawer && (
         <EditStaff
@@ -207,7 +209,7 @@ const StaffTable = () => {
         />
       )}
 
-      {/* {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} />} */}
+      {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} />}
 
       {addStaffOP && <CreateStaff open={addStaffOP} closeModal={toogleStaffDrawer} refetchStaff={updateFetch} />}
     </div>

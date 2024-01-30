@@ -21,7 +21,12 @@ export const defaultPersonalValues = {
     allergies: '',
     maritalStatus: '',
     address: '',
-    
+    status: '',
+    phone: '',
+
+    dateOfBirth: '',
+    residentialAddress: '',
+    branch: 
     // additionalInfo: ''
   }
 

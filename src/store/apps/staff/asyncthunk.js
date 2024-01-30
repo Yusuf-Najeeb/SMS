@@ -20,16 +20,16 @@ export const createStaffs = createAsyncThunk('/StaffData/createStaffs', async va
   }
 })
 
-export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async vals => {
+export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async () => {
   try {
-    const response = await axios.get('/staffs/allstaffs', vals)
+    const response = await axios.get('/staffs/allstaffs')
     console.log(response, 'respone')
-    notifySuccess('Staff gotten successfully')
+    //notifySuccess('Staff gotten successfully')
 
     return response
   } catch (error) {
     console.log(error, 'error')
-    notifyError('Error getting staff')
+    notifyError('Error fetching staff')
 
     // return {
     //   success: false
@@ -70,39 +70,39 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async vals
 //   }
 // }
 
-// export const updateStaff = createAsyncThunk('updateStaff', async query => {
-//   try {
-//     const response = await axios.patch(`/staffs/updatestaff/`, {
-//       params: {
-//         page: query.page,
-//         limit: query.limit
-//       }
-//     })
+export const updateStaff = createAsyncThunk('updateStaff', async query => {
+  try {
+    const response = await axios.patch(`/staffs/updatestaff/`, {
+      params: {
+        page: query.page,
+        limit: query.limit
+      }
+    })
 
-//     return response
-//   } catch (error) {
-//     console.log(error, 'errorrrr')
+    return response
+  } catch (error) {
+    console.log(error, 'errorrrr')
 
-//     // notifyError('Error Fetching Salary Items')
-//   }
-// })
+    // notifyError('Error Fetching Salary Items')
+  }
+})
 
-// export const deleteStaff = createAsyncThunk('deleteStaff', async id => {
-//   try {
-//     const response = await axios.delete(`staff/${id}`)
+export const deleteStaff = createAsyncThunk('deleteStaff', async email => {
+  try {
+    const response = await axios.delete(`/staffs/deletestaff/${email}`)
 
-//     if (response.data.success) {
-//       notifySuccess('Staff Deleted Successfully')
-//     }
+    if (response.data.success) {
+      notifySuccess('Staff Deleted Successfully')
+    }
 
-//     return {
-//       status: true
-//     }
-//   } catch (error) {
-//     notifyError('Error deleting Staff')
+    return {
+      status: true
+    }
+  } catch (error) {
+    notifyError('Error deleting Staff')
 
-//     return {
-//       status: false
-//     }
-//   }
-// })
+    return {
+      status: false
+    }
+  }
+})

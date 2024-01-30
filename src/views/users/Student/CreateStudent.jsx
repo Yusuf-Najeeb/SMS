@@ -1,3 +1,4 @@
+import { useState } from 'react'
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -11,6 +12,7 @@ import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
+import InputAdornment from '@mui/material/InputAdornment'
 
 import { CircularProgress } from '@mui/material'
 
@@ -18,9 +20,9 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { requireName } from 'src/@core/Formschema'
-
-import { CreateStudent } from '../../../store/apps/Student/asyncthunk'
+import { studentSignUpSchema } from 'src/@core/Formschema'
+import { fetchStaffs, deleteStaff } from '../../../store/apps/staff/asyncthunk'
+import { CreateStudents } from '../../../store/apps/Student/asyncthunk'
 import { useAppDispatch } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
@@ -38,27 +40,38 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const defaultValues = {
-  name: ''
-}
-
-const CreateStudent = ({ open, closeModal, refetchRoles }) => {
+const CreateStudent = ({ open, closeModal, refetchStudent }) => {
+  const [showPassword, setShowPassword] = useState(false)
   const dispatch = useAppDispatch()
+  const defaultValues = {
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    email: '',
+    password: '',
+    title: '',
+    status: '',
+    phone: '',
 
+    dateOfBirth: '',
+    residentialAddress: '',
+    branch: ''
+  }
   const {
     control,
     setValue,
     reset,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(requireName) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(studentSignUpSchema) })
 
   const onSubmit = async data => {
-    const res = await dispatch(CreateStudent(data))
+    console.log(data, 'data')
+    // const res = await dispatch(CreateStudents(data))
 
-    reset()
-    closeModal()
-    refetchRoles()
+    // reset()
+    // closeModal()
+    // refetchStudent()
   }
 
   return (
@@ -89,7 +102,7 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
             <Grid container spacing={6}>
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name=' name'
+                  name='firstName'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -99,15 +112,15 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
                       placeholder='Enter First name'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'First name is required ' })}
+                      error={Boolean(errors.firstName)}
+                      {...(errors.firstName && { helperText: 'First name is required ' })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name='name'
+                  name='lastName'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -117,15 +130,15 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
                       placeholder='Enter a Last name'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Last name is required ' })}
+                      error={Boolean(errors.lastName)}
+                      {...(errors.lastName && { helperText: 'Last name is required ' })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name=' middle name'
+                  name='middleName'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -135,26 +148,8 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
                       placeholder='Enter a middle name'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Middle name is required ' })}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='title'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Title'
-                      placeholder='Enter Title'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Title  is required ' })}
+                      error={Boolean(errors.middleName)}
+                      {...(errors.middleName && { helperText: 'Middle name is required ' })}
                     />
                   )}
                 />
@@ -171,26 +166,60 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
                       placeholder='Enter Email'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Email  is required ' })}
+                      error={Boolean(errors.email)}
+                      {...(errors.email && { helperText: 'Email  is required ' })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='password'
+                  type='password'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      value={value}
+                      onBlur={onBlur}
+                      label='Password'
+                      onChange={onChange}
+                      id='auth-login-v2-password'
+                      error={Boolean(errors.password)}
+                      {...(errors.password && { helperText: errors.password.message })}
+                      type={showPassword ? 'text' : 'password'}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton
+                              edge='end'
+                              onMouseDown={e => e.preventDefault()}
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name='number'
+                  name='title'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label='Phone Number'
-                      placeholder='Enter Phone'
+                      label='Title'
+                      placeholder='Enter Title'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Phone number is required ' })}
+                      error={Boolean(errors.title)}
+                      {...(errors.title && { helperText: 'Title  is required ' })}
                     />
                   )}
                 />
@@ -207,44 +236,63 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
                       placeholder='Enter Status'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Status is required ' })}
+                      error={Boolean(errors.status)}
+                      {...(errors.status && { helperText: 'Status is required ' })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name='identification number'
+                  name='phone'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label='Identification Number'
-                      placeholder='Enter Identification Number'
+                      label='Phone Number'
+                      placeholder='Enter Phone'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Identification number is required ' })}
+                      error={Boolean(errors.phone)}
+                      {...(errors.phone && { helperText: 'Phone number is required ' })}
                     />
                   )}
                 />
               </Grid>
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name='date'
+                  name='dateOfBirth'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label=' Date of birth'
+                      label='Date of birth'
                       placeholder='Enter date of birth'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: 'Date of birth is required ' })}
+                      error={Boolean(errors.dateOfBirth)}
+                      {...(errors.dateOfBirth && { helperText: 'Date of birth is required ' })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='residentialAddress'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Residential Address'
+                      placeholder='Enter Branch'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.residentialAddress)}
+                      {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
                     />
                   )}
                 />
@@ -261,8 +309,8 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
                       placeholder='Enter Branch'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.name)}
-                      {...(errors.name && { helperText: ' branch is required ' })}
+                      error={Boolean(errors.branch)}
+                      {...(errors.branch && { helperText: ' branch is required ' })}
                     />
                   )}
                 />
@@ -272,7 +320,7 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
 
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button type='submit' variant='contained'>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Create'}
+              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Cre'}
             </Button>
           </Box>
         </form>
@@ -281,4 +329,4 @@ const CreateStudent = ({ open, closeModal, refetchRoles }) => {
   )
 }
 
-export default CreateStaff 
+export default CreateStudent

@@ -112,3 +112,17 @@ export const signUpSchema = yup.object().shape({
   residentialAddress: yup.string().required('residentialAddress is required'),
   branch: yup.string().required('branch is required')
 })
+export const studentSignUpSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string().required('Middle Name is required'),
+  email: yup.string().required('Email is required'),
+  password: yup.string().required('Password is required'),
+  title: yup.string().required('Title is required'),
+  status: yup.string().required('status is required'),
+  phone: yup.string().required('phone is required'),
+
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string().required('residentialAddress is required'),
+  branch: yup.string().required('branch is required')
+})

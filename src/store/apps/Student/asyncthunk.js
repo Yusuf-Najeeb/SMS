@@ -3,11 +3,28 @@ import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { notifyError } from '../../../@core/components/toasts/notifyError'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-export const fetchStudents = createAsyncThunk('fetchStudent/', async vals => {
+export const CreateStudents = createAsyncThunk('/StudentData/CreateStudents/', async vals => {
   try {
-    const response = await axios.get('/api/students/allstudents', vals)
+    const response = await axios.post('/auth/registerstudent', vals)
 
-    // notifySuccess('student created successfully')
+    notifySuccess('student created successfully')
+
+    return response
+  } catch (error) {
+    console.log(error, 'error')
+    notifyError('Error creating students')
+
+    // return {
+    //   success: false
+    // }
+  }
+})
+
+export const fetchStudents = createAsyncThunk('/StudentData/fetchStaffs', async () => {
+  try {
+    const response = await axios.get('/students/allstudents')
+    console.log(response, 'respone')
+    //notifySuccess('Students gotten successfully')
 
     return response
   } catch (error) {
@@ -20,124 +37,107 @@ export const fetchStudents = createAsyncThunk('fetchStudent/', async vals => {
   }
 })
 
-export const fetchStudentByEmail = async email => {
-  try {
-    const response = await axios.get(`/api/students/getstudent/${email}`)
+// export const fetchStudentByExam = async email => {
+//   try {
+//     const response = await axios.get(`/api/students/getstudentexam/${email}`)
 
-    // notifySuccess('student created successfully')
+//     // notifySuccess('student created successfully')
 
-    return response
-  } catch (error) {
-    console.log(error, 'error')
-    notifyError('Error fetching student')
+//     return response
+//   } catch (error) {
+//     console.log(error, 'error')
+//     notifyError('Error fetching student')
 
-    // return {
-    //   success: false
-    // }
-  }
-}
+//     // return {
+//     //   success: false
+//     // }
+//   }
+// }
 
-export const fetchStudentByExam = async email => {
-  try {
-    const response = await axios.get(`/api/students/getstudentexam/${email}`)
+// export const fetchStudentBySubjectTeacher = async email => {
+//   try {
+//     const response = await axios.get(`/api/students/getstudentsubjectsandteachers/${email}`)
 
-    // notifySuccess('student created successfully')
+//     // notifySuccess('student created successfully')
 
-    return response
-  } catch (error) {
-    console.log(error, 'error')
-    notifyError('Error fetching student')
+//     return response
+//   } catch (error) {
+//     console.log(error, 'error')
+//     notifyError('Error fetching student Exams')
 
-    // return {
-    //   success: false
-    // }
-  }
-}
+//     // return {
+//     //   success: false
+//     // }
+//   }
+// }
 
-export const fetchStudentBySubjectTeacher = async email => {
-  try {
-    const response = await axios.get(`/api/students/getstudentsubjectsandteachers/${email}`)
+// export const fetchStudentByRoom = async email => {
+//   try {
+//     const response = await axios.get(`/api/students/getstudentroom/${email}`)
 
-    // notifySuccess('student created successfully')
+//     // notifySuccess('student created successfully')
 
-    return response
-  } catch (error) {
-    console.log(error, 'error')
-    notifyError('Error fetching student Exams')
+//     return response
+//   } catch (error) {
+//     console.log(error, 'error')
+//     notifyError('Error fetching student Exams')
 
-    // return {
-    //   success: false
-    // }
-  }
-}
+//     // return {
+//     //   success: false
+//     // }
+//   }
+// }
 
-export const fetchStudentByRoom = async email => {
-  try {
-    const response = await axios.get(`/api/students/getstudentroom/${email}`)
+// export const fetchStudentByHouseMaster = async email => {
+//   try {
+//     const response = await axios.get(`/api/students/getstudentroomstaff/${email}`)
 
-    // notifySuccess('student created successfully')
+//     // notifySuccess('student created successfully')
 
-    return response
-  } catch (error) {
-    console.log(error, 'error')
-    notifyError('Error fetching student Exams')
+//     return response
+//   } catch (error) {
+//     console.log(error, 'error')
+//     notifyError('Error fetching student Exams')
 
-    // return {
-    //   success: false
-    // }
-  }
-}
+//     // return {
+//     //   success: false
+//     // }
+//   }
+// }
 
-export const fetchStudentByHouseMaster = async email => {
-  try {
-    const response = await axios.get(`/api/students/getstudentroomstaff/${email}`)
+// export const updateStudent = createAsyncThunk('updateStudent', async query => {
+//   try {
+//     const response = await axios.patch(`/api/students/updatestudent/`, {
+//       params: {
+//         page: query.page,
+//         limit: query.limit
+//       }
+//     })
 
-    // notifySuccess('student created successfully')
+//     return response
+//   } catch (error) {
+//     console.log(error, 'errorrrr')
 
-    return response
-  } catch (error) {
-    console.log(error, 'error')
-    notifyError('Error fetching student Exams')
+//     // notifyError('Error Fetching Salary Items')
+//   }
+// })
 
-    // return {
-    //   success: false
-    // }
-  }
-}
+// export const deleteRole = createAsyncThunk('deleterole', async id => {
+//   try {
+//     const response = await axios.patch(`role/${id}`)
 
-export const updateStudent = createAsyncThunk('updateStudent', async query => {
-  try {
-    const response = await axios.patch(`/api/students/updatestudent/`, {
-      params: {
-        page: query.page,
-        limit: query.limit
-      }
-    })
+//     if (response.data.success) {
+//       notifySuccess('Roles Deleted Successfully')
+//     }
 
-    return response
-  } catch (error) {
-    console.log(error, 'errorrrr')
+//     return {
+//       status: true
+//     }
+//   } catch (error) {
+//     notifyError('Error deleting Role')
 
-    // notifyError('Error Fetching Salary Items')
-  }
-})
-
-export const deleteRole = createAsyncThunk('deleterole', async id => {
-  try {
-    const response = await axios.patch(`role/${id}`)
-
-    if (response.data.success) {
-      notifySuccess('Roles Deleted Successfully')
-    }
-
-    return {
-      status: true
-    }
-  } catch (error) {
-    notifyError('Error deleting Role')
-
-    return {
-      status: false
-    }
-  }
-})
+//     return {
+//       status: false
+//     }
+//   }
+// })

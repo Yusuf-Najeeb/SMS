@@ -357,16 +357,21 @@ const Register = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <CustomTextField
+                        select
                         fullWidth
-                        autoFocus
-                        label='Title'
+                        label='Title' // Corrected placement of label prop
                         value={value}
                         onBlur={onBlur}
                         onChange={onChange}
                         placeholder='admin'
                         error={Boolean(errors.title)}
                         {...(errors.title && { helperText: errors.title.message })}
-                      />
+                        autoFocus // Corrected placement of autoFocus prop
+                      >
+                        <MenuItem value='Male'>Mr</MenuItem>
+                        <MenuItem value='Female'>Mrs</MenuItem>
+                        <MenuItem value='Female'>Miss</MenuItem>
+                      </CustomTextField>
                     )}
                   />
                 </Grid>
@@ -387,7 +392,11 @@ const Register = () => {
                         placeholder='admin'
                         error={Boolean(errors.status)}
                         {...(errors.status && { helperText: errors.status.message })}
-                      />
+                      >
+                        <MenuItem value='Male'>Mr</MenuItem>
+                        <MenuItem value='Female'>Mrs</MenuItem>
+                        <MenuItem value='Female'>Miss</MenuItem>
+                      </CustomTextField>
                     )}
                   />
                 </Grid>

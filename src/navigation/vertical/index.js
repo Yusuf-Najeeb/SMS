@@ -1,11 +1,6 @@
 const navigation = () => {
   return [
     {
-      title: 'Sign-up',
-      icon: 'tabler:mail',
-      path: '/signup'
-    },
-    {
       sectionTitle: 'Staff Manager'
     },
     {
@@ -82,6 +77,16 @@ const navigation = () => {
       path: '/apps/result-manager/list'
     },
     {
+      title: 'Library',
+      icon: 'tabler:mail',
+      path: '/apps/library/list'
+    },
+    {
+      title: 'Exam',
+      icon: 'tabler:mail',
+      path: '/apps/exam/list'
+    },
+    {
       sectionTitle: 'Accounts '
     },
     {
@@ -106,22 +111,7 @@ const navigation = () => {
       icon: 'tabler:mail',
       path: '/apps/inventory/list'
     },
-    {
-      sectionTitle: 'library '
-    },
-    {
-      title: 'Library',
-      icon: 'tabler:mail',
-      path: '/apps/library/list'
-    },
-    {
-      sectionTitle: 'Exam '
-    },
-    {
-      title: 'Exam',
-      icon: 'tabler:mail',
-      path: '/apps/exam/list'
-    },
+
     {
       sectionTitle: 'Settings '
     },

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
-import Paper from '@mui/material/Paper'
+import Card from '@mui/material/Card'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
@@ -8,43 +8,34 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import IconButton from '@mui/material/IconButton'
-
+import CustomSpinner from '../../../@core/components/custom-spinner'
 import Icon from 'src/@core/components/icon'
 
 import TablePagination from '@mui/material/TablePagination'
 
 import CustomChip from 'src/@core/components/mui/chip'
 
-//import { useAppDispatch, useAppSelector } from '../../../hooks'
-//import NoData from '../../../@core/components/emptyData/NoData'
-//import NoData from '../../../@core/components/emptyData/NoData'
 import NoData from '../../../@core/components/emptyData/NoData'
-
-// import { deleteRole, fetchRoles } from '../../../store/apps/roles/asyncthunk'
-// import CustomSpinner from '../../../@core/components/custom-spinner'
-// import { formatFirstLetter } from '../../../@core/utils/format'
-// import DeleteDialog from '../../../@core/components/delete-dialog'
-//import EditRole from './EditRole'
-import editStaff from '../../../views/users/staff/editStaff'
-
+import { useDispatch } from 'react-redux'
 import PageHeader from '../component/PageHeader'
-import CreateStaff from '../../../views/users/staff/createStaff'
+import CreateStudent from './CreateStudent'
+
+import { fetchStudents, deleteStaff } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 
 const StudentTable = () => {
-  //   const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
 
   const [StudentData, loading, paging] = useStudent()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-
-  //   const [role, setRole] = useState(null)
-  const [addRoleOpen, setaddRoleOpen] = useState(false)
+  const [addStudentOpen, setaddStudentOpen] = useState(false)
   const [refetch, setFetch] = useState(false)
+  const [student, setStudent] = useState(null)
 
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
-  const [selectedRole, setSelectedRole] = useState(null)
+  const [selectedStudent, setSelectedRole] = useState(null)
 
   //   const [roleToView, setRoleToView] = useState(null)
 
@@ -64,13 +55,22 @@ const StudentTable = () => {
   //     setSelectedRole(null)
   //   }
 
+  const setActiveStaff = value => {
+    setStudent(value)
+    setOpenCanvas(true)
+  }
+
   const updateFetch = () => setFetch(!refetch)
 
   const ondeleteClick = () => {
-    dispatch(deleteRole(selectedRole))
+    dispatch(deleteRole(selectedStudent))
     updateFetch()
     doCancelDelete()
   }
+  const toggleRoleDrawer = () => setaddStudentOpen(!addStudentOpen)
+  const toggleEditDrawer = () => setEditDrawer(!openEditDrawer)
+
+  const toggleStudent = () => setStudentOpen(!addStudentOpen)
 
   //   const setRoleToEdit = prod => {
   //     setEditDrawer(true)
@@ -86,19 +86,19 @@ const StudentTable = () => {
     setPage(0)
   }
 
-  const toggleRoleDrawer = () => setaddRoleOpen(!addRoleOpen)
-  const toggleEditDrawer = () => setEditDrawer(!openEditDrawer)
-
   //   useEffect(() => {
   //     dispatch(fetchRoles({ page: page + 1, limit: 10 }))
 
   //     // eslint-disable-next-line react-hooks/exhaustive-deps
   //   }, [page, refetch])
+  useEffect(() => {
+    dispatch(fetchStudents())
+  }, [page, refetch])
 
   return (
     <div>
-      <PageHeader action='Add Staff List' toggle={toggleRoleDrawer} />
-      <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
+      <PageHeader action='Create ' toggle={toggleStudent} />
+      <TableContainer component={Card} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
@@ -109,14 +109,16 @@ const StudentTable = () => {
                 NAME
               </TableCell>
               <TableCell align='left' sx={{ minWidth: 100 }}>
-                Email
+                EMAIL
               </TableCell>
               <TableCell align='left' sx={{ minWidth: 100 }}>
-                Password
+                Title
               </TableCell>
+
               <TableCell align='left' sx={{ minWidth: 100 }}>
-                Phone Number
+                IDENTIFICATION NUMBER
               </TableCell>
+
               <TableCell align='left' sx={{ minWidth: 100 }}>
                 ACTIONS
               </TableCell>
@@ -131,16 +133,18 @@ const StudentTable = () => {
               </TableRow>
             ) : (
               <Fragment>
-                {StudentData?.map((role, i) => (
-                  <TableRow hover role='checkbox' key={role.id}>
+                {StudentData?.map((student, i) => (
+                  <TableRow hover role='checkbox' key={student?.id}>
                     <TableCell align='left'>{i + 1}</TableCell>
-                    <TableCell align='left'>{formatFirstLetter(role?.name)}</TableCell>
+                    <TableCell align='left'>{`${student?.firstName} ${student?.lastName}`}</TableCell>
+                    <TableCell align='left'>{student.email}</TableCell>
+                    <TableCell align='left'>{student?.title}</TableCell>
 
                     <TableCell align='left' sx={{ display: 'flex' }}>
-                      <IconButton size='small' onClick={() => setRoleToEdit(role)}>
+                      <IconButton size='small' onClick={() => setStudentfToEdit(student)}>
                         <Icon icon='tabler:edit' />
                       </IconButton>
-                      <IconButton size='small' onClick={() => doDelete(role)}>
+                      <IconButton size='small' onClick={() => doDelete(student)}>
                         <Icon icon='tabler:trash' />
                       </IconButton>
                     </TableCell>
@@ -150,7 +154,6 @@ const StudentTable = () => {
                 {StudentData?.length === 0 && (
                   <tr className='text-center'>
                     <td colSpan={6}>
-                      {' '}
                       <NoData />
                     </td>
                   </tr>
@@ -170,19 +173,23 @@ const StudentTable = () => {
         rowsPerPageOptions={[5, 10, 20]}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-
-      {/* <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
+      {/* 
+      <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
 
       {openEditDrawer && (
-        <editStaff
+        <EditStudent
           open={openEditDrawer}
           closeModal={toggleEditDrawer}
-          refetchRoles={updateFetch}
-          selectedRole={roleToView}
+          refetchStudent={updateFetch}
+          selectedStudent={studentToView}
         />
       )}
 
-      {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} refetchRoles={updateFetch} />}
+      {addStudentOpen && <CreateStudent open={addStudentOpen} closeModal={toggleRoleDrawer} />}
+
+      {addStudentOpen && (
+        <CreateStudent open={addStudentOpen} closeModal={toggleStudent} refetchStudent={updateFetch} />
+      )}
     </div>
   )
 }
