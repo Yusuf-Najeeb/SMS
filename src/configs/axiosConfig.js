@@ -37,11 +37,11 @@ axios.interceptors.response.use(
   function (error) {
     // console.log('moved to errored', error)
 
-    // if (error?.response?.statusText === 'Unauthorized') {
-    //   window.localStorage.removeItem('accessToken')
+    if (error?.response?.statusText === 'Unauthorized') {
+      window.localStorage.removeItem('authToken')
 
-    //   window.location.href = '/login'
-    // }
+      window.location.href = '/login'
+    }
 
     return Promise.reject(error)
   }

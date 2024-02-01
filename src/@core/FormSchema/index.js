@@ -105,13 +105,14 @@ export const signUpSchema = yup.object().shape({
   email: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
   title: yup.string().required('Title is required'),
-  status: yup.string().required('status is required'),
-  phone: yup.string().required('phone is required'),
-  identificationNumber: yup.string().required('Identification Number is required'),
+  status: yup.string().required('Status is required'),
+  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('residentialAddress is required'),
   branch: yup.string().required('branch is required')
 })
+
 export const studentSignUpSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
@@ -120,8 +121,50 @@ export const studentSignUpSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
   title: yup.string().required('Title is required'),
   status: yup.string().required('status is required'),
-  phone: yup.string().required('phone is required'),
+  phone: yup.string().typeError('Phone Number is required')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
 
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string().required('residentialAddress is required'),
+  branch: yup.string().required('branch is required')
+})
+
+export const createActorSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string().required('Middle Name is required'),
+  email: yup.string().required('Email is required'),
+  password: yup.string().required('Password is required'),
+  title: yup.string().required('Title is required'),
+  status: yup.string().required("Status is required"),
+  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string().required('residentialAddress is required'),
+})
+
+export const editActorSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string().required('Middle Name is required'),
+  email: yup.string().required('Email is required'),
+  title: yup.string().required('Title is required'),
+  status: yup.string().required("Status is required"),
+  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string().required('residentialAddress is required'),
+})
+
+export const editStaffSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string().required('Middle Name is required'),
+  email: yup.string().required('Email is required'),
+  title: yup.string().required('Title is required'),
+  status: yup.string().required("Status is required"),
+  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('residentialAddress is required'),
   branch: yup.string().required('branch is required')

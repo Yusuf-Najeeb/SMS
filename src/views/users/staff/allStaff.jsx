@@ -21,7 +21,7 @@ import NoData from '../../../@core/components/emptyData/NoData'
 
 import CustomSpinner from '../../../@core/components/custom-spinner'
 
-import { formatFirstLetter } from '../../../../src/@core/utils/format'
+import { formatFirstLetter } from '../../../@core/utils/format'
 
 import DeleteDialog from '../../../@core/components/delete-dialog'
 
@@ -47,7 +47,9 @@ const StaffTable = () => {
   const [deleteModal, setDeleteModal] = useState(false)
   const [selectStaff, setselectStaff] = useState(null)
 
+
   const [roleToView, setRoleToView] = useState(null)
+
   //   const [role, setRole] = useState(null)
   const [addRoleOpen, setaddRoleOpen] = useState(false)
 
@@ -55,6 +57,7 @@ const StaffTable = () => {
     setStaff(value)
     setOpenCanvas(true)
   }
+
   //   const [deleteModal, setDeleteModal] = useState(false)
   //   const [selectedRole, setSelectedRole] = useState(null)
 
@@ -90,6 +93,7 @@ const StaffTable = () => {
       updateFetch()
       doCancelDelete()
     }
+
     //updateFetch()
     // doCancelDelete()
   }
@@ -115,8 +119,9 @@ const StaffTable = () => {
 
   useEffect(() => {
     dispatch(fetchStaffs())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, refetch])
-  console.log(StaffData, 'All staff')
+
   return (
     <div>
       <PageHeader action='Create ' toggle={toogleStaffDrawer} />
@@ -209,7 +214,7 @@ const StaffTable = () => {
         />
       )}
 
-      {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} />}
+      {/* {addRoleOpen && <CreateStaff open={addRoleOpen} closeModal={toggleRoleDrawer} />} */}
 
       {addStaffOP && <CreateStaff open={addStaffOP} closeModal={toogleStaffDrawer} refetchStaff={updateFetch} />}
     </div>

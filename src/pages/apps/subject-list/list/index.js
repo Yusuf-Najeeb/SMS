@@ -1,7 +1,7 @@
-import RolesTable from '../../../views/users/roles/AllRoles'
+// import RolesTable from '../../../views/users/roles/AllRoles'
 
 const RoleHome = () => {
-  return <RolesTable />
+  return <div>Home</div>
 }
 
 export default RoleHome
