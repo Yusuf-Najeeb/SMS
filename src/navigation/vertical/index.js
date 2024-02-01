@@ -4,10 +4,11 @@ const navigation = () => {
       sectionTitle: 'Staff Manager'
     },
     {
-      title: 'Staff List',
+      title: 'Staffs',
       icon: 'tabler:mail',
-      path: '/apps/invoice/list'
+      path: '/apps/staffs'
     },
+
     // {
     //   title: 'New Staff',
     //   icon: 'tabler:mail',
@@ -27,6 +28,7 @@ const navigation = () => {
       icon: 'tabler:mail',
       path: '/apps/student/list'
     },
+
     // {
     //   title: 'New Student',
     //   icon: 'tabler:mail',
@@ -43,7 +45,7 @@ const navigation = () => {
     {
       title: 'Guardians',
       icon: 'tabler:mail',
-      path: '/apps/guadian/list'
+      path: '/apps/guardian'
     },
 
     {

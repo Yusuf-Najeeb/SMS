@@ -24,6 +24,7 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async () =
   try {
     const response = await axios.get('/staffs/allstaffs')
     console.log(response, 'respone')
+
     //notifySuccess('Staff gotten successfully')
 
     return response
@@ -36,6 +37,7 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async () =
     // }
   }
 })
+
 // export const fetchStaffByRoom = async email => {
 //   try {
 //     const response = await axios.get(`/staffs/gethousemasterroom/${email}`)
@@ -70,39 +72,43 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async () =
 //   }
 // }
 
-export const updateStaff = createAsyncThunk('updateStaff', async query => {
+
+
+export const createStaff = async (payload)=> {
   try {
-    const response = await axios.patch(`/staffs/updatestaff/`, {
-      params: {
-        page: query.page,
-        limit: query.limit
-      }
-    })
+    const response = await axios.post('/auth/registerteacher', payload)
 
-    return response
+
+    return response 
+   
+
   } catch (error) {
-    console.log(error, 'errorrrr')
-
-    // notifyError('Error Fetching Salary Items')
+    notifyError('Error Creating Staff, Try again')
   }
-})
+}
 
-export const deleteStaff = createAsyncThunk('deleteStaff', async email => {
+export const updateStaff = async (payload)=> {
+  try {
+    const response = await axios.patch(`/staffs/updatestaff/${payload.email}`, payload)
+
+    return response 
+   
+  } catch (error) {
+    notifyError('Error Updating Staff, Try again')
+  }
+}
+
+export const deleteStaff =  async (email) => {
   try {
     const response = await axios.delete(`/staffs/deletestaff/${email}`)
 
     if (response.data.success) {
-      notifySuccess('Staff Deleted Successfully')
+      notifySuccess('Staff Deleted')
     }
 
-    return {
-      status: true
-    }
+    return response
   } catch (error) {
-    notifyError('Error deleting Staff')
+    notifyError('Error Deleting Staff')
 
-    return {
-      status: false
-    }
   }
-})
+}

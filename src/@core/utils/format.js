@@ -117,6 +117,9 @@ export const formatDateToYYYMMDDD = date => {
   return `${year}-${month}-${day}`
 }
 
+
+
+
 export const formatMonthYear = date => {
   // Check if date is a valid Date object
   if (!(date instanceof Date) || isNaN(date.getTime())) {
@@ -137,6 +140,38 @@ export const formatMonthYear = date => {
 
   return formattedDate
 }
+
+export const formatMonthYearr = date => {
+  // Check if date is a valid Date object
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    // If not, return a default value or handle the situation as needed
+
+    const year = date.slice(0, 4)
+    const month = date.slice(4, 6)
+
+    const newDate = new Date(`${year}-${month}-01`) // Assuming day is always the first of the month
+    const options = { month: 'long', year: 'numeric' }
+
+    const formattedDate = newDate.toLocaleDateString('en-US', options)
+
+    console.log(formattedDate, 'formatteddate')
+
+    // return newDate.toLocaleDateString('en-US', options)
+  }
+  else {
+    console.log('false')
+
+  }
+
+
+  // const options = { month: 'long', year: 'numeric' }
+
+  // const formattedDate = date.toLocaleDateString('en-US', options)
+
+  // return formattedDate
+}
+
+
 
 export const parseClass = item => {
   if (item === 'off' || !item || item === '') {

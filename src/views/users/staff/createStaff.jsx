@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -15,7 +15,11 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { CircularProgress } from '@mui/material'
+import DatePicker from 'react-datepicker'
+
+import 'react-datepicker/dist/react-datepicker.css'
+
+import { CircularProgress, MenuItem } from '@mui/material'
 
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
@@ -23,8 +27,10 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { signUpSchema } from 'src/@core/Formschema'
 
-import { createStaffs } from '../../../store/apps/staff/asyncthunk'
+import { createStaff, createStaffs } from '../../../store/apps/staff/asyncthunk'
 import { useAppDispatch } from '../../../hooks'
+import { CustomInput } from '../component/CreateActor'
+import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -53,7 +59,6 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
     title: '',
     status: '',
     phone: '',
-    identificationNumber: '',
     dateOfBirth: '',
     residentialAddress: '',
     branch: ''
@@ -69,13 +74,23 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(signUpSchema) })
 
   const onSubmit = async data => {
-    console.log(data, 'data')
-    const res = await dispatch(createStaffs(data))
-    console.log(res, 'res')
-    reset()
-    closeModal()
-    refetchStaff()
+
+    // const res = await dispatch(createStaffs(data))
+    const { dateOfBirth, ...restOfData } = data
+    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+
+    const payload = { dateOfBirth: formattedDate, ...restOfData }
+
+    createStaff(payload).then((res)=> {
+      if(res.data.success){
+        reset()
+        closeModal()
+        refetchStaff()
+      }
+    })
+   
   }
+
 
   return (
     <Dialog
@@ -83,6 +98,7 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
       open={open}
       maxWidth='md'
       scroll='body'
+
       //   TransitionComponent={Transition}
       sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 650 } }}
     >
@@ -112,11 +128,11 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='First Name'
-                      placeholder='Enter First name'
+                      placeholder='Enter First Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.firstName)}
-                      {...(errors.firstName && { helperText: 'First name is required ' })}
+                      {...(errors.firstName && { helperText: errors.firstName.message})}
                     />
                   )}
                 />
@@ -130,11 +146,11 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Last Name'
-                      placeholder='Enter a Last name'
+                      placeholder='Enter Last Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.lastName)}
-                      {...(errors.lastName && { helperText: 'Last name is required ' })}
+                      {...(errors.lastName && { helperText: errors.lastName.message })}
                     />
                   )}
                 />
@@ -148,11 +164,11 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Middle Name'
-                      placeholder='Enter a middle name'
+                      placeholder='Enter Middle name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.middleName)}
-                      {...(errors.middleName && { helperText: 'Middle name is required ' })}
+                      {...(errors.middleName && { helperText: errors.middleName.message })}
                     />
                   )}
                 />
@@ -170,12 +186,12 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.email)}
-                      {...(errors.email && { helperText: 'Email  is required ' })}
+                      {...(errors.email && { helperText: errors.email.message })}
                     />
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='password'
                   type='password'
@@ -187,6 +203,7 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                       value={value}
                       onBlur={onBlur}
                       label='Password'
+                      placeholder='Enter Password'
                       onChange={onChange}
                       id='auth-login-v2-password'
                       error={Boolean(errors.password)}
@@ -210,23 +227,33 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
+              
                 <Controller
                   name='title'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
+                      select
                       fullWidth
-                      label='Title'
-                      placeholder='Enter Title'
                       value={value}
+                      label='Title'
                       onChange={onChange}
+                      id='stepper-linear-title'
                       error={Boolean(errors.title)}
-                      {...(errors.title && { helperText: 'Title  is required ' })}
-                    />
+                      aria-describedby='stepper-linear-title-helper'
+                      {...(errors.title && { helperText: 'Title is required' })}
+                    >
+                      <MenuItem value='Mr'>Mr</MenuItem>
+                      <MenuItem value='Mrs'>Mrs</MenuItem>
+                      <MenuItem value='Miss'>Miss</MenuItem>
+                      <MenuItem value='Master'>Master</MenuItem>
+                    </CustomTextField>
                   )}
                 />
               </Grid>
+              
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='status'
@@ -234,17 +261,23 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
+                      select
                       fullWidth
-                      label='Status'
-                      placeholder='Enter Status'
                       value={value}
+                      label='Status'
                       onChange={onChange}
+                      id='stepper-linear-status'
                       error={Boolean(errors.status)}
-                      {...(errors.status && { helperText: 'Status is required ' })}
-                    />
+                      aria-describedby='stepper-linear-status-helper'
+                      {...(errors.status && { helperText: errors.status.message })}
+                    >
+                      <MenuItem value='Active'>Active</MenuItem>
+                      <MenuItem value='Inactive'>Inactive</MenuItem>
+                    </CustomTextField>
                   )}
                 />
               </Grid>
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='phone'
@@ -254,48 +287,39 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Phone Number'
-                      placeholder='Enter Phone'
+                      placeholder='Enter Phone Number'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.phone)}
-                      {...(errors.phone && { helperText: 'Phone number is required ' })}
+                      {...(errors.phone && { helperText: errors.phone.message })}
                     />
                   )}
                 />
               </Grid>
 
+             
               <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='identificationNumber'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Identification Number'
-                      placeholder='Enter Identification Number'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.identificationNumber)}
-                      {...(errors.identificationNumber && { helperText: 'Identification number is required ' })}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
+              <Controller
                   name='dateOfBirth'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Date of birth'
-                      placeholder='Enter date of birth'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.dateOfBirth)}
-                      {...(errors.dateOfBirth && { helperText: 'Date of birth is required ' })}
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='Enter Date of Birth'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Date of Birth'
+                          error={Boolean(errors.dateOfBirth)}
+                          {...(errors.dateOfBirth && { helperText: errors.dateOfBirth.message })}
+                        />
+                      }
                     />
                   )}
                 />
@@ -309,11 +333,11 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Residential Address'
-                      placeholder='Enter Branch'
+                      placeholder='Enter Address'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
+                      {...(errors.residentialAddress && { helperText: errors.dateOfBirth.message })}
                     />
                   )}
                 />
@@ -331,7 +355,7 @@ const CreateStaff = ({ open, closeModal, refetchStaff }) => {
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.branch)}
-                      {...(errors.branch && { helperText: ' branch is required ' })}
+                      {...(errors.branch && { helperText: errors.branch.message })}
                     />
                   )}
                 />

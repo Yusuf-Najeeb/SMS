@@ -149,6 +149,7 @@ const Register = () => {
     const { dateOfBirth, ...resData } = data
     console.log(data, 'data')
     const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+
     const payload = {
       ...resData,
       dateOfBirth: formattedDate
@@ -451,6 +452,8 @@ const Register = () => {
                     render={({ field: { value, onChange } }) => (
                       <DatePicker
                         selected={value}
+                        showYearDropdown
+                        showMonthDropdown
                         popperPlacement='bottom-end'
                         onChange={e => onChange(e)}
                         label='Date of Birth'
