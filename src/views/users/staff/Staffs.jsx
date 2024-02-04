@@ -22,7 +22,6 @@ import format from 'date-fns/format'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchData } from 'src/store/apps/invoice'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -34,8 +33,8 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import PageHeader from '../component/PageHeader'
-import { formatDate, formatDateToReadableFormat } from '../../../@core/utils/format'
+import PageHeader from './StaffPageHeader'
+import { formatDateToReadableFormat } from '../../../@core/utils/format'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 
 
@@ -43,6 +42,7 @@ import { useStaff } from '../../../hooks/useStaff'
 import { deleteStaff, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import AddStaff from './AddStaff'
 import UpdateStaff from './UpdateStaff'
+import StaffsStats from './StaffStats'
 
 
 // ** Styled component for the link in the dataTable
@@ -181,9 +181,8 @@ const CustomInput = forwardRef((props, ref) => {
 /* eslint-enable */
 const Staffs = () => {
   // ** State
-  const [dates, setDates] = useState([])
-  const [value, setValue] = useState('')
-  const [statusValue, setStatusValue] = useState('')
+  const [page, setPage] = useState(0)
+  const [key, setKey] = useState('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
@@ -201,8 +200,6 @@ const Staffs = () => {
   const store = useSelector(state => state.invoice)
 
   // const GuardianData = useSelector(state => state.guardian)
-
-  console.log(StaffData, 'staff data')
 
 
   const toggleModal = ()=>{
@@ -239,37 +236,15 @@ const Staffs = () => {
 
   const closeEditModal = ()=> setEditDrawer(false)
 
-  const handleFilter = val => {
-    setValue(val)
-  }
+//   const handleFilter = val => {
+//     setKey(val)
+//   }
 
-  const handleStatusValue = e => {
-    setStatusValue(e.target.value)
-  }
-
-  const handleOnChangeRange = dates => {
-    const [start, end] = dates
-    if (start !== null && end !== null) {
-      setDates(dates)
-    }
-    setStartDateRange(start)
-    setEndDateRange(end)
-  }
 
   useEffect(() => {
-    dispatch(
-      fetchData({
-        dates,
-        q: value,
-        status: statusValue
-      })
-    )
-  }, [dispatch, statusValue, value, dates])
-
-  useEffect(() => {
-    dispatch(fetchStaffs())
+    dispatch(fetchStaffs({page: page + 1, key}))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refetch])
+  }, [page, key, refetch])
 
 
   const columns = [
@@ -331,7 +306,9 @@ const Staffs = () => {
     <Fragment>
     <DatePickerWrapper>
 
-        <PageHeader  action="Add Staff" toggle={toggleModal}/>
+        <StaffsStats staffData={StaffData} />
+
+        <PageHeader  action="Add Staff" toggle={toggleModal} handleFilter={setKey}/>
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Card>
@@ -339,18 +316,12 @@ const Staffs = () => {
               autoHeight
               pagination
               rowHeight={62}
-              rows={StaffData?.length ? StaffData : []}
+              rows={StaffData?.result?.length ? StaffData?.result : []}
               columns={columns}
-
-            //   checkboxSelection
-
-            //   disableRowSelectionOnClick
               pageSizeOptions={[10, 25, 50]}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
               disableRowSelectionOnClick
-
-            //   onRowSelectionModelChange={rows => setSelectedRows(rows)}
             />
           </Card>
         </Grid>

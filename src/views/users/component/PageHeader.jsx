@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 // import Stack from '@mui/material/Stack'
 
 // ** Custom Component Import
-// import CustomTextField from 'src/@core/components/mui/text-field'
+import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -62,6 +62,13 @@ const PageHeader = ({ toggle, action }) => {
         placeholder='Search Expenditures'
         onChange={e => handleFilter(e.target.value)}
       /> */}
+
+{/* <CustomTextField
+        value={value}
+        sx={{ mr: 4 }}
+        placeholder='Search Staff'
+        onChange={e => handleFilter(e.target.value)}
+      />  */}
 
       <Button onClick={toggle} variant='contained' sx={{ '& svg': { mr: 2 } }}>
         <Icon fontSize='1.125rem' icon='tabler:plus' />

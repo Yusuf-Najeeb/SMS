@@ -3,38 +3,15 @@ import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { notifyError } from '../../../@core/components/toasts/notifyError'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-export const createStaffs = createAsyncThunk('/StaffData/createStaffs', async vals => {
+
+export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async (query) => {
   try {
-    const response = await axios.post('/auth/registerteacher', vals)
-    console.log(response, 'respone')
-    notifySuccess('student created successfully')
+    const response = await axios.get(`/staffs/allstaffs?page=${query.page}&limit=10&key=${query.key}`)
 
     return response
   } catch (error) {
-    console.log(error, 'error')
-    notifyError('Error creating staff')
+    notifyError('Error fetching staffs')
 
-    // return {
-    //   success: false
-    // }
-  }
-})
-
-export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async () => {
-  try {
-    const response = await axios.get('/staffs/allstaffs')
-    console.log(response, 'respone')
-
-    //notifySuccess('Staff gotten successfully')
-
-    return response
-  } catch (error) {
-    console.log(error, 'error')
-    notifyError('Error fetching staff')
-
-    // return {
-    //   success: false
-    // }
   }
 })
 
