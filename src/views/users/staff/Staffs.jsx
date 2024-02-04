@@ -30,18 +30,20 @@ import { getInitials } from 'src/@core/utils/get-initials'
 // ** Custom Components Imports
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomTextField from 'src/@core/components/mui/text-field'
+import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import PageHeader from '../component/PageHeader'
-import { formatDate } from '../../../@core/utils/format'
+import { formatDate, formatDateToReadableFormat } from '../../../@core/utils/format'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 
 
 import { useStaff } from '../../../hooks/useStaff'
 import { deleteStaff, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import CreateStaff from './CreateStaff'
 import EditStaff from './EditStaff'
+import AddStaff from './AddStaff'
+import UpdateStaff from './UpdateStaff'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -50,15 +52,11 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-// ** Vars
-const invoiceStatusObj = {
-  Sent: { color: 'secondary', icon: 'tabler:circle-check' },
-  Paid: { color: 'success', icon: 'tabler:circle-half-2' },
-  Draft: { color: 'primary', icon: 'tabler:device-floppy' },
-  'Partial Payment': { color: 'warning', icon: 'tabler:chart-pie' },
-  'Past Due': { color: 'error', icon: 'tabler:alert-circle' },
-  Downloaded: { color: 'info', icon: 'tabler:arrow-down-circle' }
-}
+const TypographyStyled = styled(Typography)(({theme})=> ({
+    fontSize: theme.typography.body1.fontSize,
+    color: `${theme.palette.primary.main} !important` 
+}))
+
 
 
 // ** renders client column
@@ -89,9 +87,20 @@ const defaultColumns = [
 //     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{index + 1}</Typography>
 //   },
 
+{
+    flex: 0.1,
+    field: 'id',
+    minWidth: 100,
+    headerName: 'ID',
+
+    renderCell: ({ row }) => (
+      <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
+    )
+  },
+
   {
     flex: 0.25,
-    field: 'name',
+    field: 'firstName',
     minWidth: 320,
     headerName: 'Staff',
     renderCell: ({ row }) => {
@@ -115,10 +124,18 @@ const defaultColumns = [
   {
     flex: 0.1,
     minWidth: 100,
-    field: 'address',
-    headerName: 'Address',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress || '--'}</Typography>
+    field: 'staffDescription',
+    headerName: 'Staff Description',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.staffDescription || '--'}</Typography>
   },
+
+//   {
+//     flex: 0.1,
+//     minWidth: 100,
+//     field: 'gender',
+//     headerName: 'Gender',
+//     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.gender || '--'}</Typography>
+//   },
   {
     flex: 0.15,
     minWidth: 140,
@@ -131,14 +148,22 @@ const defaultColumns = [
     minWidth: 140,
     field: 'status',
     headerName: 'Status',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.status || '--'}</Typography>
+
+    // renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.status || '--'}</Typography>
+    renderCell: ({ row }) => {
+        return row.status ? (
+            <CustomChip rounded size='small' skin='light' color='success' label='Active' />
+        ) : (
+          <CustomChip rounded size='small' skin='light' color='error' label='Inactive' />
+        )
+      }
   },
   {
     flex: 0.15,
     minWidth: 140,
-    field: 'dateOfBirth',
-    headerName: 'Date of Birth',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDate(row.dateOfBirth)}</Typography>
+    field: 'dateOfEmployment',
+    headerName: 'Date of Employment',
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDateToReadableFormat(row.dateOfEmployment)}</Typography>
   },
 
 ]
@@ -323,6 +348,7 @@ const Staffs = () => {
               pageSizeOptions={[10, 25, 50]}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
+              disableRowSelectionOnClick
 
             //   onRowSelectionModelChange={rows => setSelectedRows(rows)}
             />
@@ -332,13 +358,14 @@ const Staffs = () => {
 
     </DatePickerWrapper>
     {openEditDrawer && 
-    <EditStaff
+    <UpdateStaff
           open={openEditDrawer}
           closeModal={closeEditModal}
-          refetchStaff={updateFetch}
+          refetchStaffs={updateFetch}
           selectedStaff={staffToUpdate}
         />}
-    <CreateStaff open={showModal} closeModal={toggleModal} refetchStaff={updateFetch} />
+
+    <AddStaff open={showModal} closeModal={toggleModal} refetchStaffs={updateFetch}/>
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )

@@ -1,43 +1,75 @@
 export const defaultWorkInfoValues = {
-    designation: '',
-    employeeNumber: '',
-    grossSalary: Number(''),
+    qualification: '',
+    department_section: '',
+    institutionAttended: '',
+    specialization: '',
+    previousWorkExperience: '',
+    basicSalary: Number(''),
+    mealAllowance: Number(''),
+    transportAllowance: Number(''),
+    domesticAllowance: Number(''),
+    furnitureAllowance: Number(''),
+    SalaryArrears: Number(''),
+    rentAllowance: Number(''),
+
+    // others: Number(''),
     accountNumber: '',
-    rsaCompany: '',
-    rsaNumber: '',
-    departmentId: ''
+    bankName: '',
+    branch: '',
+    dateOfEmployment: ''
   }
 
   
 export const defaultPersonalValues = {
-    username: '',
     email: '',
+    lastName: '',
+    firstName: '',
+    middleName: '',
+    title: '',
+    phone: '',
+    dateOfBirth: '',
     password: '',
-    lastname: '',
-    firstname: '',
-    phone: '',
-    bloodGroup: '',
-    genotype: '',
-    allergies: '',
+    residentialAddress: '',
     maritalStatus: '',
-    address: '',
-    status: '',
-    phone: '',
+    gender: '',
+    city: '',
+    state: '',
+    lga: '',
+    religion: '',
+    staffDescription: ''
+  }
 
+  export const defaultUpdateStaffPersonalValues = {
+    email: '',
+    lastName: '',
+    firstName: '',
+    middleName: '',
+    title: '',
+    phone: '',
     dateOfBirth: '',
     residentialAddress: '',
-    branch: 
-    // additionalInfo: ''
+    maritalStatus: '',
+    gender: '',
+    city: '',
+    state: '',
+    lga: '',
+    religion: '',
+    staffDescription: ''
+  }
+
+  export const defaultMedicalValues = {
+    drugAllergies: '',
+    foodAllergies: '',
+    genotype: '',
+    bloodGroup: '',
+    previousSurgery: '',
+    healthStatus: ''
   }
 
   export const defaultNextOfKinValues = {
-    firstname: '',
-    lastname: '',
-    phone: '',
-    email: '',
-    occupation: '',
-    address: '',
-    title: '',
-    relationship: '',
-    maritalStatus: ''
+    nameOfReferee: '',
+    addressOfReferee: '',
+    nextOfKinName: '',
+    nextOfKinAddress: '',
+    emergencyPhone: '',
   }

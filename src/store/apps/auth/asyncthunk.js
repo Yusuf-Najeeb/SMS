@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { notifySuccess } from 'src/@core/components/toasts/notifySuccess'
+import { notifyError } from '../../../@core/components/toasts/notifyError'
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -12,7 +13,7 @@ export const RegisterUser = createAsyncThunk('auth/Register', async values => {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8'
       },
-      url: `${baseUrl}/auth/registersuperadmin`,
+      url: `${baseUrl}/auth/register/staff?role=super-admin`,
       data: {
         ...values
       }
@@ -36,7 +37,7 @@ export const loginUser = async values => {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8'
       },
-      url: `${baseUrl}/auth/superadminlogin`,
+      url: `${baseUrl}/auth/stafflogin`,
       data: {
         ...values
       }
@@ -54,6 +55,7 @@ export const loginUser = async values => {
       success: true
     }
   } catch (error) {
+    notifyError(error.response.data.message || 'Login failed')
     throw new Error(error.response?.data?.message || 'failed to Login')
   }
 }

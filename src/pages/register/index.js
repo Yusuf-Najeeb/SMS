@@ -150,14 +150,15 @@ const Register = () => {
     console.log(data, 'data')
     const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
 
+    const personalInformation = {...resData, dateOfBirth: formattedDate}
+
     const payload = {
-      ...resData,
-      dateOfBirth: formattedDate
+      personalInformation
     }
     try {
       const resp = await dispatch(RegisterUser(payload))
       if (resp.payload?.success) {
-        router.replace('/apps/invoice/list/')
+        router.replace('/apps/staffs')
       }
     } catch (error) {
       console.log(error)
