@@ -41,9 +41,9 @@ import DeleteDialog from '../../../@core/components/delete-dialog'
 
 import { useStaff } from '../../../hooks/useStaff'
 import { deleteStaff, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import EditStaff from './EditStaff'
 import AddStaff from './AddStaff'
 import UpdateStaff from './UpdateStaff'
+
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({

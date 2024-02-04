@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-//import checkTokenExp from 'src/@core/utils/checkTokenExp'
 import GetToken from 'src/@core/utils/getToken'
+import checkTokenExp from '../@core/utils/checkTokenExpiration'
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -9,10 +9,8 @@ axios.interceptors.request.use(
   config => {
     const accessToken = GetToken()
 
-    // config.headers['Content-Type'] = 'application/json;charset=UTF-8';
-
     if (accessToken) {
-      //checkTokenExp(accessToken)
+      checkTokenExp(accessToken)
 
       if (config.url && !config.url.includes('stafflogin') && !config.url.includes('register/staff?role')) {
         config.headers['x-access-token'] = `${accessToken}`
