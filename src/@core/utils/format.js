@@ -22,6 +22,13 @@ export const formatDate = (value, formatting = { month: 'short', day: 'numeric',
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
 
+export const formatDateToReadableFormat = (inputDate) => {
+  const options = { month: 'short', day: 'numeric', year: 'numeric' };
+  const formattedDate = new Date(inputDate).toLocaleDateString('en-US', options);
+  
+  return formattedDate;
+}
+
 // ** Returns short month of passed date
 export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
   const date = new Date(value)

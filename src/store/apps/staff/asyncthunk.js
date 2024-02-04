@@ -74,9 +74,9 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async () =
 
 
 
-export const createStaff = async (payload)=> {
+export const createStaff = async (role, payload)=> {
   try {
-    const response = await axios.post('/auth/registerteacher', payload)
+    const response = await axios.post(`/auth/register/staff?role=${role}`, payload)
 
 
     return response 
@@ -87,9 +87,9 @@ export const createStaff = async (payload)=> {
   }
 }
 
-export const updateStaff = async (payload)=> {
+export const updateStaff = async (email, payload)=> {
   try {
-    const response = await axios.patch(`/staffs/updatestaff/${payload.email}`, payload)
+    const response = await axios.patch(`/staffs/updatestaff/${email}`, payload)
 
     return response 
    

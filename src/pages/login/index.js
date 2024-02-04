@@ -44,6 +44,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -112,7 +113,7 @@ const LoginPage = () => {
     control,
     setError,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -126,7 +127,8 @@ const LoginPage = () => {
     const resp = loginUser(data)
       .then(res => {
         if (res) {
-          router.replace('/apps/invoice/list/')
+
+          router.replace('/apps/staffs')
         }
       })
       .catch(error => {
@@ -280,8 +282,8 @@ const LoginPage = () => {
                   Forgot Password?
                 </Typography>
               </Box>
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
-                Login
+              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }} disabled={isSubmitting}>
+                {isSubmitting ? <SubmitSpinnerMessage message={'Logging In'} /> : 'Login'}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'text.secondary', mr: 2 }}>New on our platform?</Typography>

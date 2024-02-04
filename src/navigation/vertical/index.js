@@ -5,7 +5,7 @@ const navigation = () => {
     },
     {
       title: 'Staffs',
-      icon: 'tabler:mail',
+      icon: 'pepicons-print:people',
       path: '/apps/staffs'
     },
 
@@ -15,17 +15,17 @@ const navigation = () => {
     //   path: '/apps/new-staff/list'
     // },
     {
-      title: 'Staff Attendance',
-      icon: 'tabler:mail',
+      title: 'Staffs Attendance',
+      icon: 'material-symbols:co-present-rounded',
       path: '/apps/staff-attendence/list'
     },
 
     {
-      sectionTitle: 'Student'
+      sectionTitle: 'Students'
     },
     {
-      title: ' Student List',
-      icon: 'tabler:mail',
+      title: ' Students',
+      icon: 'fa6-solid:people-line',
       path: '/apps/student/list'
     },
 
@@ -35,8 +35,8 @@ const navigation = () => {
     //   path: '/apps/newStudent/list'
     // },
     {
-      title: 'Student Attendence',
-      icon: 'tabler:mail',
+      title: 'Students Attendence',
+      icon: 'material-symbols:co-present-rounded',
       path: '/apps/student-attendence/list'
     },
     {
@@ -44,48 +44,48 @@ const navigation = () => {
     },
     {
       title: 'Guardians',
-      icon: 'tabler:mail',
+      icon: 'raphael:parent',
       path: '/apps/guardian'
     },
 
     {
       title: 'New Guardian',
-      icon: 'tabler:mail',
+      icon: 'raphael:parent',
       path: '/apps/newGuardian/list'
     },
     {
       sectionTitle: 'Academics '
     },
     {
-      title: 'Subjects List',
-      icon: 'tabler:mail',
+      title: 'Subjects',
+      icon: 'mdi:learn-outline',
       path: '/apps/subject-list/list'
     },
 
     {
       title: 'Tests and Exams',
-      icon: 'tabler:mail',
+      icon: 'healthicons:i-exam-multiple-choice',
       path: '/apps/tests-exams/list'
     },
 
     {
       title: 'Classrooms',
-      icon: 'tabler:mail',
+      icon: 'mdi:google-classroom',
       path: '/apps/classroom/list'
     },
     {
       title: 'Result Manager',
-      icon: 'tabler:mail',
+      icon: 'healthicons:i-exam-qualification',
       path: '/apps/result-manager/list'
     },
     {
       title: 'Library',
-      icon: 'tabler:mail',
+      icon: 'arcticons:classroom',
       path: '/apps/library/list'
     },
     {
       title: 'Exam',
-      icon: 'tabler:mail',
+      icon: 'healthicons:i-exam-multiple-choice',
       path: '/apps/exam/list'
     },
     {
@@ -93,33 +93,33 @@ const navigation = () => {
     },
     {
       title: 'Fees and Billing',
-      icon: 'tabler:mail',
+      icon: 'fa6-solid:file-invoice-dollar',
       path: '/apps/fees-billing/list'
     },
 
     {
       title: 'Expenses',
-      icon: 'tabler:mail',
+      icon: 'arcticons:day-to-day-expenses',
       path: '/apps/expense/list'
     },
 
     {
       title: 'Invoices',
-      icon: 'tabler:mail',
+      icon: 'vaadin:invoice',
       path: '/apps/invoice/list'
     },
     {
-      title: 'inventory',
-      icon: 'tabler:mail',
+      title: 'Inventory',
+      icon: 'ic:outline-inventory-2',
       path: '/apps/inventory/list'
     },
 
     {
-      sectionTitle: 'Settings '
+      sectionTitle: 'Settings'
     },
     {
-      title: 'Setting',
-      icon: 'tabler:mail',
+      title: 'Settings',
+      icon: 'tabler:settings',
       path: '/pages/wizard-examples/property-listing'
     }
 
