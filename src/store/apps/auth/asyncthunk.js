@@ -37,14 +37,14 @@ export const loginUser = async values => {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8'
       },
-      url: `${baseUrl}/auth/stafflogin`,
+      url: `${baseUrl}/auth/login/staff`,
       data: {
         ...values
       }
     })
     if (data) {
       console.log(data, 'loginData')
-      const userObject = JSON.stringify(data?.data?.admin)
+      const userObject = JSON.stringify(data?.data?.staff)
       localStorage.setItem('authToken', data?.data?.token)
       localStorage.setItem('authUser', userObject)
       notifySuccess('Login successful')

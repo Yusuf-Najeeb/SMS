@@ -30,6 +30,7 @@ import Icon from 'src/@core/components/icon'
 import StepperCustomDot from '../../forms/form-wizard/StepperCustomDot'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomTextField from 'src/@core/components/mui/text-field'
+import { CustomInput } from '../Guardian/AddGuardian'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
@@ -39,14 +40,11 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 // ** Styled Component
 import StepperWrapper from 'src/@core/styles/mui/stepper'
-import { CircularProgress, Dialog, DialogContent } from '@mui/material'
+import {  Dialog, DialogContent } from '@mui/material'
 
 import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
-
-import { CustomInput } from '../component/CreateActor'
-import { useAppDispatch } from '../../../hooks'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
@@ -318,8 +316,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
           medicalInformation
         }
 
-        console.log(payload, 'payload')
-
         createStaff(staffRole, payload).then((res)=> {
             if(res.data.success){
                 notifySuccess('Added Staff')
@@ -329,8 +325,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                 refetchStaffs()
             }
         })
-    
-    
       } 
 
   // Handle Password
@@ -644,6 +638,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                     >
                       <MenuItem value='super-admin'>Super Admin</MenuItem>
                       <MenuItem value='admin'> Admin</MenuItem>
+                      <MenuItem value='teacher'> Teacher</MenuItem>
                       <MenuItem value='librarian'>Librarian</MenuItem>
                       <MenuItem value='accountant'>Accountant</MenuItem>
                       <MenuItem value='house-master'>House Master</MenuItem>

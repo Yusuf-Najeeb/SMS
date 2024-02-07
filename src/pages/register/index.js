@@ -48,6 +48,7 @@ import useBgColor from 'src/@core/hooks/useBgColor'
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import { formatDateToYYYMMDDD } from '../../@core/utils/format'
 import { RegisterUser } from '../../store/apps/auth/asyncthunk'
+import { CustomInput } from '../../views/users/Guardian/AddGuardian'
 
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
@@ -107,18 +108,15 @@ const Register = () => {
     email: '',
     password: '',
     title: '',
-    status: '',
     phone: '',
-    identificationNumber: '',
-    dateOfBirth: '',
+    gender: '',
+    dateOfBirth:'',
+    dateOfEmployment: '',
     residentialAddress: '',
     branch: ''
   }
 
   // ** Hooks
-  // const theme = useTheme()
-  // const { settings } = useSettings()
-  // const hidden = useMediaQuery(theme.breakpoints.down('md'))
   const {
     control,
     setError,
@@ -144,21 +142,20 @@ const Register = () => {
   const imageSource = skin === 'bordered' ? 'auth-v2-register-illustration-bordered' : 'auth-v2-register-illustration'
 
   const onSubmit = async data => {
-    //const { username, password } = data
-    console.log('register')
-    const { dateOfBirth, ...resData } = data
-    console.log(data, 'data')
-    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+    const { dateOfEmployment, dateOfBirth, ...resData } = data
+    const formattedDate = formatDateToYYYMMDDD(dateOfEmployment)
+    const formattedDOB = formatDateToYYYMMDDD(dateOfBirth)
 
-    const personalInformation = {...resData, dateOfBirth: formattedDate}
+    const personalInformation = {...resData, dateOfEmployment: formattedDate, dateOfBirth: formattedDOB}
 
     const payload = {
       personalInformation
     }
+
     try {
       const resp = await dispatch(RegisterUser(payload))
       if (resp.payload?.success) {
-        router.replace('/apps/staffs')
+        router.replace('/apps/staff')
       }
     } catch (error) {
       console.log(error)
@@ -244,6 +241,7 @@ const Register = () => {
                       <CustomTextField
                         fullWidth
                         autoFocus
+                        required
                         label='First Name'
                         value={value}
                         onBlur={onBlur}
@@ -265,6 +263,7 @@ const Register = () => {
                       <CustomTextField
                         fullWidth
                         autoFocus
+                        required
                         label='Last Name'
                         value={value}
                         onBlur={onBlur}
@@ -306,6 +305,7 @@ const Register = () => {
                       <CustomTextField
                         fullWidth
                         autoFocus
+                        required
                         label='Email'
                         value={value}
                         onBlur={onBlur}
@@ -328,6 +328,7 @@ const Register = () => {
                         fullWidth
                         value={value}
                         onBlur={onBlur}
+                        required
                         label='Password'
                         onChange={onChange}
                         id='auth-login-v2-password'
@@ -370,14 +371,15 @@ const Register = () => {
                         {...(errors.title && { helperText: errors.title.message })}
                         autoFocus // Corrected placement of autoFocus prop
                       >
-                        <MenuItem value='Male'>Mr</MenuItem>
-                        <MenuItem value='Female'>Mrs</MenuItem>
-                        <MenuItem value='Female'>Miss</MenuItem>
+                        <MenuItem value='Mr'>Mr</MenuItem>
+                        <MenuItem value='Mrs'>Mrs</MenuItem>
+                        <MenuItem value='Miss'>Miss</MenuItem>
                       </CustomTextField>
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+
+                {/* <Grid item xs={12} sm={6}>
                   <Controller
                     name='status'
                     type='text'
@@ -401,7 +403,8 @@ const Register = () => {
                       </CustomTextField>
                     )}
                   />
-                </Grid>
+                </Grid> */}
+
                 <Grid item xs={12} sm={6}>
                   <Controller
                     name='phone'
@@ -424,7 +427,7 @@ const Register = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                {/* <Grid item xs={12} sm={6}>
                   <Controller
                     name='identificationNumber'
                     type='text'
@@ -444,10 +447,11 @@ const Register = () => {
                       />
                     )}
                   />
-                </Grid>
-                <Grid item xs={12} sm={6}>
+                </Grid> */}
+
+                {/* <Grid item xs={12} sm={6}>
                   <Controller
-                    name='dateOfBirth'
+                    name='dateOfEmployment'
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -458,12 +462,94 @@ const Register = () => {
                         popperPlacement='bottom-end'
                         onChange={e => onChange(e)}
                         label='Date of Birth'
-                        error={Boolean(errors.dateOfBirth)}
-                        {...(errors.dateOfBirth && { helperText: 'Date is required' })}
+                        error={Boolean(errors.dateOfEmployment)}
+                        {...(errors.dateOfEmployment && { helperText: 'Date is required' })}
                       />
                     )}
                   />
+                </Grid> */}
+
+                <Grid item xs={12} sm={6} >
+              <Controller
+                  name='dateOfEmployment'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='Enter Date of Employment'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Date of Employment'
+                          error={Boolean(errors.dateOfEmployment)}
+                          {...(errors.dateOfEmployment && { helperText: errors.dateOfEmployment.message })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                  <Controller
+                    name='gender'
+                    type='text'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <CustomTextField
+                        select
+                        fullWidth
+                        label='Gender' // Corrected placement of label prop
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder='admin'
+                        error={Boolean(errors.gender)}
+                        {...(errors.gender && { helperText: errors.gender.message })}
+                        autoFocus // Corrected placement of autoFocus prop
+                      >
+                        <MenuItem value='Male'>Male</MenuItem>
+                        <MenuItem value='Female'>Female</MenuItem>
+                      </CustomTextField>
+                    )}
+                  />
                 </Grid>
+
+                <Grid item xs={12} sm={6} >
+              <Controller
+                  name='dateOfBirth'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='Enter Date of Birth'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Date of Birth'
+                          error={Boolean(errors.dateOfBirth)}
+                          {...(errors.dateOfBirth && { helperText: errors.dateOfBirth.message })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+
+
                 <Grid item xs={12} sm={6}>
                   <Controller
                     name='residentialAddress'
@@ -478,7 +564,7 @@ const Register = () => {
                         value={value}
                         onBlur={onBlur}
                         onChange={onChange}
-                        placeholder='admin'
+                        placeholder='24, school street'
                         error={Boolean(errors.residentialAddress)}
                         {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
                       />
@@ -499,7 +585,7 @@ const Register = () => {
                         value={value}
                         onBlur={onBlur}
                         onChange={onChange}
-                        placeholder='admin'
+                        placeholder='Akwa Ibom'
                         error={Boolean(errors.branch)}
                         {...(errors.branch && { helperText: errors.branch.message })}
                       />
@@ -508,7 +594,7 @@ const Register = () => {
                 </Grid>
               </Grid>
 
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, mt: 3 }}>
+              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, mt: 6 }}>
                 Sign up
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>

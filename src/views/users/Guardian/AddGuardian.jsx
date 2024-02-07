@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from 'react'
+import { Fragment, forwardRef, useEffect, useState } from 'react'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -28,9 +28,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { createActorSchema } from 'src/@core/Formschema'
 
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
-import { notifyError } from '../../../@core/components/toasts/notifyError'
-import axios from 'axios'
-import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { createGuardian } from '../../../store/apps/guardian/asyncthunk'
+import SearchStudent from './SearchStudent'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -51,8 +50,15 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
 })
 
-const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
+const AddGuardian = ({ open, closeModal, refetchData }) => {
   const [showPassword, setShowPassword] = useState(false)
+  const [itemsArray, setItemsArray] = useState([])
+  const [openParentModal, setParentModal] = useState(false)
+
+  const toggleParentModal = ()=> {
+    closeModal()
+    setParentModal(!openParentModal)
+  }
 
   const defaultValues = {
     firstName: '',
@@ -60,11 +66,11 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
     middleName: '',
     email: '',
     password: '',
-    title: '',
     status: '',
     phone: '',
     dateOfBirth: '',
     residentialAddress: '',
+    gender: ''
   }
 
   const {
@@ -79,28 +85,25 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
     const { dateOfBirth, ...restOfData } = values
     const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
 
-    const payload = { dateOfBirth: formattedDate, ...restOfData }
+    const studentIds = itemsArray.map(item => item.id);
 
 
-    try {
-      const response = await axios.post(endpointUrl, payload)
+    const personalInformation = { dateOfBirth: formattedDate, ...restOfData, studentIds }
+    const payload = {personalInformation}
 
-
-      if (response.data.success) {
-        notifySuccess("Success!")
-        reset()
-        closeModal()
-        refetchData()
-      }
-
-    } catch (error) {
-      console.log(error, 'error')
-      notifyError('Something Went Wrong, Try again')
-    }
+    createGuardian(payload).then((response)=> {
+            if (response.data.success) {
+                reset()
+                closeModal()
+                refetchData()
+              }
+         })
 
   }
 
   return (
+
+    <Fragment> 
     <Dialog
       fullWidth
       open={open}
@@ -108,7 +111,7 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
       scroll='body'
 
       //   TransitionComponent={Transition}
-      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 650 } }}
+      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 750 } }}
     >
       <DialogContent
         sx={{
@@ -136,6 +139,7 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
                     <CustomTextField
                       fullWidth
                       label='First Name'
+                      required
                       placeholder='Enter First Name'
                       value={value}
                       onChange={onChange}
@@ -155,6 +159,7 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
                       fullWidth
                       label='Last Name'
                       placeholder='Enter Last Name'
+                      required
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.lastName)}
@@ -190,6 +195,7 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
                     <CustomTextField
                       fullWidth
                       label='Email'
+                      required
                       placeholder='Enter Email'
                       value={value}
                       onChange={onChange}
@@ -211,6 +217,7 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
                       value={value}
                       onBlur={onBlur}
                       label='Password'
+                      required
                       onChange={onChange}
                       id='auth-login-v2-password'
                       placeholder='Enter Password'
@@ -237,6 +244,31 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
 
               <Grid item xs={12} sm={6}>
                 <Controller
+                  name='gender'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      required
+                      label='Gender'
+                      onChange={onChange}
+                      id='stepper-linear-personal-gender'
+                      error={Boolean(errors.gender)}
+                      aria-describedby='stepper-linear-personal-gender-helper'
+                      {...(errors.gender && { helperText: errors.gender.message })}
+                    >
+                      <MenuItem value='Male'>Male</MenuItem>
+                      <MenuItem value='Female'>Female</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              {/* <Grid item xs={12} sm={6}>
+                <Controller
                   name='title'
                   control={control}
                   rules={{ required: true }}
@@ -259,7 +291,7 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
                     </CustomTextField>
                   )}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={6}>
                 <Controller
@@ -373,15 +405,22 @@ const CreateActor = ({ open, closeModal, refetchData, endpointUrl }) => {
             </Grid>
           </DialogContent>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button type='submit' variant='contained'>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Create'}
+         
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
+          <Button type='button' variant='outlined' onClick={toggleParentModal}>
+              Select Students
+            </Button>
+            <Button type='submit' variant='contained' disabled={isSubmitting}>
+              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Add Guardian'}
             </Button>
           </Box>
         </form>
       </DialogContent>
     </Dialog>
+    <SearchStudent itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openParentModal} closeModal={toggleParentModal} />
+    </Fragment>
   )
 }
 
-export default CreateActor
+export default AddGuardian

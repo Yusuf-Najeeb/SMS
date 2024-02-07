@@ -31,9 +31,9 @@ export const personalInfoSchema = yup.object().shape({
   residentialAddress: yup.string().required('Residential Address is required'),
   maritalStatus: yup.string().required('Marital Status is required'),
   gender: yup.string().required('Gender is required'),
-  city: yup.string().required('City of Residence is required'),
-  state: yup.string().required('State of Origin is required'),
-  lga: yup.string().required('Local Government of Origin is required'),
+  city: yup.string().required('City is required'),
+  state: yup.string().required('State is required'),
+  lga: yup.string().required('Local Government is required'),
   religion: yup.string(),
   staffDescription: yup.string().required('Description is required'),
 
@@ -152,9 +152,12 @@ export const signUpSchema = yup.object().shape({
   email: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
   title: yup.string().required('Title is required'),
-  status: yup.string().required('Status is required'),
+  gender: yup.string().required('Gender is required'),
+
+  // status: yup.string().required('Status is required'),
   phone: yup.string().typeError('Phone Number must be at least 11 Characters')
   .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  dateOfEmployment: yup.string().required('Date of Employment is required'),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('residentialAddress is required'),
   branch: yup.string().required('branch is required')
@@ -182,12 +185,14 @@ export const createActorSchema = yup.object().shape({
   middleName: yup.string().required('Middle Name is required'),
   email: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
-  title: yup.string().required('Title is required'),
+  
+  // title: yup.string().required('Title is required'),
   status: yup.string().required("Status is required"),
   phone: yup.string().typeError('Phone Number must be at least 11 Characters')
   .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('residentialAddress is required'),
+  gender: yup.string().required('Gender is required')
 })
 
 export const editActorSchema = yup.object().shape({

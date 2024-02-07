@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { Fragment, forwardRef, useEffect, useState } from 'react'
+
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -14,16 +15,21 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, MenuItem } from '@mui/material'
+
+import DatePicker from 'react-datepicker'
+
+import 'react-datepicker/dist/react-datepicker.css'
 
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { studentSignUpSchema } from 'src/@core/Formschema'
-import { fetchStaffs, deleteStaff } from '../../../store/apps/staff/asyncthunk'
-import { CreateStudents } from '../../../store/apps/Student/asyncthunk'
-import { useAppDispatch } from '../../../hooks'
+import { createActorSchema } from 'src/@core/Formschema'
+
+import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
+import { createStudent } from '../../../store/apps/Student/asyncthunk'
+import SearchParent from './SearchParent'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -40,48 +46,72 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const CreateStudent = ({ open, closeModal, refetchStudent }) => {
+export const CustomInput = forwardRef(({ ...props }, ref) => {
+  return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+})
+
+const AddStudent = ({ open, closeModal, refetchData }) => {
   const [showPassword, setShowPassword] = useState(false)
-  const dispatch = useAppDispatch()
+  const [itemsArray, setItemsArray] = useState([])
+  const [openParentModal, setParentModal] = useState(false)
+
+  const toggleParentModal = ()=> {
+    closeModal()
+    setParentModal(!openParentModal)
+  }
+
   const defaultValues = {
     firstName: '',
     lastName: '',
     middleName: '',
     email: '',
     password: '',
-    title: '',
     status: '',
     phone: '',
-
     dateOfBirth: '',
     residentialAddress: '',
-    branch: ''
+    gender: ''
   }
+
   const {
     control,
     setValue,
     reset,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(studentSignUpSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createActorSchema) })
 
-  const onSubmit = async data => {
-    console.log(data, 'data')
-    // const res = await dispatch(CreateStudents(data))
+  const onSubmit = async values => {
+    const { dateOfBirth, ...restOfData } = values
+    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
 
-    // reset()
-    // closeModal()
-    // refetchStudent()
+    const parentIds = itemsArray.map(item => item.id);
+
+
+    const personalInformation = { dateOfBirth: formattedDate, ...restOfData, parentIds }
+    const payload = {personalInformation}
+
+         createStudent(payload).then((response)=> {
+            if (response.data.success) {
+                reset()
+                closeModal()
+                refetchData()
+              }
+         })
+
   }
 
   return (
+
+    <Fragment> 
     <Dialog
       fullWidth
       open={open}
       maxWidth='md'
       scroll='body'
+
       //   TransitionComponent={Transition}
-      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 650 } }}
+      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 750 } }}
     >
       <DialogContent
         sx={{
@@ -109,7 +139,8 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                     <CustomTextField
                       fullWidth
                       label='First Name'
-                      placeholder='Enter First name'
+                      required
+                      placeholder='Enter First Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.firstName)}
@@ -127,7 +158,8 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                     <CustomTextField
                       fullWidth
                       label='Last Name'
-                      placeholder='Enter a Last name'
+                      placeholder='Enter Last Name'
+                      required
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.lastName)}
@@ -145,7 +177,7 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                     <CustomTextField
                       fullWidth
                       label='Middle Name'
-                      placeholder='Enter a middle name'
+                      placeholder='Enter Middle Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.middleName)}
@@ -163,6 +195,7 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                     <CustomTextField
                       fullWidth
                       label='Email'
+                      required
                       placeholder='Enter Email'
                       value={value}
                       onChange={onChange}
@@ -184,8 +217,10 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                       value={value}
                       onBlur={onBlur}
                       label='Password'
+                      required
                       onChange={onChange}
                       id='auth-login-v2-password'
+                      placeholder='Enter Password'
                       error={Boolean(errors.password)}
                       {...(errors.password && { helperText: errors.password.message })}
                       type={showPassword ? 'text' : 'password'}
@@ -206,42 +241,83 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
+
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='gender'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      required
+                      label='Gender'
+                      onChange={onChange}
+                      id='stepper-linear-personal-gender'
+                      error={Boolean(errors.gender)}
+                      aria-describedby='stepper-linear-personal-gender-helper'
+                      {...(errors.gender && { helperText: errors.gender.message })}
+                    >
+                      <MenuItem value='Male'>Male</MenuItem>
+                      <MenuItem value='Female'>Female</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              {/* <Grid item xs={12} sm={6}>
                 <Controller
                   name='title'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
+                      select
                       fullWidth
-                      label='Title'
-                      placeholder='Enter Title'
                       value={value}
+                      label='Title'
                       onChange={onChange}
+                      id='stepper-linear-title'
                       error={Boolean(errors.title)}
-                      {...(errors.title && { helperText: 'Title  is required ' })}
-                    />
+                      aria-describedby='stepper-linear-title-helper'
+                      {...(errors.title && { helperText: 'Title is required' })}
+                    >
+                      <MenuItem value='Mr'>Mr</MenuItem>
+                      <MenuItem value='Mrs'>Mrs</MenuItem>
+                      <MenuItem value='Miss'>Miss</MenuItem>
+                      <MenuItem value='Master'>Master</MenuItem>
+                    </CustomTextField>
                   )}
                 />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6}>
+              </Grid> */}
+
+              <Grid item xs={12} sm={6}>
                 <Controller
                   name='status'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
+                      select
                       fullWidth
-                      label='Status'
-                      placeholder='Enter Status'
                       value={value}
+                      label='Marital Status'
                       onChange={onChange}
+                      id='stepper-linear-status'
                       error={Boolean(errors.status)}
-                      {...(errors.status && { helperText: 'Status is required ' })}
-                    />
+                      aria-describedby='stepper-linear-status-helper'
+                      {...(errors.status && { helperText: 'Status is required' })}
+                    >
+                      <MenuItem value='Single'>Single</MenuItem>
+                      <MenuItem value='Married'>Married</MenuItem>
+                      <MenuItem value='Divorced'>Divorced</MenuItem>
+                    </CustomTextField>
                   )}
                 />
               </Grid>
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='phone'
@@ -251,15 +327,34 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                     <CustomTextField
                       fullWidth
                       label='Phone Number'
-                      placeholder='Enter Phone'
+                      placeholder='Enter Phone Number'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.phone)}
-                      {...(errors.phone && { helperText: 'Phone number is required ' })}
+                      {...(errors.phone && { helperText: errors.phone.message })}
                     />
                   )}
                 />
               </Grid>
+
+              {/* <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='identificationNumber'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Identification Number'
+                      placeholder='Enter Identification Number'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.identificationNumber)}
+                      {...(errors.identificationNumber && { helperText: 'Identification number is required ' })}
+                    />
+                  )}
+                />
+              </Grid> */}
 
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
@@ -267,18 +362,27 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Date of birth'
-                      placeholder='Enter date of birth'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.dateOfBirth)}
-                      {...(errors.dateOfBirth && { helperText: 'Date of birth is required ' })}
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='Enter Date of Birth'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Date of Birth'
+                          error={Boolean(errors.dateOfBirth)}
+                          {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
+                        />
+                      }
                     />
                   )}
                 />
               </Grid>
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='residentialAddress'
@@ -288,7 +392,7 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                     <CustomTextField
                       fullWidth
                       label='Residential Address'
-                      placeholder='Enter Branch'
+                      placeholder='Enter Address'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.residentialAddress)}
@@ -297,36 +401,26 @@ const CreateStudent = ({ open, closeModal, refetchStudent }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='branch'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Branch'
-                      placeholder='Enter Branch'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.branch)}
-                      {...(errors.branch && { helperText: ' branch is required ' })}
-                    />
-                  )}
-                />
-              </Grid>
+              
             </Grid>
           </DialogContent>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button type='submit' variant='contained'>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Create'}
+         
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
+          <Button type='button' variant='outlined' onClick={toggleParentModal}>
+              Select Parent
+            </Button>
+            <Button type='submit' variant='contained' disabled={isSubmitting || itemsArray.length == 0}>
+              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Add Student'}
             </Button>
           </Box>
         </form>
       </DialogContent>
     </Dialog>
+    <SearchParent itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openParentModal} closeModal={toggleParentModal} />
+    </Fragment>
   )
 }
 
-export default CreateStudent
+export default AddStudent

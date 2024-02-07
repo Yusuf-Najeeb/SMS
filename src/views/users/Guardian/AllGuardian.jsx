@@ -26,7 +26,6 @@ import DatePicker from 'react-datepicker'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchData, deleteInvoice } from 'src/store/apps/invoice'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -34,8 +33,6 @@ import { getInitials } from 'src/@core/utils/get-initials'
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-import OptionsMenu from 'src/@core/components/option-menu'
-import TableHeader from 'src/views/apps/invoice/list/TableHeader'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Styled Components
@@ -43,11 +40,13 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useAppSelector } from '../../../hooks'
 import { deleteGuardian, fetchGuardian } from '../../../store/apps/guardian/asyncthunk'
 import PageHeader from '../component/PageHeader'
-import CreateActor from '../component/CreateActor'
-import { formatDate, formatMonthYear, formatMonthYearr } from '../../../@core/utils/format'
+import { formatDate } from '../../../@core/utils/format'
 import { indexof } from 'stylis'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import EditActor from '../component/EditActor'
+import { searchStudent } from '../../../store/apps/Student/asyncthunk'
+import AddGuardian from './AddGuardian'
+import Stats from '../component/Stats'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -76,7 +75,9 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
-        color={row?.title.length > 2 ? 'primary' : 'secondary'}
+
+        // color={row?.title.length > 2 ? 'primary' : 'secondary'}
+        color='primary'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
         {getInitials(initials || 'John Doe')}
@@ -101,14 +102,14 @@ const defaultColumns = [
     minWidth: 320,
     headerName: 'Guardian',
     renderCell: ({ row }) => {
-      const { title, firstName, lastName, email, } = row
+      const { firstName, lastName, email, } = row
 
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {renderClient(row)}
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-              {`${title}. ${firstName} ${lastName}`}
+              {`${firstName} ${lastName}`}
             </Typography>
             <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
               {email}
@@ -135,9 +136,9 @@ const defaultColumns = [
   {
     flex: 0.15,
     minWidth: 140,
-    field: 'status',
-    headerName: 'Marital Status',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.status}</Typography>
+    field: 'gender',
+    headerName: 'Gender',
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.gender}</Typography>
   },
   {
     flex: 0.15,
@@ -217,6 +218,7 @@ const AllGuardian = () => {
   const [endDateRange, setEndDateRange] = useState(null)
   const [selectedRows, setSelectedRows] = useState([])
   const [startDateRange, setStartDateRange] = useState(null)
+  const [page, setPage] = useState(0)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
@@ -225,6 +227,7 @@ const AllGuardian = () => {
   const [selectedGuardian, setSelectedGuardian] = useState()
   const [guardianToUpdate, setGuardianToUpdate] = useState(null)
   const [email, setGuardianEmail] = useState(null)
+  const [key, setKey] = useState('')
 
   
 
@@ -290,17 +293,15 @@ const AllGuardian = () => {
   }
 
   useEffect(() => {
-    dispatch(
-      fetchData({
-        dates,
-        q: value,
-        status: statusValue
-      })
-    )
-  }, [dispatch, statusValue, value, dates])
+  searchStudent('key').then((res)=>{
+    console.log(res, 'res')
+  })
+
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(()=>{
-    dispatch(fetchGuardian())
+    dispatch(fetchGuardian({page: page +1, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[refetch])
@@ -363,6 +364,7 @@ const AllGuardian = () => {
   return (
     <Fragment>
     <DatePickerWrapper>
+        <Stats data={GuardianData} statTitle='Guardian'/>
 
         <PageHeader  action="Add Guardian" toggle={toggleModal}/>
       <Grid container spacing={6}>
@@ -372,7 +374,7 @@ const AllGuardian = () => {
               autoHeight
               pagination
               rowHeight={62}
-              rows={GuardianData?.length ? GuardianData : []}
+              rows={GuardianData?.result?.length ? GuardianData?.result : []}
               columns={columns}
 
             //   checkboxSelection
@@ -390,7 +392,7 @@ const AllGuardian = () => {
     </DatePickerWrapper>
 
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
-    <CreateActor open={showModal} closeModal={toggleModal} refetchData={updateFetch} endpointUrl={`auth/registerparent`} />
+    <AddGuardian open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
     {openEditDrawer && <EditActor open={openEditDrawer} selectedActor={guardianToUpdate} endpointUrl={`parents/updateparent/${email}`} refetchData={updateFetch} closeModal={closeEditModal}/>}
     </Fragment>
   )

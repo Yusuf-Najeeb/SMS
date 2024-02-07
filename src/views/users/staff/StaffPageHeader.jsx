@@ -37,15 +37,17 @@ const PageHeader = ({ toggle, action, handleFilter }) => {
      
 
 
-    <Box sx={{ '& > :not(style)': { m: 1 } }}>
+    <Box sx={{ '& > :not(style)': { marginTop: 5 } }}>
       <FormControl variant="standard">
         <Input
+        sx={{padding: '2px'}}
         onBlur={e => handleFilter(e.target.value)}
         placeholder='Search Staff'
           id="input-with-icon-adornment"
-          startAdornment={
+          
+          endAdornment={
             <InputAdornment position="start">
-              <Icon icon='fluent:people-search-20-filled' />
+              <Icon icon='el:search-alt' />
             </InputAdornment>
           }
         />
