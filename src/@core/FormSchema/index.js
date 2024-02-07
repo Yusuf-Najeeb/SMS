@@ -242,3 +242,17 @@ export const editStaffSchema = yup.object().shape({
   residentialAddress: yup.string().required('residentialAddress is required'),
   branch: yup.string().required('branch is required')
 })
+
+export const incomeAndExpenditureSchema = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  amount: yup.number().typeError('Amount must be a number'),
+  amountPaid: yup.number().typeError('Amount Paid must be a number'),
+  categoryId: yup.string().required('Category is required'),
+  userId: yup.string(),
+  staffId: yup.string(),
+})
+
+export const categorySchema = yup.object().shape({
+  name: yup.string().required('Category Name is required'),
+ 
+})

@@ -21,7 +21,7 @@ import Icon from 'src/@core/components/icon'
 import format from 'date-fns/format'
 
 // ** Store & Actions Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -32,15 +32,13 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { useAppSelector } from '../../../hooks'
-import { deleteGuardian, fetchGuardian } from '../../../store/apps/guardian/asyncthunk'
+import { deleteStudent } from '../../../store/apps/Student/asyncthunk'
+import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
+import { fetchIncome } from '../../../store/apps/income/asyncthunk'
 import PageHeader from '../component/PageHeader'
-import { formatDate } from '../../../@core/utils/format'
-import DeleteDialog from '../../../@core/components/delete-dialog'
-import EditActor from '../component/EditActor'
-import AddGuardian from './AddGuardian'
-import Stats from '../component/Stats'
-import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
+import CreateCategory from '../component/CreateCategory'
+import { useExpenditureCategory } from '../../../hooks/useExpenditureCategory'
+import { fetchExpenditureCategory } from '../../../store/apps/expenditureCategory/asyncthunk'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -55,7 +53,6 @@ const TypographyStyled = styled(Typography)(({theme})=> ({
 }))
 
 
-
 // ** renders client column
 const renderClient = row => {
     const initials = `${row.firstName} ${row.lastName}`
@@ -65,9 +62,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
-
-        // color={row?.title.length > 2 ? 'primary' : 'secondary'}
-        color='primary'
+        color='secondary'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
         {getInitials(initials || 'John Doe')}
@@ -78,69 +73,29 @@ const renderClient = row => {
 
 const defaultColumns = [
 
-
-{
-    flex: 0.1,
-    field: 'id',
-    minWidth: 100,
-    headerName: 'ID',
-
-    renderCell: ({ row }) => (
-      <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
-    )
-  },
+    {
+        field: 'id' , 
+        headerName: 'S/N', 
+        filterable: false,
+        renderCell:(index) => <Typography component={TypographyStyled}> {index.api.getRowIndexRelativeToVisibleRows(index.row.id) + 1} </Typography>
+    },
 
   {
-    flex: 0.25,
+    flex: 0.1,
+    minWidth: 100,
     field: 'name',
-    minWidth: 320,
-    headerName: 'Guardian',
-    renderCell: ({ row }) => {
-      const { firstName, lastName, email, } = row
-
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {renderClient(row)}
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-              {`${firstName} ${lastName}`}
-            </Typography>
-            <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
-              {email}
-            </Typography>
-          </Box>
-        </Box>
-      )
-    }
+    headerName: 'Category Name',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.name.toUpperCase() || '--'}</Typography>
   },
+
   {
     flex: 0.1,
     minWidth: 100,
-    field: 'address',
-    headerName: 'Address',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress || '--'}</Typography>
+    field: 'type',
+    headerName: 'Category Type',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.type.toUpperCase() || '--'}</Typography>
   },
-  {
-    flex: 0.15,
-    minWidth: 140,
-    field: 'phone',
-    headerName: 'Phone Number',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
-  },
-  {
-    flex: 0.15,
-    minWidth: 140,
-    field: 'gender',
-    headerName: 'Gender',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.gender}</Typography>
-  },
-  {
-    flex: 0.15,
-    minWidth: 140,
-    field: 'dateOfBirth',
-    headerName: 'Date of Birth',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDate(row.dateOfBirth)}</Typography>
-  },
+
 
 //   {
 //     flex: 0.1,
@@ -204,31 +159,26 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 /* eslint-enable */
-const AllGuardian = () => {
+const IncomeCategory = () => {
   // ** State
-  const [dates, setDates] = useState([])
-  const [value, setValue] = useState('')
-  const [statusValue, setStatusValue] = useState('')
-  const [endDateRange, setEndDateRange] = useState(null)
-  const [selectedRows, setSelectedRows] = useState([])
-  const [startDateRange, setStartDateRange] = useState(null)
   const [page, setPage] = useState(0)
+  const [key, setKey] = useState('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
-  const [selectedGuardian, setSelectedGuardian] = useState()
-  const [guardianToUpdate, setGuardianToUpdate] = useState(null)
+  const [selectedStudent, setSelectedStudent] = useState()
+  const [studentToUpdate, setstudentToUpdate] = useState(null)
   const [email, setGuardianEmail] = useState(null)
-  const [key, setKey] = useState('')
 
   
 
   // ** Hooks
   const dispatch = useDispatch()
 
-  const GuardianData = useAppSelector(store => store.guardian.GuardianData)
+  const [ExpenditureCategoryData] = useExpenditureCategory()
+
 
 
   const toggleModal = ()=>{
@@ -239,19 +189,19 @@ const AllGuardian = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedGuardian(value?.id)
+    setSelectedStudent(value?.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedGuardian(null)
+    setSelectedStudent(null)
   }
 
   const ondeleteClick = async () => {
-    deleteGuardian(selectedGuardian).then((res)=>{
+    deleteStudent(selectedStudent).then((res)=>{
 
         if (res.status) {
-            dispatch(fetchGuardian({page: 1, key}))
+            dispatch(fetchStudents({page: 1, key}))
           doCancelDelete()
         }
     })
@@ -260,28 +210,24 @@ const AllGuardian = () => {
 
   const setGuardianToEdit = (value) => {
     setEditDrawer(true)
-    setGuardianToUpdate(value)
+    setstudentToUpdate(value)
     setGuardianEmail(value?.email)
   }
 
   const closeEditModal = ()=> setEditDrawer(false)
 
 
-  const handleOnChangeRange = dates => {
-    const [start, end] = dates
-    if (start !== null && end !== null) {
-      setDates(dates)
-    }
-    setStartDateRange(start)
-    setEndDateRange(end)
-  }
-
-
   useEffect(()=>{
-    dispatch(fetchGuardian({page: page +1, key}))
+    dispatch(fetchIncome({page: page + 1, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[refetch, page, key])
+
+  useEffect(()=> {
+    dispatch(fetchExpenditureCategory({page: page + 1}))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, refetch])
 
   const columns = [
     ...defaultColumns,
@@ -293,12 +239,12 @@ const AllGuardian = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* <Tooltip title='Edit Guardian'>
+            {/* <Tooltip title='Edit Income'>
              <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
             <Icon icon='tabler:edit' />
             </IconButton>
             </Tooltip> */}
-          <Tooltip title='Delete Guardian'>
+          <Tooltip title='Delete Income'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
             </IconButton>
@@ -341,9 +287,12 @@ const AllGuardian = () => {
   return (
     <Fragment>
     <DatePickerWrapper>
-        <Stats data={GuardianData} statTitle='Guardian'/>
 
-        <PageHeaderWithSearch searchPlaceholder={'Search Guardian'} action="Add Guardian" toggle={toggleModal} handleFilter={setKey}/>
+    {/* <Stats data={IncomeData} statTitle={'Students'}/> */}
+    <PageHeader toggle={toggleModal} action={'Create Category'}/>
+
+
+        {/* <PageHeaderWithSearch searchPlaceholder={'Search Income'} action="Add Income" toggle={toggleModal} handleFilter={setKey}/> */}
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Card>
@@ -351,8 +300,10 @@ const AllGuardian = () => {
               autoHeight
               pagination
               rowHeight={62}
-              rows={GuardianData?.result?.length ? GuardianData?.result : []}
+              rows={ExpenditureCategoryData?.length ? ExpenditureCategoryData : []}
               columns={columns}
+
+            //   disableRowSelectionOnClick
               pageSizeOptions={[10, 25, 50]}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
@@ -364,11 +315,12 @@ const AllGuardian = () => {
 
     </DatePickerWrapper>
 
-    <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
-    <AddGuardian open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
-    {openEditDrawer && <EditActor open={openEditDrawer} selectedActor={guardianToUpdate} endpointUrl={`parents/updateparent/${email}`} refetchData={updateFetch} closeModal={closeEditModal}/>}
+    {/* <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
+
+    <CreateCategory open={showModal} closeModal={toggleModal} fetchData={updateFetch} type={'expenditure'} />
+   
     </Fragment>
   )
 }
 
-export default AllGuardian
+export default IncomeCategory

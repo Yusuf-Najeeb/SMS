@@ -12,6 +12,10 @@ import staff from '../../src/store/apps/staff'
 import student from '../../src/store/apps/Student'
 import auth from   'src/store/apps/auth'
 import guardian from 'src/store/apps/guardian'
+import income from 'src/store/apps/income'
+import incomeCategory from 'src/store/apps/incomeCategory'
+import expenditure from 'src/store/apps/expenditure'
+import expenditureCategory from 'src/store/apps/expenditureCategory'
 
 export const store = configureStore({
   reducer: {
@@ -24,7 +28,11 @@ export const store = configureStore({
     staff,
     student,
     auth,
-    guardian
+    guardian,
+    income,
+    incomeCategory,
+    expenditure,
+    expenditureCategory
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
