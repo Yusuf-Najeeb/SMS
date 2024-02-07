@@ -25,7 +25,7 @@ import { notifyError } from '../../../@core/components/toasts/notifyError'
 import { signUpSchema } from 'src/@core/Formschema'
 import { useAppDispatch } from '../../../hooks'
 import InputAdornment from '@mui/material/InputAdornment'
-import DeleteDialog from '../../../@core/components/delete-dialog'
+
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
   right: 0,
@@ -100,6 +100,7 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
       open={open}
       maxWidth='md'
       scroll='body'
+
       //   TransitionComponent={Transition}
       sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 600 } }}
     >

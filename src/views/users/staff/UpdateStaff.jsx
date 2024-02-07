@@ -45,7 +45,6 @@ import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { CustomInput } from '../component/CreateActor'
 import { useAppDispatch } from '../../../hooks'
 
 // ** Third Party Imports
@@ -78,6 +77,7 @@ import { steps } from '../../../@core/FormSchema/utils'
 
 
 import {  updateStaff } from '../../../store/apps/staff/asyncthunk'
+import { CustomInput } from '../Guardian/AddGuardian'
 
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({

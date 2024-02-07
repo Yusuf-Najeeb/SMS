@@ -1,9 +1,8 @@
-//import RolesTable from '../../../views/users/roles/AllRoles'
-//import StaffTable from '../../../../views/users/St/allStaff'
-import StudentTable from '../../../../views/users/Student/AllStudent'
+
+import AllStudents from '../../../../views/users/Student/Students'
 
 const StaffHome = () => {
-  return <StudentTable />
+  return <AllStudents />
 }
 
 export default StaffHome

@@ -10,8 +10,11 @@ import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
+import MenuItem from '@mui/material/MenuItem'
+import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import CardContent from '@mui/material/CardContent'
 import { DataGrid } from '@mui/x-data-grid'
 
 // ** Icon Imports
@@ -19,6 +22,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Third Party Imports
 import format from 'date-fns/format'
+import DatePicker from 'react-datepicker'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,24 +31,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Custom Components Imports
-import CustomAvatar from 'src/@core/components/mui/avatar'
-import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomChip from 'src/@core/components/mui/chip'
+import CustomAvatar from 'src/@core/components/mui/avatar'
+import OptionsMenu from 'src/@core/components/option-menu'
+import TableHeader from 'src/views/apps/invoice/list/TableHeader'
+import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import PageHeader from './StaffPageHeader'
-import { formatDateToReadableFormat } from '../../../@core/utils/format'
+import { useAppSelector } from '../../../hooks'
+import { deleteGuardian, fetchGuardian } from '../../../store/apps/guardian/asyncthunk'
+import PageHeader from '../component/PageHeader'
+import { formatDate, formatMonthYear, formatMonthYearr } from '../../../@core/utils/format'
 import DeleteDialog from '../../../@core/components/delete-dialog'
-
-
-import { useStaff } from '../../../hooks/useStaff'
-import { deleteStaff, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import AddStaff from './AddStaff'
-import UpdateStaff from './UpdateStaff'
-import ViewStaff from './ViewStaff'
+import EditActor from '../component/EditActor'
+import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
+import { useStudent } from '../../../hooks/useStudent'
+import AddStudent from './AddStudent'
 import Stats from '../component/Stats'
-
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -53,11 +57,15 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-const TypographyStyled = styled(Typography)(({theme})=> ({
-    fontSize: theme.typography.body1.fontSize,
-    color: `${theme.palette.primary.main} !important` 
-}))
-
+// ** Vars
+const invoiceStatusObj = {
+  Sent: { color: 'secondary', icon: 'tabler:circle-check' },
+  Paid: { color: 'success', icon: 'tabler:circle-half-2' },
+  Draft: { color: 'primary', icon: 'tabler:device-floppy' },
+  'Partial Payment': { color: 'warning', icon: 'tabler:chart-pie' },
+  'Past Due': { color: 'error', icon: 'tabler:alert-circle' },
+  Downloaded: { color: 'info', icon: 'tabler:arrow-down-circle' }
+}
 
 
 // ** renders client column
@@ -69,7 +77,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
-        color={row?.title.length > 2 ? 'primary' : 'secondary'}
+        color='secondary'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
         {getInitials(initials || 'John Doe')}
@@ -88,31 +96,20 @@ const defaultColumns = [
 //     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{index + 1}</Typography>
 //   },
 
-{
-    flex: 0.1,
-    field: 'id',
-    minWidth: 100,
-    headerName: 'ID',
-
-    renderCell: ({ row }) => (
-      <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
-    )
-  },
-
   {
     flex: 0.25,
-    field: 'firstName',
+    field: 'name',
     minWidth: 320,
-    headerName: 'Staff',
+    headerName: 'Student',
     renderCell: ({ row }) => {
-      const { title, firstName, lastName, email, } = row
+      const {  firstName, lastName, email, } = row
 
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {renderClient(row)}
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-              {`${title}. ${firstName} ${lastName}`}
+              {`${firstName} ${lastName}`}
             </Typography>
             <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
               {email}
@@ -125,48 +122,81 @@ const defaultColumns = [
   {
     flex: 0.1,
     minWidth: 100,
-    field: 'staffDescription',
-    headerName: 'Staff Description',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.staffDescription || '--'}</Typography>
+    field: 'address',
+    headerName: 'Address',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress}</Typography>
   },
-
-//   {
-//     flex: 0.1,
-//     minWidth: 100,
-//     field: 'gender',
-//     headerName: 'Gender',
-//     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.gender || '--'}</Typography>
-//   },
   {
     flex: 0.15,
     minWidth: 140,
     field: 'phone',
     headerName: 'Phone Number',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone}</Typography>
   },
   {
     flex: 0.15,
     minWidth: 140,
-    field: 'status',
-    headerName: 'Status',
-
-    // renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.status || '--'}</Typography>
-    renderCell: ({ row }) => {
-        return row.status ? (
-            <CustomChip rounded size='small' skin='light' color='success' label='Active' />
-        ) : (
-          <CustomChip rounded size='small' skin='light' color='error' label='Inactive' />
-        )
-      }
+    field: 'gender',
+    headerName: 'Gender',
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.gender}</Typography>
   },
   {
     flex: 0.15,
     minWidth: 140,
-    field: 'dateOfEmployment',
-    headerName: 'Date of Employment',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDateToReadableFormat(row.dateOfEmployment)}</Typography>
+    field: 'dateOfBirth',
+    headerName: 'Date of Birth',
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDate(row.dateOfBirth)}</Typography>
   },
 
+//   {
+//     flex: 0.1,
+//     minWidth: 100,
+//     field: 'balance',
+//     headerName: 'Balance',
+//     renderCell: ({ row }) => {
+//       return row.balance !== 0 ? (
+//         <Typography sx={{ color: 'text.secondary' }}>{row.balance}</Typography>
+//       ) : (
+//         <CustomChip rounded size='small' skin='light' color='success' label='Paid' />
+//       )
+//     }
+//   },
+//   {
+//     flex: 0.1,
+//     minWidth: 80,
+//     field: 'invoiceStatus',
+//     renderHeader: () => <Icon icon='tabler:trending-up' />,
+//     renderCell: ({ row }) => {
+//       const { dueDate, balance, invoiceStatus } = row
+//       const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
+
+//       return (
+//         <Tooltip
+//           title={
+//             <div>
+//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+//                 {invoiceStatus}
+//               </Typography>
+//               <br />
+//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+//                 Balance:
+//               </Typography>{' '}
+//               {balance}
+//               <br />
+//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+//                 Due Date:
+//               </Typography>{' '}
+//               {dueDate}
+//             </div>
+//           }
+//         >
+//           <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
+//             <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
+//           </CustomAvatar>
+//         </Tooltip>
+//       )
+//     }
+//   }
 ]
 /* eslint-disable */
 const CustomInput = forwardRef((props, ref) => {
@@ -180,8 +210,7 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 /* eslint-enable */
-const Staffs = () => {
-
+const AllStudents = () => {
   // ** State
   const [page, setPage] = useState(0)
   const [key, setKey] = useState('')
@@ -190,21 +219,20 @@ const Staffs = () => {
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
-  const [selectedStaff, setSelectedStaff] = useState()
-  const [staffToUpdate, setStaffToUpdate] = useState(null)
-  const [openViewDrawer, setViewDrawer] = useState(false)
-  const [staffInView, setStaffInView] = useState(null)
-
-
-  const [StaffData, loading, paging] = useStaff()
+  const [selectedGuardian, setSelectedGuardian] = useState()
+  const [guardianToUpdate, setGuardianToUpdate] = useState(null)
+  const [email, setGuardianEmail] = useState(null)
 
   
 
   // ** Hooks
   const dispatch = useDispatch()
-  console.log(StaffData, 'staffs')
+
+  const [StudentData, loading, paging] = useStudent()
 
   // const GuardianData = useSelector(state => state.guardian)
+
+  const GuardianData = useAppSelector(store => store.guardian.GuardianData)
 
 
   const toggleModal = ()=>{
@@ -215,45 +243,56 @@ const Staffs = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedStaff(value?.email)
+    setSelectedGuardian(value?.email)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedStaff(null)
+    setSelectedGuardian(null)
   }
 
   const ondeleteClick = async () => {
-    deleteStaff(selectedStaff).then((res)=>{
+    deleteGuardian(selectedGuardian).then((res)=>{
 
         if (res.status) {
-          dispatch(fetchStaffs())
+            dispatch(fetchGuardian())
           doCancelDelete()
         }
     })
    
   }
 
-  const setStaffToEdit = (value) => {
+  const setGuardianToEdit = (value) => {
     setEditDrawer(true)
-    setStaffToUpdate(value)
+    setGuardianToUpdate(value)
+    setGuardianEmail(value?.email)
   }
 
   const closeEditModal = ()=> setEditDrawer(false)
 
-  const setStaffToView = (value) => {
-    setViewDrawer(true)
-    setStaffInView(value)
+  const handleFilter = val => {
+    setValue(val)
   }
 
-  const closeViewModal = ()=> setViewDrawer(false)
+  const handleStatusValue = e => {
+    setStatusValue(e.target.value)
+  }
 
-  useEffect(() => {
-    dispatch(fetchStaffs({page: page + 1, key}))
+  const handleOnChangeRange = dates => {
+    const [start, end] = dates
+    if (start !== null && end !== null) {
+      setDates(dates)
+    }
+    setStartDateRange(start)
+    setEndDateRange(end)
+  }
+
+
+  useEffect(()=>{
+    dispatch(fetchStudents({page: page + 1, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, key, refetch])
-
+  },[refetch])
 
   const columns = [
     ...defaultColumns,
@@ -265,20 +304,12 @@ const Staffs = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-             <Tooltip title='View Staff'>
-            <IconButton
-              size='small'
-              onClick={()=> setStaffToView(row)}
-            >
-              <Icon icon='tabler:eye' />
-            </IconButton>
-          </Tooltip>
-            <Tooltip title='Edit Staff'>
-             <IconButton size='small' onClick={() => setStaffToEdit(row)}>
+            <Tooltip title='Edit Student'>
+             <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
             <Icon icon='tabler:edit' />
             </IconButton>
             </Tooltip>
-          <Tooltip title='Delete Staff'>
+          <Tooltip title='Delete Student'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
             </IconButton>
@@ -321,10 +352,8 @@ const Staffs = () => {
   return (
     <Fragment>
     <DatePickerWrapper>
-
-        <Stats data={StaffData} statTitle={'Staff'}/>
-
-        <PageHeader  action="Add Staff" toggle={toggleModal} handleFilter={setKey}/>
+    <Stats data={StudentData} statTitle={'Students'}/>
+        <PageHeader  action="Add Student" toggle={toggleModal}/>
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Card>
@@ -332,36 +361,28 @@ const Staffs = () => {
               autoHeight
               pagination
               rowHeight={62}
-              rows={StaffData?.result?.length ? StaffData?.result : []}
+              rows={StudentData?.result?.length ? StudentData?.result : []}
               columns={columns}
+
+            //   checkboxSelection
+
+            //   disableRowSelectionOnClick
               pageSizeOptions={[10, 25, 50]}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
-              disableRowSelectionOnClick
+              onRowSelectionModelChange={rows => setSelectedRows(rows)}
             />
           </Card>
         </Grid>
       </Grid>
 
     </DatePickerWrapper>
-    {openEditDrawer && 
-    <UpdateStaff
-          open={openEditDrawer}
-          closeModal={closeEditModal}
-          refetchStaffs={updateFetch}
-          selectedStaff={staffToUpdate}
-        />}
-        {openViewDrawer && 
-    <ViewStaff
-          open={openViewDrawer}
-          closeCanvas={closeViewModal}
-          staffUser={staffInView}
-        />}
 
-    <AddStaff open={showModal} closeModal={toggleModal} refetchStaffs={updateFetch}/>
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+    <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  />
+    {openEditDrawer && <EditActor open={openEditDrawer} selectedActor={guardianToUpdate} endpointUrl={`parents/updateparent/${email}`} refetchData={updateFetch} closeModal={closeEditModal}/>}
     </Fragment>
   )
 }
 
-export default Staffs
+export default AllStudents

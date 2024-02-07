@@ -23,7 +23,7 @@ export const StudentsSlice = createSlice({
     })
     builder.addCase(fetchStudents.fulfilled, (state, action) => {
       state.loading = false
-      state.StaffData = action?.payload?.data?.data
+      state.StudentData = action?.payload?.data?.data
       state.paging = action?.payload?.data?.paging
     })
     builder.addCase(fetchStudents.rejected, state => {

@@ -12,7 +12,7 @@ import Icon from 'src/@core/components/icon'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
 
-export const IncomeSummaryStats = (props) => {
+export const SummaryStats = (props) => {
   // ** Props
   const { sx, icon, stats, iconSize = 24, avatarSize = 30, title, avatarColor = 'primary' } = props
 
@@ -33,21 +33,24 @@ export const IncomeSummaryStats = (props) => {
   )
 }
 
-const StaffsStats = ({staffData}) => {
+const Stats = ({data, statTitle}) => {
 
 
   return (
     <Grid item xs={12}>
       <Grid container spacing={6}>
-        <Grid item xs={12} md={3} sm={6}>
-          <IncomeSummaryStats title='Total Active Staffs' stats={staffData?.totalActive}  icon='mdi:person-check' />
+      <Grid item xs={12} md={3} sm={6}>
+          <SummaryStats title={`Total ${statTitle}`} stats={data?.totalActive ? data?.totalActive + data?.totalInActive : 0}  icon='pepicons-print:people' />
         </Grid>
         <Grid item xs={12} md={3} sm={6}>
-          <IncomeSummaryStats title='Total Inactive Staffs' stats={staffData?.totalInActive} icon='material-symbols:person-cancel' />
+          <SummaryStats title={`Total Active ${statTitle}`} stats={data?.totalActive ? data?.totalActive : 0}  icon='mdi:person-check' />
+        </Grid>
+        <Grid item xs={12} md={3} sm={6}>
+          <SummaryStats title={`Total Inactive ${statTitle}`} stats={data?.totalInActive ? data.totalInActive : 0} icon='material-symbols:person-cancel' />
         </Grid>
       </Grid>
     </Grid>
   )
 }
 
-export default StaffsStats
+export default Stats

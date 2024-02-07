@@ -25,7 +25,7 @@ export const formatDate = (value, formatting = { month: 'short', day: 'numeric',
 export const formatDateToReadableFormat = (inputDate) => {
   const options = { month: 'short', day: 'numeric', year: 'numeric' };
   const formattedDate = new Date(inputDate).toLocaleDateString('en-US', options);
-  
+
   return formattedDate;
 }
 
@@ -97,9 +97,14 @@ export const formatCVC = (value, cardNumber, Payment) => {
 }
 
 export const formatFirstLetter = letter => {
+  if (letter){
+
   const formattedString = letter[0].toUpperCase() + letter.slice(1)
 
   return formattedString
+  } else {
+    return ''
+  }
 }
 
 export const formatAndReturnFirstLetter = letter => {
@@ -227,4 +232,17 @@ export const getFirstId = arrayOfObjects => {
 
   // Return a default value (or throw an error) if no id is found
   return null
+}
+
+
+
+export const formatCurrency = (amount, abs) => {
+  
+  if (!amount) {
+    return `#0.0`
+  } else if (amount) {
+    const formattedAmount = Number(amount)
+
+    return `#${(abs ? Math.abs(formattedAmount) : formattedAmount).toLocaleString()}`
+  }
 }

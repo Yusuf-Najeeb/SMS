@@ -4,9 +4,9 @@ const navigation = () => {
       sectionTitle: 'Staff Manager'
     },
     {
-      title: 'Staffs',
+      title: 'Staff',
       icon: 'pepicons-print:people',
-      path: '/apps/staffs'
+      path: '/apps/staff'
     },
 
     // {
@@ -15,7 +15,7 @@ const navigation = () => {
     //   path: '/apps/new-staff/list'
     // },
     {
-      title: 'Staffs Attendance',
+      title: 'Staff Attendance',
       icon: 'material-symbols:co-present-rounded',
       path: '/apps/staff-attendence/list'
     },
