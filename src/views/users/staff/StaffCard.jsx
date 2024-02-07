@@ -105,7 +105,7 @@ const StaffCard = ({ Staff }) => {
                 rounded
                 skin='light'
                 size='small'
-                label={Staff.roles[0]?.roleName}
+                label={Staff?.role?.roleName}
                 color='primary'
                 sx={{ textTransform: 'capitalize' }}
               />
@@ -221,18 +221,276 @@ const StaffCard = ({ Staff }) => {
             </Box>
           </CardContent>
 
+          <Divider sx={{ my: '0 !important', mx: 6 }} />
+
           <CardContent sx={{ pb: 4 }}>
             <Typography variant='body2' sx={{ color: 'text.disabled', textTransform: 'uppercase' }}>
-              Account and Retirement Details
+              Employment Information
             </Typography>
             <Box sx={{ pt: 4 }}>
+            <Grid container spacing={5}>
+            <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='carbon:user-role'
+                cardTitle='Staff Description'
+                value={Staff?.staffdescription || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='mingcute:department-fill'
+                cardTitle='Department'
+                value={Staff?.department_section || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='arcticons:oldschool-editor'
+                cardTitle='Specialization'
+                value={Staff?.specialization || '--'}
+              />
+              </Grid>
+
+              {/* <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='material-symbols-light:topic'
+                cardTitle='Subjects'
+                value={Staff?.qualification || '--'}
+              />
+              </Grid> */}
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='bxs:school'
+                cardTitle='Institution Attended'
+                value={Staff?.institutionAttended || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='ic:round-school'
+                cardTitle='Qualification'
+                value={Staff?.qualification || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='eos-icons:workload'
+                cardTitle='Previous Work Experience'
+                value={Staff?.previousWorkExperience || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='healthicons:referral-negative'
+                cardTitle='Name of 1st Referee'
+                value={Staff?.nameOfRefereeOne || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='healthicons:referral-negative'
+                cardTitle='Name of 2nd Referee'
+                value={Staff?.nameOfRefereeTwo || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='bi:phone'
+                cardTitle='Phone No. of 1st Referee'
+                value={Staff?.phoneOfRefereeOne || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='bi:phone'
+                cardTitle='Phone No. of 2nd Referee'
+                value={Staff?.phoneOfRefereeTwo || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='fontisto:email'
+                cardTitle='Email of 1st Referee'
+                value={Staff?.emailOfRefereeOne || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='fontisto:email'
+                cardTitle='Email of 2nd Referee'
+                value={Staff?.emailOfRefereeTwo|| '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='tabler:user-pin'
+                cardTitle='Address of 1st Referee'
+                value={Staff?.addressOfRefereeOne || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='tabler:user-pin'
+                cardTitle='Address of 2nd Referee'
+                value={Staff?.addressOfRefereeTwo|| '--'}
+              />
+              </Grid>
+
+            </Grid>
+            </Box>
+          </CardContent>
+
+          <Divider sx={{ my: '0 !important', mx: 6 }} />
+
+          <CardContent sx={{ pb: 4 }}>
+            <Typography variant='body2' sx={{ color: 'text.disabled', textTransform: 'uppercase' }}>
+              Account/Payslip Information
+            </Typography>
+            <Box sx={{ pt: 4 }}>
+            <Grid container spacing={5}>
+            <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='healthicons:money-bag'
+                cardTitle='Basic Salary'
+                value={formatCurrency(Staff.basicSalary, true)}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='emojione-monotone:money-bag'
+                cardTitle='Furniture Allowance'
+                value={formatCurrency(Staff.furnitureAllowance, true)}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='emojione-monotone:money-bag'
+                cardTitle='Rent Allowance'
+                value={formatCurrency(Staff.rentAllowance, true)}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='emojione-monotone:money-bag'
+                cardTitle='Transport Allowance'
+                value={formatCurrency(Staff.transportAllowance, true)}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='emojione-monotone:money-bag'
+                cardTitle='Meal Allowance'
+                value={formatCurrency(Staff.mealAllowance, true)}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='emojione-monotone:money-bag'
+                cardTitle='Salary Arrears'
+                value={formatCurrency(Staff.salaryArrears, true)}
+              />
+              </Grid>
+
+              
+            <Grid item xs={6}>
               <StaffDetailCard
                 iconName='solar:wallet-money-bold'
                 cardTitle='Account Number'
                 value={Staff?.accountNumber || '--'}
               />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='fluent-emoji-high-contrast:bank'
+                cardTitle='Bank Name'
+                value={Staff?.bankName || '--'}
+              />
+              </Grid>
               {/* <StaffDetailCard iconName="solar:wallet-money-bold" cardTitle='RSA Number' value={Staff?.rsaNumber || '--'} />  */}
               {/* <StaffDetailCard iconName="ri:home-office-fill" cardTitle='RSA Company' value={Staff?.rsaCompany || '--'} />  */}
+            
+            </Grid>
+            </Box>
+          </CardContent>
+
+          <Divider sx={{ my: '0 !important', mx: 6 }} />
+
+          <CardContent sx={{ pb: 4 }}>
+            <Typography variant='body2' sx={{ color: 'text.disabled', textTransform: 'uppercase' }}>
+              Medical Information
+            </Typography>
+            <Box sx={{ pt: 4 }}>
+            <Grid container spacing={5}>
+            <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='healthicons:health-outline'
+                cardTitle='Genotype'
+                value={Staff.genotype || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='material-symbols-light:health-metrics-sharp'
+                cardTitle='Blood Group'
+                value={Staff.bloodGroup || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='mdi:food-off'
+                cardTitle='Food Allergies'
+                value={Staff.foodAllergies || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='mdi:drug-off'
+                cardTitle='Drug Allergies'
+                value={Staff.drugAllergies || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='medical-icon:surgery'
+                cardTitle='Previous Surgery'
+                value={Staff.previousSurgery || '--'}
+              />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard
+                iconName='streamline:emergency-exit-solid'
+                cardTitle='Emergency Phone Number'
+                value={Staff.emergencyPhone || '--'}
+              />
+              </Grid>
+
+              
+
+            </Grid>
             </Box>
           </CardContent>
         </Fragment>
