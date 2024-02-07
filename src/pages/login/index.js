@@ -85,13 +85,13 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  email: yup.string().required(),
+  userId: yup.string().required(),
   password: yup.string().min(5).required()
 })
 
 const defaultValues = {
   password: '',
-  email: ''
+  userId: ''
 }
 
 const LoginPage = () => {
@@ -121,7 +121,7 @@ const LoginPage = () => {
   })
 
   const onSubmit = async data => {
-    const { email, password } = data
+    const { userId, password } = data
     console.log(data)
 
     const resp = loginUser(data)
@@ -214,20 +214,20 @@ const LoginPage = () => {
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{ mb: 4 }}>
                 <Controller
-                  name='email'
+                  name='userId'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <CustomTextField
                       fullWidth
                       autoFocus
-                      label='Email or User ID'
+                      label='User ID'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      placeholder='admin@vuexy.com'
-                      error={Boolean(errors.email)}
-                      {...(errors.email && { helperText: errors.email.message })}
+                      placeholder='SCH_DE0987654'
+                      error={Boolean(errors.userId)}
+                      {...(errors.userId && { helperText: errors.userId.message })}
                     />
                   )}
                 />

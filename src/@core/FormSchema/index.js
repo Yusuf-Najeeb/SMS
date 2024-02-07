@@ -28,14 +28,15 @@ export const personalInfoSchema = yup.object().shape({
     .min(11, obj => showErrors('Phone Number', obj.value.length, obj.min)),
   title: yup.string().required('Title is required'),
   dateOfBirth: yup.string().required('Date of Birth is required'),
-  residentialAddress: yup.string().required('Residential Address is required'),
-  maritalStatus: yup.string().required('Marital Status is required'),
+  residentialAddress: yup.string(),
+  maritalStatus: yup.string(),
   gender: yup.string().required('Gender is required'),
-  city: yup.string().required('City is required'),
-  state: yup.string().required('State is required'),
+  city: yup.string(),
+  state: yup.string(),
   lga: yup.string().required('Local Government is required'),
   religion: yup.string(),
-  staffDescription: yup.string().required('Description is required'),
+
+  // staffDescription: yup.string().required('Description is required'),
 
   // additionalInfo: yup.string()
 })
@@ -65,8 +66,8 @@ export const updateStaffPersonalInfoSchema = yup.object().shape({
 
 export const workInfoSchema = yup.object().shape({
   qualification: yup.string().required('Qualification is required'),
-  department_section: yup.string().required('Department is required'),
-  institutionAttended: yup.string().required('Institution Attended is required'),
+  department_section: yup.string(),
+  institutionAttended: yup.string(),
   specialization: yup.string(),
   previousWorkExperience: yup.string(),
   basicSalary: yup.number().typeError('Basic salary must be a number'),
@@ -79,10 +80,11 @@ export const workInfoSchema = yup.object().shape({
   dateOfEmployment: yup.string().required('Date of Employment is required'),
 
   // others: yup.number().typeError('Other allowance must be a number'),
+  staffDescription: yup.string().required('Role Description is required'),
   accountNumber: yup.string().required('Account Number is required'),
-  bankName: yup.string().required('Bank Name is required'),
+  bankName: yup.string(),
   role: yup.string().required('Role is required'),
-  branch: yup.string().required('School Branch is required')
+  branch: yup.string()
 })
 
 export const updatestaffWorkInfoSchema = yup.object().shape({
@@ -114,11 +116,18 @@ export const medicalSchema = yup.object().shape({
 })
 
 export const nextOfKinSchema = yup.object().shape({
-  nameOfReferee: yup.string(),
-  addressOfReferee: yup.string(),
+  nameOfRefereeOne: yup.string(),
+  nameOfRefereeTwo: yup.string(),
+  addressOfRefereeOne: yup.string(),
+  addressOfRefereeTwo: yup.string(),
+  emailOfRefereeOne: yup.string(),
+  emailOfRefereeTwo: yup.string(),
+  phoneOfRefereeOne: yup.string(),
+  phoneOfRefereeTwo: yup.string(),
   nextOfKinName: yup.string().required("Next of Kin's name is required"),
   nextOfKinAddress: yup.string(),
-  emergencyPhone: yup.string(),
+  emergencyPhone: yup.string().required("Next of Kin's phone number is required"),
+  relationShip: yup.string(),
 })
 
 
