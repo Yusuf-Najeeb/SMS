@@ -415,6 +415,7 @@ const Register = () => {
                       <CustomTextField
                         fullWidth
                         autoFocus
+                        required
                         label='Phone Number'
                         value={value}
                         onBlur={onBlur}
@@ -426,48 +427,6 @@ const Register = () => {
                     )}
                   />
                 </Grid>
-
-                {/* <Grid item xs={12} sm={6}>
-                  <Controller
-                    name='identificationNumber'
-                    type='text'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange, onBlur } }) => (
-                      <CustomTextField
-                        fullWidth
-                        autoFocus
-                        label='Identification Number'
-                        value={value}
-                        onBlur={onBlur}
-                        onChange={onChange}
-                        placeholder='admin'
-                        error={Boolean(errors.identificationNumber)}
-                        {...(errors.identificationNumber && { helperText: errors.identificationNumber.message })}
-                      />
-                    )}
-                  />
-                </Grid> */}
-
-                {/* <Grid item xs={12} sm={6}>
-                  <Controller
-                    name='dateOfEmployment'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <DatePicker
-                        selected={value}
-                        showYearDropdown
-                        showMonthDropdown
-                        popperPlacement='bottom-end'
-                        onChange={e => onChange(e)}
-                        label='Date of Birth'
-                        error={Boolean(errors.dateOfEmployment)}
-                        {...(errors.dateOfEmployment && { helperText: 'Date is required' })}
-                      />
-                    )}
-                  />
-                </Grid> */}
 
                 <Grid item xs={12} sm={6} >
               <Controller
@@ -486,7 +445,7 @@ const Register = () => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Employment'
+                          label='Date of Employment *'
                           error={Boolean(errors.dateOfEmployment)}
                           {...(errors.dateOfEmployment && { helperText: errors.dateOfEmployment.message })}
                         />
@@ -513,7 +472,6 @@ const Register = () => {
                         placeholder='admin'
                         error={Boolean(errors.gender)}
                         {...(errors.gender && { helperText: errors.gender.message })}
-                        autoFocus // Corrected placement of autoFocus prop
                       >
                         <MenuItem value='Male'>Male</MenuItem>
                         <MenuItem value='Female'>Female</MenuItem>
@@ -539,7 +497,7 @@ const Register = () => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth'
+                          label='Date of Birth *'
                           error={Boolean(errors.dateOfBirth)}
                           {...(errors.dateOfBirth && { helperText: errors.dateOfBirth.message })}
                         />
@@ -559,7 +517,7 @@ const Register = () => {
                     render={({ field: { value, onChange, onBlur } }) => (
                       <CustomTextField
                         fullWidth
-                        autoFocus
+                        required
                         label='Residential Address'
                         value={value}
                         onBlur={onBlur}
@@ -580,7 +538,7 @@ const Register = () => {
                     render={({ field: { value, onChange, onBlur } }) => (
                       <CustomTextField
                         fullWidth
-                        autoFocus
+                        required
                         label='Branch'
                         value={value}
                         onBlur={onBlur}

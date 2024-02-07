@@ -26,7 +26,7 @@ const navigation = () => {
     {
       title: ' Students',
       icon: 'fa6-solid:people-line',
-      path: '/apps/student/list'
+      path: '/apps/students'
     },
 
     // {
@@ -90,6 +90,16 @@ const navigation = () => {
     },
     {
       sectionTitle: 'Accounts '
+    },
+    {
+      title: 'Income',
+      icon: 'emojione-monotone:money-bag',
+      path: '/apps/income'
+    },
+    {
+      title: 'Expenditure',
+      icon: 'game-icons:pay-money',
+      path: '/apps/expenditure'
     },
     {
       title: 'Fees and Billing',
