@@ -49,6 +49,7 @@ import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import AddStudent from './AddStudent'
 import Stats from '../component/Stats'
+import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -230,9 +231,6 @@ const AllStudents = () => {
 
   const [StudentData, loading, paging] = useStudent()
 
-  // const GuardianData = useSelector(state => state.guardian)
-
-  const GuardianData = useAppSelector(store => store.guardian.GuardianData)
 
 
   const toggleModal = ()=>{
@@ -270,13 +268,6 @@ const AllStudents = () => {
 
   const closeEditModal = ()=> setEditDrawer(false)
 
-  const handleFilter = val => {
-    setValue(val)
-  }
-
-  const handleStatusValue = e => {
-    setStatusValue(e.target.value)
-  }
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -292,7 +283,7 @@ const AllStudents = () => {
     dispatch(fetchStudents({page: page + 1, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[refetch])
+  },[refetch, page, key])
 
   const columns = [
     ...defaultColumns,
@@ -353,7 +344,8 @@ const AllStudents = () => {
     <Fragment>
     <DatePickerWrapper>
     <Stats data={StudentData} statTitle={'Students'}/>
-        <PageHeader  action="Add Student" toggle={toggleModal}/>
+
+        <PageHeaderWithSearch searchPlaceholder={'Search Student'} action="Add Student" toggle={toggleModal} handleFilter={setKey}/>
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Card>

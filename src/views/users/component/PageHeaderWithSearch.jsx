@@ -12,7 +12,7 @@ import FormControl from '@mui/material/FormControl';
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-const PageHeader = ({ toggle, action, handleFilter }) => {
+const PageHeaderWithSearch = ({ toggle, action, handleFilter, searchPlaceholder }) => {
 
 
   return (
@@ -38,7 +38,7 @@ const PageHeader = ({ toggle, action, handleFilter }) => {
         <Input
         sx={{padding: '2px'}}
         onBlur={e => handleFilter(e.target.value)}
-        placeholder='Search Staff'
+        placeholder={searchPlaceholder}
           id="input-with-icon-adornment"
           
           endAdornment={
@@ -59,4 +59,4 @@ const PageHeader = ({ toggle, action, handleFilter }) => {
   )
 }
 
-export default PageHeader
+export default PageHeaderWithSearch
