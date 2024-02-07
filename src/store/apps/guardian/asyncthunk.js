@@ -29,20 +29,7 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
     }
   })
 
-  export const deleteGuardian =  async (email) => {
-    try {
-      const response = await axios.delete(`/parents/deleteparent/${email}`)
-  
-      if (response.data.success) {
-        notifySuccess('Guardian Deleted')
-      }
-  
-      return response
-    } catch (error) {
-      notifyError('Error Deleting Guardian')
-  
-    }
-  }
+
 
   export const searchParent = async (key)=> {
     try {
@@ -51,5 +38,20 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
       return response?.data.data.result
     } catch (error) {
       
+    }
+  }
+
+  export const deleteGuardian =  async (id) => {
+    try {
+      const response = await axios.delete(`/users/delete?id=${id}`)
+  
+      if (response.data.success) {
+        notifySuccess('Guardian Deleted')
+      }
+  
+      return response
+    } catch (error) {
+      notifyError('Unable to Delete Guardian')
+  
     }
   }

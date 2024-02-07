@@ -31,18 +31,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-import OptionsMenu from 'src/@core/components/option-menu'
-import TableHeader from 'src/views/apps/invoice/list/TableHeader'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { useAppSelector } from '../../../hooks'
-import { deleteGuardian, fetchGuardian } from '../../../store/apps/guardian/asyncthunk'
-import PageHeader from '../component/PageHeader'
-import { formatDate, formatMonthYear, formatMonthYearr } from '../../../@core/utils/format'
+import { deleteStudent } from '../../../store/apps/Student/asyncthunk'
+import { formatDate,  } from '../../../@core/utils/format'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import EditActor from '../component/EditActor'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
@@ -58,15 +53,10 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-// ** Vars
-const invoiceStatusObj = {
-  Sent: { color: 'secondary', icon: 'tabler:circle-check' },
-  Paid: { color: 'success', icon: 'tabler:circle-half-2' },
-  Draft: { color: 'primary', icon: 'tabler:device-floppy' },
-  'Partial Payment': { color: 'warning', icon: 'tabler:chart-pie' },
-  'Past Due': { color: 'error', icon: 'tabler:alert-circle' },
-  Downloaded: { color: 'info', icon: 'tabler:arrow-down-circle' }
-}
+const TypographyStyled = styled(Typography)(({theme})=> ({
+    fontSize: theme.typography.body1.fontSize,
+    color: `${theme.palette.primary.main} !important` 
+}))
 
 
 // ** renders client column
@@ -89,13 +79,16 @@ const renderClient = row => {
 
 const defaultColumns = [
 
-// {
-//     flex: 0.1,
-//     minWidth: 100,
-//     field: 'address',
-//     headerName: 'S/N',
-//     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{index + 1}</Typography>
-//   },
+    {
+        flex: 0.1,
+        field: 'id',
+        minWidth: 100,
+        headerName: 'ID',
+    
+        renderCell: ({ row }) => (
+          <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
+        )
+      },
 
   {
     flex: 0.25,
@@ -125,7 +118,7 @@ const defaultColumns = [
     minWidth: 100,
     field: 'address',
     headerName: 'Address',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress}</Typography>
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress || '--'}</Typography>
   },
   {
     flex: 0.15,
@@ -220,8 +213,8 @@ const AllStudents = () => {
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
-  const [selectedGuardian, setSelectedGuardian] = useState()
-  const [guardianToUpdate, setGuardianToUpdate] = useState(null)
+  const [selectedStudent, setSelectedStudent] = useState()
+  const [studentToUpdate, setstudentToUpdate] = useState(null)
   const [email, setGuardianEmail] = useState(null)
 
   
@@ -241,19 +234,19 @@ const AllStudents = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedGuardian(value?.email)
+    setSelectedStudent(value?.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedGuardian(null)
+    setSelectedStudent(null)
   }
 
   const ondeleteClick = async () => {
-    deleteGuardian(selectedGuardian).then((res)=>{
+    deleteStudent(selectedStudent).then((res)=>{
 
         if (res.status) {
-            dispatch(fetchGuardian())
+            dispatch(fetchStudents({page: 1, key}))
           doCancelDelete()
         }
     })
@@ -262,21 +255,11 @@ const AllStudents = () => {
 
   const setGuardianToEdit = (value) => {
     setEditDrawer(true)
-    setGuardianToUpdate(value)
+    setstudentToUpdate(value)
     setGuardianEmail(value?.email)
   }
 
   const closeEditModal = ()=> setEditDrawer(false)
-
-
-  const handleOnChangeRange = dates => {
-    const [start, end] = dates
-    if (start !== null && end !== null) {
-      setDates(dates)
-    }
-    setStartDateRange(start)
-    setEndDateRange(end)
-  }
 
 
   useEffect(()=>{
@@ -295,11 +278,11 @@ const AllStudents = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title='Edit Student'>
+            {/* <Tooltip title='Edit Student'>
              <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
             <Icon icon='tabler:edit' />
             </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           <Tooltip title='Delete Student'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
@@ -362,7 +345,7 @@ const AllStudents = () => {
               pageSizeOptions={[10, 25, 50]}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
-              onRowSelectionModelChange={rows => setSelectedRows(rows)}
+              disableRowSelectionOnClick
             />
           </Card>
         </Grid>
@@ -372,7 +355,7 @@ const AllStudents = () => {
 
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  />
-    {openEditDrawer && <EditActor open={openEditDrawer} selectedActor={guardianToUpdate} endpointUrl={`parents/updateparent/${email}`} refetchData={updateFetch} closeModal={closeEditModal}/>}
+    {openEditDrawer && <EditActor open={openEditDrawer} selectedActor={studentToUpdate} endpointUrl={`parents/updateparent/${email}`} refetchData={updateFetch} closeModal={closeEditModal}/>}
     </Fragment>
   )
 }

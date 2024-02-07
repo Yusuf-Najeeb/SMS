@@ -39,3 +39,18 @@ export const searchStudent = async (key)=> {
   }
 }
 
+
+export const deleteStudent =  async (id) => {
+  try {
+    const response = await axios.delete(`/users/delete?id=${id}`)
+
+    if (response.data.success) {
+      notifySuccess('Student Deleted')
+    }
+
+    return response
+  } catch (error) {
+    notifyError('Unable to Delete Student')
+
+  }
+}

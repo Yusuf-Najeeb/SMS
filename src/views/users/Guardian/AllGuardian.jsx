@@ -56,15 +56,11 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-// ** Vars
-const invoiceStatusObj = {
-  Sent: { color: 'secondary', icon: 'tabler:circle-check' },
-  Paid: { color: 'success', icon: 'tabler:circle-half-2' },
-  Draft: { color: 'primary', icon: 'tabler:device-floppy' },
-  'Partial Payment': { color: 'warning', icon: 'tabler:chart-pie' },
-  'Past Due': { color: 'error', icon: 'tabler:alert-circle' },
-  Downloaded: { color: 'info', icon: 'tabler:arrow-down-circle' }
-}
+const TypographyStyled = styled(Typography)(({theme})=> ({
+    fontSize: theme.typography.body1.fontSize,
+    color: `${theme.palette.primary.main} !important` 
+}))
+
 
 
 // ** renders client column
@@ -89,13 +85,17 @@ const renderClient = row => {
 
 const defaultColumns = [
 
-// {
-//     flex: 0.1,
-//     minWidth: 100,
-//     field: 'address',
-//     headerName: 'S/N',
-//     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{index + 1}</Typography>
-//   },
+
+{
+    flex: 0.1,
+    field: 'id',
+    minWidth: 100,
+    headerName: 'ID',
+
+    renderCell: ({ row }) => (
+      <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
+    )
+  },
 
   {
     flex: 0.25,
@@ -246,7 +246,7 @@ const AllGuardian = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedGuardian(value?.email)
+    setSelectedGuardian(value?.id)
   }
 
   const doCancelDelete = () => {
@@ -258,7 +258,7 @@ const AllGuardian = () => {
     deleteGuardian(selectedGuardian).then((res)=>{
 
         if (res.status) {
-            dispatch(fetchGuardian())
+            dispatch(fetchGuardian({page: 1, key}))
           doCancelDelete()
         }
     })
@@ -273,13 +273,6 @@ const AllGuardian = () => {
 
   const closeEditModal = ()=> setEditDrawer(false)
 
-  const handleFilter = val => {
-    setValue(val)
-  }
-
-  const handleStatusValue = e => {
-    setStatusValue(e.target.value)
-  }
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -290,13 +283,6 @@ const AllGuardian = () => {
     setEndDateRange(end)
   }
 
-  useEffect(() => {
-  searchStudent('key').then((res)=>{
-    console.log(res, 'res')
-  })
-
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(()=>{
     dispatch(fetchGuardian({page: page +1, key}))
@@ -314,11 +300,11 @@ const AllGuardian = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title='Edit Guardian'>
+            {/* <Tooltip title='Edit Guardian'>
              <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
             <Icon icon='tabler:edit' />
             </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           <Tooltip title='Delete Guardian'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
@@ -374,14 +360,10 @@ const AllGuardian = () => {
               rowHeight={62}
               rows={GuardianData?.result?.length ? GuardianData?.result : []}
               columns={columns}
-
-            //   checkboxSelection
-
-            //   disableRowSelectionOnClick
               pageSizeOptions={[10, 25, 50]}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
-              onRowSelectionModelChange={rows => setSelectedRows(rows)}
+              disableRowSelectionOnClick
             />
           </Card>
         </Grid>

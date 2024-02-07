@@ -202,7 +202,6 @@ const Staffs = () => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  console.log(StaffData, 'staffs')
 
   // const GuardianData = useSelector(state => state.guardian)
 
