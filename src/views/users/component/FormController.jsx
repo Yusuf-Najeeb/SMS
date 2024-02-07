@@ -2,7 +2,7 @@ import React from 'react'
 import { Controller } from 'react-hook-form'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-const FormController = ({ name, control, requireBoolean, label, error, errorMessage }) => {
+const FormController = ({ name, control, requireBoolean, label, error, errorMessage, required }) => {
   return (
     <Controller
       name={name}
@@ -11,6 +11,7 @@ const FormController = ({ name, control, requireBoolean, label, error, errorMess
       render={({ field: { value, onChange } }) => (
         <CustomTextField
           fullWidth
+          required={required}
           value={value}
           label={label}
           onChange={onChange}

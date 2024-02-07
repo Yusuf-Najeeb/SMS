@@ -233,12 +233,13 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
         setPreviewUrl(null)
         setActiveStep(0)
         setStaffRole('')
-        nextofKinReset({ nameOfReferee: '', addressOfReferee: '', nextOfKinName: '', nextOfKinAddress: '', emergencyPhone: ''  })
+        nextofKinReset({ nameOfRefereeOne: '', addressOfRefereeOne: '', phoneOfRefereeOne: '', phoneOfRefereeTwo: '', nextOfKinName: '', nextOfKinAddress: '',
+         emergencyPhone: '', nameOfRefereeTwo: '', addressOfRefereeTwo: '', emailOfRefereeOne: '', emailOfRefereeTwo: '', relationship: ''  })
         workInfoReset({ qualification: '', department_section: '', previousWorkExperience: '', institutionAttended: '',  specialization: '', accountNumber: '', 
         basicSalary: '' , mealAllowance: '', transportAllowance: '', domesticAllowance: '', furnitureAllowance: '', SalaryArrears: '',rentAllowance: '',
-          bankName: '', branch: '', role: ''})
+          bankName: '', branch: '', role: '', staffDescription: ''})
         personalReset({  email: '', firstName: '', lastName: '', middleName: '', title: '', phone: '', dateOfBirth: '',
-        password: '', residentialAddress: '', maritalStatus: '', gender: '', city: '', state: '', lga: '', religion: '', staffDescription: '' })
+        password: '', residentialAddress: '', maritalStatus: '', gender: '', city: '', state: '', lga: '', religion: '',  })
         medicalReset({  drugAllergies: '', foodAllergies: '', genotype: '', bloodGroup: '', previousSurgery: '', healthStatus: '' })
       }
     
@@ -406,23 +407,23 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='firstName' control={personalControl} requireBoolean={true} label="First Name" error={personalErrors['firstName']} errorMessage={personalErrors.firstName?.message} />
+                <FormController name='firstName' control={personalControl} requireBoolean={true} required={true} label="First Name" error={personalErrors['firstName']} errorMessage={personalErrors.firstName?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='lastName' control={personalControl} requireBoolean={true} label="Last Name" error={personalErrors['lastName']} errorMessage={personalErrors.lastName?.message} />
+              <FormController name='lastName' control={personalControl} requireBoolean={true} required={true} label="Last Name" error={personalErrors['lastName']} errorMessage={personalErrors.lastName?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='middleName' control={personalControl} requireBoolean={true} label="Middle Name" error={personalErrors['middleName']} errorMessage={personalErrors?.middleName?.message} />
+                <FormController name='middleName' control={personalControl} requireBoolean={true}  label="Middle Name" error={personalErrors['middleName']} errorMessage={personalErrors?.middleName?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='email' control={personalControl} requireBoolean={true} label="Email" error={personalErrors['email']} errorMessage={personalErrors?.email?.message} />
+              <FormController name='email' control={personalControl} requireBoolean={true} required={true} label="Email" error={personalErrors['email']} errorMessage={personalErrors?.email?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='phone' control={personalControl} requireBoolean={true} label="Phone" error={personalErrors['phone']} errorMessage={personalErrors.phone?.message} />
+                <FormController name='phone' control={personalControl} requireBoolean={true} required={true} label="Phone" error={personalErrors['phone']} errorMessage={personalErrors.phone?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
@@ -435,6 +436,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                       fullWidth
                       value={value}
                       label='Password'
+                      required
                       onChange={onChange}
                       id='stepper-linear-account-password'
                       error={Boolean(personalErrors.password)}
@@ -459,7 +461,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} >
+              <Grid item xs={12} sm={4} >
               <Controller
                   name='dateOfBirth'
                   control={personalControl}
@@ -476,7 +478,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth'
+                          label='Date of Birth *'
                           error={Boolean(personalErrors.dateOfBirth)}
                           {...(personalErrors.dateOfBirth && { helperText: personalErrors.dateOfBirth.message })}
                         />
@@ -486,7 +488,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
               <FormController name='residentialAddress' control={personalControl} requireBoolean={true} label="Residential Address" error={personalErrors['residentialAddress']} errorMessage={personalErrors.address?.message} />
               </Grid>
 
@@ -501,6 +503,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                       fullWidth
                       value={value}
                       label='Gender'
+                      required
                       onChange={onChange}
                       id='stepper-linear-personal-gender'
                       error={Boolean(personalErrors.gender)}
@@ -550,6 +553,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                       fullWidth
                       value={value}
                       label='Title'
+                      required
                       onChange={onChange}
                       id='stepper-linear-personal-title'
                       error={Boolean(personalErrors.title)}
@@ -573,16 +577,16 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='lga' control={personalControl} requireBoolean={true} label="Local Government of Origin" error={personalErrors['lga']} errorMessage={personalErrors.lga?.message} />
+                <FormController name='lga' control={personalControl} requireBoolean={true} required={true} label="Local Government of Origin" error={personalErrors['lga']} errorMessage={personalErrors.lga?.message} />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <FormController name='religion' control={personalControl} requireBoolean={true} label="Religion" error={personalErrors['religion']} errorMessage={personalErrors.religion?.message} />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <FormController name='staffDescription' control={personalControl} requireBoolean={false} label="Staff Role Description" error={personalErrors['staffDescription']} errorMessage={personalErrors.staffDescription?.message} />
-              </Grid>
+              {/* <Grid item xs={12} sm={6}>
+                <FormController name='staffDescription' control={personalControl} required={true} requireBoolean={false} label="Staff Role Description" error={personalErrors['staffDescription']} errorMessage={personalErrors.staffDescription?.message} />
+              </Grid> */}
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Button variant='tonal' color='secondary' onClick={handleBack}>
@@ -624,6 +628,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                     <CustomTextField
                       select
                       fullWidth
+                      required
                       value={value}
                       label='Role'
                       onChange={(e) => {
@@ -648,7 +653,11 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='qualification' control={workInfoControl} requireBoolean={true} label="Academic Qualification" error={workInfoErrors['qualification']} errorMessage={workInfoErrors.qualification?.message} />
+                <FormController name='staffDescription' control={workInfoControl} required={true} requireBoolean={false} label="Staff Role Description" error={workInfoErrors['staffDescription']} errorMessage={workInfoErrors.staffDescription?.message} />
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+              <FormController name='qualification' control={workInfoControl} requireBoolean={true} required={true} label="Academic Qualification" error={workInfoErrors['qualification']} errorMessage={workInfoErrors.qualification?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
@@ -667,11 +676,11 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               <FormController name='previousWorkExperience' control={workInfoControl} requireBoolean={true} label="Previous Work Experience" error={workInfoErrors['previousWorkExperience']} errorMessage={workInfoErrors.previousWorkExperience?.message} />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
               <FormController name='basicSalary' control={workInfoControl} requireBoolean={true} label="Basic Salary" error={workInfoErrors['basicSalary']} errorMessage={workInfoErrors.basicSalary?.message} />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
               <FormController name='mealAllowance' control={workInfoControl} requireBoolean={true} label="Meal Allowance" error={workInfoErrors['mealAllowance']} errorMessage={workInfoErrors.mealAllowance?.message} />
               </Grid>
 
@@ -696,7 +705,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='accountNumber' control={workInfoControl} requireBoolean={true} label="Account Number" error={workInfoErrors['accountNumber']} errorMessage={workInfoErrors?.accountNumber?.message} />
+              <FormController name='accountNumber' control={workInfoControl} requireBoolean={true} required={true} label="Account Number" error={workInfoErrors['accountNumber']} errorMessage={workInfoErrors?.accountNumber?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4} >
@@ -716,7 +725,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Employment'
+                          label='Date of Employment *'
                           error={Boolean(workInfoErrors.dateOfEmployment)}
                           {...(workInfoErrors.dateOfEmployment && { helperText: workInfoErrors.dateOfEmployment.message })}
                         />
@@ -767,11 +776,11 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                 <FormController name='foodAllergies' control={medicalControl} requireBoolean={true} label="Food Allergies" error={medicalErrors['foodAllergies']} errorMessage={medicalErrors?.foodAllergies?.message} />
               </Grid>
               <Grid item xs={12} sm={4}>
-              <FormController name='genotype' control={medicalControl} requireBoolean={true} label="Genotype" error={medicalErrors['genotype']} errorMessage={medicalErrors?.genotype?.message} />
+              <FormController name='genotype' control={medicalControl} required={true} requireBoolean={true} label="Genotype" error={medicalErrors['genotype']} errorMessage={medicalErrors?.genotype?.message} />
               </Grid>
               
               <Grid item xs={12} sm={4}>
-                 <FormController name='bloodGroup' control={medicalControl} requireBoolean={true} label="Blood Group" error={medicalErrors['bloodGroup']} errorMessage={medicalErrors?.bloodGroup?.message} />
+                 <FormController name='bloodGroup' control={medicalControl} required={true} requireBoolean={true} label="Blood Group" error={medicalErrors['bloodGroup']} errorMessage={medicalErrors?.bloodGroup?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
@@ -780,7 +789,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='healthStatus' control={medicalControl} requireBoolean={true} label="Health Status" error={medicalErrors['healthStatus']} errorMessage={medicalErrors?.healthStatus?.message} />
+                <FormController name='healthStatus' control={medicalControl} required={true} requireBoolean={true} label="Health Status" error={medicalErrors['healthStatus']} errorMessage={medicalErrors?.healthStatus?.message} />
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -807,23 +816,45 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <FormController name='nameOfReferee' control={nextOfKinControl} requireBoolean={true} label="Name of Referee" error={nextOfKinErrors['nameOfReferee']} errorMessage={nextOfKinErrors?.nameOfReferee?.message} />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormController name='addressOfReferee' control={nextOfKinControl} requireBoolean={true} label="Address of Referee" error={nextOfKinErrors['addressOfReferee']} errorMessage={nextOfKinErrors?.addressOfReferee?.message} />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-              <FormController name='nextOfKinName' control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Name" error={nextOfKinErrors['nextOfKinName']} errorMessage={nextOfKinErrors?.nextOfKinName?.message} />
+              <FormController name='nextOfKinName' control={nextOfKinControl} requireBoolean={true} required={true} label="Next Of Kin's Name" error={nextOfKinErrors['nextOfKinName']} errorMessage={nextOfKinErrors?.nextOfKinName?.message} />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                  <FormController name='nextOfKinAddress' control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Address" error={nextOfKinErrors['nextOfKinAddress']} errorMessage={nextOfKinErrors?.nextOfKinAddress?.message} />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <FormController name='emergencyPhone' control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Phone Number" error={nextOfKinErrors['emergencyPhone']} errorMessage={nextOfKinErrors?.emergencyPhone?.message} />
-
+              <Grid item xs={12} sm={4}>
+                <FormController name='emergencyPhone' required={true} control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Phone Number" error={nextOfKinErrors['emergencyPhone']} errorMessage={nextOfKinErrors?.emergencyPhone?.message} />
               </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <FormController name='relationship'  control={nextOfKinControl} requireBoolean={true} label="Relationship" error={nextOfKinErrors['relationship']} errorMessage={nextOfKinErrors?.relationship?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='nameOfRefereeOne' control={nextOfKinControl}  requireBoolean={true} label="Name of Referee One" error={nextOfKinErrors['nameOfRefereeOne']} errorMessage={nextOfKinErrors?.nameOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='addressOfRefereeOne' control={nextOfKinControl} requireBoolean={true} label="Address of Referee One" error={nextOfKinErrors['addressOfRefereeOne']} errorMessage={nextOfKinErrors?.addressOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='emailOfRefereeOne' control={nextOfKinControl} requireBoolean={true} label="Email of Referee One" error={nextOfKinErrors['emailOfRefereeOne']} errorMessage={nextOfKinErrors?.emailOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='phoneOfRefereeOne' control={nextOfKinControl} requireBoolean={true} label="Phone Number of Referee One" error={nextOfKinErrors['phoneOfRefereeOne']} errorMessage={nextOfKinErrors?.phoneOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='nameOfRefereeTwo' control={nextOfKinControl}  requireBoolean={true} label="Name of Referee Two" error={nextOfKinErrors['nameOfRefereeTwo']} errorMessage={nextOfKinErrors?.nameOfRefereeTwo?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='addressOfRefereeTwo' control={nextOfKinControl}  requireBoolean={true} label="Address of Referee Two" error={nextOfKinErrors['addressOfRefereeTwo']} errorMessage={nextOfKinErrors?.addressOfRefereeTwo?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='emailOfRefereeTwo' control={nextOfKinControl} requireBoolean={true} label="Email of Referee Two" error={nextOfKinErrors['emailOfRefereeTwo']} errorMessage={nextOfKinErrors?.emailOfRefereeTwo?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='phoneOfRefereeTwo' control={nextOfKinControl} requireBoolean={true} label="Phone of Referee Two" error={nextOfKinErrors['phoneOfRefereeTwo']} errorMessage={nextOfKinErrors?.phoneOfRefereeTwo?.message} />
+              </Grid>
+
 
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -868,7 +899,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
     scroll='body'
     onClose={closeModal}
 
-    sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 980 } }}
+    sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 990 } }}
   >
       <DialogContent
         sx={{
@@ -902,24 +933,26 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                     personalErrors.title ||
                     personalErrors.phone ||
                     personalErrors.dateOfBirth ||
-                    personalErrors.residentialAddress ||
+
+                    // personalErrors.residentialAddress ||
                     personalErrors.maritalStatus ||
                     personalErrors.gender ||
-                    personalErrors.city ||
-                    personalErrors.state ||
+
+                    // personalErrors.city ||
+                    // personalErrors.state ||
                     personalErrors.lga ||
 
                     // personalErrors.religion ||
-                    personalErrors.staffDescription ||
                     personalErrors.password  &&
                   activeStep === 0 )
                 ) {
                   labelProps.error = true
                 } else if (
                   (workInfoErrors.qualification ||
-                    workInfoErrors.department_section ||
-                    workInfoErrors.institutionAttended ||
-
+                    workInfoErrors.staffDescription ||
+                    
+                    // workInfoErrors.institutionAttended ||
+                    // workInfoErrors.department_section ||
                     // workInfoErrors.specialization ||
                     // workInfoErrors.previousWorkExperience ||
                     workInfoErrors.mealAllowance ||
@@ -929,11 +962,11 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                     workInfoErrors.SalaryArrears ||
                     workInfoErrors.rentAllowance ||
                     workInfoErrors.accountNumber || 
-                    workInfoErrors.bankName || 
-                    workInfoErrors.branch || 
                     workInfoErrors.dateOfEmployment || 
                     workInfoErrors.role || 
-
+                    
+                    // workInfoErrors.bankName || 
+                    // workInfoErrors.branch || 
                     // workInfoErrors.others || 
                     workInfoErrors.basicSalary &&
                   activeStep === 1 )
@@ -955,8 +988,8 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
 
                         // nextOfKinErrors.nameOfReferee || 
                         // nextOfKinErrors.addressOfReferee || 
-                        // nextOfKinErrors.emergencyPhone || 
                         // nextOfKinErrors.nextOfKinAddress || 
+                        nextOfKinErrors.emergencyPhone || 
                         nextOfKinErrors.nextOfKinName) &&
                     activeStep === 3
                   ) {

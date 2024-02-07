@@ -16,7 +16,8 @@ export const defaultWorkInfoValues = {
     accountNumber: '',
     bankName: '',
     branch: '',
-    dateOfEmployment: ''
+    dateOfEmployment: '',
+    staffDescription: ''
   }
 
   
@@ -36,7 +37,6 @@ export const defaultPersonalValues = {
     state: '',
     lga: '',
     religion: '',
-    staffDescription: ''
   }
 
   export const defaultUpdateStaffPersonalValues = {
@@ -67,9 +67,16 @@ export const defaultPersonalValues = {
   }
 
   export const defaultNextOfKinValues = {
-    nameOfReferee: '',
-    addressOfReferee: '',
+    nameOfRefereeOne: '',
+    nameOfRefereeTwo: '',
+    addressOfRefereeOne: '',
+    addressOfRefereeTwo: '',
+    emailOfRefereeOne: '',
+    emailOfRefereeTwo: '',
+    phoneOfRefereeOne: '',
+    phoneOfRefereeTwo: '',
     nextOfKinName: '',
     nextOfKinAddress: '',
     emergencyPhone: '',
+    relationship: '',
   }
