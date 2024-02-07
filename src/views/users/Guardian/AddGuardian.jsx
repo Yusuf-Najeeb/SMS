@@ -66,7 +66,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
     middleName: '',
     email: '',
     password: '',
-    status: '',
+    maritalStatus: '',
     phone: '',
     dateOfBirth: '',
     residentialAddress: '',
@@ -295,7 +295,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
 
               <Grid item xs={12} sm={6}>
                 <Controller
-                  name='status'
+                  name='maritalStatus'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -305,10 +305,10 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       value={value}
                       label='Marital Status'
                       onChange={onChange}
-                      id='stepper-linear-status'
-                      error={Boolean(errors.status)}
-                      aria-describedby='stepper-linear-status-helper'
-                      {...(errors.status && { helperText: 'Status is required' })}
+                      id='stepper-linear-maritalStatus'
+                      error={Boolean(errors.maritalStatus)}
+                      aria-describedby='stepper-linear-maritalStatus-helper'
+                      {...(errors.maritalStatus && { helperText: errors.maritalStatus.message})}
                     >
                       <MenuItem value='Single'>Single</MenuItem>
                       <MenuItem value='Married'>Married</MenuItem>
@@ -337,24 +337,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              {/* <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='identificationNumber'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Identification Number'
-                      placeholder='Enter Identification Number'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.identificationNumber)}
-                      {...(errors.identificationNumber && { helperText: 'Identification number is required ' })}
-                    />
-                  )}
-                />
-              </Grid> */}
 
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
@@ -373,7 +355,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth'
+                          label='Date of Birth *'
                           error={Boolean(errors.dateOfBirth)}
                           {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
                         />
@@ -396,7 +378,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
+                      {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
                     />
                   )}
                 />

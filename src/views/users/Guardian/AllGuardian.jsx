@@ -47,6 +47,7 @@ import EditActor from '../component/EditActor'
 import { searchStudent } from '../../../store/apps/Student/asyncthunk'
 import AddGuardian from './AddGuardian'
 import Stats from '../component/Stats'
+import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -124,14 +125,14 @@ const defaultColumns = [
     minWidth: 100,
     field: 'address',
     headerName: 'Address',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress}</Typography>
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress || '--'}</Typography>
   },
   {
     flex: 0.15,
     minWidth: 140,
     field: 'phone',
     headerName: 'Phone Number',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone}</Typography>
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
   },
   {
     flex: 0.15,
@@ -233,9 +234,6 @@ const AllGuardian = () => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  const store = useSelector(state => state.invoice)
-
-  // const GuardianData = useSelector(state => state.guardian)
 
   const GuardianData = useAppSelector(store => store.guardian.GuardianData)
 
@@ -304,7 +302,7 @@ const AllGuardian = () => {
     dispatch(fetchGuardian({page: page +1, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[refetch])
+  },[refetch, page, key])
 
   const columns = [
     ...defaultColumns,
@@ -366,7 +364,7 @@ const AllGuardian = () => {
     <DatePickerWrapper>
         <Stats data={GuardianData} statTitle='Guardian'/>
 
-        <PageHeader  action="Add Guardian" toggle={toggleModal}/>
+        <PageHeaderWithSearch searchPlaceholder={'Search Guardian'} action="Add Guardian" toggle={toggleModal} handleFilter={setKey}/>
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Card>

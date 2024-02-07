@@ -419,7 +419,7 @@ const Register = () => {
                         value={value}
                         onBlur={onBlur}
                         onChange={onChange}
-                        placeholder='admin'
+                        placeholder='123456789'
                         error={Boolean(errors.phone)}
                         {...(errors.phone && { helperText: errors.phone.message })}
                       />

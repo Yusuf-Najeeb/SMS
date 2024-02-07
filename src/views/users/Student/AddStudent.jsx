@@ -25,7 +25,7 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { createActorSchema } from 'src/@core/Formschema'
+import { createStudentSchema } from 'src/@core/Formschema'
 
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { createStudent } from '../../../store/apps/Student/asyncthunk'
@@ -66,7 +66,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     middleName: '',
     email: '',
     password: '',
-    status: '',
     phone: '',
     dateOfBirth: '',
     residentialAddress: '',
@@ -79,7 +78,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     reset,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createActorSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createStudentSchema) })
 
   const onSubmit = async values => {
     const { dateOfBirth, ...restOfData } = values
@@ -181,7 +180,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.middleName)}
-                      {...(errors.middleName && { helperText: 'Middle name is required ' })}
+                      {...(errors.middleName && { helperText: errors.middleName.message })}
                     />
                   )}
                 />
@@ -195,7 +194,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                     <CustomTextField
                       fullWidth
                       label='Email'
-                      required
                       placeholder='Enter Email'
                       value={value}
                       onChange={onChange}
@@ -267,56 +265,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              {/* <Grid item xs={12} sm={6}>
-                <Controller
-                  name='title'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      select
-                      fullWidth
-                      value={value}
-                      label='Title'
-                      onChange={onChange}
-                      id='stepper-linear-title'
-                      error={Boolean(errors.title)}
-                      aria-describedby='stepper-linear-title-helper'
-                      {...(errors.title && { helperText: 'Title is required' })}
-                    >
-                      <MenuItem value='Mr'>Mr</MenuItem>
-                      <MenuItem value='Mrs'>Mrs</MenuItem>
-                      <MenuItem value='Miss'>Miss</MenuItem>
-                      <MenuItem value='Master'>Master</MenuItem>
-                    </CustomTextField>
-                  )}
-                />
-              </Grid> */}
-
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name='status'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      select
-                      fullWidth
-                      value={value}
-                      label='Marital Status'
-                      onChange={onChange}
-                      id='stepper-linear-status'
-                      error={Boolean(errors.status)}
-                      aria-describedby='stepper-linear-status-helper'
-                      {...(errors.status && { helperText: 'Status is required' })}
-                    >
-                      <MenuItem value='Single'>Single</MenuItem>
-                      <MenuItem value='Married'>Married</MenuItem>
-                      <MenuItem value='Divorced'>Divorced</MenuItem>
-                    </CustomTextField>
-                  )}
-                />
-              </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
@@ -337,25 +285,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              {/* <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='identificationNumber'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Identification Number'
-                      placeholder='Enter Identification Number'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.identificationNumber)}
-                      {...(errors.identificationNumber && { helperText: 'Identification number is required ' })}
-                    />
-                  )}
-                />
-              </Grid> */}
-
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='dateOfBirth'
@@ -373,7 +302,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth'
+                          label='Date of Birth *'
                           error={Boolean(errors.dateOfBirth)}
                           {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
                         />

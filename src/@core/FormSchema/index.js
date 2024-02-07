@@ -157,7 +157,7 @@ export const downloadRosterSchema = yup.object().shape({
 export const signUpSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
-  middleName: yup.string().required('Middle Name is required'),
+  middleName: yup.string(),
   email: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
   title: yup.string().required('Title is required'),
@@ -191,16 +191,28 @@ export const studentSignUpSchema = yup.object().shape({
 export const createActorSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
-  middleName: yup.string().required('Middle Name is required'),
+  middleName: yup.string(),
   email: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
   
   // title: yup.string().required('Title is required'),
-  status: yup.string().required("Status is required"),
+  maritalStatus: yup.string().required("Marital Status is required"),
   phone: yup.string().typeError('Phone Number must be at least 11 Characters')
   .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
-  residentialAddress: yup.string().required('residentialAddress is required'),
+  residentialAddress: yup.string(),
+  gender: yup.string().required('Gender is required')
+})
+
+export const createStudentSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string(),
+  email: yup.string(),
+  password: yup.string().required('Password is required'),
+  phone: yup.string(),
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string(),
   gender: yup.string().required('Gender is required')
 })
 
