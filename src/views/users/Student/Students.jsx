@@ -92,7 +92,7 @@ const defaultColumns = [
 
   {
     flex: 0.25,
-    field: 'name',
+    field: 'email',
     minWidth: 320,
     headerName: 'Student',
     renderCell: ({ row }) => {
@@ -125,7 +125,7 @@ const defaultColumns = [
     minWidth: 140,
     field: 'phone',
     headerName: 'Phone Number',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone}</Typography>
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
   },
   {
     flex: 0.15,

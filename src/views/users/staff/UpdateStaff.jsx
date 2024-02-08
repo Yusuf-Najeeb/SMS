@@ -45,8 +45,6 @@ import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { useAppDispatch } from '../../../hooks'
-
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -67,7 +65,7 @@ import { defaultNextOfKinValues, defaultUpdateStaffPersonalValues, defaultWorkIn
 
 // Others
 import { notifyWarn } from '../../../@core/components/toasts/notifyWarn'
-import { formatDateToYYYMMDDD, formatFirstLetter } from '../../../@core/utils/format'
+import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 
 // import { uploadImage } from '../../../store/apps/upload'
@@ -142,6 +140,8 @@ const UpdateStaff = ({open, closeModal, refetchStaffs, selectedStaff}) => {
   const smallScreen = useMediaQuery(theme => theme.breakpoints.down('md'))
   const { direction } = settings
 
+  console.log(selectedStaff, 'staff')
+
 
 
   useEffect(() => {
@@ -190,11 +190,18 @@ const UpdateStaff = ({open, closeModal, refetchStaffs, selectedStaff}) => {
     setMedicalValue('previousSurgery', selectedStaff?.previousSurgery)
     setMedicalValue('healthStatus', selectedStaff?.healthStatus)
 
-    setNextOfKinValue('addressOfReferee', selectedStaff?.addressOfReferee)
-    setNextOfKinValue('nameOfReferee', selectedStaff?.nameOfReferee)
+    setNextOfKinValue('addressOfRefereeOne', selectedStaff?.addressOfRefereeOne)
+    setNextOfKinValue('addressOfRefereeTwo', selectedStaff?.addressOfRefereeTwo)
+    setNextOfKinValue('emailOfRefereeTwo', selectedStaff?.emailOfRefereeTwo)
+    setNextOfKinValue('emailOfRefereeOne', selectedStaff?.emailOfRefereeOne)
+    setNextOfKinValue('phoneOfRefereeOne', selectedStaff?.phoneOfRefereeOne)
+    setNextOfKinValue('phoneOfRefereeTwo', selectedStaff?.phoneOfRefereeTwo)
+    setNextOfKinValue('nameOfRefereeOne', selectedStaff?.nameOfRefereeOne)
+    setNextOfKinValue('nameOfRefereeTwo', selectedStaff?.nameOfRefereeTwo)
     setNextOfKinValue('nextOfKinName', selectedStaff?.nextOfKinName)
     setNextOfKinValue('nextOfKinAddress', selectedStaff?.nextOfKinAddress)
     setNextOfKinValue('emergencyPhone', selectedStaff?.emergencyPhone)
+    setNextOfKinValue('relationship', selectedStaff?.relationship)
 
     }
 
@@ -291,7 +298,8 @@ const UpdateStaff = ({open, closeModal, refetchStaffs, selectedStaff}) => {
     const handleReset = () => {
         setPreviewUrl(null)
         setActiveStep(0)
-        nextofKinReset({ nameOfReferee: '', addressOfReferee: '', nextOfKinName: '', nextOfKinAddress: '', emergencyPhone: ''  })
+        nextofKinReset({ nameOfRefereeOne: '', addressOfRefereeOne: '', phoneOfRefereeOne: '', phoneOfRefereeTwo: '', nextOfKinName: '', nextOfKinAddress: '',
+         emergencyPhone: '', nameOfRefereeTwo: '', addressOfRefereeTwo: '', emailOfRefereeOne: '', emailOfRefereeTwo: '', relationship: ''  })
         workInfoReset({ qualification: '', department_section: '', previousWorkExperience: '', institutionAttended: '',  specialization: '', accountNumber: '', 
         basicSalary: '' , mealAllowance: '', transportAllowance: '', domesticAllowance: '', furnitureAllowance: '', SalaryArrears: '',rentAllowance: '',
           bankName: '', branch: '', role: ''})
@@ -465,7 +473,7 @@ const UpdateStaff = ({open, closeModal, refetchStaffs, selectedStaff}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='lastName' control={personalControl} requireBoolean={true} label="Last Name" error={personalErrors['lastName']} errorMessage={personalErrors.lastName?.message} />
+              <FormController name='lastName' control={personalControl}  requireBoolean={true} label="Last Name" error={personalErrors['lastName']} errorMessage={personalErrors.lastName?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
@@ -522,6 +530,7 @@ const UpdateStaff = ({open, closeModal, refetchStaffs, selectedStaff}) => {
                       select
                       fullWidth
                       value={value}
+                      required
                       label='Gender'
                       onChange={onChange}
                       id='stepper-linear-personal-gender'
@@ -572,6 +581,7 @@ const UpdateStaff = ({open, closeModal, refetchStaffs, selectedStaff}) => {
                       fullWidth
                       value={value}
                       label='Title'
+                      required
                       onChange={onChange}
                       id='stepper-linear-personal-title'
                       error={Boolean(personalErrors.title)}
@@ -798,23 +808,48 @@ const UpdateStaff = ({open, closeModal, refetchStaffs, selectedStaff}) => {
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <FormController name='nameOfReferee' control={nextOfKinControl} requireBoolean={true} label="Name of Referee" error={nextOfKinErrors['nameOfReferee']} errorMessage={nextOfKinErrors?.nameOfReferee?.message} />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormController name='addressOfReferee' control={nextOfKinControl} requireBoolean={true} label="Address of Referee" error={nextOfKinErrors['addressOfReferee']} errorMessage={nextOfKinErrors?.addressOfReferee?.message} />
-              </Grid>
-              <Grid item xs={12} sm={4}>
               <FormController name='nextOfKinName' control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Name" error={nextOfKinErrors['nextOfKinName']} errorMessage={nextOfKinErrors?.nextOfKinName?.message} />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                  <FormController name='nextOfKinAddress' control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Address" error={nextOfKinErrors['nextOfKinAddress']} errorMessage={nextOfKinErrors?.nextOfKinAddress?.message} />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <FormController name='emergencyPhone' control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Phone Number" error={nextOfKinErrors['emergencyPhone']} errorMessage={nextOfKinErrors?.emergencyPhone?.message} />
-
+              <Grid item xs={12} sm={4}>
+                <FormController name='relationship'  control={nextOfKinControl} requireBoolean={true} label="Relationship" error={nextOfKinErrors['relationship']} errorMessage={nextOfKinErrors?.relationship?.message} />
               </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <FormController name='emergencyPhone'  control={nextOfKinControl} requireBoolean={true} label="Emergency Phone Number" error={nextOfKinErrors['emergencyPhone']} errorMessage={nextOfKinErrors?.emergencyPhone?.message} />
+              </Grid>
+
+           
+              <Grid item xs={12} sm={4}>
+                <FormController name='nameOfRefereeOne' control={nextOfKinControl}  requireBoolean={true} label="Name of Referee One" error={nextOfKinErrors['nameOfRefereeOne']} errorMessage={nextOfKinErrors?.nameOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='addressOfRefereeOne' control={nextOfKinControl} requireBoolean={true} label="Address of Referee One" error={nextOfKinErrors['addressOfRefereeOne']} errorMessage={nextOfKinErrors?.addressOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='emailOfRefereeOne' control={nextOfKinControl} requireBoolean={true} label="Email of Referee One" error={nextOfKinErrors['emailOfRefereeOne']} errorMessage={nextOfKinErrors?.emailOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='phoneOfRefereeOne' control={nextOfKinControl} requireBoolean={true} label="Phone Number of Referee One" error={nextOfKinErrors['phoneOfRefereeOne']} errorMessage={nextOfKinErrors?.phoneOfRefereeOne?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='nameOfRefereeTwo' control={nextOfKinControl}  requireBoolean={true} label="Name of Referee Two" error={nextOfKinErrors['nameOfRefereeTwo']} errorMessage={nextOfKinErrors?.nameOfRefereeTwo?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='addressOfRefereeTwo' control={nextOfKinControl}  requireBoolean={true} label="Address of Referee Two" error={nextOfKinErrors['addressOfRefereeTwo']} errorMessage={nextOfKinErrors?.addressOfRefereeTwo?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='emailOfRefereeTwo' control={nextOfKinControl} requireBoolean={true} label="Email of Referee Two" error={nextOfKinErrors['emailOfRefereeTwo']} errorMessage={nextOfKinErrors?.emailOfRefereeTwo?.message} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormController name='phoneOfRefereeTwo' control={nextOfKinControl} requireBoolean={true} label="Phone of Referee Two" error={nextOfKinErrors['phoneOfRefereeTwo']} errorMessage={nextOfKinErrors?.phoneOfRefereeTwo?.message} />
+              </Grid>
+
+             
 
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
