@@ -39,6 +39,7 @@ import PageHeader from '../component/PageHeader'
 import CreateCategory from '../component/CreateCategory'
 import { useExpenditureCategory } from '../../../hooks/useExpenditureCategory'
 import { fetchExpenditureCategory } from '../../../store/apps/expenditureCategory/asyncthunk'
+import { formatDateToReadableFormat } from '../../../@core/utils/format'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -94,6 +95,14 @@ const defaultColumns = [
     field: 'type',
     headerName: 'Category Type',
     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.type.toUpperCase() || '--'}</Typography>
+  },
+
+  {
+    flex: 0.1,
+    minWidth: 100,
+    field: 'createdAt',
+    headerName: 'Date Created',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{formatDateToReadableFormat(row.createdAt)}</Typography>
   },
 
 
@@ -231,57 +240,58 @@ const IncomeCategory = () => {
 
   const columns = [
     ...defaultColumns,
-    {
-      flex: 0.1,
-      minWidth: 140,
-      sortable: false,
-      field: 'actions',
-      headerName: 'Actions',
-      renderCell: ({ row }) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* <Tooltip title='Edit Income'>
-             <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
-            <Icon icon='tabler:edit' />
-            </IconButton>
-            </Tooltip> */}
-          <Tooltip title='Delete Income'>
-            <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
-              <Icon icon='tabler:trash' />
-            </IconButton>
-          </Tooltip>
-          {/* <Tooltip title='View'>
-            <IconButton
-              size='small'
-              component={Link}
-              sx={{ color: 'text.secondary' }}
-              href={`/apps/invoice/preview/${row.id}`}
-            >
-              <Icon icon='tabler:eye' />
-            </IconButton>
-          </Tooltip> */}
+    
+    // {
+    //   flex: 0.1,
+    //   minWidth: 140,
+    //   sortable: false,
+    //   field: 'actions',
+    //   headerName: 'Actions',
+    //   renderCell: ({ row }) => (
+    //     <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    //         {/* <Tooltip title='Edit Income'>
+    //          <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
+    //         <Icon icon='tabler:edit' />
+    //         </IconButton>
+    //         </Tooltip> */}
+    //       <Tooltip title='Delete Income'>
+    //         <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
+    //           <Icon icon='tabler:trash' />
+    //         </IconButton>
+    //       </Tooltip>
+    //       {/* <Tooltip title='View'>
+    //         <IconButton
+    //           size='small'
+    //           component={Link}
+    //           sx={{ color: 'text.secondary' }}
+    //           href={`/apps/invoice/preview/${row.id}`}
+    //         >
+    //           <Icon icon='tabler:eye' />
+    //         </IconButton>
+    //       </Tooltip> */}
 
-          {/* <OptionsMenu
-            menuProps={{ sx: { '& .MuiMenuItem-root svg': { mr: 2 } } }}
-            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-            options={[
-              {
-                text: 'Download',
-                icon: <Icon icon='tabler:download' fontSize={20} />
-              },
-              {
-                text: 'Edit',
-                href: `/apps/invoice/edit/${row.id}`,
-                icon: <Icon icon='tabler:edit' fontSize={20} />
-              },
-              {
-                text: 'Duplicate',
-                icon: <Icon icon='tabler:copy' fontSize={20} />
-              }
-            ]}
-          /> */}
-        </Box>
-      )
-    }
+    //       {/* <OptionsMenu
+    //         menuProps={{ sx: { '& .MuiMenuItem-root svg': { mr: 2 } } }}
+    //         iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+    //         options={[
+    //           {
+    //             text: 'Download',
+    //             icon: <Icon icon='tabler:download' fontSize={20} />
+    //           },
+    //           {
+    //             text: 'Edit',
+    //             href: `/apps/invoice/edit/${row.id}`,
+    //             icon: <Icon icon='tabler:edit' fontSize={20} />
+    //           },
+    //           {
+    //             text: 'Duplicate',
+    //             icon: <Icon icon='tabler:copy' fontSize={20} />
+    //           }
+    //         ]}
+    //       /> */}
+    //     </Box>
+    //   )
+    // }
   ]
 
   return (
