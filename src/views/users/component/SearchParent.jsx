@@ -45,7 +45,7 @@ const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
+const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray, clearStudentArray, clearStaffArray }) => {
   const dispatch = useAppDispatch()
 
   const [queryParents, setQueryParents] = useState([])
@@ -86,6 +86,9 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
 
       setItemsArray(prevItems => [...prevItems, newItem])
     }
+
+    clearStudentArray()
+    clearStaffArray()
   }
 
   const removeitem = parentId => {

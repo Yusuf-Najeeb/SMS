@@ -7,13 +7,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export const fetchIncomeCategory = createAsyncThunk('/ncome-category/FetchIncome', async (query) => {
     try {
-      const response = await axios.get(`/category?page=${query.page}&limit=10&type=income`)
+      const response = await axios.get(`/category?page=${query.page}&limit=${query.limit}&type=income`)
 
-      console.log(response, 'income category data')
 
       return response
     } catch (error) {
-      console.log(error, 'error')
 
     //   notifyError('Error fetching Guardian')
   
@@ -26,7 +24,6 @@ export const fetchIncomeCategory = createAsyncThunk('/ncome-category/FetchIncome
 
       return res
     } catch (error) {
-      console.log(error)
       
     }
   }

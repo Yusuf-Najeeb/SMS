@@ -338,7 +338,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
 
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
           <Button type='button' variant='outlined' onClick={toggleParentModal}>
-              Select Parent
+              Select Guardian
             </Button>
             <Button type='submit' variant='contained' disabled={isSubmitting || itemsArray.length == 0}>
               {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Add Student'}

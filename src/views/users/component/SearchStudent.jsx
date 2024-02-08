@@ -28,6 +28,7 @@ import SearchSpinner from 'src/@core/components/custom-spinner/SearchSpinner'
 import { searchParent } from '../../../store/apps/guardian/asyncthunk'
 import { Dialog, DialogContent, Drawer, Icon, IconButton, Input, TableHead } from '@mui/material'
 import { Header } from '../staff/ViewStaff'
+import { searchStudent } from '../../../store/apps/Student/asyncthunk'
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -45,10 +46,10 @@ const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
+const SearchStudent = ({ openModal, closeModal, itemsArray, setItemsArray, clearParentArray, clearStaffArray }) => {
   const dispatch = useAppDispatch()
 
-  const [queryParents, setQueryParents] = useState([])
+  const [queryStudents, setQueryStudents] = useState([])
 
   //   const [value, setValue] = useState<string>('')
   const [searching, setSearching] = useState(false)
@@ -58,19 +59,19 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
   const handleSearchChange = async value => {
     setSearching(true)
 
-    searchParent(value).then(res => {
+    searchStudent(value).then(res => {
       // Check if response is not empty before setting it
       if (res && res.length > 0) {
-        setQueryParents(res)
+        setQueryStudents(res)
         setSearching(false)
       } else {
-        setQueryParents([])
+        setQueryStudents([])
         setSearching(false)
       }
     })
   }
 
-  const handleAddParent = value => {
+  const handleAddStudent = value => {
     const firstName = value.firstName
     const lastName = value.lastName
     const id = value.id
@@ -86,10 +87,13 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
 
       setItemsArray(prevItems => [...prevItems, newItem])
     }
+
+    clearParentArray()
+    clearStaffArray()
   }
 
-  const removeitem = parentId => {
-   const filteredItems =  itemsArray.filter(item => item.id !== parentId)
+  const removeitem = studentId => {
+   const filteredItems =  itemsArray.filter(item => item.id !== studentId)
 
    setItemsArray(filteredItems)
   }
@@ -107,7 +111,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 800 } } }}
     >
       <Header>
-        {/* <Typography variant='h5'> Search Parent</Typography> */}
+        {/* <Typography variant='h5'> Search Student</Typography> */}
         <div></div>
         <IconButton
           size='small'
@@ -120,9 +124,8 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
               backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.16)`
             }
           }}
-        >
-            ❌
-          {/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
+        > ❌
+          {/* <Icon icon='tabler:x' fontSize='1.125rem' />  */}
         </IconButton>
       </Header>
 
@@ -141,12 +144,12 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
         <Box sx={{ mx: 4, my: 4 }}>
           <FormControl variant='standard' sx={{ width: '100%' }}>
             <Input
-              sx={{ padding: '2px', maxWidth: '100%' }}
+              sx={{ padding: '2px', width: '100%' }}
               onBlur={e => handleSearchChange(e.target.value)}
-              placeholder='Search Guardian'
+              placeholder='Search Student'
               id='input-with-icon-adornment'
               endAdornment={
-                <InputAdornment position='start' sx={{cursor: 'pointer'}}>
+                <InputAdornment position='start' sx={{  cursor: 'pointer'}}>
                   {/* <Icon icon='el:search-alt' /> */}
                   🔎
                 </InputAdornment>
@@ -155,6 +158,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
           </FormControl>
         </Box>
 
+        
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
           <Table stickyHeader aria-label='sticky table'>
             <TableBody>
@@ -166,14 +170,14 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                 </TableRow>
               ) : (
                 <Fragment>
-                  {queryParents.map(prods => (
+                  {queryStudents.map(prods => (
                     <Fragment key={prods.id}>
                       <TableRow
                         hover
                         sx={{ cursor: 'pointer' }}
                         onClick={() => {
                           scrollToBottom()
-                          handleAddParent(prods)
+                          handleAddStudent(prods)
                         }}
                       >
                         <TableCell>
@@ -196,7 +200,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                     </Fragment>
                   ))}
 
-                  {queryParents.length === 0 && !searching && (
+                  {queryStudents.length === 0 && !searching && (
                     <tr className='text-center'>
                       <td colSpan={6}>
                         <Typography
@@ -208,7 +212,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                             justifyContent: 'center'
                           }}
                         >
-                          Oops! 😖 No Available Parents.
+                          Oops! 😖 No Available Students.
                         </Typography>
                       </td>
                     </tr>
@@ -274,4 +278,4 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
   )
 }
 
-export default SearchParent
+export default SearchStudent

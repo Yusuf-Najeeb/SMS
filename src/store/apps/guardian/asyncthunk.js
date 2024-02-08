@@ -33,7 +33,7 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
 
   export const searchParent = async (key)=> {
     try {
-      const response = await axios.get(`/users?page=1&limit=20&key=${key}&type=parent`)
+      const response = await axios.get(`/users?page=1&limit=2000&key=${key}&type=parent`)
   
       return response?.data.data.result
     } catch (error) {

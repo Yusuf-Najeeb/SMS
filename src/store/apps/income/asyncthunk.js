@@ -9,15 +9,24 @@ export const fetchIncome = createAsyncThunk('/ncome/FetchIncome', async (query) 
     try {
       const response = await axios.get(`/accounts?page=${query.page}&limit=10&key=${query.key}&type=income`)
 
-      console.log(response, 'income data')
 
       return response
     } catch (error) {
-      console.log(error, 'error')
 
     //   notifyError('Error fetching Guardian')
   
     }
   })
 
+
+ export const createIncome = async (vals)=> {
+    try {
+      const res = await axios.post(`/accounts`, vals) 
+
+
+      return res
+    } catch (error) {
+      notifyError('Failed to create income')
+    }
+  }
 

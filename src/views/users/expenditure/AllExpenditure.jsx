@@ -33,19 +33,14 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { deleteStudent } from '../../../store/apps/Student/asyncthunk'
-import { formatCurrency, formatDate, formatDateToReadableFormat,  } from '../../../@core/utils/format'
+import { formatCurrency,  formatDateToReadableFormat,  } from '../../../@core/utils/format'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import PageHeader from '../component/PageHeader'
 import { useExpenditure } from '../../../hooks/useExpenditure'
 import { fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
+import CreateExpenditure from './CreateExpenditure'
 
-// ** Styled component for the link in the dataTable
-const LinkStyled = styled(Link)(({ theme }) => ({
-  textDecoration: 'none',
-  fontSize: theme.typography.body1.fontSize,
-  color: `${theme.palette.primary.main} !important`
-}))
-
+// ** Styled component for typography
 const TypographyStyled = styled(Typography)(({theme})=> ({
     fontSize: theme.typography.body1.fontSize,
     color: `${theme.palette.primary.main} !important` 
@@ -322,6 +317,7 @@ const AllExpenditure = () => {
 
     {/* <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
     {/* <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  /> */}
+    <CreateExpenditure open={showModal} closeModal={toggleModal} fetchData={updateFetch}  />
    
     </Fragment>
   )
