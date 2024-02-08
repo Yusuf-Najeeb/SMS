@@ -58,7 +58,7 @@ export const updateStaffPersonalInfoSchema = yup.object().shape({
   city: yup.string().required('City of Residence is required'),
   state: yup.string().required('State of Origin is required'),
   lga: yup.string().required('Local Government of Origin is required'),
-  religion: yup.string(),
+  religion: yup.string().required('Religion is required'),
   staffDescription: yup.string().required('Description is required'),
 
   // additionalInfo: yup.string()
@@ -92,7 +92,7 @@ export const updatestaffWorkInfoSchema = yup.object().shape({
   department_section: yup.string().required('Department is required'),
   institutionAttended: yup.string().required('Institution Attended is required'),
   specialization: yup.string(),
-  previousWorkExperience: yup.string(),
+  previousWorkExperience: yup.string().required('Previous work experience is required'),
   basicSalary: yup.number().typeError('Basic salary must be a number'),
   mealAllowance: yup.number().typeError('Meal Allowance must be a number'),
   transportAllowance: yup.number().typeError('Transport Allowance must be a number'),
@@ -120,13 +120,13 @@ export const nextOfKinSchema = yup.object().shape({
   nameOfRefereeTwo: yup.string(),
   addressOfRefereeOne: yup.string(),
   addressOfRefereeTwo: yup.string(),
-  emailOfRefereeOne: yup.string(),
-  emailOfRefereeTwo: yup.string(),
+  emailOfRefereeOne: yup.string().email(),
+  emailOfRefereeTwo: yup.string().email(),
   phoneOfRefereeOne: yup.string(),
   phoneOfRefereeTwo: yup.string(),
   nextOfKinName: yup.string().required("Next of Kin's name is required"),
   nextOfKinAddress: yup.string(),
-  emergencyPhone: yup.string().required("Next of Kin's phone number is required"),
+  emergencyPhone: yup.string().required("Emergency phone number is required"),
   relationShip: yup.string(),
 })
 

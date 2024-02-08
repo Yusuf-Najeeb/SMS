@@ -14,11 +14,11 @@ const navigation = () => {
     //   icon: 'tabler:mail',
     //   path: '/apps/new-staff/list'
     // },
-    {
-      title: 'Staff Attendance',
-      icon: 'material-symbols:co-present-rounded',
-      path: '/apps/staff-attendence/list'
-    },
+    // {
+    //   title: 'Staff Attendance',
+    //   icon: 'material-symbols:co-present-rounded',
+    //   path: '/apps/staff-attendence/list'
+    // },
 
     {
       sectionTitle: 'Students'
@@ -34,11 +34,12 @@ const navigation = () => {
     //   icon: 'tabler:mail',
     //   path: '/apps/newStudent/list'
     // },
-    {
-      title: 'Students Attendence',
-      icon: 'material-symbols:co-present-rounded',
-      path: '/apps/student-attendence/list'
-    },
+
+    // {
+    //   title: 'Students Attendence',
+    //   icon: 'material-symbols:co-present-rounded',
+    //   path: '/apps/student-attendence/list'
+    // },
     {
       sectionTitle: 'Guardians'
     },
@@ -48,46 +49,46 @@ const navigation = () => {
       path: '/apps/guardian'
     },
 
-    {
-      title: 'New Guardian',
-      icon: 'raphael:parent',
-      path: '/apps/newGuardian/list'
-    },
-    {
-      sectionTitle: 'Academics '
-    },
-    {
-      title: 'Subjects',
-      icon: 'mdi:learn-outline',
-      path: '/apps/subject-list/list'
-    },
+    // {
+    //   title: 'New Guardian',
+    //   icon: 'raphael:parent',
+    //   path: '/apps/newGuardian/list'
+    // },
+    // {
+    //   sectionTitle: 'Academics '
+    // },
+    // {
+    //   title: 'Subjects',
+    //   icon: 'mdi:learn-outline',
+    //   path: '/apps/subject-list/list'
+    // },
 
-    {
-      title: 'Tests and Exams',
-      icon: 'healthicons:i-exam-multiple-choice',
-      path: '/apps/tests-exams/list'
-    },
+    // {
+    //   title: 'Tests and Exams',
+    //   icon: 'healthicons:i-exam-multiple-choice',
+    //   path: '/apps/tests-exams/list'
+    // },
 
-    {
-      title: 'Classrooms',
-      icon: 'mdi:google-classroom',
-      path: '/apps/classroom/list'
-    },
-    {
-      title: 'Result Manager',
-      icon: 'healthicons:i-exam-qualification',
-      path: '/apps/result-manager/list'
-    },
-    {
-      title: 'Library',
-      icon: 'arcticons:classroom',
-      path: '/apps/library/list'
-    },
-    {
-      title: 'Exam',
-      icon: 'healthicons:i-exam-multiple-choice',
-      path: '/apps/exam/list'
-    },
+    // {
+    //   title: 'Classrooms',
+    //   icon: 'mdi:google-classroom',
+    //   path: '/apps/classroom/list'
+    // },
+    // {
+    //   title: 'Result Manager',
+    //   icon: 'healthicons:i-exam-qualification',
+    //   path: '/apps/result-manager/list'
+    // },
+    // {
+    //   title: 'Library',
+    //   icon: 'arcticons:classroom',
+    //   path: '/apps/library/list'
+    // },
+    // {
+    //   title: 'Exam',
+    //   icon: 'healthicons:i-exam-multiple-choice',
+    //   path: '/apps/exam/list'
+    // },
     {
       sectionTitle: 'Accounts '
     },
@@ -101,37 +102,38 @@ const navigation = () => {
       icon: 'game-icons:pay-money',
       path: '/apps/expenditure'
     },
-    {
-      title: 'Fees and Billing',
-      icon: 'fa6-solid:file-invoice-dollar',
-      path: '/apps/fees-billing/list'
-    },
 
-    {
-      title: 'Expenses',
-      icon: 'arcticons:day-to-day-expenses',
-      path: '/apps/expense/list'
-    },
+    // {
+    //   title: 'Fees and Billing',
+    //   icon: 'fa6-solid:file-invoice-dollar',
+    //   path: '/apps/fees-billing/list'
+    // },
 
-    {
-      title: 'Invoices',
-      icon: 'vaadin:invoice',
-      path: '/apps/invoice/list'
-    },
-    {
-      title: 'Inventory',
-      icon: 'ic:outline-inventory-2',
-      path: '/apps/inventory/list'
-    },
+    // {
+    //   title: 'Expenses',
+    //   icon: 'arcticons:day-to-day-expenses',
+    //   path: '/apps/expense/list'
+    // },
 
-    {
-      sectionTitle: 'Settings'
-    },
-    {
-      title: 'Settings',
-      icon: 'tabler:settings',
-      path: '/pages/wizard-examples/property-listing'
-    }
+    // {
+    //   title: 'Invoices',
+    //   icon: 'vaadin:invoice',
+    //   path: '/apps/invoice/list'
+    // },
+    // {
+    //   title: 'Inventory',
+    //   icon: 'ic:outline-inventory-2',
+    //   path: '/apps/inventory/list'
+    // },
+
+    // {
+    //   sectionTitle: 'Settings'
+    // },
+    // {
+    //   title: 'Settings',
+    //   icon: 'tabler:settings',
+    //   path: '/pages/wizard-examples/property-listing'
+    // }
 
     // {
     //   sectionTitle: 'Forms & Tables'

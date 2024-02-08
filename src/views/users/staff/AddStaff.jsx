@@ -824,12 +824,14 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='emergencyPhone' required={true} control={nextOfKinControl} requireBoolean={true} label="Next Of Kin's Phone Number" error={nextOfKinErrors['emergencyPhone']} errorMessage={nextOfKinErrors?.emergencyPhone?.message} />
+                <FormController name='relationship'  control={nextOfKinControl} requireBoolean={true} label="Relationship" error={nextOfKinErrors['relationship']} errorMessage={nextOfKinErrors?.relationship?.message} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='relationship'  control={nextOfKinControl} requireBoolean={true} label="Relationship" error={nextOfKinErrors['relationship']} errorMessage={nextOfKinErrors?.relationship?.message} />
+                <FormController name='emergencyPhone' required={true} control={nextOfKinControl} requireBoolean={true} label="Emergency Phone Number" error={nextOfKinErrors['emergencyPhone']} errorMessage={nextOfKinErrors?.emergencyPhone?.message} />
               </Grid>
+
+           
               <Grid item xs={12} sm={4}>
                 <FormController name='nameOfRefereeOne' control={nextOfKinControl}  requireBoolean={true} label="Name of Referee One" error={nextOfKinErrors['nameOfRefereeOne']} errorMessage={nextOfKinErrors?.nameOfRefereeOne?.message} />
               </Grid>
