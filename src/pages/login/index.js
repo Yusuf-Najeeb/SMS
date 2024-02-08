@@ -221,11 +221,11 @@ const LoginPage = () => {
                     <CustomTextField
                       fullWidth
                       autoFocus
-                      label='User ID'
+                      label='Email'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      placeholder='SCH_DE0987654'
+                      placeholder='user@school.com'
                       error={Boolean(errors.userId)}
                       {...(errors.userId && { helperText: errors.userId.message })}
                     />

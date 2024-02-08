@@ -13,6 +13,7 @@ import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { DataGrid } from '@mui/x-data-grid'
+import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -39,6 +40,7 @@ import PageHeader from '../component/PageHeader'
 import { useExpenditure } from '../../../hooks/useExpenditure'
 import { fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
 import CreateExpenditure from './CreateExpenditure'
+import EditExpenditure from './EditExpenditure'
 
 // ** Styled component for typography
 const TypographyStyled = styled(Typography)(({theme})=> ({
@@ -93,7 +95,7 @@ const defaultColumns = [
     minWidth: 140,
     field: 'category',
     headerName: 'Category',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.category.name}</Typography>
+    renderCell: ({ row }) => <CustomChip rounded size='small' skin='light' color='success' label={row.category.name} />
   },
   {
     flex: 0.15,
@@ -176,8 +178,7 @@ const AllExpenditure = () => {
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
-  const [studentToUpdate, setstudentToUpdate] = useState(null)
-  const [email, setGuardianEmail] = useState(null)
+  const [expenditureToUpdate, setExpenditureToUpdate] = useState(null)
 
   
 
@@ -215,13 +216,12 @@ const AllExpenditure = () => {
    
   }
 
-  const setGuardianToEdit = (value) => {
+  const setExpenditureToEdit = (value) => {
     setEditDrawer(true)
-    setstudentToUpdate(value)
-    setGuardianEmail(value?.email)
+    setExpenditureToUpdate(value)
   }
 
-  const closeEditModal = ()=> setEditDrawer(false)
+  const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
 
 
   useEffect(()=>{
@@ -240,16 +240,17 @@ const AllExpenditure = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* <Tooltip title='Edit Expenditure'>
-             <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
+            <Tooltip title='Edit Expenditure'>
+             <IconButton size='small' onClick={() => setExpenditureToEdit(row)}>
             <Icon icon='tabler:edit' />
             </IconButton>
-            </Tooltip> */}
-          <Tooltip title='Delete Expenditure'>
+            </Tooltip>
+            
+          {/* <Tooltip title='Delete Expenditure'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
           {/* <Tooltip title='View'>
             <IconButton
               size='small'
@@ -318,6 +319,7 @@ const AllExpenditure = () => {
     {/* <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
     {/* <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  /> */}
     <CreateExpenditure open={showModal} closeModal={toggleModal} fetchData={updateFetch}  />
+    <EditExpenditure open={openEditDrawer} closeModal={closeEditModal} fetchData={updateFetch} selectedExpenditure={expenditureToUpdate} />
    
     </Fragment>
   )

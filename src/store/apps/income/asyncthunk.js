@@ -30,3 +30,14 @@ export const fetchIncome = createAsyncThunk('/ncome/FetchIncome', async (query) 
     }
   }
 
+  export const updateIncome = async (vals, id)=> {
+    try {
+      const res = await axios.patch(`/accounts/updateincomeandexpenditure/${id}`, vals) 
+
+
+      return res
+    } catch (error) {
+      notifyError('Failed to update income')
+    }
+  }
+

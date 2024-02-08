@@ -27,4 +27,14 @@ export const fetchExpenditure = createAsyncThunk('/expenditure/FetchExpenditure'
     }
   }
 
+  export const updateExpenditure = async (vals, id)=> {
+    try {
+      const res = await axios.patch(`/accounts/updateincomeandexpenditure/${id}`, vals) 
+
+
+      return res
+    } catch (error) {
+      notifyError('Failed to update expenditure')
+    }
+  }
 
