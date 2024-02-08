@@ -91,3 +91,13 @@ export const deleteStaff =  async (email) => {
 
   }
 }
+
+export const searchStaff = async (key)=> {
+  try {
+    const response = await axios.get(`/staffs/allstaffs?page=1&limit=2000&key=${key}`)
+
+    return response?.data.data.result
+  } catch (error) {
+    
+  }
+}

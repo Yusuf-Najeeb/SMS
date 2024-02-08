@@ -243,13 +243,20 @@ export const editStaffSchema = yup.object().shape({
   branch: yup.string().required('branch is required')
 })
 
-export const incomeAndExpenditureSchema = yup.object().shape({
+export const createIncomeSchema = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  amount: yup.number().typeError('Amount must be a number'),
+  amountPaid: yup.number().typeError('Amount Received must be a number'),
+  categoryId: yup.string().required('Category is required'),
+  incomeOwner: yup.string().required('This field is required')
+})
+
+export const createExpenditureSchema = yup.object().shape({
   title: yup.string().required('Title is required'),
   amount: yup.number().typeError('Amount must be a number'),
   amountPaid: yup.number().typeError('Amount Paid must be a number'),
   categoryId: yup.string().required('Category is required'),
-  userId: yup.string(),
-  staffId: yup.string(),
+  expenditureOwner: yup.string().required('This field is required')
 })
 
 export const categorySchema = yup.object().shape({

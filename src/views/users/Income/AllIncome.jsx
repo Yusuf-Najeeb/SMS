@@ -35,19 +35,12 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { deleteStudent } from '../../../store/apps/Student/asyncthunk'
 import { formatCurrency, formatDate, formatDateToReadableFormat,  } from '../../../@core/utils/format'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
-import Stats from '../component/Stats'
-import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { fetchIncome } from '../../../store/apps/income/asyncthunk'
 import { useIncome } from '../../../hooks/useIncome'
 import PageHeader from '../component/PageHeader'
+import CreateIncome from './CreateIncome'
 
-// ** Styled component for the link in the dataTable
-const LinkStyled = styled(Link)(({ theme }) => ({
-  textDecoration: 'none',
-  fontSize: theme.typography.body1.fontSize,
-  color: `${theme.palette.primary.main} !important`
-}))
-
+// ** Styled component for typography
 const TypographyStyled = styled(Typography)(({theme})=> ({
     fontSize: theme.typography.body1.fontSize,
     color: `${theme.palette.primary.main} !important` 
@@ -324,7 +317,7 @@ const AllIncome = () => {
 
     {/* <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
     {/* <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  /> */}
-   
+    <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch}  />
     </Fragment>
   )
 }

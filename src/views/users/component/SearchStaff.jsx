@@ -28,6 +28,7 @@ import SearchSpinner from 'src/@core/components/custom-spinner/SearchSpinner'
 import { searchParent } from '../../../store/apps/guardian/asyncthunk'
 import { Dialog, DialogContent, Drawer, Icon, IconButton, Input, TableHead } from '@mui/material'
 import { Header } from '../staff/ViewStaff'
+import { searchStaff } from '../../../store/apps/staff/asyncthunk'
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -45,10 +46,10 @@ const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
+const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearStudentArray, clearGuardianArray }) => {
   const dispatch = useAppDispatch()
 
-  const [queryParents, setQueryParents] = useState([])
+  const [queryStaff, setQueryStaff] = useState([])
 
   //   const [value, setValue] = useState<string>('')
   const [searching, setSearching] = useState(false)
@@ -58,19 +59,19 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
   const handleSearchChange = async value => {
     setSearching(true)
 
-    searchParent(value).then(res => {
+    searchStaff(value).then(res => {
       // Check if response is not empty before setting it
       if (res && res.length > 0) {
-        setQueryParents(res)
+        setQueryStaff(res)
         setSearching(false)
       } else {
-        setQueryParents([])
+        setQueryStaff([])
         setSearching(false)
       }
     })
   }
 
-  const handleAddParent = value => {
+  const handleAddStaff = value => {
     const firstName = value.firstName
     const lastName = value.lastName
     const id = value.id
@@ -86,6 +87,9 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
 
       setItemsArray(prevItems => [...prevItems, newItem])
     }
+
+    clearGuardianArray()
+    clearStudentArray()
   }
 
   const removeitem = parentId => {
@@ -143,7 +147,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
             <Input
               sx={{ padding: '2px', maxWidth: '100%' }}
               onBlur={e => handleSearchChange(e.target.value)}
-              placeholder='Search Guardian'
+              placeholder='Search Staff'
               id='input-with-icon-adornment'
               endAdornment={
                 <InputAdornment position='start' sx={{cursor: 'pointer'}}>
@@ -166,19 +170,19 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                 </TableRow>
               ) : (
                 <Fragment>
-                  {queryParents.map(prods => (
-                    <Fragment key={prods.id}>
+                  {queryStaff.map(staff => (
+                    <Fragment key={staff.id}>
                       <TableRow
                         hover
                         sx={{ cursor: 'pointer' }}
                         onClick={() => {
                           scrollToBottom()
-                          handleAddParent(prods)
+                          handleAddStaff(staff)
                         }}
                       >
                         <TableCell>
                           <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                            {prods.firstName}
+                            {staff.firstName}
                           </Typography>
                           {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           </Box> */}
@@ -186,7 +190,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
 
                         <TableCell>
                           <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                            {prods.lastName}
+                            {staff.lastName}
                           </Typography>
                           {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                              
@@ -196,7 +200,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                     </Fragment>
                   ))}
 
-                  {queryParents.length === 0 && !searching && (
+                  {queryStaff.length === 0 && !searching && (
                     <tr className='text-center'>
                       <td colSpan={6}>
                         <Typography
@@ -208,7 +212,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                             justifyContent: 'center'
                           }}
                         >
-                          Oops! 😖 No Available Parents.
+                          Oops! 😖 No Available Staff.
                         </Typography>
                       </td>
                     </tr>
@@ -274,4 +278,4 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
   )
 }
 
-export default SearchParent
+export default SearchStaff

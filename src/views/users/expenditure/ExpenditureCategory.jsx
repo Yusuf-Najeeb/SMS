@@ -224,7 +224,7 @@ const IncomeCategory = () => {
   },[refetch, page, key])
 
   useEffect(()=> {
-    dispatch(fetchExpenditureCategory({page: page + 1}))
+    dispatch(fetchExpenditureCategory({page: page + 1, limit: 10}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, refetch])
