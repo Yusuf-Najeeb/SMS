@@ -69,7 +69,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     phone: '',
     dateOfBirth: '',
     residentialAddress: '',
-    gender: ''
+    gender: '',
+    religion: '',
+    ethnicity: ''
   }
 
   const {
@@ -326,6 +328,50 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       onChange={onChange}
                       error={Boolean(errors.residentialAddress)}
                       {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='religion'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      label='Religion'
+                      onChange={onChange}
+                      id='stepper-linear-religion'
+                      error={Boolean(errors.religion)}
+                      aria-describedby='stepper-linear-religion-helper'
+                      {...(errors.religion && { helperText: errors.religion.message})}
+                    >
+                      <MenuItem value='Christianity'>Christianity</MenuItem>
+                      <MenuItem value='Islam'>Islam</MenuItem>
+                      <MenuItem value='Other'>Other</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='ethnicity'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Tribe'
+                      placeholder='Enter Tribe'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.ethnicity)}
+                      {...(errors.ethnicity && { helperText: errors.ethnicity.message })}
                     />
                   )}
                 />

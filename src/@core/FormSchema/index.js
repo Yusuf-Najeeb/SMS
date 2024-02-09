@@ -201,7 +201,10 @@ export const createActorSchema = yup.object().shape({
   .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string(),
-  gender: yup.string().required('Gender is required')
+  gender: yup.string().required('Gender is required'),
+  religion: yup.string(),
+  ethnicity: yup.string(),
+  
 })
 
 export const createStudentSchema = yup.object().shape({
@@ -213,7 +216,9 @@ export const createStudentSchema = yup.object().shape({
   phone: yup.string(),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string(),
-  gender: yup.string().required('Gender is required')
+  gender: yup.string().required('Gender is required'),
+  religion: yup.string(),
+  ethnicity: yup.string(),
 })
 
 export const editActorSchema = yup.object().shape({

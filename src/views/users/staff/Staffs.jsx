@@ -102,7 +102,7 @@ const defaultColumns = [
   {
     flex: 0.25,
     field: 'firstName',
-    minWidth: 320,
+    minWidth: 300,
     headerName: 'Staff',
     renderCell: ({ row }) => {
       const { title, firstName, lastName, email, } = row
@@ -124,10 +124,10 @@ const defaultColumns = [
   },
   {
     flex: 0.1,
-    minWidth: 100,
-    field: 'staffDescription',
-    headerName: 'Staff Description',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.staffDescription || '--'}</Typography>
+    minWidth: 150,
+    field: 'specialization',
+    headerName: 'Specialization',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.specialization || '--'}</Typography>
   },
 
 //   {
@@ -139,14 +139,14 @@ const defaultColumns = [
 //   },
   {
     flex: 0.15,
-    minWidth: 140,
+    minWidth: 130,
     field: 'phone',
     headerName: 'Phone Number',
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
   },
   {
     flex: 0.15,
-    minWidth: 140,
+    minWidth: 100,
     field: 'status',
     headerName: 'Status',
 

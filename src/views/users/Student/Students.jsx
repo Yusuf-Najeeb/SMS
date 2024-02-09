@@ -116,16 +116,16 @@ const defaultColumns = [
   {
     flex: 0.1,
     minWidth: 100,
-    field: 'address',
-    headerName: 'Address',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress || '--'}</Typography>
+    field: 'religion',
+    headerName: 'religion',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.religion || '--'}</Typography>
   },
   {
     flex: 0.15,
     minWidth: 140,
-    field: 'phone',
-    headerName: 'Phone Number',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
+    field: 'ethnicity',
+    headerName: 'Tribe',
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.ethnicity || '--'}</Typography>
   },
   {
     flex: 0.15,
@@ -142,55 +142,7 @@ const defaultColumns = [
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDate(row.dateOfBirth)}</Typography>
   },
 
-//   {
-//     flex: 0.1,
-//     minWidth: 100,
-//     field: 'balance',
-//     headerName: 'Balance',
-//     renderCell: ({ row }) => {
-//       return row.balance !== 0 ? (
-//         <Typography sx={{ color: 'text.secondary' }}>{row.balance}</Typography>
-//       ) : (
-//         <CustomChip rounded size='small' skin='light' color='success' label='Paid' />
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.1,
-//     minWidth: 80,
-//     field: 'invoiceStatus',
-//     renderHeader: () => <Icon icon='tabler:trending-up' />,
-//     renderCell: ({ row }) => {
-//       const { dueDate, balance, invoiceStatus } = row
-//       const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
 
-//       return (
-//         <Tooltip
-//           title={
-//             <div>
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 {invoiceStatus}
-//               </Typography>
-//               <br />
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 Balance:
-//               </Typography>{' '}
-//               {balance}
-//               <br />
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 Due Date:
-//               </Typography>{' '}
-//               {dueDate}
-//             </div>
-//           }
-//         >
-//           <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
-//             <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
-//           </CustomAvatar>
-//         </Tooltip>
-//       )
-//     }
-//   }
 ]
 /* eslint-disable */
 const CustomInput = forwardRef((props, ref) => {
