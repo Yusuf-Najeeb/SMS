@@ -56,3 +56,18 @@ export const deleteStudent =  async (id) => {
 
   }
 }
+
+export const updateStudent = async (payload, id)=> {
+  try {
+    const response = await axios.patch(`/users/update?id=${id}`, payload)
+
+    if (response.data.success){
+      notifySuccess('Student Updated')
+    }
+
+    return response
+  } catch (error) {
+    notifyError('Unable to update student')
+    
+  }
+}

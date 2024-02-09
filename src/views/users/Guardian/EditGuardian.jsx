@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from 'react'
+import { Fragment, forwardRef, useEffect, useState } from 'react'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -25,12 +25,11 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { editActorSchema } from 'src/@core/Formschema'
+import { updateGuardianSchema } from 'src/@core/Formschema'
 
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
-import { notifyError } from '../../../@core/components/toasts/notifyError'
-import axios from 'axios'
-import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { updateGuardian } from '../../../store/apps/guardian/asyncthunk'
+import SearchStudent from './SearchStudent'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -47,23 +46,31 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const CustomInput = forwardRef(({ ...props }, ref) => {
+export const CustomInput = forwardRef(({ ...props }, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
 })
 
-const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActor }) => {
+const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
+  const [itemsArray, setItemsArray] = useState([])
+  const [openParentModal, setParentModal] = useState(false)
+
+  const toggleParentModal = ()=> {
+    closeModal()
+    setParentModal(!openParentModal)
+  }
 
   const defaultValues = {
     firstName: '',
     lastName: '',
     middleName: '',
     email: '',
-    title: '',
-    status: '',
+    maritalStatus: '',
     phone: '',
     dateOfBirth: '',
     residentialAddress: '',
-    branch: ''
+    gender: '',
+    religion: '',
+    ethnicity: '',
   }
 
   const {
@@ -71,49 +78,66 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
     setValue,
     reset,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(editActorSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(updateGuardianSchema) })
+
+  useEffect(()=>{
+    if(selectedGuardian){
+     selectedGuardian.firstName !== null ? setValue('firstName', selectedGuardian.firstName) : setValue('firstName', '')
+     selectedGuardian.lastName !== null ? setValue('lastName', selectedGuardian.lastName) : setValue('lastName', '')
+     selectedGuardian.middleName !== null ? setValue('middleName', selectedGuardian.middleName) : setValue('middleName', '')
+     selectedGuardian.email !== null ? setValue('email', selectedGuardian.email) : setValue('email', '')
+     selectedGuardian.phone !== null ? setValue('phone', selectedGuardian.phone) : setValue('phone', '')
+     selectedGuardian.residentialAddress !== null ? setValue('residentialAddress', selectedGuardian.residentialAddress) : setValue('residentialAddress', '')
+     selectedGuardian.gender !== null ? setValue('gender', selectedGuardian.gender) : setValue('gender', '')
+     selectedGuardian.religion !== null ? setValue('religion', selectedGuardian.religion) : setValue('religion', '')
+     selectedGuardian.ethnicity !== null ? setValue('ethnicity', selectedGuardian.ethnicity) : setValue('ethnicity', '')
+
+      setValue('dateOfBirth', new Date(selectedGuardian.dateOfBirth))
+     
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[selectedGuardian])
+
+   // Watch all input fields and track changes
+   const watchedFields = watch()
 
   const onSubmit = async values => {
-    const { dateOfBirth, ...restOfData } = values
-    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+    // Monitor changed input fields so that only changed fields are submitted
+    const changedFields = Object.entries(values).reduce((acc, [key, value]) => {
+        if (value !== selectedGuardian[key]) {
+          acc[key] = value
+        }
+  
+        return acc
+      }, {})
+  
+      
+      const { dateOfBirth, ...restOfData } = changedFields
 
-    const payload = { dateOfBirth: formattedDate, ...restOfData }
-
-
-    try {
-      const response = await axios.post(endpointUrl, payload)
-
-
-      if (response.data.success) {
-        notifySuccess("Success!")
-        reset()
-        closeModal()
-        refetchData()
-      }
-
-    } catch (error) {
-      notifyError('Something Went Wrong, Try again')
-    }
+      console.log(changedFields)
+  
+      const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+  
+      const studentIds = itemsArray.map(item => item.id);
+  
+      const payload = { dateOfBirth: formattedDate, ...restOfData, studentIds }
+  
+    updateGuardian(payload, selectedGuardian.id).then((response)=> {
+            if (response.data.success) {
+                reset()
+                closeModal()
+                fetchData()
+              }
+         })
 
   }
 
-  useEffect(() => {
-    setValue('firstName', selectedActor.firstName)
-    setValue('lastName', selectedActor.lastName)
-    setValue('middleName', selectedActor.middleName)
-    setValue('email', selectedActor.email)
-    setValue('title', selectedActor.title)
-    setValue('status', selectedActor.status)
-    setValue('phone', selectedActor.phone)
-    setValue('dateOfBirth', selectedActor.dateOfBirth)
-    setValue('residentialAddress', selectedActor.residentialAddress)
-    setValue('branch', selectedActor.branch)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   return (
+
+    <Fragment> 
     <Dialog
       fullWidth
       open={open}
@@ -121,7 +145,7 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
       scroll='body'
 
       //   TransitionComponent={Transition}
-      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 650 } }}
+      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 750 } }}
     >
       <DialogContent
         sx={{
@@ -149,6 +173,7 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                     <CustomTextField
                       fullWidth
                       label='First Name'
+                      required
                       placeholder='Enter First Name'
                       value={value}
                       onChange={onChange}
@@ -168,6 +193,7 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                       fullWidth
                       label='Last Name'
                       placeholder='Enter Last Name'
+                      required
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.lastName)}
@@ -203,6 +229,7 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                     <CustomTextField
                       fullWidth
                       label='Email'
+                      required
                       placeholder='Enter Email'
                       value={value}
                       onChange={onChange}
@@ -213,7 +240,33 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                 />
               </Grid>
 
+
               <Grid item xs={12} sm={6}>
+                <Controller
+                  name='gender'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      required
+                      label='Gender'
+                      onChange={onChange}
+                      id='stepper-linear-personal-gender'
+                      error={Boolean(errors.gender)}
+                      aria-describedby='stepper-linear-personal-gender-helper'
+                      {...(errors.gender && { helperText: errors.gender.message })}
+                    >
+                      <MenuItem value='Male'>Male</MenuItem>
+                      <MenuItem value='Female'>Female</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              {/* <Grid item xs={12} sm={6}>
                 <Controller
                   name='title'
                   control={control}
@@ -237,11 +290,11 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                     </CustomTextField>
                   )}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={6}>
                 <Controller
-                  name='status'
+                  name='maritalStatus'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -251,10 +304,10 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                       value={value}
                       label='Marital Status'
                       onChange={onChange}
-                      id='stepper-linear-status'
-                      error={Boolean(errors.status)}
-                      aria-describedby='stepper-linear-status-helper'
-                      {...(errors.status && { helperText: 'Status is required' })}
+                      id='stepper-linear-maritalStatus'
+                      error={Boolean(errors.maritalStatus)}
+                      aria-describedby='stepper-linear-maritalStatus-helper'
+                      {...(errors.maritalStatus && { helperText: errors.maritalStatus.message})}
                     >
                       <MenuItem value='Single'>Single</MenuItem>
                       <MenuItem value='Married'>Married</MenuItem>
@@ -283,24 +336,6 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                 />
               </Grid>
 
-              {/* <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='identificationNumber'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Identification Number'
-                      placeholder='Enter Identification Number'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.identificationNumber)}
-                      {...(errors.identificationNumber && { helperText: 'Identification number is required ' })}
-                    />
-                  )}
-                />
-              </Grid> */}
 
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
@@ -314,12 +349,12 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                       showYearDropdown
                       showMonthDropdown
                       onChange={e => onChange(e)}
-                      placeholderText='2024-05-08'
+                      placeholderText='Enter Date of Birth'
                       customInput={
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth'
+                          label='Date of Birth *'
                           error={Boolean(errors.dateOfBirth)}
                           {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
                         />
@@ -342,40 +377,74 @@ const EditGuardian = ({ open, closeModal, refetchData, endpointUrl, selectedActo
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
+                      {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
                     />
                   )}
                 />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='religion'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      label='Religion'
+                      onChange={onChange}
+                      id='stepper-linear-religion'
+                      error={Boolean(errors.religion)}
+                      aria-describedby='stepper-linear-religion-helper'
+                      {...(errors.religion && { helperText: errors.religion.message})}
+                    >
+                      <MenuItem value='Christianity'>Christianity</MenuItem>
+                      <MenuItem value='Islam'>Islam</MenuItem>
+                      <MenuItem value='Others'>Others</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name='branch'
+                  name='ethnicity'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label='Branch'
-                      placeholder='Enter Branch'
+                      label='Tribe'
+                      placeholder='Enter Tribe'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.branch)}
-                      {...(errors.branch && { helperText: ' branch is required ' })}
+                      error={Boolean(errors.ethnicity)}
+                      {...(errors.ethnicity && { helperText: errors.ethnicity.message })}
                     />
                   )}
                 />
               </Grid>
+              
             </Grid>
           </DialogContent>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button type='submit' variant='contained'>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Create'}
+         
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
+          <Button type='button' variant='outlined' onClick={toggleParentModal}>
+              Select Students
+            </Button>
+            <Button type='submit' variant='contained' disabled={isSubmitting}>
+              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update Guardian'}
             </Button>
           </Box>
         </form>
       </DialogContent>
     </Dialog>
+    <SearchStudent itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openParentModal} closeModal={toggleParentModal} />
+    </Fragment>
   )
 }
 

@@ -269,32 +269,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              {/* <Grid item xs={12} sm={6}>
-                <Controller
-                  name='title'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      select
-                      fullWidth
-                      value={value}
-                      label='Title'
-                      onChange={onChange}
-                      id='stepper-linear-title'
-                      error={Boolean(errors.title)}
-                      aria-describedby='stepper-linear-title-helper'
-                      {...(errors.title && { helperText: 'Title is required' })}
-                    >
-                      <MenuItem value='Mr'>Mr</MenuItem>
-                      <MenuItem value='Mrs'>Mrs</MenuItem>
-                      <MenuItem value='Miss'>Miss</MenuItem>
-                      <MenuItem value='Master'>Master</MenuItem>
-                    </CustomTextField>
-                  )}
-                />
-              </Grid> */}
-
               <Grid item xs={12} sm={6}>
                 <Controller
                   name='maritalStatus'
@@ -405,7 +379,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                     >
                       <MenuItem value='Christianity'>Christianity</MenuItem>
                       <MenuItem value='Islam'>Islam</MenuItem>
-                      <MenuItem value='Other'>Other</MenuItem>
+                      <MenuItem value='Others'>Others</MenuItem>
                     </CustomTextField>
                   )}
                 />

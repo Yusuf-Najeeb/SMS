@@ -39,12 +39,12 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { deleteStudent } from '../../../store/apps/Student/asyncthunk'
 import { formatDate,  } from '../../../@core/utils/format'
 import DeleteDialog from '../../../@core/components/delete-dialog'
-import EditActor from '../component/EditActor'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import AddStudent from './AddStudent'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
+import EditStudent from './EditStudent'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -166,8 +166,7 @@ const AllStudents = () => {
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
-  const [studentToUpdate, setstudentToUpdate] = useState(null)
-  const [email, setGuardianEmail] = useState(null)
+  const [studentToUpdate, setStudentToUpdate] = useState(null)
 
   
 
@@ -205,13 +204,12 @@ const AllStudents = () => {
    
   }
 
-  const setGuardianToEdit = (value) => {
-    setEditDrawer(true)
-    setstudentToUpdate(value)
-    setGuardianEmail(value?.email)
+  const setStudentToEdit = (value) => {
+    setEditDrawer(!openEditDrawer)
+    setStudentToUpdate(value)
   }
 
-  const closeEditModal = ()=> setEditDrawer(false)
+  const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
 
 
   useEffect(()=>{
@@ -230,11 +228,11 @@ const AllStudents = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* <Tooltip title='Edit Student'>
-             <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
+            <Tooltip title='Edit Student'>
+             <IconButton size='small' onClick={() => setStudentToEdit(row)}>
             <Icon icon='tabler:edit' />
             </IconButton>
-            </Tooltip> */}
+            </Tooltip>
           <Tooltip title='Delete Student'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
@@ -307,7 +305,7 @@ const AllStudents = () => {
 
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  />
-    {openEditDrawer && <EditActor open={openEditDrawer} selectedActor={studentToUpdate} endpointUrl={`parents/updateparent/${email}`} refetchData={updateFetch} closeModal={closeEditModal}/>}
+    <EditStudent open={openEditDrawer} selectedStudent={studentToUpdate} fetchData={updateFetch} closeModal={closeEditModal}/>
     </Fragment>
   )
 }

@@ -55,3 +55,18 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
   
     }
   }
+
+  export const updateGuardian = async (payload, id)=> {
+    try {
+      const response = await axios.patch(`/users/update?id=${id}`, payload)
+  
+      if (response.data.success){
+        notifySuccess('Guardian Updated')
+      }
+  
+      return response
+    } catch (error) {
+      notifyError('Unable to update guardian')
+      
+    }
+  }
