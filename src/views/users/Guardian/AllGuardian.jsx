@@ -116,9 +116,9 @@ const defaultColumns = [
   {
     flex: 0.1,
     minWidth: 100,
-    field: 'address',
-    headerName: 'Address',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.residentialAddress || '--'}</Typography>
+    field: 'religion',
+    headerName: 'Religion',
+    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.religion || '--'}</Typography>
   },
   {
     flex: 0.15,
