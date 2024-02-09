@@ -221,18 +221,32 @@ export const createStudentSchema = yup.object().shape({
   ethnicity: yup.string(),
 })
 
-export const editActorSchema = yup.object().shape({
+export const updateStudentSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
-  middleName: yup.string().required('Middle Name is required'),
-  email: yup.string().required('Email is required'),
-  title: yup.string().required('Title is required'),
-  status: yup.string().required("Status is required"),
-  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  middleName: yup.string(),
+  email: yup.string(),
+  phone: yup.string(),
   dateOfBirth: yup.string().required('Date of Birth is required'),
-  residentialAddress: yup.string().required('residentialAddress is required'),
+  residentialAddress: yup.string(),
+  gender: yup.string().required('Gender is required'),
+  religion: yup.string(),
+  ethnicity: yup.string(),
 })
+
+export const updateGuardianSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string(),
+  email: yup.string(),
+  phone: yup.string(),
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string(),
+  gender: yup.string().required('Gender is required'),
+  religion: yup.string(),
+  ethnicity: yup.string(),
+})
+
 
 export const editStaffSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),

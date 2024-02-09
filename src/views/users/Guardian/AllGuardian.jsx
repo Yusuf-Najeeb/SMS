@@ -34,13 +34,12 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useAppSelector } from '../../../hooks'
 import { deleteGuardian, fetchGuardian } from '../../../store/apps/guardian/asyncthunk'
-import PageHeader from '../component/PageHeader'
 import { formatDate } from '../../../@core/utils/format'
 import DeleteDialog from '../../../@core/components/delete-dialog'
-import EditActor from '../component/EditActor'
 import AddGuardian from './AddGuardian'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
+import EditGuardian from './EditGuardian'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -220,7 +219,6 @@ const AllGuardian = () => {
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [selectedGuardian, setSelectedGuardian] = useState()
   const [guardianToUpdate, setGuardianToUpdate] = useState(null)
-  const [email, setGuardianEmail] = useState(null)
   const [key, setKey] = useState('')
 
   
@@ -259,12 +257,11 @@ const AllGuardian = () => {
   }
 
   const setGuardianToEdit = (value) => {
-    setEditDrawer(true)
+    setEditDrawer(!openEditDrawer)
     setGuardianToUpdate(value)
-    setGuardianEmail(value?.email)
   }
 
-  const closeEditModal = ()=> setEditDrawer(false)
+  const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
 
 
   const handleOnChangeRange = dates => {
@@ -293,11 +290,11 @@ const AllGuardian = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* <Tooltip title='Edit Guardian'>
+            <Tooltip title='Edit Guardian'>
              <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
             <Icon icon='tabler:edit' />
             </IconButton>
-            </Tooltip> */}
+            </Tooltip>
           <Tooltip title='Delete Guardian'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
@@ -366,7 +363,7 @@ const AllGuardian = () => {
 
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     <AddGuardian open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
-    {openEditDrawer && <EditActor open={openEditDrawer} selectedActor={guardianToUpdate} endpointUrl={`parents/updateparent/${email}`} refetchData={updateFetch} closeModal={closeEditModal}/>}
+     <EditGuardian open={openEditDrawer} selectedGuardian={guardianToUpdate} fetchData={updateFetch} closeModal={closeEditModal}/>
     </Fragment>
   )
 }

@@ -1,8 +1,7 @@
-// ** Custom Component Import
-import { useState } from 'react'
+import { Fragment, forwardRef, useEffect, useState } from 'react'
 
+// ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
-import React, { useEffect } from 'react'
 
 import Grid from '@mui/material/Grid'
 
@@ -14,19 +13,25 @@ import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
-import { CircularProgress } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
+
+import { CircularProgress, MenuItem } from '@mui/material'
+
+import DatePicker from 'react-datepicker'
+
+import 'react-datepicker/dist/react-datepicker.css'
+
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import axios from 'axios'
-import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
-import { notifyError } from '../../../@core/components/toasts/notifyError'
-import { signUpSchema } from 'src/@core/Formschema'
-import { useAppDispatch } from '../../../hooks'
-import InputAdornment from '@mui/material/InputAdornment'
+import { updateStudentSchema } from 'src/@core/Formschema'
 
-const CustomCloseButton = styled(IconButton)(({ theme }) => ({
+import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
+import { updateStudent } from '../../../store/apps/Student/asyncthunk'
+import SearchParent from './SearchParent'
+
+export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
   right: 0,
   color: 'grey.500',
@@ -41,60 +46,99 @@ const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const defaultValues = {
-  name: ''
-}
+export const CustomInput = forwardRef(({ ...props }, ref) => {
+  return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+})
 
-const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
-  const [showPassword, setShowPassword] = useState(false)
+const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
+  const [itemsArray, setItemsArray] = useState([])
+  const [openParentModal, setParentModal] = useState(false)
+
+
+  const toggleParentModal = ()=> {
+    closeModal()
+    setParentModal(!openParentModal)
+  }
 
   const defaultValues = {
     firstName: '',
     lastName: '',
     middleName: '',
     email: '',
-    password: '',
-    title: '',
-    status: '',
     phone: '',
-    identificationNumber: '',
     dateOfBirth: '',
     residentialAddress: '',
-    branch: ''
+    gender: '',
+    religion: '',
+    ethnicity: ''
   }
-  const dispatch = useAppDispatch()
 
   const {
     control,
     setValue,
     reset,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(signUpSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(updateStudentSchema) })
 
-  const onSubmit = async values => {
-    try {
-      const { data } = await axios.patch(`/staffs/updatestaff/${selectedStaff.id}`, values)
+  useEffect(()=>{
+    if(selectedStudent){
+     selectedStudent.firstName !== null ? setValue('firstName', selectedStudent.firstName) : setValue('firstName', '')
+     selectedStudent.lastName !== null ? setValue('lastName', selectedStudent.lastName) : setValue('lastName', '')
+     selectedStudent.middleName !== null ? setValue('middleName', selectedStudent.middleName) : setValue('middleName', '')
+     selectedStudent.email !== null ? setValue('email', selectedStudent.email) : setValue('email', '')
+     selectedStudent.phone !== null ? setValue('phone', selectedStudent.phone) : setValue('phone', '')
+     selectedStudent.residentialAddress !== null ? setValue('residentialAddress', selectedStudent.residentialAddress) : setValue('residentialAddress', '')
+     selectedStudent.gender !== null ? setValue('gender', selectedStudent.gender) : setValue('gender', '')
+     selectedStudent.religion !== null ? setValue('religion', selectedStudent.religion) : setValue('religion', '')
+     selectedStudent.ethnicity !== null ? setValue('ethnicity', selectedStudent.ethnicity) : setValue('ethnicity', '')
 
-      if (data.success) {
-        notifySuccess('Staff updated successfully')
-
-        closeModal()
-        refetchStaff()
-      }
-    } catch (error) {
-      console.log(error, 'error')
-      notifyError('Error updating staff')
+      setValue('dateOfBirth', new Date(selectedStudent.dateOfBirth))
+     
     }
-  }
-
-  useEffect(() => {
-    setValue('firstName', selectedStaff.firstName)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  },[selectedStudent])
+
+  // Watch all input fields and track changes
+  const watchedFields = watch()
+
+  const onSubmit = async values => {
+
+    // Monitor changed input fields so that only changed fields are submitted
+    const changedFields = Object.entries(values).reduce((acc, [key, value]) => {
+      if (value !== selectedStudent[key]) {
+        acc[key] = value
+      }
+
+      return acc
+    }, {})
+
+    
+    const { dateOfBirth, ...restOfData } = changedFields
+
+    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+
+    const parentIds = itemsArray.map(item => item.id);
+
+
+    const payload = { dateOfBirth: formattedDate, ...restOfData, parentIds }
+   
+
+         updateStudent(payload, selectedStudent.id).then((response)=> {
+            if (response.data.success) {
+                reset()
+                closeModal()
+                fetchData()
+              }
+         })
+
+  }
 
   return (
+
+    <Fragment> 
     <Dialog
       fullWidth
       open={open}
@@ -102,7 +146,7 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
       scroll='body'
 
       //   TransitionComponent={Transition}
-      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 600 } }}
+      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 750 } }}
     >
       <DialogContent
         sx={{
@@ -130,7 +174,8 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='First Name'
-                      placeholder='Enter First name'
+                      required
+                      placeholder='Enter First Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.firstName)}
@@ -148,7 +193,8 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Last Name'
-                      placeholder='Enter a Last name'
+                      placeholder='Enter Last Name'
+                      required
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.lastName)}
@@ -166,11 +212,11 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Middle Name'
-                      placeholder='Enter a middle name'
+                      placeholder='Enter Middle Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.middleName)}
-                      {...(errors.middleName && { helperText: 'Middle name is required ' })}
+                      {...(errors.middleName && { helperText: errors.middleName.message })}
                     />
                   )}
                 />
@@ -193,76 +239,33 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                   )}
                 />
               </Grid>
+
               <Grid item xs={12} sm={6}>
                 <Controller
-                  name='password'
-                  type='password'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange, onBlur } }) => (
-                    <CustomTextField
-                      fullWidth
-                      value={value}
-                      onBlur={onBlur}
-                      label='Password'
-                      onChange={onChange}
-                      id='auth-login-v2-password'
-                      error={Boolean(errors.password)}
-                      {...(errors.password && { helperText: errors.password.message })}
-                      type={showPassword ? 'text' : 'password'}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton
-                              edge='end'
-                              onMouseDown={e => e.preventDefault()}
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                            </IconButton>
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='title'
+                  name='gender'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
+                      select
                       fullWidth
-                      label='Title'
-                      placeholder='Enter Title'
                       value={value}
+                      required
+                      label='Gender'
                       onChange={onChange}
-                      error={Boolean(errors.title)}
-                      {...(errors.title && { helperText: 'Title  is required ' })}
-                    />
+                      id='stepper-linear-personal-gender'
+                      error={Boolean(errors.gender)}
+                      aria-describedby='stepper-linear-personal-gender-helper'
+                      {...(errors.gender && { helperText: errors.gender.message })}
+                    >
+                      <MenuItem value='Male'>Male</MenuItem>
+                      <MenuItem value='Female'>Female</MenuItem>
+                    </CustomTextField>
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='status'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Status'
-                      placeholder='Enter Status'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.status)}
-                      {...(errors.status && { helperText: 'Status is required ' })}
-                    />
-                  )}
-                />
-              </Grid>
+
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='phone'
@@ -272,11 +275,11 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Phone Number'
-                      placeholder='Enter Phone'
+                      placeholder='Enter Phone Number'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.phone)}
-                      {...(errors.phone && { helperText: 'Phone number is required ' })}
+                      {...(errors.phone && { helperText: errors.phone.message })}
                     />
                   )}
                 />
@@ -284,40 +287,31 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
 
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name='identificationNumber'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Identification Number'
-                      placeholder='Enter Identification Number'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.identificationNumber)}
-                      {...(errors.identificationNumber && { helperText: 'Identification number is required ' })}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
                   name='dateOfBirth'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Date of birth'
-                      placeholder='Enter date of birth'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.dateOfBirth)}
-                      {...(errors.dateOfBirth && { helperText: 'Date of birth is required ' })}
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='Enter Date of Birth'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Date of Birth *'
+                          error={Boolean(errors.dateOfBirth)}
+                          {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
+                        />
+                      }
                     />
                   )}
                 />
               </Grid>
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='residentialAddress'
@@ -327,7 +321,7 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                     <CustomTextField
                       fullWidth
                       label='Residential Address'
-                      placeholder='Enter Branch'
+                      placeholder='Enter Address'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.residentialAddress)}
@@ -336,36 +330,70 @@ const EditStaff = ({ open, closeModal, refetchStaff, selectedStaff }) => {
                   )}
                 />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='religion'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      label='Religion'
+                      onChange={onChange}
+                      id='stepper-linear-religion'
+                      error={Boolean(errors.religion)}
+                      aria-describedby='stepper-linear-religion-helper'
+                      {...(errors.religion && { helperText: errors.religion.message})}
+                    >
+                      <MenuItem value='Christianity'>Christianity</MenuItem>
+                      <MenuItem value='Islam'>Islam</MenuItem>
+                      <MenuItem value='Others'>Others</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
-                  name='branch'
+                  name='ethnicity'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label='Branch'
-                      placeholder='Enter Branch'
+                      label='Tribe'
+                      placeholder='Enter Tribe'
                       value={value}
                       onChange={onChange}
-                      error={Boolean(errors.branch)}
-                      {...(errors.branch && { helperText: ' branch is required ' })}
+                      error={Boolean(errors.ethnicity)}
+                      {...(errors.ethnicity && { helperText: errors.ethnicity.message })}
                     />
                   )}
                 />
               </Grid>
+              
             </Grid>
           </DialogContent>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button type='submit' variant='contained'>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update'}
+         
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
+          <Button type='button' variant='outlined' onClick={toggleParentModal}>
+              Select Guardian
+            </Button>
+            <Button type='submit' variant='contained' disabled={isSubmitting || itemsArray.length == 0}>
+              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update Student'}
             </Button>
           </Box>
         </form>
       </DialogContent>
     </Dialog>
+    <SearchParent itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openParentModal} closeModal={toggleParentModal} />
+    </Fragment>
   )
 }
 
-export default EditStaff
+export default EditStudent

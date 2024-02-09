@@ -352,7 +352,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                     >
                       <MenuItem value='Christianity'>Christianity</MenuItem>
                       <MenuItem value='Islam'>Islam</MenuItem>
-                      <MenuItem value='Other'>Other</MenuItem>
+                      <MenuItem value='Others'>Others</MenuItem>
                     </CustomTextField>
                   )}
                 />
