@@ -126,8 +126,7 @@ const LoginPage = () => {
 
     const resp = loginUser(data)
       .then(res => {
-        if (res) {
-
+        if (res.data.success) {
           router.replace('/apps/staff')
         }
       })

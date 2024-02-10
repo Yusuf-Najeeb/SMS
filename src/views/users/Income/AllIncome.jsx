@@ -41,6 +41,7 @@ import { useIncome } from '../../../hooks/useIncome'
 import PageHeader from '../component/PageHeader'
 import CreateIncome from './CreateIncome'
 import EditIncome from './EditIncome'
+import PayIncomeBalance from './PayIncome'
 
 // ** Styled component for typography
 const TypographyStyled = styled(Typography)(({theme})=> ({
@@ -177,8 +178,10 @@ const AllIncome = () => {
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
+  const [openPayModal, setOpenPayModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
   const [incomeToUpdate, setIncomeToUpdate] = useState(null)
+  const [incomeToPay, setIncomeToPay] = useState(null)
 
   
 
@@ -216,6 +219,13 @@ const AllIncome = () => {
    
   }
 
+  const setPayIncome = (value) => {
+    setIncomeToPay(value)
+    setOpenPayModal(true)
+  }
+
+  const togglePayModal = ()=> setOpenPayModal(!openPayModal)
+
   const setIncomeToEdit = (value) => {
     setEditDrawer(true)
     setIncomeToUpdate(value)
@@ -245,22 +255,20 @@ const AllIncome = () => {
             <Icon icon='tabler:edit' />
             </IconButton>
             </Tooltip>
-            
+            {row.amount !== row.amountPaid && 
+            <Tooltip title='Pay Outstanding'>
+           <IconButton size='small' onClick={() => setPayIncome(row)}>
+                          <Icon icon='ph:hand-coins-light' />
+                        </IconButton>
+          </Tooltip>
+          }
+
           {/* <Tooltip title='Delete Income'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
             </IconButton>
           </Tooltip> */}
-          {/* <Tooltip title='View'>
-            <IconButton
-              size='small'
-              component={Link}
-              sx={{ color: 'text.secondary' }}
-              href={`/apps/invoice/preview/${row.id}`}
-            >
-              <Icon icon='tabler:eye' />
-            </IconButton>
-          </Tooltip> */}
+          
 
           {/* <OptionsMenu
             menuProps={{ sx: { '& .MuiMenuItem-root svg': { mr: 2 } } }}
@@ -320,6 +328,7 @@ const AllIncome = () => {
     {/* <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  /> */}
     <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch}  />
     <EditIncome open={openEditDrawer} closeModal={closeEditModal} fetchData={updateFetch} selectedIncome={incomeToUpdate} />
+    <PayIncomeBalance income={incomeToPay} open={openPayModal} togglePayModal={togglePayModal} fetchData={updateFetch} />
     </Fragment>
   )
 }

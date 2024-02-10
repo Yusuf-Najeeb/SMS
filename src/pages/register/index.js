@@ -155,6 +155,7 @@ const Register = () => {
     try {
       const resp = await dispatch(RegisterUser(payload))
       if (resp.payload?.success) {
+
         router.replace('/apps/staff')
       }
     } catch (error) {

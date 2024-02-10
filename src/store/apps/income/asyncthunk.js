@@ -41,3 +41,18 @@ export const fetchIncome = createAsyncThunk('/ncome/FetchIncome', async (query) 
     }
   }
 
+  export const processIncome = async (vals)=> {
+    try {
+      const res = await axios.post(`/accounts/process`, vals) 
+
+      if(res.data.success){
+        notifySuccess("Income Updated")
+      }
+
+
+      return res
+    } catch (error) {
+      notifyError('Failed to update income')
+    }
+  }
+

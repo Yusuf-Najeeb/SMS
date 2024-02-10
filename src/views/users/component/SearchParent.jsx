@@ -211,7 +211,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray, clearS
                             justifyContent: 'center'
                           }}
                         >
-                          Oops! 😖 No Available Parents.
+                          Oops! 😖 No Available Guardian.
                         </Typography>
                       </td>
                     </tr>

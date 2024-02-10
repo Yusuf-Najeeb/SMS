@@ -38,3 +38,17 @@ export const fetchExpenditure = createAsyncThunk('/expenditure/FetchExpenditure'
     }
   }
 
+
+  export const processExpenditure = async (vals)=> {
+    try {
+      const res = await axios.post(`/accounts/process`, vals) 
+
+      if(res.data.success){
+        notifySuccess("Expenditure Updated")
+      }
+
+      return res
+    } catch (error) {
+      notifyError('Failed to update expenditure')
+    }
+  }
