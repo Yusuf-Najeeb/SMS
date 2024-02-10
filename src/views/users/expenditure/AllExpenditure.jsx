@@ -41,6 +41,7 @@ import { useExpenditure } from '../../../hooks/useExpenditure'
 import { fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
 import CreateExpenditure from './CreateExpenditure'
 import EditExpenditure from './EditExpenditure'
+import PayExpenditureBalance from './PayExpenditure'
 
 // ** Styled component for typography
 const TypographyStyled = styled(Typography)(({theme})=> ({
@@ -179,6 +180,8 @@ const AllExpenditure = () => {
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
   const [expenditureToUpdate, setExpenditureToUpdate] = useState(null)
+  const [expenditureToPay, setExpenditureToPay] = useState(null)
+  const [openPayModal, setOpenPayModal] = useState(false)
 
   
 
@@ -194,6 +197,13 @@ const AllExpenditure = () => {
   }
 
   const updateFetch = ()=> setFetch(!refetch)
+
+  const setPayExpenditure = (value) => {
+    setExpenditureToPay(value)
+    setOpenPayModal(true)
+  }
+
+  const togglePayModal = ()=> setOpenPayModal(!openPayModal)
 
   const doDelete = value => {
     setDeleteModal(true)
@@ -245,7 +255,14 @@ const AllExpenditure = () => {
             <Icon icon='tabler:edit' />
             </IconButton>
             </Tooltip>
-            
+            {row.amount !== row.amountPaid && 
+            <Tooltip title='Pay Outstanding'>
+           <IconButton size='small' onClick={() => setPayExpenditure(row)}>
+                          <Icon icon='ph:hand-coins-light' />
+                        </IconButton>
+          </Tooltip>
+          }
+
           {/* <Tooltip title='Delete Expenditure'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
               <Icon icon='tabler:trash' />
@@ -320,6 +337,7 @@ const AllExpenditure = () => {
     {/* <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  /> */}
     <CreateExpenditure open={showModal} closeModal={toggleModal} fetchData={updateFetch}  />
     <EditExpenditure open={openEditDrawer} closeModal={closeEditModal} fetchData={updateFetch} selectedExpenditure={expenditureToUpdate} />
+    <PayExpenditureBalance expenditure={expenditureToPay} open={openPayModal} togglePayModal={togglePayModal} fetchData={updateFetch} />
    
     </Fragment>
   )

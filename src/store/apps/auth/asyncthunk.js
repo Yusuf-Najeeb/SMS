@@ -43,8 +43,9 @@ export const loginUser = async values => {
       }
     })
     if (data) {
-      console.log(data, 'loginData')
-      const userObject = JSON.stringify(data?.data?.staff)
+      // console.log(data.data, 'loginData')
+
+      const userObject = JSON.stringify(data?.data?.user)
       localStorage.setItem('authToken', data?.data?.token)
       localStorage.setItem('authUser', userObject)
       notifySuccess('Login successful')
