@@ -42,6 +42,7 @@ import PageHeader from '../component/PageHeader'
 import CreateIncome from './CreateIncome'
 import EditIncome from './EditIncome'
 import PayIncomeBalance from './PayIncome'
+import ViewIncome from './ViewIncome'
 
 // ** Styled component for typography
 const TypographyStyled = styled(Typography)(({theme})=> ({
@@ -182,6 +183,8 @@ const AllIncome = () => {
   const [selectedStudent, setSelectedStudent] = useState()
   const [incomeToUpdate, setIncomeToUpdate] = useState(null)
   const [incomeToPay, setIncomeToPay] = useState(null)
+  const [incomeInView, setIncomeInView] = useState(null)
+  const [openViewModal, setOpenViewModal] = useState(false)
 
   
 
@@ -195,6 +198,15 @@ const AllIncome = () => {
   const toggleModal = ()=>{
     setShowModal(!showModal)
   }
+
+  const toggleViewModal = () => {
+    setOpenViewModal(!openViewModal)
+  }
+  
+  const setIncomeToView = value => {
+    setOpenViewModal(true)
+    setIncomeInView(value)
+}
 
   const updateFetch = ()=> setFetch(!refetch)
 
@@ -262,6 +274,11 @@ const AllIncome = () => {
                         </IconButton>
           </Tooltip>
           }
+          <Tooltip title='View Income'>
+            <IconButton size='small' onClick={() => setIncomeToView(row)}>
+              <Icon icon='tabler:eye' />
+            </IconButton>
+          </Tooltip>
 
           {/* <Tooltip title='Delete Income'>
             <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
@@ -329,6 +346,7 @@ const AllIncome = () => {
     <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch}  />
     <EditIncome open={openEditDrawer} closeModal={closeEditModal} fetchData={updateFetch} selectedIncome={incomeToUpdate} />
     <PayIncomeBalance income={incomeToPay} open={openPayModal} togglePayModal={togglePayModal} fetchData={updateFetch} />
+    { openViewModal && <ViewIncome open={openViewModal} closeCanvas={toggleViewModal} income={incomeInView}/> }
     </Fragment>
   )
 }
