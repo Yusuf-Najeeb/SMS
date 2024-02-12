@@ -44,6 +44,7 @@ import AddStaff from './AddStaff'
 import UpdateStaff from './UpdateStaff'
 import ViewStaff from './ViewStaff'
 import Stats from '../component/Stats'
+import { Menu, MenuItem } from '@mui/material'
 
 
 // ** Styled component for the link in the dataTable
@@ -57,6 +58,15 @@ const TypographyStyled = styled(Typography)(({theme})=> ({
     fontSize: theme.typography.body1.fontSize,
     color: `${theme.palette.primary.main} !important` 
 }))
+
+const userRoleObj = {
+    "super-admin": { icon: 'grommet-icons:user-admin', color: 'info' },
+    "admin": { icon: 'tabler:device-laptop', color: 'secondary' },
+    "teacher": { icon: 'tabler:circle-check', color: 'success' },
+    "librarian": { icon: 'tabler:edit', color: 'info' },
+    "accountant": { icon: 'tabler:chart-pie-2', color: 'primary' },
+    "house-master" : { icon: 'tabler:user', color: 'warning' }
+  }
 
 
 
@@ -88,21 +98,12 @@ const defaultColumns = [
 //     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{index + 1}</Typography>
 //   },
 
-{
-    flex: 0.1,
-    field: 'id',
-    minWidth: 100,
-    headerName: 'ID',
 
-    renderCell: ({ row }) => (
-      <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
-    )
-  },
 
   {
     flex: 0.25,
     field: 'firstName',
-    minWidth: 300,
+    minWidth: 280,
     headerName: 'Staff',
     renderCell: ({ row }) => {
       const { title, firstName, lastName, email, } = row
@@ -122,12 +123,31 @@ const defaultColumns = [
       )
     }
   },
+
+
   {
     flex: 0.1,
-    minWidth: 150,
-    field: 'specialization',
-    headerName: 'Specialization',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.specialization || '--'}</Typography>
+    minWidth: 165,
+    field: 'role',
+    headerName: 'Role',
+    renderCell: ({ row }) => {
+        // Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.role.roleName || '--'}</Typography>
+        return (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <CustomAvatar
+                skin='light'
+                sx={{ mr: 4, width: 30, height: 30 }}
+                color={(userRoleObj[row.role.roleName].color ) || 'primary'}
+              >
+                <Icon icon={userRoleObj[row.role.roleName].icon} />
+              </CustomAvatar>
+              <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                {row.role.roleName}
+              </Typography>
+            </Box>
+          )
+    
+    }
   },
 
 //   {
@@ -139,14 +159,22 @@ const defaultColumns = [
 //   },
   {
     flex: 0.15,
-    minWidth: 130,
+    minWidth: 165,
     field: 'phone',
-    headerName: 'Phone Number',
+    headerName: 'Phone ',
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
+  },
+ 
+  {
+    flex: 0.15,
+    minWidth: 165,
+    field: 'dateOfEmployment',
+    headerName: 'Employment Date',
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDateToReadableFormat(row.dateOfEmployment)}</Typography>
   },
   {
     flex: 0.15,
-    minWidth: 100,
+    minWidth: 120,
     field: 'status',
     headerName: 'Status',
 
@@ -160,11 +188,14 @@ const defaultColumns = [
       }
   },
   {
-    flex: 0.15,
+    flex: 0.1,
+    field: 'id',
     minWidth: 140,
-    field: 'dateOfEmployment',
-    headerName: 'Date of Employment',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDateToReadableFormat(row.dateOfEmployment)}</Typography>
+    headerName: 'User ID',
+
+    renderCell: ({ row }) => (
+      <Typography component={TypographyStyled} sx={{fontSize: '13px'}}>{`${row.identificationNumber}`}</Typography>
+    )
   },
 
 ]
@@ -194,16 +225,22 @@ const Staffs = () => {
   const [staffToUpdate, setStaffToUpdate] = useState(null)
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [staffInView, setStaffInView] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
 
+    // ** Hooks
+    const dispatch = useDispatch()
 
   const [StaffData, loading, paging] = useStaff()
 
-  
+  const rowOptionsOpen = (anchorEl)
 
-  // ** Hooks
-  const dispatch = useDispatch()
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
 
-  // const GuardianData = useSelector(state => state.guardian)
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
 
 
   const toggleModal = ()=>{
@@ -213,6 +250,7 @@ const Staffs = () => {
   const updateFetch = ()=> setFetch(!refetch)
 
   const doDelete = value => {
+    handleRowOptionsClose()
     setDeleteModal(true)
     setSelectedStaff(value?.email)
   }
@@ -234,6 +272,7 @@ const Staffs = () => {
   }
 
   const setStaffToEdit = (value) => {
+    handleRowOptionsClose()
     setEditDrawer(true)
     setStaffToUpdate(value)
   }
@@ -241,6 +280,7 @@ const Staffs = () => {
   const closeEditModal = ()=> setEditDrawer(false)
 
   const setStaffToView = (value) => {
+    handleRowOptionsClose()
     setViewDrawer(true)
     setStaffInView(value)
   }
@@ -263,56 +303,43 @@ const Staffs = () => {
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-             <Tooltip title='View Staff'>
-            <IconButton
-              size='small'
-              onClick={()=> setStaffToView(row)}
-            >
-              <Icon icon='tabler:eye' />
-            </IconButton>
-          </Tooltip>
-            <Tooltip title='Edit Staff'>
-             <IconButton size='small' onClick={() => setStaffToEdit(row)}>
-            <Icon icon='tabler:edit' />
-            </IconButton>
-            </Tooltip>
-          <Tooltip title='Delete Staff'>
-            <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
-              <Icon icon='tabler:trash' />
-            </IconButton>
-          </Tooltip>
-          {/* <Tooltip title='View'>
-            <IconButton
-              size='small'
-              component={Link}
-              sx={{ color: 'text.secondary' }}
-              href={`/apps/invoice/preview/${row.id}`}
-            >
-              <Icon icon='tabler:eye' />
-            </IconButton>
-          </Tooltip> */}
 
-          {/* <OptionsMenu
-            menuProps={{ sx: { '& .MuiMenuItem-root svg': { mr: 2 } } }}
-            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-            options={[
-              {
-                text: 'Download',
-                icon: <Icon icon='tabler:download' fontSize={20} />
-              },
-              {
-                text: 'Edit',
-                href: `/apps/invoice/edit/${row.id}`,
-                icon: <Icon icon='tabler:edit' fontSize={20} />
-              },
-              {
-                text: 'Duplicate',
-                icon: <Icon icon='tabler:copy' fontSize={20} />
-              }
-            ]}
-          /> */}
-        </Box>
+        <>
+        <IconButton size='small' onClick={handleRowOptionsClick}>
+          <Icon icon='tabler:dots-vertical' />
+        </IconButton>
+        <Menu
+          keepMounted
+          anchorEl={anchorEl}
+          open={rowOptionsOpen}
+          onClose={handleRowOptionsClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          PaperProps={{ style: { minWidth: '8rem' } }}
+        >
+          <MenuItem
+            sx={{ '& svg': { mr: 2 } }}
+            onClick={() => setStaffToView(row)}
+          >
+            <Icon icon='tabler:eye' fontSize={20} />
+            View
+          </MenuItem>
+          <MenuItem onClick={() => setStaffToEdit(row)} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon='tabler:edit' fontSize={20} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={() => doDelete(row)} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon='tabler:trash' fontSize={20} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </>
       )
     }
   ]

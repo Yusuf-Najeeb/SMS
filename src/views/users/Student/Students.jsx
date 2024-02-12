@@ -45,6 +45,7 @@ import AddStudent from './AddStudent'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import EditStudent from './EditStudent'
+import { Menu } from '@mui/material'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -79,21 +80,12 @@ const renderClient = row => {
 
 const defaultColumns = [
 
-    {
-        flex: 0.1,
-        field: 'id',
-        minWidth: 100,
-        headerName: 'ID',
-    
-        renderCell: ({ row }) => (
-          <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
-        )
-      },
+
 
   {
     flex: 0.25,
     field: 'email',
-    minWidth: 320,
+    minWidth: 260,
     headerName: 'Student',
     renderCell: ({ row }) => {
       const {  firstName, lastName, email, } = row
@@ -115,31 +107,42 @@ const defaultColumns = [
   },
   {
     flex: 0.1,
-    minWidth: 100,
+    minWidth: 150,
     field: 'religion',
     headerName: 'religion',
     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.religion || '--'}</Typography>
   },
   {
     flex: 0.15,
-    minWidth: 140,
+    minWidth: 150,
     field: 'ethnicity',
     headerName: 'Tribe',
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.ethnicity || '--'}</Typography>
   },
   {
     flex: 0.15,
-    minWidth: 140,
+    minWidth: 150,
     field: 'gender',
     headerName: 'Gender',
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.gender}</Typography>
   },
   {
     flex: 0.15,
-    minWidth: 140,
+    minWidth: 150,
     field: 'dateOfBirth',
     headerName: 'Date of Birth',
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDate(row.dateOfBirth)}</Typography>
+  },
+
+  {
+    flex: 0.1,
+    field: 'id',
+    minWidth: 140,
+    headerName: 'USER ID',
+
+    renderCell: ({ row }) => (
+      <Typography component={TypographyStyled} sx={{fontSize: '13px'}}>{`${row.identificationNumber}`}</Typography>
+    )
   },
 
 
@@ -167,6 +170,8 @@ const AllStudents = () => {
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
   const [studentToUpdate, setStudentToUpdate] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const rowOptionsOpen = (anchorEl)
 
   
 
@@ -174,6 +179,15 @@ const AllStudents = () => {
   const dispatch = useDispatch()
 
   const [StudentData, loading, paging] = useStudent()
+
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
 
 
 
@@ -186,6 +200,7 @@ const AllStudents = () => {
   const doDelete = value => {
     setDeleteModal(true)
     setSelectedStudent(value?.id)
+    handleRowOptionsClose()
   }
 
   const doCancelDelete = () => {
@@ -207,6 +222,7 @@ const AllStudents = () => {
   const setStudentToEdit = (value) => {
     setEditDrawer(!openEditDrawer)
     setStudentToUpdate(value)
+    handleRowOptionsClose()
   }
 
   const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
@@ -227,48 +243,43 @@ const AllStudents = () => {
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title='Edit Student'>
-             <IconButton size='small' onClick={() => setStudentToEdit(row)}>
-            <Icon icon='tabler:edit' />
-            </IconButton>
-            </Tooltip>
-          <Tooltip title='Delete Student'>
-            <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
-              <Icon icon='tabler:trash' />
-            </IconButton>
-          </Tooltip>
-          {/* <Tooltip title='View'>
-            <IconButton
-              size='small'
-              component={Link}
-              sx={{ color: 'text.secondary' }}
-              href={`/apps/invoice/preview/${row.id}`}
-            >
-              <Icon icon='tabler:eye' />
-            </IconButton>
-          </Tooltip> */}
 
-          {/* <OptionsMenu
-            menuProps={{ sx: { '& .MuiMenuItem-root svg': { mr: 2 } } }}
-            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-            options={[
-              {
-                text: 'Download',
-                icon: <Icon icon='tabler:download' fontSize={20} />
-              },
-              {
-                text: 'Edit',
-                href: `/apps/invoice/edit/${row.id}`,
-                icon: <Icon icon='tabler:edit' fontSize={20} />
-              },
-              {
-                text: 'Duplicate',
-                icon: <Icon icon='tabler:copy' fontSize={20} />
-              }
-            ]}
-          /> */}
-        </Box>
+        <>
+        <IconButton size='small' onClick={handleRowOptionsClick}>
+          <Icon icon='tabler:dots-vertical' />
+        </IconButton>
+        <Menu
+          keepMounted
+          anchorEl={anchorEl}
+          open={rowOptionsOpen}
+          onClose={handleRowOptionsClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          PaperProps={{ style: { minWidth: '8rem' } }}
+        >
+          {/* <MenuItem
+            sx={{ '& svg': { mr: 2 } }}
+            onClick={() => setStaffToView(row)}
+          >
+            <Icon icon='tabler:eye' fontSize={20} />
+            View
+          </MenuItem> */}
+          <MenuItem onClick={() => setStudentToEdit(row)} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon='tabler:edit' fontSize={20} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={() => doDelete(row)} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon='tabler:trash' fontSize={20} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </>
       )
     }
   ]
