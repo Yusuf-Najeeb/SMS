@@ -40,6 +40,7 @@ import AddGuardian from './AddGuardian'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import EditGuardian from './EditGuardian'
+import { Menu, MenuItem } from '@mui/material'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -49,7 +50,8 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 const TypographyStyled = styled(Typography)(({theme})=> ({
-    fontSize: theme.typography.body1.fontSize,
+    // fontSize: `${theme.typography.smallText.fontSize}`,
+    fontSize: `8px`,
     color: `${theme.palette.primary.main} !important` 
 }))
 
@@ -78,21 +80,11 @@ const renderClient = row => {
 const defaultColumns = [
 
 
-{
-    flex: 0.1,
-    field: 'id',
-    minWidth: 100,
-    headerName: 'ID',
-
-    renderCell: ({ row }) => (
-      <Typography component={TypographyStyled} >{`#${row.identificationNumber}`}</Typography>
-    )
-  },
 
   {
     flex: 0.25,
     field: 'name',
-    minWidth: 320,
+    minWidth: 280,
     headerName: 'Guardian',
     renderCell: ({ row }) => {
       const { firstName, lastName, email, } = row
@@ -114,31 +106,43 @@ const defaultColumns = [
   },
   {
     flex: 0.1,
-    minWidth: 100,
+    minWidth: 150,
     field: 'religion',
     headerName: 'Religion',
     renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.religion || '--'}</Typography>
   },
   {
     flex: 0.15,
-    minWidth: 140,
+    minWidth: 150,
     field: 'phone',
-    headerName: 'Phone Number',
+    headerName: 'Phone',
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.phone || '--'}</Typography>
   },
   {
     flex: 0.15,
-    minWidth: 140,
+    minWidth: 150,
+    field: 'dateOfBirth',
+    headerName: 'Date of Birth',
+    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDate(row.dateOfBirth)}</Typography>
+  },
+  {
+    flex: 0.15,
+    minWidth: 150,
     field: 'gender',
     headerName: 'Gender',
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.gender}</Typography>
   },
+
+
   {
-    flex: 0.15,
+    flex: 0.1,
+    field: 'id',
     minWidth: 140,
-    field: 'dateOfBirth',
-    headerName: 'Date of Birth',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDate(row.dateOfBirth)}</Typography>
+    headerName: 'User ID',
+
+    renderCell: ({ row }) => (
+      <Typography component={TypographyStyled} sx={{fontSize: '13px'}} >{`${row.identificationNumber}`}</Typography>
+    )
   },
 
 //   {
@@ -220,6 +224,8 @@ const AllGuardian = () => {
   const [selectedGuardian, setSelectedGuardian] = useState()
   const [guardianToUpdate, setGuardianToUpdate] = useState(null)
   const [key, setKey] = useState('')
+  const [anchorEl, setAnchorEl] = useState(null)
+  const rowOptionsOpen = (anchorEl)
 
   
 
@@ -227,6 +233,14 @@ const AllGuardian = () => {
   const dispatch = useDispatch()
 
   const GuardianData = useAppSelector(store => store.guardian.GuardianData)
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
 
 
   const toggleModal = ()=>{
@@ -238,6 +252,7 @@ const AllGuardian = () => {
   const doDelete = value => {
     setDeleteModal(true)
     setSelectedGuardian(value?.id)
+    handleRowOptionsClose()
   }
 
   const doCancelDelete = () => {
@@ -259,6 +274,7 @@ const AllGuardian = () => {
   const setGuardianToEdit = (value) => {
     setEditDrawer(!openEditDrawer)
     setGuardianToUpdate(value)
+    handleRowOptionsClose()
   }
 
   const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
@@ -289,48 +305,43 @@ const AllGuardian = () => {
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title='Edit Guardian'>
-             <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
-            <Icon icon='tabler:edit' />
-            </IconButton>
-            </Tooltip>
-          <Tooltip title='Delete Guardian'>
-            <IconButton size='small' sx={{ color: 'text.secondary' }} onClick={() => doDelete(row)}>
-              <Icon icon='tabler:trash' />
-            </IconButton>
-          </Tooltip>
-          {/* <Tooltip title='View'>
-            <IconButton
-              size='small'
-              component={Link}
-              sx={{ color: 'text.secondary' }}
-              href={`/apps/invoice/preview/${row.id}`}
-            >
-              <Icon icon='tabler:eye' />
-            </IconButton>
-          </Tooltip> */}
 
-          {/* <OptionsMenu
-            menuProps={{ sx: { '& .MuiMenuItem-root svg': { mr: 2 } } }}
-            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-            options={[
-              {
-                text: 'Download',
-                icon: <Icon icon='tabler:download' fontSize={20} />
-              },
-              {
-                text: 'Edit',
-                href: `/apps/invoice/edit/${row.id}`,
-                icon: <Icon icon='tabler:edit' fontSize={20} />
-              },
-              {
-                text: 'Duplicate',
-                icon: <Icon icon='tabler:copy' fontSize={20} />
-              }
-            ]}
-          /> */}
-        </Box>
+        <>
+        <IconButton size='small' onClick={handleRowOptionsClick}>
+          <Icon icon='tabler:dots-vertical' />
+        </IconButton>
+        <Menu
+          keepMounted
+          anchorEl={anchorEl}
+          open={rowOptionsOpen}
+          onClose={handleRowOptionsClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          PaperProps={{ style: { minWidth: '8rem' } }}
+        >
+          {/* <MenuItem
+            sx={{ '& svg': { mr: 2 } }}
+            onClick={() => setStaffToView(row)}
+          >
+            <Icon icon='tabler:eye' fontSize={20} />
+            View
+          </MenuItem> */}
+          <MenuItem onClick={() => setGuardianToEdit(row)} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon='tabler:edit' fontSize={20} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={() => doDelete(row)} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon='tabler:trash' fontSize={20} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </>
       )
     }
   ]

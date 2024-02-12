@@ -72,6 +72,9 @@ const typography = {
   overline: {
     fontSize: '0.75rem',
     letterSpacing: '1px'
+  },
+  smallText: {
+    fontSize: '0.6rem',
   }
 }
 
