@@ -248,6 +248,8 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
     
         if (fileInput.files && fileInput.files.length > 0) {
           const file = fileInput.files[0]
+
+          console.log(file, 'file')
     
           const fileSize = file.size / 1024 / 1024 // in MB
     
@@ -262,6 +264,8 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
     
             const formData = new FormData();
             formData.append("picture", file);
+
+            console.log(formData, 'form data')
     
             uploadImage(formData).then((res)=>{
               if (res) {
