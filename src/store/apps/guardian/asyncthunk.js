@@ -10,7 +10,7 @@ export const createGuardian =  async vals => {
 
     return response
   } catch (error) {
-    notifyError('Error Creating Guardian')
+    notifyError('Unable to create Guardian')
 
    
   }
@@ -18,13 +18,12 @@ export const createGuardian =  async vals => {
 
 export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (query) => {
     try {
-      const response = await axios.get(`/users?page=${query.page}&limit=10&key=${query.key}&type=parent`)
+      const response = await axios.get(`/parents?page=${query.page}&limit=10&key=${query.key}`)
 
   
       return response
     } catch (error) {
       console.log(error, 'error')
-      notifyError('Error fetching Guardian')
   
     }
   })
@@ -33,7 +32,7 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
 
   export const searchParent = async (key)=> {
     try {
-      const response = await axios.get(`/users?page=1&limit=2000&key=${key}&type=parent`)
+      const response = await axios.get(`/parents?page=1&limit=2000&key=${key}&type=parent`)
   
       return response?.data.data.result
     } catch (error) {
@@ -43,7 +42,7 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
 
   export const deleteGuardian =  async (id) => {
     try {
-      const response = await axios.delete(`/users/delete?id=${id}`)
+      const response = await axios.delete(`/parents/delete?id=${id}`)
   
       if (response.data.success) {
         notifySuccess('Guardian Deleted')
@@ -58,7 +57,7 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
 
   export const updateGuardian = async (payload, id)=> {
     try {
-      const response = await axios.patch(`/users/update?id=${id}`, payload)
+      const response = await axios.patch(`/parents/update?id=${id}`, payload)
   
       if (response.data.success){
         notifySuccess('Guardian Updated')

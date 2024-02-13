@@ -16,6 +16,7 @@ import income from 'src/store/apps/income'
 import incomeCategory from 'src/store/apps/incomeCategory'
 import expenditure from 'src/store/apps/expenditure'
 import expenditureCategory from 'src/store/apps/expenditureCategory'
+import settings from 'src/store/apps/settings'
 
 export const store = configureStore({
   reducer: {
@@ -32,7 +33,8 @@ export const store = configureStore({
     income,
     incomeCategory,
     expenditure,
-    expenditureCategory
+    expenditureCategory,
+    settings
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -103,6 +103,15 @@ const navigation = () => {
       path: '/apps/expenditure'
     },
 
+      {
+      sectionTitle: 'Settings'
+    },
+    {
+      title: 'Settings',
+      icon: 'tabler:settings',
+      path: '/apps/settings'
+    }
+
     // {
     //   title: 'Fees and Billing',
     //   icon: 'fa6-solid:file-invoice-dollar',
@@ -126,14 +135,7 @@ const navigation = () => {
     //   path: '/apps/inventory/list'
     // },
 
-    // {
-    //   sectionTitle: 'Settings'
-    // },
-    // {
-    //   title: 'Settings',
-    //   icon: 'tabler:settings',
-    //   path: '/pages/wizard-examples/property-listing'
-    // }
+  
 
     // {
     //   sectionTitle: 'Forms & Tables'
