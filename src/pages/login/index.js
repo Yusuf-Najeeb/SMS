@@ -90,8 +90,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: '',
-  userId: ''
+  password: 'SuperAdmin@123',
+  userId: 'super.admin@email.com'
 }
 
 const LoginPage = () => {
@@ -122,7 +122,6 @@ const LoginPage = () => {
 
   const onSubmit = async data => {
     const { userId, password } = data
-    console.log(data)
 
     const resp = loginUser(data)
       .then(res => {
