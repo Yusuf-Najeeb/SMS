@@ -12,7 +12,7 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async (que
 
     return response
   } catch (error) {
-    notifyError('Error fetching staffs')
+    console.log(error, 'error')
 
   }
 })

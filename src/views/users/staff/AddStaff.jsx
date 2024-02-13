@@ -69,7 +69,7 @@ import { notifyWarn } from '../../../@core/components/toasts/notifyWarn'
 import { formatDateToYYYMMDDD, formatFirstLetter } from '../../../@core/utils/format'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 
-// import { uploadImage } from '../../../store/apps/upload'
+import { uploadImage } from '../../../store/apps/upload'
 
 import { steps } from '../../../@core/FormSchema/utils'
 
@@ -347,7 +347,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
       case 0:
         return (
           <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
-        {/* <Grid
+        <Grid
           item
           xs={12}
           sm={6}
@@ -393,7 +393,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
           >
            {selectedImage && <img src={`${previewUrl}`} width={120} height={100} style={{objectFit: 'cover', objectPosition: 'center'}} alt='product image' /> }
           </Box>
-        </Grid> */}
+        </Grid>
         
           <form key={0} onSubmit={handlePersonalSubmit(handleForward)} >
             <Grid container spacing={5}>
