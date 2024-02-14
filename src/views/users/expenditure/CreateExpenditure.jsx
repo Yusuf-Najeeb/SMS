@@ -33,6 +33,8 @@ import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { useExpenditureCategory } from '../../../hooks/useExpenditureCategory'
 import { fetchExpenditureCategory } from '../../../store/apps/expenditureCategory/asyncthunk'
 import { createExpenditure } from '../../../store/apps/expenditure/asyncthunk'
+import { fetchPaymentMethods } from '../../../store/apps/settings/asyncthunk'
+import { usePaymentMethods } from '../../../hooks/usePaymentMethods'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -55,7 +57,8 @@ const defaultValues = {
   amountPaid: Number(''),
   categoryId: '',
   income: false,
-  expenditureOwner: ''
+  expenditureOwner: '',
+  paymentMode: ''
 }
 
 const CreateExpenditure = ({ open, closeModal, fetchData }) => {
@@ -75,6 +78,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
   // ** Hooks
   const dispatch = useDispatch()
   const [ExpenditureCategoryData] = useExpenditureCategory()
+  const [PaymentMethodsList] = usePaymentMethods()
 
   const validatePayment = amountPaid => {
     if (amountPaid > Number(getValues('amount'))) {
@@ -139,6 +143,12 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
       setGuardianId(null)
     }
   }, [staffItemsArray])
+
+  useEffect(() => {
+    dispatch(fetchPaymentMethods({ page: 1, limit: 300 }))
+
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     dispatch(fetchExpenditureCategory({ page: 1, limit: 300 }))
@@ -217,7 +227,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
               }}
             >
               <Grid container spacing={6}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='title'
                     control={control}
@@ -237,7 +247,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='categoryId'
                     control={control}
@@ -261,6 +271,37 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                         {ExpenditureCategoryData?.map(category => (
                           <MenuItem key={category?.id} value={category?.id}>
                             {category.name}
+                          </MenuItem>
+                        ))}
+                      </CustomTextField>
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='paymentMode'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        select
+                        fullWidth
+                        required
+                        value={value}
+                        label='Payment Method'
+                        onChange={e => {
+                          onChange(e)
+                        }}
+                        id='stepper-linear-personal-paymentMode'
+                        error={Boolean(errors.paymentMode)}
+                        aria-describedby='stepper-linear-personal-paymentMode-helper'
+                        {...(errors.paymentMode && { helperText: errors.paymentMode.message })}
+                      >
+                        <MenuItem value=''>Select Category</MenuItem>
+                        {PaymentMethodsList?.map(method => (
+                          <MenuItem key={method?.id} value={method?.name}>
+                            {method.name}
                           </MenuItem>
                         ))}
                       </CustomTextField>

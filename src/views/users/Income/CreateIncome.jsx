@@ -33,6 +33,8 @@ import SearchStaff from '../component/SearchStaff'
 import SearchParent from '../component/SearchParent'
 import SearchStudent from '../component/SearchStudent'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { usePaymentMethods } from '../../../hooks/usePaymentMethods'
+import { fetchPaymentMethods } from '../../../store/apps/settings/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -55,7 +57,8 @@ const defaultValues = {
   amountPaid: Number(''),
   categoryId: '',
   income: true,
-  incomeOwner: ''
+  incomeOwner: '',
+  paymentMode: ''
 }
 
 const CreateIncome = ({ open, closeModal, fetchData }) => {
@@ -75,6 +78,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
   // ** Hooks
   const dispatch = useDispatch()
   const [IncomeCategoryData] = useIncomeCategory()
+  const [PaymentMethodsList] = usePaymentMethods()
 
   const validatePayment = amountReceived => {
     if (amountReceived > Number(getValues('amount'))) {
@@ -139,6 +143,12 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
       setGuardianId(null)
     }
   }, [staffItemsArray])
+
+  useEffect(() => {
+    dispatch(fetchPaymentMethods({ page: 1, limit: 300 }))
+
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const {
     control,
@@ -220,7 +230,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
               }}
             >
               <Grid container spacing={6}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='title'
                     control={control}
@@ -240,7 +250,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='categoryId'
                     control={control}
@@ -264,6 +274,37 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                         {IncomeCategoryData?.map(category => (
                           <MenuItem key={category?.id} value={category?.id}>
                             {category.name}
+                          </MenuItem>
+                        ))}
+                      </CustomTextField>
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='paymentMode'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        select
+                        fullWidth
+                        required
+                        value={value}
+                        label='Payment Method'
+                        onChange={e => {
+                          onChange(e)
+                        }}
+                        id='stepper-linear-personal-paymentMode'
+                        error={Boolean(errors.paymentMode)}
+                        aria-describedby='stepper-linear-personal-paymentMode-helper'
+                        {...(errors.paymentMode && { helperText: errors.paymentMode.message })}
+                      >
+                        <MenuItem value=''>Select Category</MenuItem>
+                        {PaymentMethodsList?.map(method => (
+                          <MenuItem key={method?.id} value={method?.name}>
+                            {method.name}
                           </MenuItem>
                         ))}
                       </CustomTextField>
