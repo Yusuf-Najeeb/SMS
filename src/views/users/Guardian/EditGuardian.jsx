@@ -116,8 +116,6 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
   
       
       const { dateOfBirth, ...restOfData } = changedFields
-
-      console.log(changedFields)
   
       const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
   
@@ -125,7 +123,7 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
   
       const payload = { dateOfBirth: formattedDate, ...restOfData, studentIds }
   
-    updateGuardian(payload, selectedGuardian.id).then((response)=> {
+    updateGuardian(payload, selectedGuardian.email).then((response)=> {
             if (response.data.success) {
                 reset()
                 closeModal()

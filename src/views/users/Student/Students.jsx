@@ -46,6 +46,7 @@ import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import EditStudent from './EditStudent'
 import { Menu } from '@mui/material'
+import ViewStudent from './ViewStudent'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -168,9 +169,11 @@ const AllStudents = () => {
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
+  const [openViewDrawer, setViewDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
   const [studentToUpdate, setStudentToUpdate] = useState(null)
+  const [studentInView, setStudentInView] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const rowOptionsOpen = (anchorEl)
 
@@ -226,7 +229,14 @@ const AllStudents = () => {
     handleRowOptionsClose()
   }
 
+  const setStudentToView = (value) => {
+    setViewDrawer(!openViewDrawer)
+    setStudentInView(value)
+    handleRowOptionsClose()
+  }
+
   const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
+  const closeViewModal = ()=> setViewDrawer(!openViewDrawer)
 
 
   useEffect(()=>{
@@ -245,42 +255,28 @@ const AllStudents = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
 
-        <>
-        <IconButton size='small' onClick={handleRowOptionsClick}>
-          <Icon icon='tabler:dots-vertical' />
-        </IconButton>
-        <Menu
-          keepMounted
-          anchorEl={anchorEl}
-          open={rowOptionsOpen}
-          onClose={handleRowOptionsClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          PaperProps={{ style: { minWidth: '8rem' } }}
-        >
-          {/* <MenuItem
-            sx={{ '& svg': { mr: 2 } }}
-            onClick={() => setStaffToView(row)}
-          >
-            <Icon icon='tabler:eye' fontSize={20} />
-            View
-          </MenuItem> */}
-          <MenuItem onClick={() => setStudentToEdit(row)} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='tabler:edit' fontSize={20} />
-            Edit
-          </MenuItem>
-          <MenuItem onClick={() => doDelete(row)} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='tabler:trash' fontSize={20} />
-            Delete
-          </MenuItem>
-        </Menu>
-      </>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title='Edit Student'>
+             <IconButton size='small' onClick={() => setStudentToEdit(row)}>
+            <Icon icon='tabler:edit' />
+            </IconButton>
+            </Tooltip>
+
+          <Tooltip title='View Student'>
+            <IconButton size='small' onClick={() => setStudentToView(row)}>
+              <Icon icon='tabler:eye' />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title='Delete Student'>
+           <IconButton size='small' onClick={() => doDelete(row)}>
+                          <Icon icon='tabler:trash' />
+                        </IconButton>
+          </Tooltip>
+          
+
+        </Box>
+
       )
     }
   ]
@@ -318,6 +314,7 @@ const AllStudents = () => {
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  />
     <EditStudent open={openEditDrawer} selectedStudent={studentToUpdate} fetchData={updateFetch} closeModal={closeEditModal}/>
+    <ViewStudent open={openViewDrawer} closeCanvas={closeViewModal} student={studentInView} />
     </Fragment>
   )
 }

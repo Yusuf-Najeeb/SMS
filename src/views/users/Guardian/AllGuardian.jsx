@@ -41,6 +41,7 @@ import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import EditGuardian from './EditGuardian'
 import { Menu, MenuItem } from '@mui/material'
+import ViewGuardian from './ViewGuardian'
 
 // ** Styled component for the link in the dataTable
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -221,9 +222,11 @@ const AllGuardian = () => {
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
+  const [openViewDrawer, setViewDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [selectedGuardian, setSelectedGuardian] = useState()
   const [guardianToUpdate, setGuardianToUpdate] = useState(null)
+  const [guardianInView, setGuardianInView] = useState(null)
   const [key, setKey] = useState('')
   const [anchorEl, setAnchorEl] = useState(null)
   const rowOptionsOpen = (anchorEl)
@@ -252,7 +255,7 @@ const AllGuardian = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedGuardian(value?.id)
+    setSelectedGuardian(value?.email)
     handleRowOptionsClose()
   }
 
@@ -278,7 +281,21 @@ const AllGuardian = () => {
     handleRowOptionsClose()
   }
 
-  const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
+  const setGuardianToView = (value) => {
+    setViewDrawer(!openViewDrawer)
+    setGuardianInView(value)
+    handleRowOptionsClose()
+  }
+
+  const closeEditModal = ()=> {
+    setEditDrawer(!openEditDrawer)
+    setGuardianToUpdate(null)
+}
+
+  const closeViewModal = ()=> {
+    setViewDrawer(!openViewDrawer)
+    setGuardianInView(null)
+}
 
 
   const handleOnChangeRange = dates => {
@@ -306,43 +323,28 @@ const AllGuardian = () => {
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }) => (
-
-        <>
-        <IconButton size='small' onClick={handleRowOptionsClick}>
-          <Icon icon='tabler:dots-vertical' />
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Tooltip title='Edit Guardian'>
+         <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
+        <Icon icon='tabler:edit' />
         </IconButton>
-        <Menu
-          keepMounted
-          anchorEl={anchorEl}
-          open={rowOptionsOpen}
-          onClose={handleRowOptionsClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          PaperProps={{ style: { minWidth: '8rem' } }}
-        >
-          {/* <MenuItem
-            sx={{ '& svg': { mr: 2 } }}
-            onClick={() => setStaffToView(row)}
-          >
-            <Icon icon='tabler:eye' fontSize={20} />
-            View
-          </MenuItem> */}
-          <MenuItem onClick={() => setGuardianToEdit(row)} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='tabler:edit' fontSize={20} />
-            Edit
-          </MenuItem>
-          <MenuItem onClick={() => doDelete(row)} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='tabler:trash' fontSize={20} />
-            Delete
-          </MenuItem>
-        </Menu>
-      </>
+        </Tooltip>
+
+      <Tooltip title='View Guardian'>
+        <IconButton size='small' onClick={() => setGuardianToView(row)}>
+          <Icon icon='tabler:eye' />
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip title='Delete Guardian'>
+       <IconButton size='small' onClick={() => doDelete(row)}>
+                      <Icon icon='tabler:trash' />
+                    </IconButton>
+      </Tooltip>
+      
+
+    </Box>
+
       )
     }
   ]
@@ -366,6 +368,8 @@ const AllGuardian = () => {
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
               disableRowSelectionOnClick
+
+            //   getRowId={(row, index) => String(index)}
             />
           </Card>
         </Grid>
@@ -376,6 +380,7 @@ const AllGuardian = () => {
     <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     <AddGuardian open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
      <EditGuardian open={openEditDrawer} selectedGuardian={guardianToUpdate} fetchData={updateFetch} closeModal={closeEditModal}/>
+     <ViewGuardian open={openViewDrawer} guardian={guardianInView} closeCanvas={closeViewModal}/>
     </Fragment>
   )
 }

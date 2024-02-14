@@ -40,9 +40,9 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
     }
   }
 
-  export const deleteGuardian =  async (id) => {
+  export const deleteGuardian =  async (email) => {
     try {
-      const response = await axios.delete(`/parents/delete?id=${id}`)
+      const response = await axios.delete(`/parents/delete/${email}`)
   
       if (response.data.success) {
         notifySuccess('Guardian Deleted')
@@ -55,9 +55,9 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
     }
   }
 
-  export const updateGuardian = async (payload, id)=> {
+  export const updateGuardian = async (payload, email)=> {
     try {
-      const response = await axios.patch(`/parents/update?id=${id}`, payload)
+      const response = await axios.patch(`/parents/update/${email}`, payload)
   
       if (response.data.success){
         notifySuccess('Guardian Updated')
