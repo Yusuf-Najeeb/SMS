@@ -43,7 +43,7 @@ import AddStaff from './AddStaff'
 import UpdateStaff from './UpdateStaff'
 import ViewStaff from './ViewStaff'
 import Stats from '../component/Stats'
-import { Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem, Tooltip } from '@mui/material'
 
 
 // ** Styled component for the link in the dataTable
@@ -264,7 +264,7 @@ const Staffs = () => {
     deleteStaff(selectedStaff).then((res)=>{
 
         if (res.status) {
-          dispatch(fetchStaffs())
+          dispatch(fetchStaffs({page: 1, key}))
           doCancelDelete()
         }
     })
@@ -303,43 +303,28 @@ const Staffs = () => {
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }) => (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title='Edit Staff'>
+             <IconButton size='small' onClick={() => setStaffToEdit(row)}>
+            <Icon icon='tabler:edit' />
+            </IconButton>
+            </Tooltip>
 
-        <>
-        <IconButton size='small' onClick={handleRowOptionsClick}>
-          <Icon icon='tabler:dots-vertical' />
-        </IconButton>
-        <Menu
-          keepMounted
-          anchorEl={anchorEl}
-          open={rowOptionsOpen}
-          onClose={handleRowOptionsClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          PaperProps={{ style: { minWidth: '8rem' } }}
-        >
-          <MenuItem
-            sx={{ '& svg': { mr: 2 } }}
-            onClick={() => setStaffToView(row)}
-          >
-            <Icon icon='tabler:eye' fontSize={20} />
-            View
-          </MenuItem>
-          <MenuItem onClick={() => setStaffToEdit(row)} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='tabler:edit' fontSize={20} />
-            Edit
-          </MenuItem>
-          <MenuItem onClick={() => doDelete(row)} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='tabler:trash' fontSize={20} />
-            Delete
-          </MenuItem>
-        </Menu>
-      </>
+          <Tooltip title='View Staff'>
+            <IconButton size='small' onClick={() => setStaffToView(row)}>
+              <Icon icon='tabler:eye' />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title='Delete Staff'>
+           <IconButton size='small' onClick={() => doDelete(row)}>
+                          <Icon icon='tabler:trash' />
+                        </IconButton>
+          </Tooltip>
+          
+
+        </Box>
+
       )
     }
   ]
