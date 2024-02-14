@@ -99,6 +99,14 @@ const defaultColumns = [
     headerName: 'Category',
     renderCell: ({ row }) => <CustomChip rounded size='small' skin='light' color='success' label={row.category.name} />
   },
+  
+//   {
+//     flex: 0.15,
+//     minWidth: 140,
+//     field: 'paymentMode',
+//     headerName: 'Payment Method',
+//     renderCell: ({ row }) => <CustomChip rounded size='small' skin='light' color='success' label={row.paymentMode || '--'} />
+//   },
   {
     flex: 0.15,
     minWidth: 140,
