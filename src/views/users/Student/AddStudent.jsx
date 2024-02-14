@@ -15,7 +15,7 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { CircularProgress, MenuItem } from '@mui/material'
+import { CircularProgress, MenuItem, Typography } from '@mui/material'
 
 import DatePicker from 'react-datepicker'
 
@@ -30,6 +30,8 @@ import { createStudentSchema } from 'src/@core/Formschema'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { createStudent } from '../../../store/apps/Student/asyncthunk'
 import SearchParent from './SearchParent'
+import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
+import { handleInputImageChange } from '../../../@core/utils/uploadImage'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -54,6 +56,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(``)
+  const [imageLinkPayload, setImageLinkPayload] = useState('')
 
   const toggleParentModal = ()=> {
     closeModal()
@@ -89,7 +94,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     const parentIds = itemsArray.map(item => item.id);
 
 
-    const personalInformation = { dateOfBirth: formattedDate, ...restOfData, parentIds }
+    const personalInformation = { dateOfBirth: formattedDate, profilePicture: imageLinkPayload, ...restOfData, parentIds }
     const payload = {personalInformation}
 
          createStudent(payload).then((response)=> {
@@ -112,7 +117,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
       scroll='body'
 
       //   TransitionComponent={Transition}
-      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 750 } }}
+      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 990 } }}
     >
       <DialogContent
         sx={{
@@ -124,6 +129,56 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
           <Icon icon='tabler:x' fontSize='1.25rem' />
         </CustomCloseButton>
 
+        <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
+              <Grid item xs={12} sm={6}>
+                <Box
+                  sx={{
+                    border: '3px dotted black',
+                    borderRadius: 3,
+                    p: 3,
+                    display: 'flex',
+                    textAlign: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column'
+                  }}
+                >
+                  <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
+                    <input
+                      hidden
+                      type='file'
+                      accept='image/png, image/jpeg'
+                      onChange={e => handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
+                      id='account-settings-upload-image'
+                    />
+
+                    <Icon icon='tabler:upload' fontSize='1.45rem' />
+                  </ButtonStyled>
+                  <Typography variant='body2' sx={{ mt: 2 }}>
+                    Upload Student Image
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center'
+                }}
+              >
+                {selectedImage &&
+                <img
+                  src={`${previewUrl}`}
+                  width={120}
+                  height={100}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
+                  alt='student image'
+                /> }
+              </Box>
+            </Grid>
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent
             sx={{
@@ -131,7 +186,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
             }}
           >
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='firstName'
                   control={control}
@@ -150,7 +205,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='lastName'
                   control={control}
@@ -169,7 +224,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='middleName'
                   control={control}
@@ -187,7 +242,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='email'
                   control={control}
@@ -205,7 +260,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <Controller
                   name='password'
                   type='password'
@@ -242,7 +297,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <Controller
                   name='gender'
                   control={control}
@@ -268,7 +323,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
               </Grid>
 
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='phone'
                   control={control}
@@ -287,7 +342,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='dateOfBirth'
                   control={control}
@@ -314,26 +369,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='residentialAddress'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Residential Address'
-                      placeholder='Enter Address'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <Controller
                   name='religion'
                   control={control}
@@ -354,6 +390,25 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       <MenuItem value='Islam'>Islam</MenuItem>
                       <MenuItem value='Others'>Others</MenuItem>
                     </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='residentialAddress'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Residential Address'
+                      placeholder='Enter Address'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.residentialAddress)}
+                      {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
+                    />
                   )}
                 />
               </Grid>
