@@ -8,7 +8,6 @@ import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
-import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
@@ -21,7 +20,7 @@ import Icon from 'src/@core/components/icon'
 import format from 'date-fns/format'
 
 // ** Store & Actions Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -68,13 +67,14 @@ const userRoleObj = {
     "house-master" : { icon: 'tabler:user', color: 'warning' }
   }
 
+  const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 
 // ** renders client column
 const renderClient = row => {
     const initials = `${row.firstName} ${row.lastName}`
   if (row.profilePicture?.length) {
-    return <CustomAvatar src={row.profilePicture} sx={{ mr: 2.5, width: 38, height: 38 }} />
+    return <CustomAvatar src={`${backendURL?.replace('api', '')}/${row.profilePicture}`} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
     return (
       <CustomAvatar
@@ -137,12 +137,12 @@ const defaultColumns = [
               <CustomAvatar
                 skin='light'
                 sx={{ mr: 4, width: 30, height: 30 }}
-                color={(userRoleObj[row.role.roleName].color ) || 'primary'}
+                color={(userRoleObj[row?.role?.name].color ) || 'primary'}
               >
-                <Icon icon={userRoleObj[row.role.roleName].icon} />
+                <Icon icon={userRoleObj[row?.role?.name].icon} />
               </CustomAvatar>
               <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                {row.role.roleName}
+                {row?.role?.name}
               </Typography>
             </Box>
           )

@@ -52,13 +52,13 @@ export const updateStaffPersonalInfoSchema = yup.object().shape({
     .min(11, obj => showErrors('Phone Number', obj.value.length, obj.min)),
   title: yup.string().required('Title is required'),
   dateOfBirth: yup.string().required('Date of Birth is required'),
-  residentialAddress: yup.string().required('Residential Address is required'),
-  maritalStatus: yup.string().required('Marital Status is required'),
+  residentialAddress: yup.string(),
+  maritalStatus: yup.string(),
   gender: yup.string().required('Gender is required'),
-  city: yup.string().required('City of Residence is required'),
-  state: yup.string().required('State of Origin is required'),
+  city: yup.string(),
+  state: yup.string(),
   lga: yup.string().required('Local Government of Origin is required'),
-  religion: yup.string().required('Religion is required'),
+  religion: yup.string(),
   staffDescription: yup.string().required('Description is required'),
 
   // additionalInfo: yup.string()
@@ -89,10 +89,10 @@ export const workInfoSchema = yup.object().shape({
 
 export const updatestaffWorkInfoSchema = yup.object().shape({
   qualification: yup.string().required('Qualification is required'),
-  department_section: yup.string().required('Department is required'),
-  institutionAttended: yup.string().required('Institution Attended is required'),
+  department_section: yup.string(),
+  institutionAttended: yup.string(),
   specialization: yup.string(),
-  previousWorkExperience: yup.string().required('Previous work experience is required'),
+  previousWorkExperience: yup.string(),
   basicSalary: yup.number().typeError('Basic salary must be a number'),
   mealAllowance: yup.number().typeError('Meal Allowance must be a number'),
   transportAllowance: yup.number().typeError('Transport Allowance must be a number'),
@@ -102,8 +102,8 @@ export const updatestaffWorkInfoSchema = yup.object().shape({
   rentAllowance: yup.number().typeError('Rent Allowance must be a number'),
   dateOfEmployment: yup.string().required('Date of Employment is required'),
   accountNumber: yup.string().required('Account Number is required'),
-  bankName: yup.string().required('Bank Name is required'),
-  branch: yup.string().required('School Branch is required')
+  bankName: yup.string(),
+  branch: yup.string()
 })
 
 export const medicalSchema = yup.object().shape({

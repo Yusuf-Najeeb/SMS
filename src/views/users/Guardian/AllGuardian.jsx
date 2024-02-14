@@ -56,12 +56,13 @@ const TypographyStyled = styled(Typography)(({theme})=> ({
 }))
 
 
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 // ** renders client column
 const renderClient = row => {
     const initials = `${row.firstName} ${row.lastName}`
   if (row.profilePicture?.length) {
-    return <CustomAvatar src={row.profilePicture} sx={{ mr: 2.5, width: 38, height: 38 }} />
+    return <CustomAvatar src={`${backendURL?.replace('api', '')}/${row.profilePicture}`} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
     return (
       <CustomAvatar

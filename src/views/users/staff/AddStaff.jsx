@@ -76,6 +76,7 @@ import { steps } from '../../../@core/FormSchema/utils'
 
 
 import { createStaff } from '../../../store/apps/staff/asyncthunk'
+import { handleInputImageChange } from '../../../@core/utils/uploadImage'
 
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
@@ -127,14 +128,17 @@ const Step = styled(MuiStep)(({ theme }) => ({
 
 const AddStaff = ({open, closeModal, refetchStaffs}) => {
 
+
   // ** States
   const [activeStep, setActiveStep] = useState(0)
   const [openDepartmentsModal, setOpenDepartmentsModal] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState('/images/avatars/1.png')
-  const [imageLinkPayload, setImageLinkPayload] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState('')
+  const [imageLinkPayload, setImageLinkPayload] = useState('')
   const [refetch, setFetch] = useState(false)
   const [staffRole, setStaffRole] = useState('')
+
+
 
 
   const [state, setState] = useState({
@@ -243,47 +247,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
         medicalReset({  drugAllergies: '', foodAllergies: '', genotype: '', bloodGroup: '', previousSurgery: '', healthStatus: '' })
       }
     
-      const handleInputImageChange = (e) => {
-        const fileInput = e.target
-    
-        if (fileInput.files && fileInput.files.length > 0) {
-          const file = fileInput.files[0]
-
-          console.log(file, 'file')
-    
-          const fileSize = file.size / 1024 / 1024 // in MB
-    
-          if (fileSize > 5) {
-            notifyWarn('FILE ERROR', 'file size cannot exceed 5Mb')
-    
-            return
-          }
-    
-          if (file.type.startsWith('image/')) {
-            const fileUrl = URL.createObjectURL(file)
-    
-            const formData = new FormData();
-            formData.append("picture", file);
-
-            console.log(formData, 'form data')
-    
-            uploadImage(formData).then((res)=>{
-              if (res) {
-                setPreviewUrl(fileUrl)
-                setSelectedImage(file)
-                setImageLinkPayload(res.url)
-              } 
-            })
-          } else {
-            notifyWarn('FILE ERROR', 'Selected file is not an image.')
-            setPreviewUrl(null)
-          }
-        } else {
-          notifyWarn('FILE ERROR', 'No file selected.')
-          setSelectedImage(null)
-          setPreviewUrl(null)
-        }
-      }
     
       const onSubmitAllInfo = async () => {
     
@@ -295,7 +258,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
 
         const {dateOfBirth, ...restData} = personalInfoValues
         const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
-        const personalInformation = {dateOfBirth: formattedDate, ...restData}
+        const personalInformation = {dateOfBirth: formattedDate, profilePicture: imageLinkPayload, ...restData}
 
         const {role, basicSalary, rentAllowance, furnitureAllowance, transportAllowance,mealAllowance, domesticAllowance, SalaryArrears, dateOfEmployment, ...restOfData} = employmentInfoValues
         const formattedDateOfEmployment = formatDateToYYYMMDDD(dateOfEmployment)
@@ -318,7 +281,8 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
         const payload = {personalInformation, 
           employmentInformation, 
           nextOfKinInformation, 
-          medicalInformation
+          medicalInformation,
+          
         }
 
         createStaff(staffRole, payload).then((res)=> {
@@ -374,7 +338,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                   hidden
                   type='file'
                   accept='image/png, image/jpeg'
-                  onChange={handleInputImageChange}
+                  onChange={(e)=> handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
                   id='account-settings-upload-image'
                 />
 
@@ -395,7 +359,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               alignSelf: 'center'
             }}
           >
-           {selectedImage && <img src={`${previewUrl}`} width={120} height={100} style={{objectFit: 'cover', objectPosition: 'center'}} alt='product image' /> }
+           {selectedImage && <img src={`${previewUrl}`} width={120} height={100} style={{objectFit: 'cover', objectPosition: 'center'}} alt='staff image' /> }
           </Box>
         </Grid>
         
