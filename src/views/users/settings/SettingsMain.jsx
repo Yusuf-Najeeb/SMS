@@ -15,6 +15,7 @@ import Icon from 'src/@core/components/icon'
 // ** Custom Components Imports
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import PaymentDashboard from './PaymentDashboard'
+import CategoriesTable from './Categories/CategoriesTable'
 
 // import StaffDashboard from './staffSettings/StaffDashboard'
 
@@ -82,6 +83,14 @@ const TabSettings = [
     item: <PaymentDashboard />
   },
 
+    {
+    id: 'desc-settings',
+    title: 'Manage Categories',
+    subtitle: 'Create/edit categories',
+    icon: 'iwwa:assign',
+    item: <CategoriesTable />
+  },
+
 //   {
 //     id: 'users-settings',
 //     title: 'Manage Staffs',
@@ -89,13 +98,7 @@ const TabSettings = [
 //     icon: 'la:users-cog',
 //     item: <StaffDashboard />
 //   },
-//   {
-//     id: 'desc-settings',
-//     title: 'Manage Designation',
-//     subtitle: 'Create/edit store designation',
-//     icon: 'iwwa:assign',
-//     item: <DesignationDashboard />
-//   },
+
 //   {
 //     id: 'roles-settings',
 //     title: 'Manage Roles',

@@ -19,21 +19,38 @@ import {  fetchPaymentMethods } from 'src/store/apps/settings/asyncthunk'
 import {  deletePaymentMethod } from 'src/store/apps/settings/asyncthunk'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
+import PageHeaderWithSearch from '../../component/PageHeaderWithSearch'
+import ManageCategories from './ManageCategories'
+import { useCategories } from '../../../../hooks/useCategories'
+import { deleteCategory, fetchCategories } from '../../../../store/apps/categories/asyncthunk'
 
 
 
-const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
+const CategoriesTable = () => {
   const dispatch = useAppDispatch()
 
-  const [PaymentMethodsList, loading, paging] = usePaymentMethods()
+
+  const [CategoriesData, loading, paging] = useCategories()
   const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [selectedMethod, setSelectedMethod] = useState(null)
+  const [categoryToDelete, setCategoryToDelete] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [type, setType] = useState('')
 
-  const setActivePaymentMethod = (value) => {
-    OpenPayment()
-    DoSetSelectedPayment(value)
+  const OpenCategoryModal = () => {
+    if (openModal) {
+      setOpenModal(false)
+      setSelectedCategory(null)
+    } else {
+      setOpenModal(true)
+    }
+  }
+
+  const setActiveCategory = (value) => {
+    OpenCategoryModal()
+    setSelectedCategory(value)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -45,33 +62,36 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
     setPage(0)
   }
 
-  const doDelete = (method) => {
+  const doDelete = (category) => {
     setDeleteModal(true)
-    setSelectedMethod(method.id)
+    setCategoryToDelete(category.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedMethod(null)
+    setCategoryToDelete(null)
   }
 
   const ondeleteClick = () => {
-    deletePaymentMethod(selectedMethod).then((res)=>{
+    deleteCategory(categoryToDelete).then((res)=>{
       if(res.data.success){
-        dispatch(fetchPaymentMethods({ page: page + 1, limit: 10 }))
+        dispatch(fetchCategories({ page: page + 1, limit: 10, type: '' }))
       }
     })
     doCancelDelete()
   }
 
   useEffect(() => {
-    dispatch(fetchPaymentMethods({ page: page + 1, limit: 10 }))
+    dispatch(fetchCategories({ page: page + 1, limit: 10, type }))
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage])
+  }, [page, rowsPerPage, type])
 
   return (
     <Fragment>
+
+<PageHeaderWithSearch toggle={OpenCategoryModal} handleFilter={setType} action={'Add Category'} searchPlaceholder={'Search Category'}/>
+
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
@@ -107,18 +127,18 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
 
               // </Box>
               <Fragment>
-                {PaymentMethodsList?.length &&  PaymentMethodsList?.map(paymentItem => (
-                  <TableRow hover role='checkbox' key={paymentItem.id}>
-                    <TableCell align='left'>#{paymentItem.id}</TableCell>
+                {CategoriesData?.map(item => (
+                  <TableRow hover role='checkbox' key={item.id}>
+                    <TableCell align='left'>#{item.id}</TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {paymentItem?.name || '--'}
+                      {item?.name || '--'}
                     </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'capitalize' }}>
-                      {paymentItem?.type || '--'}
+                      {item?.type || '--'}
                     </TableCell>
-                    {/* <TableCell align='center'>{paymentItem?.createdBy || '--'}</TableCell> */}
+                    {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
                     <TableCell align='center'>
-                      {/* {paymentItem.status ? ( */}
+                      {/* {item.status ? ( */}
                         <CustomChip
                           rounded
                           skin='light'
@@ -139,18 +159,18 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
                       )} */}
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <IconButton size='small' onClick={() => setActivePaymentMethod(paymentItem)}>
+                      <IconButton size='small' onClick={() => setActiveCategory(item)}>
                         <Icon icon='tabler:edit' />
                       </IconButton>
 
-                      <IconButton size='small' onClick={() => doDelete(paymentItem)}>
+                      <IconButton size='small' onClick={() => doDelete(item)}>
                         <Icon icon='tabler:trash' />
                       </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
 
-                {PaymentMethodsList?.length === 0 && (
+                {CategoriesData?.length === 0 && (
                   <tr className='text-center'>
                     <td colSpan={6}>
                       <NoData />
@@ -173,9 +193,10 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
+        {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )
 }
 
-export default PaymentTable
+export default CategoriesTable
