@@ -50,7 +50,7 @@ const Sub = styled('sub')(({ theme }) => ({
 
 const GuardianCard = ({ Guardian }) => {
   // ** States
-  const [profilePictureUrl, setProfilePictureUrl] = useState()
+  const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
 
   useEffect(() => {
@@ -60,10 +60,13 @@ const GuardianCard = ({ Guardian }) => {
   }, [Guardian])
 
   useEffect(() => {
-    setProfilePictureUrl(`${process.env.NEXT_PUBLIC_BACKEND_URL.replace('api','')}/${Guardian?.profilePicture}`)
+
+    if(Guardian){
+        setProfilePictureUrl(`${process.env.NEXT_PUBLIC_BACKEND_URL.replace('api','')}/${Guardian?.profilePicture}`)
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profilePictureUrl])
+  }, [Guardian])
 
   return (
     <Grid container spacing={6}>

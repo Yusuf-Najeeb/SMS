@@ -50,7 +50,7 @@ const Sub = styled('sub')(({ theme }) => ({
 
 const StudentCard = ({ Student }) => {
   // ** States
-  const [profilePictureUrl, setProfilePictureUrl] = useState()
+  const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
 
   useEffect(() => {
@@ -60,10 +60,12 @@ const StudentCard = ({ Student }) => {
   }, [Student])
 
   useEffect(() => {
-    setProfilePictureUrl(`${process.env.NEXT_PUBLIC_BACKEND_URL.replace('api','')}/${Student?.profilePicture}`)
+    if(Student){
+        setProfilePictureUrl(`${process.env.NEXT_PUBLIC_BACKEND_URL.replace('api','')}/${Student?.profilePicture}`)
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profilePictureUrl])
+  }, [Student])
 
   return (
     <Grid container spacing={6}>
@@ -92,7 +94,7 @@ const StudentCard = ({ Student }) => {
               <Typography variant='h5' sx={{ mb: 3 }}>
                 {formatFirstLetter(Student?.firstName) || '--'}
               </Typography> */}
-              
+
               <CustomChip
                 rounded
                 skin='light'

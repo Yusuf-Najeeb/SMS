@@ -235,9 +235,9 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                     render={({ field: { value, onChange } }) => (
                       <CustomTextField
                         fullWidth
-                        label='Title'
+                        label='Description'
                         required
-                        placeholder='Enter Expenditure title'
+                        placeholder='Enter Expenditure description'
                         value={value}
                         onChange={onChange}
                         error={Boolean(errors.title)}
