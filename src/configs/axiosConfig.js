@@ -35,7 +35,9 @@ axios.interceptors.response.use(
   function (error) {
     // console.log('moved to errored', error)
 
-    if (error?.response?.statusText === 'Unauthorized') {
+    // if (error?.response?.statusText === 'Unauthorized') {
+
+      if (error?.response?.statusText === 'Forbidden') {
       window.localStorage.removeItem('authToken')
 
       window.location.href = '/login'

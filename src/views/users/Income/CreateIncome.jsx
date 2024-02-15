@@ -238,9 +238,9 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                     render={({ field: { value, onChange } }) => (
                       <CustomTextField
                         fullWidth
-                        label='Title'
+                        label='Description'
                         required
-                        placeholder='Enter Income title'
+                        placeholder='Enter Income Description'
                         value={value}
                         onChange={onChange}
                         error={Boolean(errors.title)}

@@ -285,6 +285,8 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
           
         }
 
+        console.log(payload, 'staff payload')
+
         createStaff(staffRole, payload).then((res)=> {
             if(res.data.success){
                 notifySuccess('Added Staff')
