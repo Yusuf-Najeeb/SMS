@@ -107,9 +107,9 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
 
               // </Box>
               <Fragment>
-                {PaymentMethodsList?.length &&  PaymentMethodsList?.map(paymentItem => (
+                {PaymentMethodsList?.length &&  PaymentMethodsList?.map((paymentItem, i) => (
                   <TableRow hover role='checkbox' key={paymentItem.id}>
-                    <TableCell align='left'>#{paymentItem.id}</TableCell>
+                    <TableCell align='left'>{i + 1}</TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {paymentItem?.name || '--'}
                     </TableCell>

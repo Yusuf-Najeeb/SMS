@@ -100,7 +100,7 @@ const CategoriesTable = () => {
                 S/N
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Payment
+                Name
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Type
@@ -127,9 +127,9 @@ const CategoriesTable = () => {
 
               // </Box>
               <Fragment>
-                {CategoriesData?.map(item => (
+                {CategoriesData?.map((item, i) => (
                   <TableRow hover role='checkbox' key={item.id}>
-                    <TableCell align='left'>#{item.id}</TableCell>
+                    <TableCell align='left'>{i + 1}</TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {item?.name || '--'}
                     </TableCell>
