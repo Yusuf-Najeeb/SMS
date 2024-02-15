@@ -20,8 +20,15 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/views/users/settings/Designations/CreateDesc.jsx", "src/views/users/settings/Designations/DesignationDashboard.jsx", "src/views/users/settings/Designations/DesignationHeader.jsx", "src/views/users/settings/Designations/DesignationTable.jsx", "src/views/users/settings/Paymentmethod/managePayment.jsx", "src/views/users/settings/Paymentmethod/PaymentHeader.jsx", "src/views/users/settings/Paymentmethod/PaymentTable.jsx"  ],
+    "**/*.tsx",
+    "src/views/users/settings/Designations/CreateDesc.jsx",
+    "src/views/users/settings/Designations/DesignationDashboard.jsx",
+    "src/views/users/settings/Designations/DesignationHeader.jsx",
+    "src/views/users/settings/Designations/DesignationTable.jsx",
+    "src/views/users/settings/Paymentmethod/ManagePayment.jsx",
+    "src/views/users/settings/Paymentmethod/PaymentHeader.jsx",
+    "src/views/users/settings/Paymentmethod/PaymentTable.jsx"
+  ],
   "exclude": [
     "node_modules"
   ]

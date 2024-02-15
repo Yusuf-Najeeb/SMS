@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PaymentTable from './Paymentmethod/PaymentTable'
 import PaymentHeader from './Paymentmethod/PaymentHeader'
-import ManagePayment from './Paymentmethod/managePayment'
+import ManagePayment from './Paymentmethod/ManagePayment'
 
 const PaymentDashboard = () => {
   const [isAddPayment, setIsAddPayment] = useState(false)
@@ -16,7 +16,7 @@ const PaymentDashboard = () => {
     }
   }
 
-  const DoSetSelectedPayment = (val) => {
+  const DoSetSelectedPayment = val => {
     setSelectedPayment(val)
   }
 
