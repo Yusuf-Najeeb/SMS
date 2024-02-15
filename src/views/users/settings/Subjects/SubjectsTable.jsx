@@ -17,37 +17,38 @@ import NoData from 'src/@core/components/emptydata/NoData'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import PageHeaderWithSearch from '../../component/PageHeaderWithSearch'
-import ManageCategories from './ManageCategories'
-import { useCategories } from '../../../../hooks/useCategories'
-import { deleteCategory, fetchCategories } from '../../../../store/apps/categories/asyncthunk'
+import { deleteCategory } from '../../../../store/apps/categories/asyncthunk'
+import { useSubjects } from '../../../../hooks/useSubjects'
+import { deleteSubject, fetchSubjects } from '../../../../store/apps/subjects/asyncthunk'
+import ManageSubjects from './ManageSubjects'
 
 
 
-const CategoriesTable = () => {
+const SubjectsTable = () => {
   const dispatch = useAppDispatch()
 
 
-  const [CategoriesData, loading, paging] = useCategories()
+  const [SubjectsList, loading, paging] = useSubjects()
   const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [categoryToDelete, setCategoryToDelete] = useState(null)
+  const [subjectToDelete, setSubjectToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedSubject, setSelectedSubject] = useState(null)
   const [type, setType] = useState('')
 
-  const OpenCategoryModal = () => {
+  const OpenSubjectModal = () => {
     if (openModal) {
       setOpenModal(false)
-      setSelectedCategory(null)
+      setSelectedSubject(null)
     } else {
       setOpenModal(true)
     }
   }
 
   const setActiveCategory = (value) => {
-    OpenCategoryModal()
-    setSelectedCategory(value)
+    OpenSubjectModal()
+    setSelectedSubject(value)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -61,25 +62,25 @@ const CategoriesTable = () => {
 
   const doDelete = (category) => {
     setDeleteModal(true)
-    setCategoryToDelete(category.id)
+    setSubjectToDelete(category.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setCategoryToDelete(null)
+    setSubjectToDelete(null)
   }
 
   const ondeleteClick = () => {
-    deleteCategory(categoryToDelete).then((res)=>{
+    deleteSubject(subjectToDelete).then((res)=>{
       if(res.data.success){
-        dispatch(fetchCategories({ page: 1, limit: 10, type: '' }))
+        dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }
     })
     doCancelDelete()
   }
 
   useEffect(() => {
-    dispatch(fetchCategories({ page: page + 1, limit: 10, type }))
+    dispatch(fetchSubjects({ page: page + 1, limit: 10, categoryId: '' }))
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, type])
@@ -87,7 +88,7 @@ const CategoriesTable = () => {
   return (
     <Fragment>
 
-<PageHeaderWithSearch toggle={OpenCategoryModal} handleFilter={setType} action={'Add Category'} searchPlaceholder={'Search Category'}/>
+<PageHeaderWithSearch toggle={OpenSubjectModal} handleFilter={setType} action={'Add Subject'} searchPlaceholder={'Search Subject'}/>
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
@@ -100,7 +101,7 @@ const CategoriesTable = () => {
                 Name
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Type
+                Category
               </TableCell>
               {/* <TableCell align='center' sx={{ minWidth: 100 }}>
                 Created By
@@ -124,14 +125,14 @@ const CategoriesTable = () => {
 
               // </Box>
               <Fragment>
-                {CategoriesData?.map((item, i) => (
+                {SubjectsList?.map((item, i) => (
                   <TableRow hover role='checkbox' key={item.id}>
                     <TableCell align='left'>{i + 1}</TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {item?.name || '--'}
                     </TableCell>
-                    <TableCell align='center' sx={{ textTransform: 'capitalize' }}>
-                      {item?.type || '--'}
+                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                      {item?.category.name || '--'}
                     </TableCell>
                     {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
                     <TableCell align='center'>
@@ -167,7 +168,7 @@ const CategoriesTable = () => {
                   </TableRow>
                 ))}
 
-                {CategoriesData?.length === 0 && (
+                {SubjectsList?.length === 0 && (
                   <tr className='text-center'>
                     <td colSpan={6}>
                       <NoData />
@@ -190,10 +191,10 @@ const CategoriesTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-        {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />}
+        {openModal && <ManageSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} />}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )
 }
 
-export default CategoriesTable
+export default SubjectsTable

@@ -16,6 +16,7 @@ import Icon from 'src/@core/components/icon'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import PaymentDashboard from './PaymentDashboard'
 import CategoriesTable from './Categories/CategoriesTable'
+import SubjectsTable from './Subjects/SubjectsTable'
 
 // import StaffDashboard from './staffSettings/StaffDashboard'
 
@@ -86,18 +87,18 @@ const TabSettings = [
     {
     id: 'desc-settings',
     title: 'Manage Categories',
-    subtitle: 'Create/edit categories',
-    icon: 'iwwa:assign',
+    subtitle: 'Create/Edit categories',
+    icon: 'material-symbols:category-outline',
     item: <CategoriesTable />
   },
 
-//   {
-//     id: 'users-settings',
-//     title: 'Manage Staffs',
-//     subtitle: 'Edit staffs/users that has access to your store',
-//     icon: 'la:users-cog',
-//     item: <StaffDashboard />
-//   },
+  {
+    id: 'users-settings',
+    title: 'Manage Subjects',
+    subtitle: 'Create/Edit subjects',
+    icon: 'emojione-monotone:books',
+    item: <SubjectsTable />
+  },
 
 //   {
 //     id: 'roles-settings',

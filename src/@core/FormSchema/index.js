@@ -285,3 +285,10 @@ export const categorySchema = yup.object().shape({
   name: yup.string().required('Category Name is required'),
  
 })
+
+export const subjectSchema = yup.object().shape({
+  name: yup.string().required('Subject Title is required'),
+  category_name: yup.string().required('Category Name is required'),
+  
+ 
+})
