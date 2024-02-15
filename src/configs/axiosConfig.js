@@ -12,7 +12,7 @@ axios.interceptors.request.use(
     if (accessToken) {
       checkTokenExp(accessToken)
 
-      if (config.url && !config.url.includes('stafflogin') && !config.url.includes('register/staff?role')) {
+      if (config.url && !config.url.includes('login') && !config.url.includes('register/staff?role')) {
         config.headers['x-access-token'] = `${accessToken}`
       }
 
