@@ -54,6 +54,7 @@ const GuardianCard = ({ Guardian }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
 
+
   useEffect(() => {
     if (Guardian) {
       setInitials(`${Guardian.firstName} ${Guardian.lastName}`)
@@ -179,6 +180,14 @@ const GuardianCard = ({ Guardian }) => {
               <StaffDetailCard iconName='icons8:gender' cardTitle='Gender' value={Guardian?.gender || '--'} />
               </Grid>
 
+              <Grid item xs={6}>
+              <StaffDetailCard iconName='fa-solid:pray' cardTitle='Religion' value={Guardian?.religion || '--'} />
+              </Grid>
+
+              <Grid item xs={6}>
+              <StaffDetailCard iconName='material-symbols:background-replace' cardTitle='Tribe' value={Guardian?.ethnicity || '--'} />
+              </Grid>
+
 
               <Grid item xs={12}>
               <StaffDetailCard
@@ -189,6 +198,73 @@ const GuardianCard = ({ Guardian }) => {
               </Grid>
               </Grid>
             </Box>
+          </CardContent>
+
+          {/* <Divider */}
+
+          <CardContent sx={{ pb: 4 }}>
+            {Guardian?.students?.length > 0 ? (
+              Guardian.students.map((item, i) => {
+
+                let position;
+                switch (i) {
+                  case 0:
+                    position = '1st';
+                    break;
+                  case 1:
+                    position = '2nd';
+                    break;
+                  case 2:
+                    position = '3rd';
+                    break;
+                  default:
+                    position = `${i + 1}th`;
+                }
+
+                return (
+                  <Box key={i} sx={{pt: 8}}>
+                    <Typography variant='body2' sx={{ color: 'text.disabled', textTransform: 'uppercase' }}>
+                      {position} Child Information
+                    </Typography>
+                    <Box sx={{ pt: 4 }}>
+                      <Grid container spacing={5} >
+                        <Grid item xs={6}>
+                          <StaffDetailCard
+                            iconName='solar:user-broken'
+                            cardTitle='Name'
+                            value={`${formatFirstLetter(item?.firstName)} ${formatFirstLetter(item?.lastName)}` || '--'}
+                          />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                          <StaffDetailCard iconName='icons8:gender' cardTitle='Gender' value={item?.gender || '--'} />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                          <StaffDetailCard iconName='bi:phone' cardTitle='Phone Number' value={item?.phone || '--'} />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                          <StaffDetailCard iconName='fontisto:email' cardTitle='Email' value={item?.email || '--'} />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <StaffDetailCard
+                            iconName='tabler:user-pin'
+                            cardTitle='Address'
+                            value={item?.residentialAddress || '--'}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </Box>
+                )
+              })
+            ) : (
+              <Typography variant='body2' sx={{ color: 'black', textTransform: 'capitalize' }}>
+                No Child Available
+              </Typography>
+            )}
           </CardContent>
           
         </Fragment>
