@@ -16,11 +16,10 @@ import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
-import PageHeaderWithSearch from '../../component/PageHeaderWithSearch'
-import { deleteCategory } from '../../../../store/apps/categories/asyncthunk'
 import { useSubjects } from '../../../../hooks/useSubjects'
 import { deleteSubject, fetchSubjects } from '../../../../store/apps/subjects/asyncthunk'
 import ManageSubjects from './ManageSubjects'
+import PageHeader from '../../component/PageHeader'
 
 
 
@@ -88,7 +87,7 @@ const SubjectsTable = () => {
   return (
     <Fragment>
 
-<PageHeaderWithSearch toggle={OpenSubjectModal} handleFilter={setType} action={'Add Subject'} searchPlaceholder={'Search Subject'}/>
+<PageHeader toggle={OpenSubjectModal} action={'Add Subject'} />
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>

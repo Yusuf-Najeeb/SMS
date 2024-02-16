@@ -24,6 +24,7 @@ import { formatDateToReadableFormat } from '../../../@core/utils/format'
 import StaffDetailCard from '../component/StaffDetailCard'
 import { getInitials } from 'src/@core/utils/get-initials'
 import { Stack } from '@mui/material'
+import { calculateAge } from '../../../@core/utils/calculateAge'
 
 const roleColors = {
   superadmin: 'error',
@@ -159,6 +160,10 @@ const StudentCard = ({ Student }) => {
               <StaffDetailCard iconName='fluent-mdl2:date-time-2' cardTitle='Date of Birth' value={formatDateToReadableFormat(Student?.dateOfBirth) || '--'} />
               </Grid>
 
+              <Grid item xs={6}>
+              <StaffDetailCard iconName='ion:image-sharp' cardTitle='Age' value={calculateAge(Student?.dateOfBirth) || '--'} />
+              </Grid>
+
                <Grid item xs={6}>
               <StaffDetailCard iconName='fontisto:email' cardTitle='Email' value={Student?.email || '--'} />
               </Grid>
@@ -172,7 +177,7 @@ const StudentCard = ({ Student }) => {
               </Grid>
 
 
-              <Grid item xs={6}>
+              <Grid item xs={12}>
               <StaffDetailCard
                 iconName='tabler:user-pin'
                 cardTitle='Address'
