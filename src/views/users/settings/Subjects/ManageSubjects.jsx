@@ -97,8 +97,6 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
           }
     }
 
-    console.log(payload, 'payload')
-
 
     createSubject(payload).then(response => {
       if (response.data.success) {
@@ -226,7 +224,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
           <FormGroup row>
             <FormControlLabel
               value='start'
-              label='type category name'
+              label='display category input field'
               labelPlacement='start'
               sx={{ mr: 4 }}
               control={<Switch checked={showInputField} onChange={handleChange} />}

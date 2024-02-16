@@ -24,6 +24,7 @@ import { formatDateToReadableFormat } from '../../../@core/utils/format'
 import StaffDetailCard from '../component/StaffDetailCard'
 import { getInitials } from 'src/@core/utils/get-initials'
 import { Stack } from '@mui/material'
+import { calculateAge } from '../../../@core/utils/calculateAge'
 
 const roleColors = {
   superadmin: 'error',
@@ -53,6 +54,7 @@ const StaffCard = ({ Staff }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState()
   const [grossSalary, setGrossSalary] = useState(0)
   const [initials, setInitials] = useState('')
+
 
   useEffect(() => {
     if (Staff) {
@@ -105,7 +107,7 @@ const StaffCard = ({ Staff }) => {
                 rounded
                 skin='light'
                 size='small'
-                label={Staff?.role?.roleName}
+                label={Staff?.role?.name}
                 color='primary'
                 sx={{ textTransform: 'capitalize' }}
               />
@@ -181,6 +183,10 @@ const StaffCard = ({ Staff }) => {
               <StaffDetailCard iconName='f7:status' cardTitle='Marital Status' value={Staff?.maritalStatus || '--'} />
               </Grid>
 
+              <Grid item xs={6}>
+              <StaffDetailCard iconName='ion:image-sharp' cardTitle='Age' value={calculateAge(Staff?.dateOfBirth) || '--'} />
+              </Grid>
+
               {/* <StaffDetailCard
                 iconName='fluent-emoji-high-contrast:department-store'
                 cardTitle='Department'
@@ -210,7 +216,7 @@ const StaffCard = ({ Staff }) => {
                 value={Staff?.state || '--'}
               />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
               <StaffDetailCard
                 iconName='tabler:user-pin'
                 cardTitle='Address'
