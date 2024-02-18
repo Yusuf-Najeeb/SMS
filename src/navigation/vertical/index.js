@@ -28,6 +28,11 @@ const navigation = () => {
       icon: 'fa6-solid:people-line',
       path: '/apps/students'
     },
+    {
+      title: ' Subjects',
+      icon: 'emojione-monotone:books',
+      path: '/apps/subjects'
+    },
 
     // {
     //   title: 'New Student',
@@ -108,14 +113,14 @@ const navigation = () => {
       path: '/apps/payment-methods'
     },
 
-      {
-      sectionTitle: 'Settings'
-    },
-    {
-      title: 'Settings',
-      icon: 'tabler:settings',
-      path: '/apps/settings'
-    }
+    //   {
+    //   sectionTitle: 'Settings'
+    // },
+    // {
+    //   title: 'Settings',
+    //   icon: 'tabler:settings',
+    //   path: '/apps/settings'
+    // }
 
     // {
     //   title: 'Fees and Billing',
