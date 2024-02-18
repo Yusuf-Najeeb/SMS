@@ -184,12 +184,12 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
       setWorkInfoValue('branch', selectedStaff?.branch)
       setWorkInfoValue('dateOfEmployment', new Date(selectedStaff?.dateOfEmployment))
 
-      setMedicalValue('bloodGroup', selectedStaff?.bloodGroup)
-      setMedicalValue('drugAllergies', selectedStaff?.drugAllergies)
-      setMedicalValue('foodAllergies', selectedStaff?.foodAllergies)
-      setMedicalValue('genotype', selectedStaff?.genotype)
-      setMedicalValue('previousSurgery', selectedStaff?.previousSurgery)
-      setMedicalValue('healthStatus', selectedStaff?.healthStatus)
+    //   setMedicalValue('bloodGroup', selectedStaff?.bloodGroup)
+    //   setMedicalValue('drugAllergies', selectedStaff?.drugAllergies)
+    //   setMedicalValue('foodAllergies', selectedStaff?.foodAllergies)
+    //   setMedicalValue('genotype', selectedStaff?.genotype)
+    //   setMedicalValue('previousSurgery', selectedStaff?.previousSurgery)
+    //   setMedicalValue('healthStatus', selectedStaff?.healthStatus)
 
       setNextOfKinValue('addressOfRefereeOne', selectedStaff?.addressOfRefereeOne)
       setNextOfKinValue('addressOfRefereeTwo', selectedStaff?.addressOfRefereeTwo)
@@ -281,12 +281,6 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
           setActiveStep(prevActiveStep => prevActiveStep + 1)
         }
         break
-      case 2:
-        // Check for errors in the second step (Work Info)
-        if (medicalValuesValid) {
-          setActiveStep(prevActiveStep => prevActiveStep + 1)
-        }
-        break
       default:
         console.log('eeeee')
         break
@@ -345,14 +339,15 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
       religion: '',
       staffDescription: ''
     })
-    medicalReset({
-      drugAllergies: '',
-      foodAllergies: '',
-      genotype: '',
-      bloodGroup: '',
-      previousSurgery: '',
-      healthStatus: ''
-    })
+
+    // medicalReset({
+    //   drugAllergies: '',
+    //   foodAllergies: '',
+    //   genotype: '',
+    //   bloodGroup: '',
+    //   previousSurgery: '',
+    //   healthStatus: ''
+    // })
   }
 
  
@@ -362,7 +357,6 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
     const employmentInfoValues = getWorkInfoValues()
     const personalInfoValues = getPersonalValues()
     const nextOfKinInformation = getNextOfKinValues()
-    const medicalInformation = getMedicalValues()
 
     const { dateOfBirth, ...restData } = personalInfoValues
     const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
@@ -407,7 +401,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
       ...restOfData
     }
 
-    const payload = { personalInformation, employmentInformation, nextOfKinInformation, medicalInformation }
+    const payload = { personalInformation, employmentInformation, nextOfKinInformation}
 
 
     updateStaff(personalInformation.email, payload).then(res => {
@@ -960,9 +954,100 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
             </Grid>
           </form>
         )
+
+    //   case 2:
+    //     return (
+    //       <form key={2} onSubmit={handleMedicalSubmit(handleForward)}>
+    //         <Grid container spacing={5}>
+    //           <Grid item xs={12}>
+    //             <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
+    //               {steps[2].title}
+    //             </Typography>
+    //             <Typography variant='caption' component='p'>
+    //               {steps[2].subtitle}
+    //             </Typography>
+    //           </Grid>
+    //           <Grid item xs={12} sm={4}>
+    //             <FormController
+    //               name='drugAllergies'
+    //               control={medicalControl}
+    //               requireBoolean={true}
+    //               label='Drug Allergies'
+    //               error={medicalErrors['drugAllergies']}
+    //               errorMessage={medicalErrors?.drugAllergies?.message}
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12} sm={4}>
+    //             <FormController
+    //               name='foodAllergies'
+    //               control={medicalControl}
+    //               requireBoolean={true}
+    //               label='Food Allergies'
+    //               error={medicalErrors['foodAllergies']}
+    //               errorMessage={medicalErrors?.foodAllergies?.message}
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12} sm={4}>
+    //             <FormController
+    //               name='genotype'
+    //               control={medicalControl}
+    //               requireBoolean={true}
+    //               label='Genotype'
+    //               required={true}
+    //               error={medicalErrors['genotype']}
+    //               errorMessage={medicalErrors?.genotype?.message}
+    //             />
+    //           </Grid>
+
+    //           <Grid item xs={12} sm={4}>
+    //             <FormController
+    //               name='bloodGroup'
+    //               control={medicalControl}
+    //               requireBoolean={true}
+    //               required={true}
+    //               label='Blood Group'
+    //               error={medicalErrors['bloodGroup']}
+    //               errorMessage={medicalErrors?.bloodGroup?.message}
+    //             />
+    //           </Grid>
+
+    //           <Grid item xs={12} sm={4}>
+    //             <FormController
+    //               name='previousSurgery'
+    //               control={medicalControl}
+    //               requireBoolean={true}
+    //               label='Previous Surgery'
+    //               error={medicalErrors['previousSurgery']}
+    //               errorMessage={medicalErrors?.previousSurgery?.message}
+    //             />
+    //           </Grid>
+
+    //           <Grid item xs={12} sm={4}>
+    //             <FormController
+    //               name='healthStatus'
+    //               control={medicalControl}
+    //               requireBoolean={true}
+    //               required={true}
+    //               label='Health Status'
+    //               error={medicalErrors['healthStatus']}
+    //               errorMessage={medicalErrors?.healthStatus?.message}
+    //             />
+    //           </Grid>
+
+    //           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    //             <Button variant='tonal' color='secondary' onClick={handleBack}>
+    //               Back
+    //             </Button>
+    //             <Button type='submit' variant='contained'>
+    //               Next
+    //             </Button>
+    //           </Grid>
+    //         </Grid>
+    //       </form>
+    //     )
       case 2:
         return (
-          <form key={2} onSubmit={handleMedicalSubmit(handleForward)}>
+          <form key={2} onSubmit={handleNextOfKinSubmit(onSubmitAllInfo)}>
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -970,96 +1055,6 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                 </Typography>
                 <Typography variant='caption' component='p'>
                   {steps[2].subtitle}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormController
-                  name='drugAllergies'
-                  control={medicalControl}
-                  requireBoolean={true}
-                  label='Drug Allergies'
-                  error={medicalErrors['drugAllergies']}
-                  errorMessage={medicalErrors?.drugAllergies?.message}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormController
-                  name='foodAllergies'
-                  control={medicalControl}
-                  requireBoolean={true}
-                  label='Food Allergies'
-                  error={medicalErrors['foodAllergies']}
-                  errorMessage={medicalErrors?.foodAllergies?.message}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormController
-                  name='genotype'
-                  control={medicalControl}
-                  requireBoolean={true}
-                  label='Genotype'
-                  required={true}
-                  error={medicalErrors['genotype']}
-                  errorMessage={medicalErrors?.genotype?.message}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormController
-                  name='bloodGroup'
-                  control={medicalControl}
-                  requireBoolean={true}
-                  required={true}
-                  label='Blood Group'
-                  error={medicalErrors['bloodGroup']}
-                  errorMessage={medicalErrors?.bloodGroup?.message}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormController
-                  name='previousSurgery'
-                  control={medicalControl}
-                  requireBoolean={true}
-                  label='Previous Surgery'
-                  error={medicalErrors['previousSurgery']}
-                  errorMessage={medicalErrors?.previousSurgery?.message}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormController
-                  name='healthStatus'
-                  control={medicalControl}
-                  requireBoolean={true}
-                  required={true}
-                  label='Health Status'
-                  error={medicalErrors['healthStatus']}
-                  errorMessage={medicalErrors?.healthStatus?.message}
-                />
-              </Grid>
-
-              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button variant='tonal' color='secondary' onClick={handleBack}>
-                  Back
-                </Button>
-                <Button type='submit' variant='contained'>
-                  Next
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        )
-      case 3:
-        return (
-          <form key={3} onSubmit={handleNextOfKinSubmit(onSubmitAllInfo)}>
-            <Grid container spacing={5}>
-              <Grid item xs={12}>
-                <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
-                  {steps[3].title}
-                </Typography>
-                <Typography variant='caption' component='p'>
-                  {steps[3].subtitle}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -1304,24 +1299,13 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                       ) {
                         labelProps.error = true
                       } else if (
-                        (medicalErrors.bloodGroup ||
-
-                          //  medicalErrors.drugAllergies ||
-                          //   medicalErrors.foodAllergies ||
-                          // medicalErrors.previousSurgery ||
-                          medicalErrors.healthStatus ||
-                          medicalErrors.genotype) &&
-                        activeStep === 2
-                      ) {
-                        labelProps.error = true
-                      } else if (
                         // nextOfKinErrors.nameOfReferee ||
                         // nextOfKinErrors.addressOfReferee ||
                         // nextOfKinErrors.emergencyPhone ||
                         // nextOfKinErrors.nextOfKinAddress ||
                         nextOfKinErrors.emergencyPhone || 
                         nextOfKinErrors.nextOfKinName &&
-                        activeStep === 3
+                        activeStep === 2
                       ) {
                         labelProps.error = true
                       } else {

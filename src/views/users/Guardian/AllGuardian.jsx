@@ -256,7 +256,6 @@ const AllGuardian = () => {
   const doDelete = value => {
     setDeleteModal(true)
     setSelectedGuardian(value?.email)
-    handleRowOptionsClose()
   }
 
   const doCancelDelete = () => {

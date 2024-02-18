@@ -22,7 +22,7 @@ import CustomSpinner from 'src/@core/components/custom-spinner'
 
 
 
-const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
+const PaymentMethodTable = ({ OpenPayment, DoSetSelectedPayment }) => {
   const dispatch = useAppDispatch()
 
   const [PaymentMethodsList, loading, paging] = usePaymentMethods()
@@ -115,7 +115,7 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {paymentItem?.name || '--'}
                     </TableCell>
-                    <TableCell align='center' sx={{ textTransform: 'capitalize' }}>
+                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {paymentItem?.type || '--'}
                     </TableCell>
                     {/* <TableCell align='center'>{paymentItem?.createdBy || '--'}</TableCell> */}
@@ -170,7 +170,8 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
         count={paging?.totalItems}
         rowsPerPage={rowsPerPage}
         onPageChange={handleChangePage}
-        rowsPerPageOptions={[5, 10]}
+        
+        // rowsPerPageOptions={[5, 10]}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
@@ -179,4 +180,4 @@ const PaymentTable = ({ OpenPayment, DoSetSelectedPayment }) => {
   )
 }
 
-export default PaymentTable
+export default PaymentMethodTable

@@ -102,6 +102,11 @@ const navigation = () => {
       icon: 'game-icons:pay-money',
       path: '/apps/expenditure'
     },
+    {
+      title: 'Payment Methods',
+      icon: 'fxemoji:creditcard',
+      path: '/apps/payment-methods'
+    },
 
       {
       sectionTitle: 'Settings'

@@ -6,12 +6,12 @@ const initialState = {
   loading: false,
   GuardianData: [],
 
-//   paging: {
-//     currentPage: 1,
-//     totalItems: 0,
-//     itemsPerPage: 0,
-//     totalPages: 0
-//   }
+  paging: {
+    currentPage: 1,
+    totalItems: 0,
+    itemsPerPage: 0,
+    totalPages: 0
+  }
 }
 
 export const guardianSlice = createSlice({
@@ -25,8 +25,7 @@ export const guardianSlice = createSlice({
     builder.addCase(fetchGuardian.fulfilled, (state, action) => {
       state.loading = false
       state.GuardianData = action?.payload?.data?.data
-      
-    //   state.paging = action?.payload?.data?.paging
+      state.paging = action?.payload?.data?.paging
     })
     builder.addCase(fetchGuardian.rejected, state => {
       state.loading = false

@@ -164,16 +164,16 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
     resolver: yupResolver(personalInfoSchema)
   })
 
-  const {
-    reset: medicalReset,
-    control: medicalControl,
-    handleSubmit: handleMedicalSubmit,
-    formState: { errors: medicalErrors , isValid: medicalValuesValid},
-    getValues: getMedicalValues
-  } = useForm({
-    defaultValues: defaultMedicalValues,
-    resolver: yupResolver(medicalSchema)
-  })
+//   const {
+//     reset: medicalReset,
+//     control: medicalControl,
+//     handleSubmit: handleMedicalSubmit,
+//     formState: { errors: medicalErrors , isValid: medicalValuesValid},
+//     getValues: getMedicalValues
+//   } = useForm({
+//     defaultValues: defaultMedicalValues,
+//     resolver: yupResolver(medicalSchema)
+//   })
 
 
   const {
@@ -221,12 +221,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
           }
           break;
-          case 2:
-            // Check for errors in the second step (Work Info)
-            if (medicalValuesValid) {
-              setActiveStep((prevActiveStep) => prevActiveStep + 1);
-            }
-            break;
         default:
           console.log('eeeee')
           break;
@@ -244,7 +238,8 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
           bankName: '', branch: '', role: '', staffDescription: ''})
         personalReset({  email: '', firstName: '', lastName: '', middleName: '', title: '', phone: '', dateOfBirth: '',
         password: '', residentialAddress: '', maritalStatus: '', gender: '', city: '', state: '', lga: '', religion: '',  })
-        medicalReset({  drugAllergies: '', foodAllergies: '', genotype: '', bloodGroup: '', previousSurgery: '', healthStatus: '' })
+
+        // medicalReset({  drugAllergies: '', foodAllergies: '', genotype: '', bloodGroup: '', previousSurgery: '', healthStatus: '' })
       }
     
     
@@ -254,7 +249,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
         const employmentInfoValues = getWorkInfoValues();
         const personalInfoValues = getPersonalValues();
         const nextOfKinInformation = getNextOfKinValues();
-        const medicalInformation = getMedicalValues();
 
         const {dateOfBirth, ...restData} = personalInfoValues
         const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
@@ -281,7 +275,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
         const payload = {personalInformation, 
           employmentInformation, 
           nextOfKinInformation, 
-          medicalInformation,
           
         }
 
@@ -727,9 +720,56 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
             </Grid>
           </form>
         )
-        case 2:
+
+        // case 2:
+        // return (
+        //   <form key={2} onSubmit={handleMedicalSubmit(handleForward)}>
+        //     <Grid container spacing={5}>
+        //       <Grid item xs={12}>
+        //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
+        //           {steps[2].title}
+        //         </Typography>
+        //         <Typography variant='caption' component='p'>
+        //           {steps[2].subtitle}
+        //         </Typography>
+        //       </Grid>
+        //       <Grid item xs={12} sm={4}>
+        //         <FormController name='drugAllergies' control={medicalControl} requireBoolean={true} label="Drug Allergies" error={medicalErrors['drugAllergies']} errorMessage={medicalErrors?.drugAllergies?.message} />
+        //       </Grid>
+        //       <Grid item xs={12} sm={4}>
+        //         <FormController name='foodAllergies' control={medicalControl} requireBoolean={true} label="Food Allergies" error={medicalErrors['foodAllergies']} errorMessage={medicalErrors?.foodAllergies?.message} />
+        //       </Grid>
+        //       <Grid item xs={12} sm={4}>
+        //       <FormController name='genotype' control={medicalControl} required={true} requireBoolean={true} label="Genotype" error={medicalErrors['genotype']} errorMessage={medicalErrors?.genotype?.message} />
+        //       </Grid>
+              
+        //       <Grid item xs={12} sm={4}>
+        //          <FormController name='bloodGroup' control={medicalControl} required={true} requireBoolean={true} label="Blood Group" error={medicalErrors['bloodGroup']} errorMessage={medicalErrors?.bloodGroup?.message} />
+        //       </Grid>
+
+        //       <Grid item xs={12} sm={4}>
+        //         <FormController name='previousSurgery' control={medicalControl} requireBoolean={true} label="Previous Surgery" error={medicalErrors['previousSurgery']} errorMessage={medicalErrors?.previousSurgery?.message} />
+
+        //       </Grid>
+
+        //       <Grid item xs={12} sm={4}>
+        //         <FormController name='healthStatus' control={medicalControl} required={true} requireBoolean={true} label="Health Status" error={medicalErrors['healthStatus']} errorMessage={medicalErrors?.healthStatus?.message} />
+        //       </Grid>
+
+        //       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        //         <Button variant='tonal' color='secondary' onClick={handleBack}>
+        //           Back
+        //         </Button>
+        //         <Button type='submit' variant='contained' >
+        //           Next
+        //         </Button>
+        //       </Grid>
+        //     </Grid>
+        //   </form>
+        // )
+      case 2:
         return (
-          <form key={2} onSubmit={handleMedicalSubmit(handleForward)}>
+          <form key={2} onSubmit={handleNextOfKinSubmit(onSubmitAllInfo)}>
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -737,52 +777,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                 </Typography>
                 <Typography variant='caption' component='p'>
                   {steps[2].subtitle}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormController name='drugAllergies' control={medicalControl} requireBoolean={true} label="Drug Allergies" error={medicalErrors['drugAllergies']} errorMessage={medicalErrors?.drugAllergies?.message} />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormController name='foodAllergies' control={medicalControl} requireBoolean={true} label="Food Allergies" error={medicalErrors['foodAllergies']} errorMessage={medicalErrors?.foodAllergies?.message} />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-              <FormController name='genotype' control={medicalControl} required={true} requireBoolean={true} label="Genotype" error={medicalErrors['genotype']} errorMessage={medicalErrors?.genotype?.message} />
-              </Grid>
-              
-              <Grid item xs={12} sm={4}>
-                 <FormController name='bloodGroup' control={medicalControl} required={true} requireBoolean={true} label="Blood Group" error={medicalErrors['bloodGroup']} errorMessage={medicalErrors?.bloodGroup?.message} />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormController name='previousSurgery' control={medicalControl} requireBoolean={true} label="Previous Surgery" error={medicalErrors['previousSurgery']} errorMessage={medicalErrors?.previousSurgery?.message} />
-
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormController name='healthStatus' control={medicalControl} required={true} requireBoolean={true} label="Health Status" error={medicalErrors['healthStatus']} errorMessage={medicalErrors?.healthStatus?.message} />
-              </Grid>
-
-              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button variant='tonal' color='secondary' onClick={handleBack}>
-                  Back
-                </Button>
-                <Button type='submit' variant='contained' >
-                  Next
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        )
-      case 3:
-        return (
-          <form key={3} onSubmit={handleNextOfKinSubmit(onSubmitAllInfo)}>
-            <Grid container spacing={5}>
-              <Grid item xs={12}>
-                <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
-                  {steps[3].title}
-                </Typography>
-                <Typography variant='caption' component='p'>
-                  {steps[3].subtitle}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -944,18 +938,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                   activeStep === 1 )
                 ) {
                   labelProps.error = true
-                } else if (
-                  (medicalErrors.bloodGroup ||
-
-                    //  medicalErrors.drugAllergies ||
-                    //   medicalErrors.foodAllergies ||
-                    // medicalErrors.previousSurgery || 
-                       medicalErrors.healthStatus ||
-                        medicalErrors.genotype) &&
-                  activeStep === 2
-                ) {
-                  labelProps.error = true
-                } else if (
+                }  else if (
                     (
 
                         // nextOfKinErrors.nameOfReferee || 
@@ -963,7 +946,7 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                         // nextOfKinErrors.nextOfKinAddress || 
                         nextOfKinErrors.emergencyPhone || 
                         nextOfKinErrors.nextOfKinName) &&
-                    activeStep === 3
+                    activeStep === 2
                   ) {
                     labelProps.error = true
                   } 
