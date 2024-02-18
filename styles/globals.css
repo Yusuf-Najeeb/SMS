@@ -26,3 +26,14 @@ code[class*='language-'] {
 .react-datepicker-popper {
   z-index: 5 !important;
 }
+
+.css-7qu36s-MuiPaper-root-MuiTableContainer-root {
+  background-color: #FFF;
+  color: rgba(47, 43, 61, 0.78);
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 6px;
+  box-shadow: 0px 4px 18px 0px rgba(47, 43, 61, 0.1) !important;
+  background-image: none;
+  overflow: hidden;
+}

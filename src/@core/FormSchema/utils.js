@@ -9,11 +9,12 @@ export const steps = [
       title: 'Work Info',
       subtitle: `Staff's Official Information`
     },
-    {
-        icon: 'medical-icon:mental-health',
-      title: 'Medical Info',
-      subtitle: `Staff's Medical Information`
-    },
+    
+    // {
+    //     icon: 'medical-icon:mental-health',
+    //   title: 'Medical Info',
+    //   subtitle: `Staff's Medical Information`
+    // },
     {
       icon: 'icomoon-free:user-minus',
       title: 'Next of Kin Info',
