@@ -10,13 +10,11 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 import { Box, IconButton, Typography } from '@mui/material'
-import CustomChip from 'src/@core/components/mui/chip'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 import { usePaymentMethods } from 'src/hooks/usePaymentMethods'
-import { fetchPaymentMethods } from 'src/store/apps/settings/asyncthunk'
-import { deletePaymentMethod } from 'src/store/apps/settings/asyncthunk'
+import { styled } from '@mui/material/styles'
 
 import { formatDate } from '../../../@core/utils/format'
 
@@ -58,6 +56,10 @@ const renderClient = row => {
     )
   }
 }
+
+const TableCellStyled = styled(TableCell)(({theme})=> ({
+    color: `${theme.palette.primary.main} !important` 
+}))
 
 const GuardianTable = () => {
   const dispatch = useAppDispatch()
@@ -184,7 +186,7 @@ const GuardianTable = () => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody >
             {loading ? (
               <TableRow className='text-center'>
                 <TableCell colSpan={6}>
@@ -223,11 +225,11 @@ const GuardianTable = () => {
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                         {item?.gender || '--'}
                       </TableCell>
-                      <TableCell align='center' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
+                      <TableCell component={TableCellStyled} align='center' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
                         {item?.identificationNumber || '--'}
                       </TableCell>
 
-                      <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px', minHeight: '85px' }}>
+                      <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' , transform: 'translateY(12.5px)'}}>
                         <IconButton size='small' onClick={() => setGuardianToEdit(item)}>
                           <Icon icon='tabler:edit' />
                         </IconButton>
