@@ -19,6 +19,7 @@ import expenditureCategory from 'src/store/apps/expenditureCategory'
 import settings from 'src/store/apps/settings'
 import categories from 'src/store/apps/categories'
 import subjects from 'src/store/apps/subjects'
+import classes from 'src/store/apps/classes'
 
 export const store = configureStore({
   reducer: {
@@ -38,7 +39,8 @@ export const store = configureStore({
     expenditureCategory,
     settings,
     categories,
-    subjects
+    subjects,
+    classes
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

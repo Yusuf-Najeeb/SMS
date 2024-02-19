@@ -1,11 +1,10 @@
 
-import AllGuardian from '../../../views/users/Guardian/AllGuardian'
 import GuardianTable from '../../../views/users/Guardian/GuardianTable'
 
-const index = () => {
+const GuardianHome = () => {
   return (
     <GuardianTable />
   )
 }
 
-export default index
+export default GuardianHome

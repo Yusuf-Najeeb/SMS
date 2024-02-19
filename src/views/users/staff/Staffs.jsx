@@ -264,7 +264,7 @@ const Staffs = () => {
     deleteStaff(selectedStaff).then((res)=>{
 
         if (res.status) {
-          dispatch(fetchStaffs({page: 1, key}))
+          dispatch(fetchStaffs({page: 1, limit: 10, key}))
           doCancelDelete()
         }
     })
@@ -288,7 +288,7 @@ const Staffs = () => {
   const closeViewModal = ()=> setViewDrawer(false)
 
   useEffect(() => {
-    dispatch(fetchStaffs({page: page + 1, key}))
+    dispatch(fetchStaffs({page: page + 1, limit: 10, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, key, refetch])

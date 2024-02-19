@@ -1,3 +1,5 @@
+
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -8,6 +10,12 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+
+// ** Third Party Imports
+import { ApexOptions } from 'apexcharts'
+
+// ** Type Import
+import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Components Imports
 import OptionsMenu from 'src/@core/components/option-menu'
@@ -20,37 +28,61 @@ import UseBgColor from 'src/@core/hooks/useBgColor'
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
-const data = [
-  {
-    amount: '$1,619',
-    trendNumber: 18.6,
-    title: 'Net Profit',
-    avatarColor: 'primary',
-    subtitle: '12.4k Sales',
-    avatarIcon: 'tabler:chart-pie-2'
-  },
-  {
-    amount: '$3,571',
-    trendNumber: 39.6,
-    title: 'Total Income',
-    avatarColor: 'success',
-    subtitle: 'Sales, Affiliation',
-    avatarIcon: 'tabler:currency-dollar'
-  },
-  {
-    amount: '$430',
-    trendNumber: 52.8,
-    title: 'Total Expenses',
-    avatarColor: 'secondary',
-    subtitle: 'ADVT, Marketing',
-    avatarIcon: 'tabler:credit-card'
-  }
-]
+import { useAppDispatch,useAppSelector } from 'src/store/hooks'
+import { fetchIncomeSummary } from 'src/store/apps/income/asyncthunk'
+import { formatCurrency } from 'src/@core/utils/format'
+import { useEffect } from 'react'
+import { fetchExpenditureSummary } from 'src/store/apps/expenditure/asyncthunk'
+
+// interface DataType {
+//   title: string
+//   amount?: string
+//   subtitle: string
+//   avatarIcon: string
+//   trendNumber: number
+//   avatarColor: ThemeColor
+//   trend?: 'positive' | 'negative'
+// }
+
 
 const EcommerceEarningReports = () => {
   // ** Hooks
   const theme = useTheme()
   const bgColors = UseBgColor()
+
+  //Redux 
+  const dispatch = useAppDispatch()
+  const IncomeSummaryData = useAppSelector(store => store.income.IncomeSummaryData)
+  const ExpenditureSummaryData = useAppSelector(store => store.expenditure.ExpenditureSummaryData)
+
+  const data = [
+    {
+      amount: formatCurrency(IncomeSummaryData?.totalPaid, true),
+      trendNumber: 39.6,
+      title: 'Total Income',
+      avatarColor: 'success',
+      subtitle: 'Sales, Affiliation',
+      avatarIcon: 'tabler:currency-dollar'
+    },
+    {
+      amount: formatCurrency(ExpenditureSummaryData?.totalAmount, true),
+      trendNumber: 18.6,
+      title: 'Total Expenditure',
+      avatarColor: 'primary',
+      subtitle: '12.4k Sales',
+      avatarIcon: 'tabler:chart-pie-2'
+    },
+    
+    // {
+    //   amount: '$430',
+    //   trendNumber: 52.8,
+    //   title: 'Total Expenses',
+    //   avatarColor: 'secondary',
+    //   subtitle: 'ADVT, Marketing',
+    //   avatarIcon: 'tabler:credit-card'
+    // }
+  ]
+
 
   const options = {
     chart: {
@@ -132,11 +164,17 @@ const EcommerceEarningReports = () => {
     ]
   }
 
+  useEffect(() => {
+    dispatch(fetchIncomeSummary({ query:'info', type: 'income' }))
+    dispatch(fetchExpenditureSummary({query: "info"}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Card>
       <CardHeader
         title='Earning Reports'
-        subheader='Weekly Earnings Overview'
+        subheader=''
         action={
           <OptionsMenu
             options={['Refresh', 'Update', 'Share']}
@@ -178,9 +216,9 @@ const EcommerceEarningReports = () => {
               >
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <Typography variant='h6'>{item.title}</Typography>
-                  <Typography variant='body2' sx={{ color: 'text.disabled' }}>
+                  {/* <Typography variant='body2' sx={{ color: 'text.disabled' }}>
                     {item.subtitle}
-                  </Typography>
+                  </Typography> */}
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography sx={{ mr: 4 }} variant='body2'>
@@ -197,14 +235,14 @@ const EcommerceEarningReports = () => {
                       fontSize='1.25rem'
                       icon={item.trend === 'negative' ? 'tabler:chevron-down' : 'tabler:chevron-up'}
                     />
-                    <Typography variant='body2' sx={{ color: 'text.disabled' }}>{`${item.trendNumber}%`}</Typography>
+                    {/* <Typography variant='body2' sx={{ color: 'text.disabled' }}>{`${item.trendNumber}%`}</Typography> */}
                   </Box>
                 </Box>
               </Box>
             </Box>
           )
         })}
-        <ReactApexcharts type='bar' height={213} options={options} series={[{ data: [32, 98, 61, 41, 88, 47, 71] }]} />
+        {/* <ReactApexcharts type='bar' height={213} options={options} series={[{ data: [32, 98, 61, 41, 88, 47, 71] }]} /> */}
       </CardContent>
     </Card>
   )

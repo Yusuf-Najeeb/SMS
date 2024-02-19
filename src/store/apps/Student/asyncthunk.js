@@ -21,9 +21,6 @@ export const fetchStudents = createAsyncThunk('/Students/FetchStudents', async (
   try {
     const response = await axios.get(`/students?page=${query.page}&limit=10&key=${query.key}`)
 
-    console.log(response, 'students response')
-
-
     return response
   } catch (error) {
     console.log(error, 'error')

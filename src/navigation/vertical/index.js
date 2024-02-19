@@ -28,11 +28,7 @@ const navigation = () => {
       icon: 'fa6-solid:people-line',
       path: '/apps/students'
     },
-    {
-      title: ' Subjects',
-      icon: 'emojione-monotone:books',
-      path: '/apps/subjects'
-    },
+  
 
     // {
     //   title: 'New Student',
@@ -59,9 +55,21 @@ const navigation = () => {
     //   icon: 'raphael:parent',
     //   path: '/apps/newGuardian/list'
     // },
-    // {
-    //   sectionTitle: 'Academics '
-    // },
+     {
+       sectionTitle: 'Academics '
+    },
+    {
+      title: 'Subjects',
+      icon: 'mdi:learn-outline',
+      path: '/apps/subjects'
+    },
+
+     {
+      title: 'Classrooms',
+      icon: 'mdi:google-classroom',
+      path: '/apps/classroom'
+    },
+
     // {
     //   title: 'Subjects',
     //   icon: 'mdi:learn-outline',
@@ -74,11 +82,7 @@ const navigation = () => {
     //   path: '/apps/tests-exams/list'
     // },
 
-    // {
-    //   title: 'Classrooms',
-    //   icon: 'mdi:google-classroom',
-    //   path: '/apps/classroom/list'
-    // },
+   
     // {
     //   title: 'Result Manager',
     //   icon: 'healthicons:i-exam-qualification',
