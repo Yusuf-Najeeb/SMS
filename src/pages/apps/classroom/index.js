@@ -1,10 +1,12 @@
 
-import ClassesTable from '../../../views/users/classes/ClassesTable'
+import ClassTab from '../../../views/users/classes/ClassTabs'
 
 const ClassHome = () => {
   return (
-    <ClassesTable />
+    <ClassTab tab='classes' />
   )
 }
 
 export default ClassHome
+
+

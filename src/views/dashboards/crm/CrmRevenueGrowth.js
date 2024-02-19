@@ -95,7 +95,7 @@ const CrmRevenueGrowth = () => {
               <CustomChip rounded size='small' skin='light' color='success' label='+15.2%' />
             </div>
           </Box>
-          <ReactApexcharts type='bar' width={160} height={170} series={series} options={options} />
+          <ReactApexcharts type='bar' width={160} height={130} series={series} options={options} />
         </Box>
       </CardContent>
     </Card>
