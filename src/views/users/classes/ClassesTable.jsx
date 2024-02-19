@@ -13,7 +13,6 @@ import { Box, IconButton, Typography } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
-import { usePaymentMethods } from 'src/hooks/usePaymentMethods'
 import { styled } from '@mui/material/styles'
 
 import { formatDate } from '../../../@core/utils/format'
@@ -26,10 +25,11 @@ import { useAppSelector } from '../../../hooks'
 import { getInitials } from 'src/@core/utils/get-initials'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
-import { deleteGuardian, fetchGuardian } from '../../../store/apps/guardian/asyncthunk'
-import AddGuardian from './AddGuardian'
-import EditGuardian from './EditGuardian'
-import ViewGuardian from './ViewGuardian'
+import { useClasses } from '../../../hooks/useClassess'
+import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import ManageClass from './ManageClass'
+import { useStaff } from '../../../hooks/useStaff'
+import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -61,25 +61,21 @@ const TableCellStyled = styled(TableCell)(({theme})=> ({
     color: `${theme.palette.primary.main} !important` 
 }))
 
-const GuardianTable = () => {
+const ClassesTable = () => {
   const dispatch = useAppDispatch()
 
-  const GuardianData = useAppSelector(store => store.guardian.GuardianData)
-  const paging = useAppSelector(store => store.guardian.paging)
-  const loading = useAppSelector(store => store.guardian.loading)
+  const [ClassesList, loading, paging] = useClasses()
 
+  const [StaffData] = useStaff()
  
-
-  const [PaymentMethodsList] = usePaymentMethods()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [showModal, setShowModal] = useState(false)
-  const [selectedMethod, setSelectedMethod] = useState(null)
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
-  const [selectedGuardian, setSelectedGuardian] = useState()
-  const [guardianToUpdate, setGuardianToUpdate] = useState(null)
+  const [selectedClass, setSelectedClass] = useState()
+  const [ClassToUpdate, setClassToUpdate] = useState(null)
   const [guardianInView, setGuardianInView] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const [refetch, setFetch] = useState(false)
@@ -89,10 +85,15 @@ const GuardianTable = () => {
     setShowModal(!showModal)
   }
 
-  const setActivePaymentMethod = value => {
-    OpenPayment()
-    DoSetSelectedPayment(value)
+  const OpenModal = () => {
+    if (showModal) {
+      setShowModal(false)
+      setClassToUpdate(null)
+    } else {
+      setShowModal(true)
+    }
   }
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -100,16 +101,15 @@ const GuardianTable = () => {
 
   console.log(paging, 'paging')
 
-  const updateFetch = ()=> setFetch(!refetch)
 
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  const setGuardianToEdit = (value) => {
-    setEditDrawer(!openEditDrawer)
-    setGuardianToUpdate(value)
+  const setClassToEdit = (value) => {
+    OpenModal()
+    setClassToUpdate(value)
   }
 
   const setGuardianToView = (value) => {
@@ -117,10 +117,6 @@ const GuardianTable = () => {
     setGuardianInView(value)
   }
 
-  const closeEditModal = ()=> {
-    setEditDrawer(!openEditDrawer)
-    setGuardianToUpdate(null)
-}
 
   const closeViewModal = ()=> {
     setViewDrawer(!openViewDrawer)
@@ -129,19 +125,19 @@ const GuardianTable = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedGuardian(value.email)
+    setSelectedClass(value.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedGuardian(null)
+    setSelectedClass(null)
   }
 
   const ondeleteClick = async () => {
-    deleteGuardian(selectedGuardian).then((res)=>{
+    deleteClass(selectedClass).then((res)=>{
 
         if (res.status) {
-            dispatch(fetchGuardian({page: 1, key}))
+          dispatch(fetchClasses({page: 1, limit: 10, key}))
           doCancelDelete()
         }
     })
@@ -149,40 +145,44 @@ const GuardianTable = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchGuardian({page: page +1, key}))
+    dispatch(fetchClasses({page: page + 1, limit: 10, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage])
 
+  useEffect(() => {
+    dispatch(fetchStaffs({page: 1, limit: 300, key: ''}))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
-       <Stats data={GuardianData} statTitle='Guardian'/>
+       {/* <Stats data={ClassesList} statTitle='Classes'/> */}
 
-<PageHeaderWithSearch searchPlaceholder={'Search Guardian'} action="Add Guardian" toggle={toggleModal} handleFilter={setKey}/>
+<PageHeaderWithSearch searchPlaceholder={'Search Class'} action="Add Class" toggle={toggleModal} handleFilter={setKey}/>
   
     <Fragment>
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
-              <TableCell align='left' sx={{ minWidth: 280 }}>
-                Guardian
+              <TableCell align='left' sx={{ minWidth: 200 }}>
+                Class
               </TableCell>
               {/* <TableCell align='center' sx={{ minWidth: 150 }}>
                 Religion
               </TableCell> */}
-              <TableCell align='center' sx={{ minWidth: 150 }}>
-                Phone
+              <TableCell align='center' sx={{ minWidth: 180 }}>
+                Type
               </TableCell>
-              <TableCell align='center' sx={{ minWidth: 150 }}>
-                Date of Birth
+              <TableCell align='center' sx={{ minWidth: 180 }}>
+                Capacity
               </TableCell>
-              <TableCell align='center' sx={{ minWidth: 150 }}>
-                Gender
+              <TableCell align='center' sx={{ minWidth: 180 }}>
+                Class Teacher
               </TableCell>
-              <TableCell align='center' sx={{ minWidth: 140 }}>
-                User ID
-              </TableCell>
+             
               <TableCell align='center' sx={{ minWidth: 140 }}>
                 Actions
               </TableCell>
@@ -200,39 +200,31 @@ const GuardianTable = () => {
               // </Box>
 
               <Fragment>
-                {GuardianData?.result?.length &&
-                  GuardianData?.result.map((item) => (
+                {ClassesList?.length &&
+                  ClassesList?.map((item) => {
+                    const classTeacher = StaffData?.result?.find((staff)=> staff.id === item.staffId  )
+
+                    return (
                     <TableRow hover role='checkbox' key={item.id} >
-                      <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                        {renderClient(item)}
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                          <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                            {`${item?.firstName} ${item?.lastName}`}
-                          </Typography>
-                          <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
-                            {item?.email}
-                          </Typography>
-                        </Box>
+                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
+                        {item?.name || '--'}
                       </TableCell>
 
                       {/* <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                         {item?.religion || '--'}
                       </TableCell> */}
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                        {item?.phone || '--'}
+                        {item?.type || '--'}
                       </TableCell>
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                        {formatDate(item.dateOfBirth) || '--'}
+                        {item?.capacity || '--'}
                       </TableCell>
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                        {item?.gender || '--'}
-                      </TableCell>
-                      <TableCell component={TableCellStyled} align='center' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
-                        {item?.identificationNumber || '--'}
+                        {`${classTeacher?.firstName} ${classTeacher?.lastName}` || '--'}
                       </TableCell>
 
-                      <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' , transform: 'translateY(12.5px)'}}>
-                        <IconButton size='small' onClick={() => setGuardianToEdit(item)}>
+                      <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' ,}}>
+                        <IconButton size='small' onClick={() => setClassToEdit(item)}>
                           <Icon icon='tabler:edit' />
                         </IconButton>
 
@@ -245,9 +237,9 @@ const GuardianTable = () => {
                         </IconButton>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )})}
 
-                {GuardianData?.length === 0 && (
+                {ClassesList?.length === 0 && (
                   <tr className='text-center'>
                     <td colSpan={6}>
                       <NoData />
@@ -271,9 +263,8 @@ const GuardianTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-<AddGuardian open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
-     <EditGuardian open={openEditDrawer} selectedGuardian={guardianToUpdate} fetchData={updateFetch} closeModal={closeEditModal}/>
-     <ViewGuardian open={openViewDrawer} guardian={guardianInView} closeCanvas={closeViewModal}/>
+{showModal && <ManageClass open={showModal} toggle={OpenModal} classToEdit={ClassToUpdate} />}
+
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
 
@@ -281,4 +272,4 @@ const GuardianTable = () => {
   )
 }
 
-export default GuardianTable
+export default ClassesTable

@@ -6,7 +6,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async (query) => {
   try {
-    const response = await axios.get(`/staffs?page=${query.page}&limit=10&key=${query.key}&type=`)
+    const response = await axios.get(`/staffs?page=${query.page}&limit=${query.limit}&key=${query.key}&type=`)
 
     // console.log(response, 'response')
 
