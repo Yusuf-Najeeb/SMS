@@ -119,12 +119,10 @@ const GuardianTable = () => {
 
   const closeEditModal = ()=> {
     setEditDrawer(!openEditDrawer)
-    setGuardianToUpdate(null)
 }
 
   const closeViewModal = ()=> {
     setViewDrawer(!openViewDrawer)
-    setGuardianInView(null)
 }
 
   const doDelete = value => {
@@ -152,7 +150,7 @@ const GuardianTable = () => {
     dispatch(fetchGuardian({page: page +1, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage])
+  }, [page, rowsPerPage, refetch])
 
   return (
     <>

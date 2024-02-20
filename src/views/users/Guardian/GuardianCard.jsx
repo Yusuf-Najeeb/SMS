@@ -54,6 +54,8 @@ const GuardianCard = ({ Guardian }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
 
+  console.log(Guardian, 'guardian')
+
 
   useEffect(() => {
     if (Guardian) {
