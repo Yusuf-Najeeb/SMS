@@ -30,6 +30,7 @@ import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthun
 import ManageClass from './ManageClass'
 import { useStaff } from '../../../hooks/useStaff'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import ViewClass from './ViewClass'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -74,7 +75,7 @@ const ClassesTable = () => {
   const [deleteModal, setDeleteModal] = useState(false)
   const [selectedClass, setSelectedClass] = useState()
   const [ClassToUpdate, setClassToUpdate] = useState(null)
-  const [guardianInView, setGuardianInView] = useState(null)
+  const [ClassInView, setClassInView] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const [refetch, setFetch] = useState(false)
   const [key, setKey] = useState('')
@@ -108,15 +109,15 @@ const ClassesTable = () => {
     setClassToUpdate(value)
   }
 
-  const setGuardianToView = (value) => {
+  const setClassToView = (value) => {
     setViewDrawer(!openViewDrawer)
-    setGuardianInView(value)
+    setClassInView(value)
   }
 
 
   const closeViewModal = ()=> {
     setViewDrawer(!openViewDrawer)
-    setGuardianInView(null)
+    setClassInView(null)
 }
 
   const doDelete = value => {
@@ -217,7 +218,7 @@ const ClassesTable = () => {
                           <Icon icon='tabler:edit' />
                         </IconButton>
 
-                        <IconButton size='small' onClick={() => setGuardianToView(item)}>
+                        <IconButton size='small' onClick={() => setClassToView(item)}>
                           <Icon icon='tabler:eye' />
                         </IconButton>
 
@@ -255,6 +256,8 @@ const ClassesTable = () => {
 {showModal && <ManageClass open={showModal} toggle={OpenModal} classToEdit={ClassToUpdate} />}
 
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+
+      <ViewClass open={openViewDrawer} closeCanvas={closeViewModal} classRoom={ClassInView} />
     </Fragment>
 
     </>
