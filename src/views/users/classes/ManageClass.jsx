@@ -20,15 +20,11 @@ import { useForm, Controller } from 'react-hook-form'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch, useAppSelector } from 'src/hooks'
-import { notifyError } from 'src/@core/components/toasts/notifyError'
-import { notifySuccess } from 'src/@core/components/toasts/notifySuccess'
-import axios from 'axios'
 import { CircularProgress, Dialog, DialogContent, DialogTitle, Grid, MenuItem } from '@mui/material'
-import {  fetchPaymentMethods } from 'src/store/apps/settings/asyncthunk'
 import { CustomCloseButton } from '../Guardian/AddGuardian'
 import { useStaff } from '../../../hooks/useStaff'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import { createClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { createClass, fetchClasses, updateClass } from '../../../store/apps/classes/asyncthunk'
 
 
 
@@ -50,21 +46,20 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  type: yup.string().required(),
-  name: yup
+  type: yup.string().required('Class Type is required'),
+  className: yup
     .string()
-    .min(3, obj => showErrors('name', obj.value.length, obj.min))
+    .min(3, obj => showErrors('className', obj.value.length, obj.min))
     .required(),
+  category_name: yup.string().required('Class Category is required'),
   capacity: yup.string().required('Capacity is required'),
-  category_name: yup.string().required('Category is required'),
   staffId: yup.string().required('Class Teacher is required'),
 })
 
 const defaultValues = {
-  name: '',
+  className: '',
   type: '',
   capacity: '',
-  category_name: '',
   staffId: ''
 }
 
@@ -99,7 +94,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
   const onSubmit = async (data) => {
 
       const payload = {
-        name: data.name,
+        name: data.className,
         type: data.type,
         capacity: Number(data.capacity),
         category_name: data.category_name,
@@ -118,41 +113,39 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
   }
 
   const onUpdate = async (data) => {
-    try {
+   
       const payload = {
-        name: data.name,
+        name: data.className,
         type: data.type,
         capacity: Number(data.capacity),
         category_name: data.category_name,
         staffId: Number(data.staffId)
       }
 
-      const response = await axios.patch(`settings/payment-mode/${classToEdit?.id}`, payload)
+      updateClass(classToEdit?.id, payload).then((res)=>{
+          if (res.data.success){
+            toggle()
+            handleClose()
+            reset()
+            dispatch(fetchClasses({page: 1, limit: 10, key: ''}))
+          }
+      })
 
-      if (response.data.success){
 
-        console.log(payload)
-        notifySuccess('Class updated')
-        handleClose()
-        dispatch(fetchPaymentMethods({ page: 1, limit: 10 }))
-      }
-
-    } catch (error) {
-      notifyError('cannot submit customer form')
-    }
+    
   }
 
   useEffect(() => {
     if (classToEdit !== null) {
-      setValue('name', classToEdit.name)
+      setValue('className', classToEdit.name)
       setValue('type', classToEdit.type)
-      setValue('capacity', classToEdit.capacity)
       setValue('category_name', classToEdit.category_name)
+      setValue('capacity', classToEdit.capacity)
       setValue('staffId', classToEdit.staffId)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [classToEdit])
 
   return (
     <Dialog
@@ -190,7 +183,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
         <Grid container spacing={6}>
         <Grid item xs={12} sm={12} md={4}>
           <Controller
-            name='name'
+            name='className'
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -201,9 +194,9 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
                 sx={{ mb: 4 }}
                 label='Name'
                 onChange={onChange}
-                placeholder='JSS 1'
-                error={Boolean(errors.name)}
-                {...(errors.name && { helperText: errors.name.message })}
+                placeholder='JSS1'
+                error={Boolean(errors.className)}
+                {...(errors.className && { helperText: errors.className.message })}
               />
             )}
           />
@@ -221,7 +214,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
                 label='Class Type'
                 value={value}
                 sx={{ mb: 4 }}
-                placeholder='A'
+                placeholder='Purple'
                 onChange={onChange}
                 error={Boolean(errors.type)}
                 {...(errors.type && { helperText: errors.type.message })}
@@ -262,10 +255,10 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
               <CustomTextField
               required
                 fullWidth
-                label='Category'
+                label='Category Name'
                 value={value}
                 sx={{ mb: 4 }}
-                placeholder='Junior Secondary'
+                placeholder='Secondary'
                 onChange={onChange}
                 error={Boolean(errors.category_name)}
                 {...(errors.category_name && { helperText: errors.category_name.message })}
@@ -274,6 +267,10 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
             )}
           />
           </Grid>
+
+          
+
+       
 
           <Grid item xs={12} sm={4} md={6}>
                 <Controller
@@ -304,8 +301,6 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
                   )}
                 />
               </Grid>
-
-
 
           </Grid>
 

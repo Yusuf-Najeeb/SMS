@@ -65,8 +65,6 @@ const ClassesTable = () => {
   const dispatch = useAppDispatch()
 
   const [ClassesList, loading, paging] = useClasses()
-
-  const [StaffData] = useStaff()
  
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -98,8 +96,6 @@ const ClassesTable = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
-
-  console.log(paging, 'paging')
 
 
   const handleChangeRowsPerPage = event => {
@@ -150,12 +146,6 @@ const ClassesTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage])
 
-  useEffect(() => {
-    dispatch(fetchStaffs({page: 1, limit: 300, key: ''}))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   return (
     <>
        {/* <Stats data={ClassesList} statTitle='Classes'/> */}
@@ -180,7 +170,7 @@ const ClassesTable = () => {
                 Capacity
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 180 }}>
-                Class Teacher
+                Class Category
               </TableCell>
              
               <TableCell align='center' sx={{ minWidth: 140 }}>
@@ -202,7 +192,6 @@ const ClassesTable = () => {
               <Fragment>
                 {ClassesList?.length &&
                   ClassesList?.map((item) => {
-                    const classTeacher = StaffData?.result?.find((staff)=> staff.id === item.staffId  )
 
                     return (
                     <TableRow hover role='checkbox' key={item.id} >
@@ -220,7 +209,7 @@ const ClassesTable = () => {
                         {item?.capacity || '--'}
                       </TableCell>
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                        {`${classTeacher?.firstName} ${classTeacher?.lastName}` || '--'}
+                        {item?.category?.name?.toUpperCase() || '--'}
                       </TableCell>
 
                       <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' ,}}>

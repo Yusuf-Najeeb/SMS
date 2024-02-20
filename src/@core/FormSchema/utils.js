@@ -21,3 +21,18 @@ export const steps = [
       subtitle: `Staff's Next of Kin and Referee Details`
     }
   ]
+
+
+  export const studentSteps = [
+    {
+        icon: 'tabler:user',
+      title: 'Personal Info',
+      subtitle: `Student's Personal Information`
+    },
+    {
+        icon: 'raphael:parent',
+      title: 'Guardian Info',
+      subtitle: `Student's Guardian Information`
+    },
+    
+  ]
