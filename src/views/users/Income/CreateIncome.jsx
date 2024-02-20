@@ -211,7 +211,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
 
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 700 } }}
       >
         <DialogContent
           sx={{
@@ -230,25 +230,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
               }}
             >
               <Grid container spacing={6}>
-                <Grid item xs={12} sm={4}>
-                  <Controller
-                    name='title'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        fullWidth
-                        label='Description'
-                        required
-                        placeholder='Enter Income Description'
-                        value={value}
-                        onChange={onChange}
-                        error={Boolean(errors.title)}
-                        {...(errors.title && { helperText: errors.title.message })}
-                      />
-                    )}
-                  />
-                </Grid>
+               
 
                 <Grid item xs={12} sm={4}>
                   <Controller
@@ -324,7 +306,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
 
                   <Controller
                     name='amountPaid'
@@ -348,7 +330,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name='incomeOwner'
                     control={control}
@@ -385,6 +367,28 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                       </Alert>
                     </div>
                   )}
+                </Grid>
+
+                <Grid item xs={12} sm={12}>
+                  <Controller
+                    name='title'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        multiline
+                        rows={4}
+                        label='Description'
+                        required
+                        placeholder='Enter Income Description'
+                        value={value}
+                        onChange={onChange}
+                        error={Boolean(errors.title)}
+                        {...(errors.title && { helperText: errors.title.message })}
+                      />
+                    )}
+                  />
                 </Grid>
               </Grid>
             </DialogContent>

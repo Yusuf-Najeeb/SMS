@@ -309,8 +309,8 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
 
           </Grid>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: '1rem' }}>
-            <Button type='submit' variant='contained' sx={{ width: '100%' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: '10px' }}>
+            <Button type='submit' variant='contained' >
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} />}
               {classToEdit ? 'Update' : 'Create'}
             </Button>
