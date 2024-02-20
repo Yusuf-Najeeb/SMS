@@ -37,6 +37,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { useDispatch } from 'react-redux'
 
 // ** Styled Component
 import StepperWrapper from 'src/@core/styles/mui/stepper'
@@ -77,6 +78,8 @@ import { steps } from '../../../@core/FormSchema/utils'
 
 import { createStaff } from '../../../store/apps/staff/asyncthunk'
 import { handleInputImageChange } from '../../../@core/utils/uploadImage'
+import { useAppSelector } from '../../../hooks'
+import { fetchStates } from '../../../store/apps/states/asyncthunk'
 
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
@@ -128,6 +131,8 @@ const Step = styled(MuiStep)(({ theme }) => ({
 
 const AddStaff = ({open, closeModal, refetchStaffs}) => {
 
+  const StatesList = useAppSelector(store => store.states.StatesList)
+
 
   // ** States
   const [activeStep, setActiveStep] = useState(0)
@@ -150,6 +155,14 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
   const { settings } = useSettings()
   const smallScreen = useMediaQuery(theme => theme.breakpoints.down('md'))
   const { direction } = settings
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
+
+    dispatch(fetchStates({countryId: 160}))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
    // ** Form Hooks
 
@@ -231,13 +244,9 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
         setPreviewUrl(null)
         setActiveStep(0)
         setStaffRole('')
-        nextofKinReset({ nameOfRefereeOne: '', addressOfRefereeOne: '', phoneOfRefereeOne: '', phoneOfRefereeTwo: '', nextOfKinName: '', nextOfKinAddress: '',
-         emergencyPhone: '', nameOfRefereeTwo: '', addressOfRefereeTwo: '', emailOfRefereeOne: '', emailOfRefereeTwo: '', relationship: ''  })
-        workInfoReset({ qualification: '', department_section: '', previousWorkExperience: '', institutionAttended: '',  specialization: '', accountNumber: '', 
-        basicSalary: '' , mealAllowance: '', transportAllowance: '', domesticAllowance: '', furnitureAllowance: '', SalaryArrears: '',rentAllowance: '',
-          bankName: '', branch: '', role: '', staffDescription: ''})
-        personalReset({  email: '', firstName: '', lastName: '', middleName: '', title: '', phone: '', dateOfBirth: '',
-        password: '', residentialAddress: '', maritalStatus: '', gender: '', city: '', state: '', lga: '', religion: '',  })
+        nextofKinReset()
+        workInfoReset()
+        personalReset()
 
         // medicalReset({  drugAllergies: '', foodAllergies: '', genotype: '', bloodGroup: '', previousSurgery: '', healthStatus: '' })
       }
@@ -534,8 +543,32 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='state' control={personalControl} requireBoolean={true} label="State of Origin" error={personalErrors['state']} errorMessage={personalErrors.state?.message} />
+                <Controller
+                  name='state'
+                  control={personalControl}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      label='State of Origin'
+                      onChange={onChange}
+                      id='stepper-linear-personal-state'
+                      error={Boolean(personalErrors.state)}
+                      aria-describedby='stepper-linear-personal-state-helper'
+                      {...(personalErrors.state && { helperText: personalErrors.state.message })}
+                    >
+
+                      <MenuItem value=''>Select State</MenuItem>
+                      {StatesList.map((item)=> (
+                      <MenuItem key={item.id} value={item.name} sx={{textTransform: 'uppercase'}}>{item.name}</MenuItem>
+                      ))}
+                    </CustomTextField>
+                  )}
+                />
               </Grid>
+
 
               <Grid item xs={12} sm={4}>
                 <FormController name='lga' control={personalControl} requireBoolean={true} required={true} label="Local Government of Origin" error={personalErrors['lga']} errorMessage={personalErrors.lga?.message} />
