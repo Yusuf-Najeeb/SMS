@@ -208,7 +208,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 700 } }}
       >
         <DialogContent
           sx={{
@@ -227,25 +227,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
               }}
             >
               <Grid container spacing={6}>
-                <Grid item xs={12} sm={4}>
-                  <Controller
-                    name='title'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        fullWidth
-                        label='Description'
-                        required
-                        placeholder='Enter Expenditure description'
-                        value={value}
-                        onChange={onChange}
-                        error={Boolean(errors.title)}
-                        {...(errors.title && { helperText: errors.title.message })}
-                      />
-                    )}
-                  />
-                </Grid>
+                
 
                 <Grid item xs={12} sm={4}>
                   <Controller
@@ -321,7 +303,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
 
                   <Controller
                     name='amountPaid'
@@ -345,7 +327,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name='expenditureOwner'
                     control={control}
@@ -383,6 +365,28 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                       </Alert>
                     </div>
                   )}
+                </Grid>
+
+                <Grid item xs={12} sm={12}>
+                  <Controller
+                    name='title'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        rows={4}
+                        multiline
+                        label='Description'
+                        required
+                        placeholder='Enter Expenditure description'
+                        value={value}
+                        onChange={onChange}
+                        error={Boolean(errors.title)}
+                        {...(errors.title && { helperText: errors.title.message })}
+                      />
+                    )}
+                  />
                 </Grid>
               </Grid>
 

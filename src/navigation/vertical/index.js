@@ -125,14 +125,14 @@ const navigation = () => {
       path: '/apps/payment-methods'
     },
 
-      {
-      sectionTitle: 'Settings'
-    },
-    {
-      title: 'Settings',
-      icon: 'tabler:settings',
-      path: '/apps/settings'
-    }
+    //   {
+    //   sectionTitle: 'Settings'
+    // },
+    // {
+    //   title: 'Settings',
+    //   icon: 'tabler:settings',
+    //   path: '/apps/settings'
+    // }
 
     // {
     //   title: 'Fees and Billing',
