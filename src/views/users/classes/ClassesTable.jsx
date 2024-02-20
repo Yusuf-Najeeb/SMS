@@ -144,7 +144,7 @@ const ClassesTable = () => {
     dispatch(fetchClasses({page: page + 1, limit: 10, key}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage])
+  }, [page, rowsPerPage, key])
 
   return (
     <>

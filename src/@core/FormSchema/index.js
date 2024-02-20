@@ -193,18 +193,17 @@ export const createActorSchema = yup.object().shape({
   lastName: yup.string().required('Last Name is required'),
   middleName: yup.string(),
   email: yup.string().required('Email is required'),
-  password: yup.string().required('Password is required'),
+  password: yup.string(),
   
-  // title: yup.string().required('Title is required'),
-  maritalStatus: yup.string().required("Marital Status is required"),
-  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
+  // maritalStatus: yup.string(),
+  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
   .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
-  dateOfBirth: yup.string().required('Date of Birth is required'),
-  residentialAddress: yup.string(),
+  dateOfBirth: yup.string(),
+  residentialAddress: yup.string().required('Residential Address is required'),
   gender: yup.string().required('Gender is required'),
+  relationship: yup.string(),
   religion: yup.string(),
   ethnicity: yup.string(),
-  
 })
 
 export const createStudentSchema = yup.object().shape({
@@ -239,12 +238,14 @@ export const updateGuardianSchema = yup.object().shape({
   lastName: yup.string().required('Last Name is required'),
   middleName: yup.string(),
   email: yup.string(),
-  phone: yup.string(),
-  dateOfBirth: yup.string().required('Date of Birth is required'),
+  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  dateOfBirth: yup.string(),
   residentialAddress: yup.string(),
   gender: yup.string().required('Gender is required'),
   religion: yup.string(),
   ethnicity: yup.string(),
+  relationship: yup.string(),
 })
 
 

@@ -54,6 +54,8 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
 
+  console.log(selectedGuardian, 'selected guardian')
+
   const toggleParentModal = ()=> {
     closeModal()
     setParentModal(!openParentModal)
@@ -64,13 +66,15 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
     lastName: '',
     middleName: '',
     email: '',
-    maritalStatus: '',
+    
+    // maritalStatus: '',
     phone: '',
     dateOfBirth: '',
     residentialAddress: '',
     gender: '',
     religion: '',
     ethnicity: '',
+    relationship: ''
   }
 
   const {
@@ -93,8 +97,9 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
      selectedGuardian.gender !== null ? setValue('gender', selectedGuardian.gender) : setValue('gender', '')
      selectedGuardian.religion !== null ? setValue('religion', selectedGuardian.religion) : setValue('religion', '')
      selectedGuardian.ethnicity !== null ? setValue('ethnicity', selectedGuardian.ethnicity) : setValue('ethnicity', '')
+     selectedGuardian.relationship !== null ? setValue('relationship', selectedGuardian.relationship) : setValue('relationship', '')
 
-      setValue('dateOfBirth', new Date(selectedGuardian.dateOfBirth))
+     selectedGuardian.dateOfBirth !== null ? setValue('dateOfBirth', new Date(selectedGuardian.dateOfBirth)) : setValue('dateOfBirth', '')
      
     }
 
@@ -117,12 +122,18 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
       
       const { dateOfBirth, ...restOfData } = changedFields
   
-      const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+      const formattedDate = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
+
+      const existingStudentIds = selectedGuardian.students.map(item => item.parentStudents.studentId)
   
       const studentIds = itemsArray.map(item => item.id);
+
+      const ids = [...existingStudentIds, ...studentIds]
   
-      const payload = { dateOfBirth: formattedDate, ...restOfData, studentIds }
-  
+      const payload = { dateOfBirth: formattedDate, ...restOfData, studentIds: ids }
+
+      console.log(payload, 'payload')
+
     updateGuardian(payload, selectedGuardian.email).then((response)=> {
             if (response.data.success) {
                 reset()
@@ -290,7 +301,7 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
                 />
               </Grid> */}
 
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <Controller
                   name='maritalStatus'
                   control={control}
@@ -313,7 +324,7 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
                     </CustomTextField>
                   )}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
@@ -352,30 +363,11 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth *'
+                          label='Date of Birth'
                           error={Boolean(errors.dateOfBirth)}
                           {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
                         />
                       }
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='residentialAddress'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Residential Address'
-                      placeholder='Enter Address'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
                     />
                   )}
                 />
@@ -420,6 +412,46 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
                       onChange={onChange}
                       error={Boolean(errors.ethnicity)}
                       {...(errors.ethnicity && { helperText: errors.ethnicity.message })}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='relationship'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Relationship'
+                      placeholder='Mother'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.relationship)}
+                      {...(errors.relationship && { helperText: errors.relationship.message })}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={12}>
+                <Controller
+                  name='residentialAddress'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      rows={2}
+                      multiline
+                      fullWidth
+                      label='Residential Address'
+                      placeholder='Enter Address'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.residentialAddress)}
+                      {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
                     />
                   )}
                 />

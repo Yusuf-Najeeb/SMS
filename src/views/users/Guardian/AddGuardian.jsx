@@ -71,13 +71,15 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
     middleName: '',
     email: '',
     password: '',
-    maritalStatus: '',
+
+    // maritalStatus: '',
     phone: '',
     dateOfBirth: '',
     residentialAddress: '',
     gender: '',
     religion: '',
     ethnicity: '',
+    relationship: ''
   }
 
   const {
@@ -90,7 +92,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
 
   const onSubmit = async values => {
     const { dateOfBirth, ...restOfData } = values
-    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+    const formattedDate = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
 
     const studentIds = itemsArray.map(item => item.id);
 
@@ -274,7 +276,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       value={value}
                       onBlur={onBlur}
                       label='Password'
-                      required
                       onChange={onChange}
                       id='auth-login-v2-password'
                       placeholder='Enter Password'
@@ -324,7 +325,8 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={4}>
+
+              {/* <Grid item xs={12} sm={4}>
                 <Controller
                   name='maritalStatus'
                   control={control}
@@ -347,7 +349,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                     </CustomTextField>
                   )}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={12} md={4}>
                 <Controller
@@ -387,7 +389,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth *'
+                          label='Date of Birth'
                           error={Boolean(errors.dateOfBirth)}
                           {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
                         />
@@ -423,26 +425,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={4}>
-                <Controller
-                  name='residentialAddress'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Residential Address'
-                      placeholder='Enter Address'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='ethnicity'
                   control={control}
@@ -456,6 +439,47 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       onChange={onChange}
                       error={Boolean(errors.ethnicity)}
                       {...(errors.ethnicity && { helperText: errors.ethnicity.message })}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='relationship'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Relationship'
+                      placeholder='Mother'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.relationship)}
+                      {...(errors.relationship && { helperText: errors.relationship.message })}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={12}>
+                <Controller
+                  name='residentialAddress'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      rows={2}
+                      multiline
+                      fullWidth
+                      required
+                      label='Residential Address'
+                      placeholder='Enter Address'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.residentialAddress)}
+                      {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
                     />
                   )}
                 />

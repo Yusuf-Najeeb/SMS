@@ -14,7 +14,7 @@ export const  calculateAge =(dateString)=> {
       age--;
     }
   
-    return `${age} years`;
+    return dateString !== null ?  `${age} years` : '--';
   }
   
   
