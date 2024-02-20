@@ -32,18 +32,17 @@ export const fetchClasses = createAsyncThunk('classrooms', async (query) => {
     }
   }
 
-  export const updateSubject = async (id, payload)=>{
+  export const updateClass = async (id, payload)=>{
     try {
-      const res = await axios.patch(`/subjects/${id}`, payload)
+      const res = await axios.patch(`/classes/${id}`, payload)
       if(res.data.success){
-        notifySuccess('Subject Updated')
+        notifySuccess('Class Updated')
       }
 
       return res
       
     } catch (error) {
-        console.log(error, 'update subject error')
-      notifyError('Unable to Update Subject')
+      notifyError('Unable to Update Class')
       
     }
   }

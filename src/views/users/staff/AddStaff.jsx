@@ -15,7 +15,6 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import { styled } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiStep from '@mui/material/Step'
 import InputAdornment from '@mui/material/InputAdornment'
 
@@ -33,6 +32,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import { CustomInput } from '../Guardian/AddGuardian'
 
 // ** Hook Import
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Util Import
@@ -277,8 +277,6 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
           nextOfKinInformation, 
           
         }
-
-        console.log(payload, 'staff payload')
 
         createStaff(staffRole, payload).then((res)=> {
             if(res.data.success){

@@ -212,7 +212,7 @@ export const createStudentSchema = yup.object().shape({
   lastName: yup.string().required('Last Name is required'),
   middleName: yup.string(),
   email: yup.string(),
-  password: yup.string().required('Password is required'),
+  password: yup.string(),
   phone: yup.string(),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string(),
@@ -291,4 +291,12 @@ export const subjectSchema = yup.object().shape({
   category_name: yup.string().required('Category Name is required'),
   
  
+})
+
+export const guardianInfoSchema = yup.object().shape({
+  firstName: yup.string(),
+  lastName: yup.string(),
+  email: yup.string(),
+  phone: yup.string(),
+  gender: yup.string(),
 })

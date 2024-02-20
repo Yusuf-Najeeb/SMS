@@ -73,9 +73,9 @@ const navigation = () => {
     },
 
      {
-      title: 'Classrooms',
+      title: 'Classes',
       icon: 'mdi:google-classroom',
-      path: '/apps/classroom'
+      path: '/apps/classes'
     },
 
     // {

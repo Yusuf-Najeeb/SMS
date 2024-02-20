@@ -13,25 +13,44 @@ import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
+import Avatar from '@mui/material/Avatar'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { CircularProgress, MenuItem, Typography } from '@mui/material'
+import { Card, CardContent, CircularProgress, Divider, MenuItem, Step, StepLabel, Stepper, Typography } from '@mui/material'
 
 import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
+import StepperWrapper from 'src/@core/styles/mui/stepper'
+import StepperCustomDot from '../../forms/form-wizard/StepperCustomDot'
+import CustomAvatar from 'src/@core/components/mui/avatar'
+
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
+
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { createStudentSchema } from 'src/@core/Formschema'
+import { createStudentSchema, guardianInfoSchema } from 'src/@core/Formschema'
+
+// ** Hook Import
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useSettings } from 'src/@core/hooks/useSettings'
+
+// ** Util Import
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { createStudent } from '../../../store/apps/Student/asyncthunk'
 import SearchParent from './SearchParent'
 import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
 import { handleInputImageChange } from '../../../@core/utils/uploadImage'
+import { studentSteps } from '../../../@core/FormSchema/utils'
+import FormController from '../component/FormController'
+import SelectedGuardianTable from './SelectedGuardianTable'
+import { useClasses } from '../../../hooks/useClassess'
+import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { useAppDispatch } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -53,12 +72,15 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
 })
 
 const AddStudent = ({ open, closeModal, refetchData }) => {
+  const [activeStep, setActiveStep] = useState(0)
   const [showPassword, setShowPassword] = useState(false)
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
   const [previewUrl, setPreviewUrl] = useState(``)
   const [imageLinkPayload, setImageLinkPayload] = useState('')
+  const [guardianArray, setGuardianArray] = useState([])
+  const [selectedGuardianId, setSelectedGuardianId] = useState(0)
 
   const toggleParentModal = ()=> {
     closeModal()
@@ -76,30 +98,138 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     residentialAddress: '',
     gender: '',
     religion: '',
-    ethnicity: ''
+    ethnicity: '',
+    currentClassId: ''
   }
+
+  const defaultGuardianInfoValues = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    gender: '',
+    residentialAddress: ''
+  }
+
+  // ** Hooks & Var
+  const dispatch = useAppDispatch()
+  const { settings } = useSettings()
+  const smallScreen = useMediaQuery(theme => theme.breakpoints.down('md'))
+  const { direction } = settings
+  const [ClassesList] = useClasses()
+
+  useEffect(() => {
+    dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const {
     control,
     setValue,
-    reset,
-    handleSubmit,
-    formState: { errors, isSubmitting }
+    reset: personalInfoReset,
+    handleSubmit: handlePersonalSubmit,
+    getValues: getPersonalInfoValues,
+    formState: { errors, isSubmitting, isValid: personalValuesValid }
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createStudentSchema) })
 
+  const {
+    reset: guardianInfoReset,
+    control: guardianInfoControl,
+    handleSubmit: handleGuardianInfoSubmit,
+    formState: { errors: guardianInfoErrors , isValid: guardianValuesValid},
+    getValues: getGuardianInfoValues
+  } = useForm({
+    defaultValues: defaultGuardianInfoValues,
+    resolver: yupResolver(guardianInfoSchema)
+  })
+
+  const handleAddGuardian = () => {
+    
+    const email = getGuardianInfoValues('email');
+    const firstName = getGuardianInfoValues('firstName');
+    const lastName = getGuardianInfoValues('lastName');
+    const gender = getGuardianInfoValues('gender');
+    const phone = getGuardianInfoValues('phone');
+    const residentialAddress = getGuardianInfoValues('residentialAddress');
+
+    if ( email && firstName && lastName && gender && phone && residentialAddress) {
+
+      const id = setSelectedGuardianId((prevId) => prevId + 1)
+
+      const newItem = {
+        id,
+        email,
+        firstName,
+        lastName,
+        gender,
+        phone,
+        residentialAddress
+      };
+
+      setGuardianArray((prevItems) => [...prevItems, newItem]);
+      
+    } else {
+      
+    }
+  };
+
+     // Handle Stepper
+     const handleBack = () => {
+      if(activeStep !== 0){
+        setActiveStep(prevActiveStep => prevActiveStep - 1)
+      }
+  
+      return null
+    }
+  
+    const handleForward =  () => {
+        switch (activeStep) {
+          case 0:
+            // Check for errors in the first step (Personal Info)
+            if (personalValuesValid) {
+              setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            }
+            break;
+          default:
+            console.log('eeeee')
+            break;
+        }
+      } 
+
+      const handleReset = ()=> {
+        setActiveStep(0)
+        personalInfoReset()
+        guardianInfoReset()
+      }
+
   const onSubmit = async values => {
-    const { dateOfBirth, ...restOfData } = values
+
+    // Retrieve form values
+    const personalInfoValues = getPersonalInfoValues();
+
+    const { dateOfBirth, currentClassId,  ...restOfData } = personalInfoValues
     const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
 
     const parentIds = itemsArray.map(item => item.id);
 
 
-    const personalInformation = { dateOfBirth: formattedDate, profilePicture: imageLinkPayload, ...restOfData, parentIds }
-    const payload = {personalInformation}
+    const personalInformation = { dateOfBirth: formattedDate, profilePicture: imageLinkPayload, currentClassId: Number(currentClassId),  ...restOfData, parentIds }
+
+    const guardianData = guardianArray.length ?  guardianArray.map((item)=> {
+      const {id, ...restOfData} = item
+
+      return restOfData;
+    }) : []
+    
+    const payload = {personalInformation, guardianData: guardianData}
+    
+
+    console.log(payload, 'payload')
 
          createStudent(payload).then((response)=> {
             if (response.data.success) {
-                reset()
+                personalInfoReset()
                 closeModal()
                 refetchData()
               }
@@ -107,29 +237,24 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
 
   }
 
+  const getStepContent = step => {
+    switch (step) {
+      case 0:
+
   return (
 
-    <Fragment> 
-    <Dialog
-      fullWidth
-      open={open}
-      maxWidth='md'
-      scroll='body'
+      <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
+         <Grid item xs={12}>
+                <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
+                  {studentSteps[0].title}
+                </Typography>
+                <Typography variant='caption' component='p'>
+                  {studentSteps[0].subtitle}
+                </Typography>
+              </Grid>
+    
 
-      //   TransitionComponent={Transition}
-      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 990 } }}
-    >
-      <DialogContent
-        sx={{
-          pb: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`],
-          pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
-        }}
-      >
-        <CustomCloseButton onClick={closeModal}>
-          <Icon icon='tabler:x' fontSize='1.25rem' />
-        </CustomCloseButton>
-
-        <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
+        <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, mt: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
               <Grid item xs={12} sm={6}>
                 <Box
                   sx={{
@@ -179,13 +304,10 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
               </Box>
             </Grid>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogContent
-            sx={{
-              pb: theme => `${theme.spacing(8)} !important`
-            }}
-          >
+        <form onSubmit={handlePersonalSubmit(handleForward)}>
+         
             <Grid container spacing={6}>
+
               <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='firstName'
@@ -272,7 +394,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       value={value}
                       onBlur={onBlur}
                       label='Password'
-                      required
                       onChange={onChange}
                       id='auth-login-v2-password'
                       placeholder='Enter Password'
@@ -394,7 +515,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='residentialAddress'
                   control={control}
@@ -413,7 +534,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='ethnicity'
                   control={control}
@@ -431,26 +552,294 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   )}
                 />
               </Grid>
+
+              <Grid item xs={12} sm={4} md={4}>
+                <Controller
+                  name='currentClassId'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      label='Class'
+                      onChange={onChange}
+                      id='stepper-linear-personal-currentClassId'
+                      error={Boolean(errors.currentClassId)}
+                      aria-describedby='stepper-linear-personal-currentClassId-helper'
+                      {...(errors.currentClassId && { helperText: errors.currentClassId.message })}
+                    >
+                        <MenuItem value=''>Select Class</MenuItem>
+                        {ClassesList?.map((item)=> {
+                            return (
+                                <MenuItem key={item.id} value={item.id} sx={{textTransform: 'uppercase'}}>{`${item.name.toUpperCase()}`}</MenuItem>
+                            )
+                        })}
+                      
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
               
             </Grid>
-          </DialogContent>
 
-         
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
+          {/* <Box sx={{ display: 'flex', justifyContent: 'center', mt: '10px' }}>
+
           <Button type='button' variant='outlined' onClick={toggleParentModal}>
               Select Guardian
             </Button>
             <Button type='submit' variant='contained' disabled={isSubmitting || itemsArray.length == 0}>
               {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Add Student'}
             </Button>
-          </Box>
+          </Box> */}
+
+          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mt: '30px' }}>
+                <Button variant='tonal' color='secondary' onClick={handleBack}>
+                  Back
+                </Button>
+
+                <Button type='button' variant='outlined' onClick={toggleParentModal}>
+              Select Guardian
+            </Button>
+
+
+                <Button type='submit' variant='contained'   >
+                  Next
+                </Button>
+              </Grid>
         </form>
-      </DialogContent>
+      
+    {/* <SearchParent itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openParentModal} closeModal={toggleParentModal} /> */}
+    </Box>
+  )
+
+  case 1:
+        return (
+
+          <form key={1} onSubmit={handleGuardianInfoSubmit(onSubmit)} >
+            <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
+                  {studentSteps[1].title}
+                </Typography>
+                <Typography variant='caption' component='p'>
+                  {studentSteps[1].subtitle}
+                </Typography>
+              </Grid>
+
+
+              <Grid item xs={12} sm={4}>
+                <FormController name='firstName' control={guardianInfoControl} requireBoolean={false} label="Guardian's First Name" error={guardianInfoErrors['firstName']} errorMessage={guardianInfoErrors.firstName?.message} />
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+              <FormController name='lastName' control={guardianInfoControl} requireBoolean={true} label="Guardian's Last Name" error={guardianInfoErrors['lastName']} errorMessage={guardianInfoErrors.lastName?.message} />
+              </Grid>
+
+              
+
+              <Grid item xs={12} sm={4}>
+              <FormController name='phone' control={guardianInfoControl} requireBoolean={true} label="Guardian's Phone Number" error={guardianInfoErrors['phone']} errorMessage={guardianInfoErrors.phone?.message} />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='email'
+                  control={guardianInfoControl}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label="Guardian's Email"
+                      placeholder='guardian@email.com'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(guardianInfoErrors.email)}
+                      {...(guardianInfoErrors.email && { helperText: guardianInfoErrors.email.message})}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='gender'
+                  control={guardianInfoControl}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      label="Guardian's Gender"
+                      onChange={onChange}
+                      id='stepper-linear-personal-gender'
+                      error={Boolean(guardianInfoErrors.gender)}
+                      aria-describedby='stepper-linear-personal-gender-helper'
+                      {...(guardianInfoErrors.gender && { helperText: guardianInfoErrors.gender.message })}
+                    >
+                      <MenuItem value='Male'>Male</MenuItem>
+                      <MenuItem value='Female'>Female</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={5}>
+                <Controller
+                  name='residentialAddress'
+                  control={guardianInfoControl}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      rows={2}
+                      multiline
+                      label="Guardian's Residential Address"
+                      placeholder='24, sch ave, Lagos'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(guardianInfoErrors.residentialAddress)}
+                      {...(guardianInfoErrors.residentialAddress && { helperText: guardianInfoErrors.residentialAddress.message})}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={2} sx={{mt: 4}}>
+                <IconButton size='large' sx={{ justifySelf: 'flex-end', fontSize: '50px' }} onClick={handleAddGuardian}>
+                  <Icon icon='basil:add-outline'  />
+                </IconButton>
+              </Grid>
+
+              <SelectedGuardianTable tableData={guardianArray} updateTable={setGuardianArray} />
+
+
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                
+                <Button variant='tonal' color='secondary' onClick={handleBack}>
+                  Back
+                </Button>
+                <Button type='submit' variant='contained' >
+                  Create
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )
+    }
+  }
+
+  const renderContent = () => {
+    if (activeStep === studentSteps.length) {
+      return (
+        <Fragment>
+          <Typography>All steps are completed!</Typography>
+          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant='contained' onClick={handleReset}>
+              Reset
+            </Button>
+          </Box>
+        </Fragment>
+      )
+    } else {
+      return getStepContent(activeStep)
+    }
+  }
+
+  return (
+    <Fragment>
+    <Dialog
+    fullWidth
+    open={open}
+    maxWidth='md'
+    scroll='body'
+    onClose={closeModal}
+
+    sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 990 } }}
+  >
+      <DialogContent
+        sx={{
+          pb: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`],
+          pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+        }}
+      >
+        <CustomCloseButton onClick={closeModal}>
+          <Icon icon='tabler:x' fontSize='1.25rem' />
+        </CustomCloseButton>
+    <Card>
+      <CardContent>
+        <StepperWrapper>
+          <Stepper
+            activeStep={activeStep}
+            connector={
+              !smallScreen ? <Icon icon={direction === 'ltr' ? 'tabler:chevron-right' : 'tabler:chevron-left'} /> : null
+            }
+          >
+            {studentSteps.map((step, index) => {
+              const RenderAvatar = activeStep >= index ? CustomAvatar : Avatar
+              const labelProps = {}
+              if (index === activeStep) {
+                labelProps.error = false
+                if (
+                  (
+                    errors.lastName ||
+                    errors.firstName ||
+                    errors.dateOfBirth ||
+
+                    errors.gender 
+                     &&
+                  activeStep === 0 )
+                ) {
+                  labelProps.error = true
+                } 
+                else {
+                  labelProps.error = false
+                }
+              }
+
+              return (
+                <Step key={index}>
+                  <StepLabel {...labelProps} StepIconComponent={StepperCustomDot}>
+                    <div className='step-label'>
+                      <RenderAvatar
+                        variant='rounded'
+                        {...(activeStep >= index && { skin: 'light' })}
+                        {...(activeStep === index && { skin: 'filled' })}
+                        {...(activeStep >= index && { color: 'primary' })}
+                        sx={{
+                          ...(activeStep === index && { boxShadow: theme => theme.shadows[3] }),
+                          ...(activeStep > index && { color: theme => hexToRGBA(theme.palette.primary.main, 0.4) })
+                        }}
+                      >
+                        <Icon icon={step.icon} />
+                      </RenderAvatar>
+                      <div>
+                        <Typography className='step-title'>{step.title}</Typography>
+                        <Typography className='step-subtitle'>{step.subtitle}</Typography>
+                      </div>
+                    </div>
+                  </StepLabel>
+                </Step>
+              )
+            })}
+          </Stepper>
+        </StepperWrapper>
+      </CardContent>
+      <Divider sx={{ m: '0 !important' }} />
+      <CardContent>{renderContent()}</CardContent>
+    </Card>
+    </DialogContent>
     </Dialog>
+
     <SearchParent itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openParentModal} closeModal={toggleParentModal} />
+
     </Fragment>
   )
+
+
 }
 
 export default AddStudent
