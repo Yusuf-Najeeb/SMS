@@ -32,6 +32,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { useDispatch } from 'react-redux'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
@@ -81,6 +82,8 @@ import { steps } from '../../../@core/FormSchema/utils'
 import { updateStaff } from '../../../store/apps/staff/asyncthunk'
 import { CustomInput } from '../Guardian/AddGuardian'
 import { handleInputImageChange } from '../../../@core/utils/uploadImage'
+import { useAppSelector } from '../../../hooks'
+import { fetchStates } from '../../../store/apps/states/asyncthunk'
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -132,6 +135,10 @@ const Step = styled(MuiStep)(({ theme }) => ({
 const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
   const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
+  const StatesList = useAppSelector(store => store.states.StatesList)
+
+  console.log(selectedStaff, 'selected staff')
+
   // ** States
   const [activeStep, setActiveStep] = useState(0)
   const [openDepartmentsModal, setOpenDepartmentsModal] = useState(false)
@@ -140,10 +147,20 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
   const [imageLinkPayload, setImageLinkPayload] = useState(null)
   const [refetch, setFetch] = useState(false)
 
+  console.log(previewUrl, 'preview url')
+
   // ** Hooks & Var
   const { settings } = useSettings()
   const smallScreen = useMediaQuery(theme => theme.breakpoints.down('md'))
   const { direction } = settings
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
+
+    dispatch(fetchStates({countryId: 160}))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
 
   useEffect(() => {
@@ -222,17 +239,17 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
     resolver: yupResolver(updateStaffPersonalInfoSchema)
   })
 
-  const {
-    reset: medicalReset,
-    control: medicalControl,
-    setValue: setMedicalValue,
-    handleSubmit: handleMedicalSubmit,
-    formState: { errors: medicalErrors, isValid: medicalValuesValid },
-    getValues: getMedicalValues
-  } = useForm({
-    defaultValues: defaultMedicalValues,
-    resolver: yupResolver(medicalSchema)
-  })
+  // const {
+  //   reset: medicalReset,
+  //   control: medicalControl,
+  //   setValue: setMedicalValue,
+  //   handleSubmit: handleMedicalSubmit,
+  //   formState: { errors: medicalErrors, isValid: medicalValuesValid },
+  //   getValues: getMedicalValues
+  // } = useForm({
+  //   defaultValues: defaultMedicalValues,
+  //   resolver: yupResolver(medicalSchema)
+  // })
 
   const {
     reset: workInfoReset,
@@ -290,55 +307,9 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
   const handleReset = () => {
     setPreviewUrl(null)
     setActiveStep(0)
-    nextofKinReset({
-      nameOfRefereeOne: '',
-      addressOfRefereeOne: '',
-      phoneOfRefereeOne: '',
-      phoneOfRefereeTwo: '',
-      nextOfKinName: '',
-      nextOfKinAddress: '',
-      emergencyPhone: '',
-      nameOfRefereeTwo: '',
-      addressOfRefereeTwo: '',
-      emailOfRefereeOne: '',
-      emailOfRefereeTwo: '',
-      relationship: ''
-    })
-    workInfoReset({
-      qualification: '',
-      department_section: '',
-      previousWorkExperience: '',
-      institutionAttended: '',
-      specialization: '',
-      accountNumber: '',
-      basicSalary: '',
-      mealAllowance: '',
-      transportAllowance: '',
-      domesticAllowance: '',
-      furnitureAllowance: '',
-      SalaryArrears: '',
-      rentAllowance: '',
-      bankName: '',
-      branch: '',
-      role: ''
-    })
-    personalReset({
-      email: '',
-      firstName: '',
-      lastName: '',
-      middleName: '',
-      title: '',
-      phone: '',
-      dateOfBirth: '',
-      residentialAddress: '',
-      maritalStatus: '',
-      gender: '',
-      city: '',
-      state: '',
-      lga: '',
-      religion: '',
-      staffDescription: ''
-    })
+    nextofKinReset()
+    workInfoReset()
+    personalReset()
 
     // medicalReset({
     //   drugAllergies: '',
@@ -461,12 +432,13 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   alignSelf: 'center'
                 }}
               >
+                
                 <img
                   src={`${previewUrl}`}
                   width={120}
                   height={100}
                   style={{ objectFit: 'cover', objectPosition: 'center' }}
-                  alt='staff image'
+                  alt=''
                 />
               </Box>
             </Grid>
@@ -667,15 +639,31 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                  <FormController
-                    name='state'
-                    control={personalControl}
-                    requireBoolean={true}
-                    label='State of Origin'
-                    error={personalErrors['state']}
-                    errorMessage={personalErrors.state?.message}
-                  />
-                </Grid>
+                <Controller
+                  name='state'
+                  control={personalControl}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      value={value}
+                      label='State of Origin'
+                      onChange={onChange}
+                      id='stepper-linear-personal-state'
+                      error={Boolean(personalErrors.state)}
+                      aria-describedby='stepper-linear-personal-state-helper'
+                      {...(personalErrors.state && { helperText: personalErrors.state.message })}
+                    >
+
+                      <MenuItem value=''>Select State</MenuItem>
+                      {StatesList.map((item)=> (
+                      <MenuItem key={item.id} value={item.name} sx={{textTransform: 'uppercase'}}>{item.name}</MenuItem>
+                      ))}
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
 
                 <Grid item xs={12} sm={4}>
                   <FormController
