@@ -225,10 +225,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     const payload = {personalInformation, guardianData: guardianData}
     
 
-    console.log(payload, 'payload')
-
          createStudent(payload).then((response)=> {
             if (response.data.success) {
+                setActiveStep(0)
                 personalInfoReset()
                 closeModal()
                 refetchData()
@@ -600,10 +599,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   Back
                 </Button>
 
-                <Button type='button' variant='outlined' onClick={toggleParentModal}>
-              Select Guardian
-            </Button>
-
 
                 <Button type='submit' variant='contained'   >
                   Next
@@ -722,6 +717,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 <Button variant='tonal' color='secondary' onClick={handleBack}>
                   Back
                 </Button>
+                <Button type='button' variant='outlined' onClick={toggleParentModal}>
+              Select Guardian
+            </Button>
                 <Button type='submit' variant='contained' >
                   Create
                 </Button>

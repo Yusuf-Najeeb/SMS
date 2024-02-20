@@ -57,7 +57,7 @@ const renderClient = row => {
   }
 }
 
-const TableCellStyled = styled(TableCell)(({theme})=> ({
+export const TableCellStyled = styled(TableCell)(({theme})=> ({
     color: `${theme.palette.primary.main} !important` 
 }))
 
