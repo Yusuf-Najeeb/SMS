@@ -31,3 +31,14 @@ export const deletePaymentMethod =  async (id) => {
   
     }
   }
+
+
+  export const getCurrentSession = async ()=> {
+    try {
+      const res = await axios.get('/settings/sessions/current')
+
+      return res
+    } catch (error) {
+      
+    }
+  }

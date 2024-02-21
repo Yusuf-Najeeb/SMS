@@ -98,7 +98,6 @@ const GuardianTable = () => {
     setPage(newPage)
   }
 
-  console.log(paging, 'paging')
 
   const updateFetch = ()=> setFetch(!refetch)
 
