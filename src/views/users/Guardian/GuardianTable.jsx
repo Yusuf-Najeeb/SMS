@@ -200,7 +200,7 @@ const GuardianTable = () => {
                 {GuardianData?.result?.length &&
                   GuardianData?.result.map((item) => (
                     <TableRow hover role='checkbox' key={item.id} >
-                      <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                      <TableCell align='left' sx={{ display: 'flex', gap: '10px' }}>
                         {renderClient(item)}
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                           <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>

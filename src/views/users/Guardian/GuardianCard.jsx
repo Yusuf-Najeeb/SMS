@@ -54,8 +54,6 @@ const GuardianCard = ({ Guardian }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
 
-  console.log(Guardian, 'guardian')
-
 
   useEffect(() => {
     if (Guardian) {
@@ -263,7 +261,7 @@ const GuardianCard = ({ Guardian }) => {
                 )
               })
             ) : (
-              <Typography variant='body2' sx={{ color: 'black', textTransform: 'capitalize' }}>
+              <Typography variant='body2' sx={{ color: 'white', textTransform: 'capitalize' }}>
                 No Child Available
               </Typography>
             )}
