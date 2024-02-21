@@ -28,8 +28,6 @@ import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useClasses } from '../../../hooks/useClassess'
 import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import ManageClass from './ManageClass'
-import { useStaff } from '../../../hooks/useStaff'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import ViewClass from './ViewClass'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL

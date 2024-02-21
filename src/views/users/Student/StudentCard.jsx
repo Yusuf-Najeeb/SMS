@@ -25,6 +25,7 @@ import StaffDetailCard from '../component/StaffDetailCard'
 import { getInitials } from 'src/@core/utils/get-initials'
 import { Stack } from '@mui/material'
 import { calculateAge } from '../../../@core/utils/calculateAge'
+import { useClasses } from '../../../hooks/useClassess'
 
 const roleColors = {
   superadmin: 'error',
@@ -53,6 +54,19 @@ const StudentCard = ({ Student }) => {
   // ** States
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
+  const [studentClass, setStudentClass] = useState()
+
+  const [ClassesList] = useClasses()
+
+ useEffect(()=>{
+
+  if(ClassesList.length > 1){
+    const classInfo =  ClassesList.find((c)=> c.id === Student.classId)
+    setStudentClass(classInfo)
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+ },[])
 
 
   useEffect(() => {
@@ -128,21 +142,21 @@ const StudentCard = ({ Student }) => {
                   <Icon fontSize='1.75rem' icon='fluent-mdl2:date-time-2' />
                 </CustomAvatar>
                 <div>
-                  <Typography variant='body2'>Date of Birth</Typography>
+                  <Typography variant='body2'>Date of Registration</Typography>
                   <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                    {formatDateToReadableFormat(Student?.dateOfBirth) || 'No available date'}
+                    {formatDateToReadableFormat(Student?.registrationDate) || 'No available date'}
                   </Typography>
                 </div>
               </Box>
-              {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <CustomAvatar skin='light' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
-                    <Icon fontSize='1.75rem' icon='tabler:briefcase' />
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <CustomAvatar skin='light' variant='rounded'  sx={{ mr: 2.5, width: 38, height: 38 }}>
+                    <Icon fontSize='1.75rem' icon='mdi:google-classroom' />
                   </CustomAvatar>
                   <div>
-                    <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>568</Typography>
-                    <Typography variant='body2'>Project Done</Typography>
+                    <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>Class</Typography>
+                    <Typography variant='body2'>{`${studentClass?.name} ${studentClass?.type}`}</Typography>
                   </div>
-                </Box> */}
+                </Box>
             </Box>
           </CardContent>
 
@@ -275,7 +289,7 @@ const StudentCard = ({ Student }) => {
                 )
               })
             ) : (
-              <Typography variant='body2' sx={{ color: 'black', textTransform: 'capitalize' }}>
+              <Typography variant='body2' sx={{ color: 'white', textTransform: 'capitalize' }}>
                 No Guardian Available
               </Typography>
             )}

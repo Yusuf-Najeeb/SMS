@@ -177,7 +177,7 @@ const ManageRooms = ({ open, toggle, roomToEdit = null }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>{roomToEdit ? 'Edit Subject' : 'Create Subject'}</Typography>
+        <Typography variant='h5'>{roomToEdit ? 'Edit Room' : 'Create Room'}</Typography>
         <IconButton
           size='small'
           onClick={handleClose}
