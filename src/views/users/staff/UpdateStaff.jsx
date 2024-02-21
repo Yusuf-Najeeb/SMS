@@ -137,8 +137,6 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
 
   const StatesList = useAppSelector(store => store.states.StatesList)
 
-  console.log(selectedStaff, 'selected staff')
-
   // ** States
   const [activeStep, setActiveStep] = useState(0)
   const [openDepartmentsModal, setOpenDepartmentsModal] = useState(false)
@@ -146,8 +144,6 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
   const [previewUrl, setPreviewUrl] = useState(`${backendURL?.replace('api', '')}/${selectedStaff.profilePicture}`)
   const [imageLinkPayload, setImageLinkPayload] = useState(null)
   const [refetch, setFetch] = useState(false)
-
-  console.log(previewUrl, 'preview url')
 
   // ** Hooks & Var
   const { settings } = useSettings()

@@ -2,11 +2,21 @@ const DefaultPalette = (mode, skin) => {
   // ** Vars
   const whiteColor = '#FFF'
   const lightColor = '47, 43, 61'
+
   const darkColor = '208, 212, 241'
+  
+  // const darkColor = '#2e313d'
+
   const darkPaperBgColor = '#2F3349'
+
+  // const darkPaperBgColor = '#2e313d'
+
   const mainColor = mode === 'light' ? lightColor : darkColor
 
   const defaultBgColor = () => {
+
+    // return '#2e313d'
+
     if (skin === 'bordered' && mode === 'light') {
       return whiteColor
     } else if (skin === 'bordered' && mode === 'dark') {
