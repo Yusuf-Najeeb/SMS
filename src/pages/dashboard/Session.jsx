@@ -9,12 +9,11 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { getCurrentSession } from '../../store/apps/settings/asyncthunk'
-import {  IconButton } from '@mui/material'
 
 import Icon from 'src/@core/components/icon'
 
@@ -115,11 +114,10 @@ const CurrentSession = () => {
             </div>
           </Box>
 
-          {/* <ReactApexcharts type='bar' width={160} height={130} series={series} options={options} /> */}
 
-          <IconButton size='large'  >
-            <Icon icon="ph:calendar-fill" />
-          </IconButton>
+            <CustomAvatar skin='light' color={'info'} sx={{ mr: 4, width: 42, height: 42 }}>
+          <Icon icon={'ph:calendar-fill'} fontSize='1.8rem' />
+        </CustomAvatar>
         </Box>
       </CardContent>
     </Card>

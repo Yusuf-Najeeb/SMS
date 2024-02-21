@@ -194,7 +194,7 @@ export const createActorSchema = yup.object().shape({
   middleName: yup.string(),
   email: yup.string().required('Email is required'),
   password: yup.string(),
-  
+
   // maritalStatus: yup.string(),
   phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
   .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
@@ -214,10 +214,13 @@ export const createStudentSchema = yup.object().shape({
   password: yup.string(),
   phone: yup.string(),
   dateOfBirth: yup.string().required('Date of Birth is required'),
+  currentClassId: yup.string().required('Current Class is required'),
   residentialAddress: yup.string(),
   gender: yup.string().required('Gender is required'),
   religion: yup.string(),
   ethnicity: yup.string(),
+  registrationDate: yup.string(),
+  lastSchool: yup.string(),
 })
 
 export const updateStudentSchema = yup.object().shape({
