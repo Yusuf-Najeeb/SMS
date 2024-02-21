@@ -132,7 +132,6 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
   
       const payload = { dateOfBirth: formattedDate, ...restOfData, studentIds: ids }
 
-      console.log(payload, 'payload')
 
     updateGuardian(payload, selectedGuardian.email).then((response)=> {
             if (response.data.success) {

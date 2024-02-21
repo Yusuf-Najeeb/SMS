@@ -197,7 +197,7 @@ const ClassesTable = () => {
                     return (
                     <TableRow hover role='checkbox' key={item.id} >
                       <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {item?.name || '--'}
+                        {`${item?.name} ${item.type}` || '--'}
                       </TableCell>
 
                       {/* <TableCell align='center' sx={{ textTransform: 'uppercase' }}>

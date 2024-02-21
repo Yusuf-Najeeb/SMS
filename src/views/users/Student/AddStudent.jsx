@@ -593,7 +593,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                         <MenuItem value=''>Select Class</MenuItem>
                         {ClassesList?.map((item)=> {
                             return (
-                                <MenuItem key={item.id} value={item.id} sx={{textTransform: 'uppercase'}}>{`${item.name.toUpperCase()}`}</MenuItem>
+                                <MenuItem key={item.id} value={item.id} sx={{textTransform: 'uppercase'}}>{`${item.name.toUpperCase()} ${item.type}`}</MenuItem>
                             )
                         })}
                       
