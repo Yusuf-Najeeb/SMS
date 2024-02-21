@@ -106,6 +106,19 @@ const navigation = () => {
     //   icon: 'healthicons:i-exam-multiple-choice',
     //   path: '/apps/exam/list'
     // },
+
+    {
+      sectionTitle: 'Hostel'
+    },
+
+    {
+      title: 'Rooms',
+      icon: 'fa-solid:house-user',
+      path: '/apps/rooms'
+    },
+
+   
+
     {
       sectionTitle: 'Accounts '
     },

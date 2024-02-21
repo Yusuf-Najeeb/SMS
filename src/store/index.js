@@ -21,6 +21,7 @@ import categories from 'src/store/apps/categories'
 import subjects from 'src/store/apps/subjects'
 import classes from 'src/store/apps/classes'
 import states from 'src/store/apps/states'
+import rooms from 'src/store/apps/rooms'
 
 export const store = configureStore({
   reducer: {
@@ -42,7 +43,8 @@ export const store = configureStore({
     categories,
     subjects,
     classes,
-    states
+    states, 
+    rooms
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

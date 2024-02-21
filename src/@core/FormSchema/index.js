@@ -293,8 +293,6 @@ export const categorySchema = yup.object().shape({
 export const subjectSchema = yup.object().shape({
   name: yup.string().required('Subject Title is required'),
   category_name: yup.string().required('Category Name is required'),
-  
- 
 })
 
 export const guardianInfoSchema = yup.object().shape({
@@ -303,4 +301,10 @@ export const guardianInfoSchema = yup.object().shape({
   email: yup.string(),
   phone: yup.string(),
   gender: yup.string(),
+})
+
+export const roomSchema = yup.object().shape({
+  name: yup.string().required('Room Name is required'),
+  capacity: yup.string().required('Room Capacity is required'),
+  category_name: yup.string().required('Category Name is required'),
 })

@@ -21,9 +21,11 @@ import { useForm, Controller } from 'react-hook-form'
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, FormControlLabel, FormGroup, MenuItem, Switch } from '@mui/material'
-import {  fetchCategories } from '../../../store/apps/categories/asyncthunk'
+import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { createSubject, fetchSubjects, updateSubject } from '../../../store/apps/subjects/asyncthunk'
+import { createRoom, fetchRooms, updateRoom } from '../../../store/apps/rooms/asyncthunk'
+import DataGrid from '../../../@core/theme/overrides/dataGrid'
 
 const showErrors = (field, valueLen, min) => {
   if (valueLen === 0) {
@@ -43,7 +45,8 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  name: yup.string().required('Subject Title is required'),
+  name: yup.string().required('Room Name is required'),
+  capacity: yup.string().required('Room Capacity is required'),
   category_name: yup.string(),
   categoryId: yup.string()
 })
@@ -51,10 +54,11 @@ const schema = yup.object().shape({
 const defaultValues = {
   name: '',
   category_name: '',
-  categoryId: ''
+  categoryId: '',
+  capacity: ''
 }
 
-const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
+const ManageRooms = ({ open, toggle, roomToEdit = null }) => {
   const dispatch = useAppDispatch()
   const [CategoriesData] = useCategories()
 
@@ -86,74 +90,80 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   const watchedFields = watch()
 
   const onSubmit = async data => {
+    let payload
 
-    let payload 
-
-    if(data.categoryId !== ''){
-        payload = {
-         name: data.name,
-         categoryId: Number(data.categoryId)
-       }
-    }else {
-        payload = {
-            name: data.name,
-            category_name: data.category_name
-          }
+    if (data.categoryId !== '') {
+      payload = {
+        name: data.name,
+        capacity: Number(data.capacity),
+        categoryId: Number(data.categoryId)
+      }
+    } else {
+      payload = {
+        name: data.name,
+        capacity: Number(data.capacity),
+        category_name: data.category_name
+      }
     }
 
 
-    createSubject(payload).then(response => {
+    createRoom(payload).then(response => {
       if (response.data.success) {
         handleClose()
-        dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
+        dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
       }
     })
-
   }
 
   const onUpdate = async data => {
+
     const changedFields = Object.entries(data).reduce((acc, [key, value]) => {
-      if (value !== subjectToEdit[key]) {
-        acc[key] = value
-      }
+        if (value !== roomToEdit[key]) {
+          acc[key] = value
+        }
+  
+        return acc
+      }, {})
 
-      return acc
-    }, {})
-   
-    let payload 
+    let payload
 
-    if(data.categoryId !== ''){
-        payload = {
-          ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),  
+    if (data.categoryId !== '') {
+      payload = {
+        // Omit any input field not edited from the payload 
+        ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),  
+        ...(changedFields.hasOwnProperty('capacity') && { capacity: Number(changedFields.capacity) }),
         ...(changedFields.hasOwnProperty('categoryId') && { categoryId: Number(changedFields.categoryId) })
-       }
-    }else {
-        payload = {
-          ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),  
-          ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name })
-          }
+      }
+    } else {
+      payload = {
+        // Omit any input field not edited from the payload 
+        ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),
+        ...(changedFields.hasOwnProperty('capacity') && { capacity: Number(changedFields.capacity) }),
+        ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name })
+
+      }
     }
 
-    updateSubject(subjectToEdit?.id, payload).then(response => {
+    updateRoom(roomToEdit?.id, payload).then(response => {
       if (response.data.success) {
         handleClose()
-        dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
+        dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
       }
     })
-
   }
 
   useEffect(() => {
-    if (subjectToEdit !== null) {
-      setValue('name', subjectToEdit.name)
-      setValue('categoryId', subjectToEdit.categoryId)
+    if (roomToEdit !== null) {
+      setValue('name', roomToEdit.name)
+      setValue('categoryId', roomToEdit.categoryId)
+      setValue('capacity', roomToEdit.capacity)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    dispatch(fetchCategories({ page: 1, limit: 300, type: 'subject' }))
+    dispatch(fetchCategories({ page: 1, limit: 300, type: 'room' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -167,7 +177,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>{subjectToEdit ? 'Edit Subject' : 'Create Subject'}</Typography>
+        <Typography variant='h5'>{roomToEdit ? 'Edit Subject' : 'Create Subject'}</Typography>
         <IconButton
           size='small'
           onClick={handleClose}
@@ -185,7 +195,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
         </IconButton>
       </Header>
       <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
-        <form onSubmit={handleSubmit(subjectToEdit ? onUpdate : onSubmit)}>
+        <form onSubmit={handleSubmit(roomToEdit ? onUpdate : onSubmit)}>
           <Controller
             name='name'
             control={control}
@@ -195,42 +205,63 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Subject Title'
+                label='Room Name'
                 required
                 onChange={onChange}
-                placeholder='Subject Title'
+                placeholder='Room 1'
                 error={Boolean(errors.name)}
                 {...(errors.name && { helperText: errors.name.message })}
               />
             )}
           />
 
-          {!showInputField &&  <Controller
-            name='categoryId'
+          {!showInputField && (
+            <Controller
+              name='categoryId'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <CustomTextField
+                  select
+                  fullWidth
+                  label='Category Name'
+                  value={value}
+                  sx={{ mb: 4 }}
+                  onChange={onChange}
+                  error={Boolean(errors.categoryId)}
+                  {...(errors.categoryId && { helperText: errors.categoryId.message })}
+                >
+                  <MenuItem value=''>Select Room Category</MenuItem>
+                  {CategoriesData?.map((item, i) => {
+                    return (
+                      <MenuItem key={i} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    )
+                  })}
+                </CustomTextField>
+              )}
+            />
+          )}
+
+          <Controller
+            name='capacity'
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
-                select
                 fullWidth
-                label='Category Name'
                 value={value}
                 sx={{ mb: 4 }}
+                label='Room Capacity'
+                required
                 onChange={onChange}
-                error={Boolean(errors.categoryId)}
-                {...(errors.categoryId && { helperText: errors.categoryId.message })}
-              >
-                <MenuItem value=''>Select Subject Category</MenuItem>
-                {CategoriesData?.map((item, i) => {
-                  return (
-                    <MenuItem key={i} value={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  )
-                })}
-              </CustomTextField>
+                placeholder='100'
+                error={Boolean(errors.capacity)}
+                {...(errors.capacity && { helperText: errors.capacity.message })}
+              />
             )}
-          /> }
+          />
 
           <FormGroup row>
             <FormControlLabel
@@ -264,7 +295,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button type='submit' variant='contained' sx={{ width: '100%' }}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} />}
-              {subjectToEdit ? 'Update' : 'Create'}
+              {roomToEdit ? 'Update' : 'Create'}
             </Button>
           </Box>
         </form>
@@ -273,4 +304,4 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   )
 }
 
-export default ManageSubjects
+export default ManageRooms
