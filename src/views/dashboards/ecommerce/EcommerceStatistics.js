@@ -57,7 +57,7 @@ const renderStats = () => {
 
 const EcommerceStatistics = () => {
   return (
-    <Card sx={{paddingTop: '5px' }}>
+    <Card >
       <CardHeader
         title='Statistics'
         sx={{ '& .MuiCardHeader-action': { m: 0, alignSelf: 'center' } }}

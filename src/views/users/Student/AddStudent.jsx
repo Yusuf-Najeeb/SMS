@@ -99,7 +99,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     gender: '',
     religion: '',
     ethnicity: '',
-    currentClassId: ''
+    currentClassId: '',
+    registrationDate: new (Date),
+    lastSchool: ''
   }
 
   const defaultGuardianInfoValues = {
@@ -208,21 +210,29 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     // Retrieve form values
     const personalInfoValues = getPersonalInfoValues();
 
-    const { dateOfBirth, currentClassId,  ...restOfData } = personalInfoValues
-    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+    const { dateOfBirth, registrationDate,  currentClassId,  ...restOfData } = personalInfoValues
+    const formattedDate = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
+    const formattedRegDate = (registrationDate !== '') ? formatDateToYYYMMDDD(registrationDate) : ''
 
     const parentIds = itemsArray.map(item => item.id);
 
 
-    const personalInformation = { dateOfBirth: formattedDate, profilePicture: imageLinkPayload, currentClassId: Number(currentClassId),  ...restOfData, parentIds }
+    const personalInformation = { dateOfBirth: formattedDate, registrationDate: formattedRegDate,  profilePicture: imageLinkPayload, currentClassId: Number(currentClassId),  ...restOfData, parentIds }
 
     const guardianData = guardianArray.length ?  guardianArray.map((item)=> {
       const {id, ...restOfData} = item
 
       return restOfData;
     }) : []
-    
-    const payload = {personalInformation, guardianData: guardianData}
+
+    let payload
+
+
+    // if(guardianData.length > 1) {
+    // }
+
+    payload = {personalInformation, guardianData: guardianData}
+
     
 
          createStudent(payload).then((response)=> {
@@ -464,6 +474,33 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
 
               <Grid item xs={12} sm={12} md={4}>
                 <Controller
+                  name='registrationDate'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='2022-05-07'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Registration Date'
+                          error={Boolean(errors.registrationDate)}
+                          {...(errors.registrationDate && { helperText: errors.registrationDate.message })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={4}>
+                <Controller
                   name='dateOfBirth'
                   control={control}
                   rules={{ required: true }}
@@ -514,24 +551,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={4}>
-                <Controller
-                  name='residentialAddress'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Residential Address'
-                      placeholder='Enter Address'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
-                    />
-                  )}
-                />
-              </Grid>
+              
 
               <Grid item xs={12} sm={12} md={4}>
                 <Controller
@@ -561,6 +581,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                     <CustomTextField
                       select
                       fullWidth
+                      required
                       value={value}
                       label='Class'
                       onChange={onChange}
@@ -580,6 +601,46 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   )}
                 />
               </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='lastSchool'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Last School Attended'
+                      placeholder='BTC Academy'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.lastSchool)}
+                      {...(errors.lastSchool && { helperText: errors.lastSchool.message})}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='residentialAddress'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Residential Address'
+                      placeholder="24, school ave"
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.residentialAddress)}
+                      {...(errors.residentialAddress && { helperText:errors.residentialAddress.message })}
+                    />
+                  )}
+                />
+              </Grid>
+
+              
               
             </Grid>
 
@@ -682,7 +743,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={5}>
+              <Grid item xs={12} sm={12} md={11}>
                 <Controller
                   name='residentialAddress'
                   control={guardianInfoControl}
@@ -703,9 +764,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={2} sx={{mt: 4}}>
+              <Grid item xs={12} sm={1} sx={{mt: 4}}>
                 <IconButton size='large' sx={{ justifySelf: 'flex-end', fontSize: '50px' }} onClick={handleAddGuardian}>
-                  <Icon icon='basil:add-outline'  />
+                  <Icon fontSize='2rem' icon='basil:add-outline'  />
                 </IconButton>
               </Grid>
 
