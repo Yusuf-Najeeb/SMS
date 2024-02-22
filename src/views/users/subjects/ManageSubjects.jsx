@@ -135,7 +135,10 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
       return acc
     }, {})
 
+    const existingStaffIds = subjectToEdit.staffs.map(item => item.id)
     const teacherIds = itemsArray.map(item => item.id);
+
+    const ids = [...existingStaffIds, ...teacherIds]
    
     let payload 
 
@@ -143,21 +146,20 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
     if(data.categoryId !== ''){
         payload = {
-          teacherIds,
+          teacherIds: ids,
           ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),  
         ...(changedFields.hasOwnProperty('categoryId') && { categoryId: Number(changedFields.categoryId) })
         
        }
     }else {
         payload = {
-          teacherIds,
+          teacherIds: ids,
           ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),  
           ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name }),
           
           }
     }
 
-    console.log(payload, 'upload payload')
 
     updateSubject(subjectToEdit?.id, payload).then(response => {
       if (response.data.success) {

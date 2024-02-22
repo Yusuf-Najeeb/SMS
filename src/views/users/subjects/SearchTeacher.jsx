@@ -120,7 +120,7 @@ const SearchTeacher = ({ openModal, closeModal, itemsArray, setItemsArray }) => 
           ❌
         </CustomCloseButton>
       <Header>
-        {/* <Typography variant='h5'> Search Student</Typography> */}
+        <Typography variant='h5'> Note: Only a Staff with Teacher role can be added to a subject</Typography>
         <div></div>
         {/* <IconButton
           size='small'
@@ -190,16 +190,16 @@ const SearchTeacher = ({ openModal, closeModal, itemsArray, setItemsArray }) => 
                         }}
                       >
                         <TableCell>
-                          <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                            {prods.firstName}
+                          <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase' }}>
+                            {`${prods?.firstName} ${prods?.lastName}`}
                           </Typography>
                           {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           </Box> */}
                         </TableCell>
 
                         <TableCell>
-                          <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                            {prods.lastName}
+                          <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase'}}>
+                            {prods?.role.name}
                           </Typography>
                           {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                              
