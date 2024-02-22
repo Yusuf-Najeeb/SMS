@@ -25,13 +25,23 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { getInitials } from 'src/@core/utils/get-initials'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
-import { useStudent } from '../../../hooks/useStudent'
-import { deleteStudent, fetchStudents, updateStudent } from '../../../store/apps/Student/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
-import AddStudent from './AddStudent'
-import EditStudent from './EditStudent'
-import ViewStudent from './ViewStudent'
 import { useClasses } from '../../../hooks/useClassess'
+import { fetchStaffs, updateStaff } from '../../../store/apps/staff/asyncthunk'
+import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { useStaff } from '../../../hooks/useStaff'
+import UpdateStaff from './UpdateStaff'
+import ViewStaff from './ViewStaff'
+import AddStaff from './AddStaff'
+
+const userRoleObj = {
+  'super-admin': { icon: 'grommet-icons:user-admin', color: 'info' },
+  admin: { icon: 'tabler:device-laptop', color: 'secondary' },
+  teacher: { icon: 'tabler:circle-check', color: 'success' },
+  librarian: { icon: 'tabler:edit', color: 'info' },
+  accountant: { icon: 'tabler:chart-pie-2', color: 'primary' },
+  'house-master': { icon: 'tabler:user', color: 'warning' }
+}
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -48,8 +58,6 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
-
-        // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='primary'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
@@ -63,11 +71,10 @@ export const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-const StudentsTable = () => {
+const StaffTable = () => {
   const dispatch = useAppDispatch()
 
-  const [StudentData, loading, paging] = useStudent()
-  const [ClassesList] = useClasses()
+  const [StaffData, loading, paging] = useStaff()
 
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -75,9 +82,9 @@ const StudentsTable = () => {
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState()
-  const [studentToUpdate, setStudentToUpdate] = useState(null)
-  const [studentInView, setStudentInView] = useState(null)
+  const [selectedStaff, setSelectedStaff] = useState()
+  const [staffToUpdate, setStaffToUpdate] = useState(null)
+  const [staffInView, setStaffInView] = useState(null)
   const [refetch, setFetch] = useState(false)
   const [key, setKey] = useState('')
 
@@ -96,35 +103,34 @@ const StudentsTable = () => {
     setPage(0)
   }
 
-  const handleToggle = (value) => {
-
+  const handleToggle = value => {
     let payload
-    if(value.status){
+    if (value.status) {
       payload = {
         status: false
       }
-    }
-    else {
+    } else {
       payload = {
         status: true
       }
     }
 
-    updateStudent(payload, value?.id).then(res => {
+    updateStaff(value?.email, payload).then(res => {
       if (res.data.success) {
-        dispatch(fetchStudents({ page: 1, key: '' }))
+        dispatch(fetchStaffs({ page: 1, limit: 10, key: '' }))
+        notifySuccess('Updated Staff')
       }
     })
   }
 
-  const setStudentToEdit = value => {
+  const setStaffToEdit = value => {
     setEditDrawer(!openEditDrawer)
-    setStudentToUpdate(value)
+    setStaffToUpdate(value)
   }
 
-  const setStudentToView = value => {
+  const setStaffToView = value => {
     setViewDrawer(!openViewDrawer)
-    setStudentInView(value)
+    setStaffInView(value)
   }
 
   const closeEditModal = () => {
@@ -137,18 +143,18 @@ const StudentsTable = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedStudent(value.id)
+    setSelectedStaff(value.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedStudent(null)
+    setSelectedStaff(null)
   }
 
   const ondeleteClick = async () => {
-    deleteStudent(selectedStudent).then(res => {
+    deleteStaff(selectedStaff).then(res => {
       if (res.status) {
-        dispatch(fetchStudents({ page: 1, key: '' }))
+        dispatch(fetchStaffs({ page: 1, limit: 10, key: '' }))
         doCancelDelete()
       }
     })
@@ -161,14 +167,14 @@ const StudentsTable = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchStudents({ page: page + 1, key }))
+    dispatch(fetchStaffs({ page: page + 1, limit: 10, key }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refetch, page, key])
+  }, [page, key, refetch])
 
   return (
     <>
-      <Stats data={StudentData} statTitle='Student' />
+      <Stats data={StaffData} statTitle='Student' />
 
       <PageHeaderWithSearch
         searchPlaceholder={'Search Student'}
@@ -183,20 +189,21 @@ const StudentsTable = () => {
             <TableHead>
               <TableRow>
                 <TableCell align='left' sx={{ minWidth: 250 }}>
-                  Student
+                  Staff
                 </TableCell>
                 {/* <TableCell align='center' sx={{ minWidth: 150 }}>
                 Religion
               </TableCell> */}
-                <TableCell align='left' sx={{ minWidth: 160 }}>
-                  Class
+                <TableCell align='left' sx={{ minWidth: 165 }}>
+                  Role
                 </TableCell>
-                <TableCell align='left' sx={{ minWidth: 150 }}>
-                  Date of Birth
+                <TableCell align='left' sx={{ minWidth: 165 }}>
+                  Employment Date
                 </TableCell>
-                <TableCell align='left' sx={{ minWidth: 150 }}>
-                  Gender
-                </TableCell>
+
+                {/* <TableCell align='left' sx={{ minWidth: 160 }}>
+                  Phone
+                </TableCell> */}
                 <TableCell align='left' sx={{ minWidth: 140 }}>
                   Status
                 </TableCell>
@@ -216,11 +223,9 @@ const StudentsTable = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-
                 <Fragment>
-                  {StudentData?.result?.length &&
-                    StudentData?.result.map(item => {
-                      const className = ClassesList.find(c => c.id === item.classId)
+                  {StaffData?.result?.length &&
+                    StaffData?.result.map(item => {
 
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
@@ -228,7 +233,7 @@ const StudentsTable = () => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.firstName} ${item?.lastName}`}
+                                {`${item?.title}. ${item?.firstName} ${item?.lastName}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}
@@ -236,15 +241,27 @@ const StudentsTable = () => {
                             </Box>
                           </TableCell>
 
-                          <TableCell align='left' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
-                            {`${className.name} ${className.type}` || '--'}
+                          <TableCell align='left' sx={{ textTransform: 'uppercase', fontSize: '13px', }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <CustomAvatar
+                                skin='light'
+                                sx={{ mr: 4, width: 30, height: 30 }}
+                                color={userRoleObj[item?.role?.name].color || 'primary'}
+                              >
+                                <Icon icon={userRoleObj[item?.role?.name].icon} />
+                              </CustomAvatar>
+                              <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                                {item?.role?.name}
+                              </Typography>
+                            </Box>
                           </TableCell>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                            {formatDate(item.dateOfBirth) || '--'}
+                            {formatDate(item.dateOfEmployment) || '--'}
                           </TableCell>
-                          <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                            {item?.gender || '--'}
-                          </TableCell>
+                          
+                          {/* <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
+                            {item?.phone || '--'}
+                          </TableCell> */}
 
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
                             {item.status ? (
@@ -286,11 +303,11 @@ const StudentsTable = () => {
                               transform: 'translateY(7.4px)'
                             }}
                           >
-                            <IconButton size='small' onClick={() => setStudentToEdit(item)}>
+                            <IconButton size='small' onClick={() => setStaffToEdit(item)}>
                               <Icon icon='tabler:edit' />
                             </IconButton>
 
-                            <IconButton size='small' onClick={() => setStudentToView(item)}>
+                            <IconButton size='small' onClick={() => setStaffToView(item)}>
                               <Icon icon='tabler:eye' />
                             </IconButton>
 
@@ -312,7 +329,7 @@ const StudentsTable = () => {
                       )
                     })}
 
-                  {StudentData?.length === 0 && (
+                  {StaffData?.length === 0 && (
                     <tr className='text-center'>
                       <td colSpan={6}>
                         <NoData />
@@ -334,18 +351,21 @@ const StudentsTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 
-        <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
-        <EditStudent
-          open={openEditDrawer}
-          selectedStudent={studentToUpdate}
-          fetchData={updateFetch}
-          closeModal={closeEditModal}
-        />
-        <ViewStudent open={openViewDrawer} closeCanvas={closeViewModal} student={studentInView} />
+        {openEditDrawer && (
+          <UpdateStaff
+            open={openEditDrawer}
+            closeModal={closeEditModal}
+            refetchStaffs={updateFetch}
+            selectedStaff={staffToUpdate}
+          />
+        )}
+        {openViewDrawer && <ViewStaff open={openViewDrawer} closeCanvas={closeViewModal} staffUser={staffInView} />}
+
+        <AddStaff open={showModal} closeModal={toggleModal} refetchStaffs={updateFetch} />
         <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
       </Fragment>
     </>
   )
 }
 
-export default StudentsTable
+export default StaffTable

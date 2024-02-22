@@ -35,7 +35,7 @@ const ViewStaff = ({ open, closeCanvas, staffUser }) => {
       anchor='right'
       variant='temporary'
       ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 800 } } }}
+      sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 850 } } }}
     >
       <Header>
         <Typography variant='h5'>Viewing {`${formatFirstLetter(staffUser?.firstName)} ${formatFirstLetter(staffUser?.lastName)}` || '--'}'s Profile</Typography>

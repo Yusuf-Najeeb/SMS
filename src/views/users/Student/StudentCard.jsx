@@ -130,7 +130,8 @@ const StudentCard = ({ Student }) => {
               <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'primary.main', fontSize: '2rem !important' }}>
                 {/* {grossSalary.toLocaleString()} */}
                 {/* {formatCurrency(grossSalary, true)} */}
-                {/* <Sub>/ month</Sub> */}
+                {`${studentClass?.name} ${studentClass?.type}`}
+                <Sub>/ Class</Sub>
               </Typography>
             </Box>
           </CardContent>
@@ -148,7 +149,8 @@ const StudentCard = ({ Student }) => {
                   </Typography>
                 </div>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              
+              {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <CustomAvatar skin='light' variant='rounded'  sx={{ mr: 2.5, width: 38, height: 38 }}>
                     <Icon fontSize='1.75rem' icon='mdi:google-classroom' />
                   </CustomAvatar>
@@ -156,7 +158,7 @@ const StudentCard = ({ Student }) => {
                     <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>Class</Typography>
                     <Typography variant='body2'>{`${studentClass?.name} ${studentClass?.type}`}</Typography>
                   </div>
-                </Box>
+                </Box> */}
             </Box>
           </CardContent>
 
