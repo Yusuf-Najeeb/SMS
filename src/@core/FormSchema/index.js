@@ -232,8 +232,11 @@ export const updateStudentSchema = yup.object().shape({
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string(),
   gender: yup.string().required('Gender is required'),
+  currentClassId: yup.string().required('Current Class is required'),
   religion: yup.string(),
   ethnicity: yup.string(),
+  registrationDate: yup.string(),
+  lastSchool: yup.string(),
 })
 
 export const updateGuardianSchema = yup.object().shape({

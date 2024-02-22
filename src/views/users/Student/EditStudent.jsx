@@ -30,6 +30,9 @@ import { updateStudentSchema } from 'src/@core/Formschema'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { updateStudent } from '../../../store/apps/Student/asyncthunk'
 import SearchParent from './SearchParent'
+import { useClasses } from '../../../hooks/useClassess'
+import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { useAppDispatch } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -51,8 +54,15 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
 })
 
 const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
+  const [activeStep, setActiveStep] = useState(0)
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
+
+  console.log(selectedStudent, 'selected student')
+
+  const dispatch = useAppDispatch()
+  const [ClassesList] = useClasses()
+
 
   const toggleParentModal = () => {
     closeModal()
@@ -69,7 +79,10 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
     residentialAddress: '',
     gender: '',
     religion: '',
-    ethnicity: ''
+    ethnicity: '',
+    currentClassId: '',
+    registrationDate: '',
+    lastSchool: ''
   }
 
   const {
@@ -80,6 +93,12 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
     watch,
     formState: { errors, isSubmitting }
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(updateStudentSchema) })
+
+  useEffect(() => {
+    dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (selectedStudent) {
@@ -98,6 +117,8 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       selectedStudent.ethnicity !== null ? setValue('ethnicity', selectedStudent.ethnicity) : setValue('ethnicity', '')
 
       setValue('dateOfBirth', new Date(selectedStudent.dateOfBirth))
+      setValue('registrationDate', new Date(selectedStudent.registrationDate))
+      Number(setValue('currentClassId', selectedStudent.classId))
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,13 +137,22 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       return acc
     }, {})
 
-    const { dateOfBirth, ...restOfData } = changedFields
+    const { dateOfBirth, registrationDate, ...restOfData } = changedFields
 
     const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
 
+    const formattedRegDate = (registrationDate !== '') ? formatDateToYYYMMDDD(registrationDate) : ''
+
+    const existingParentIds = selectedStudent.parents.map(item => item.parentStudents.parentId)
+
     const parentIds = itemsArray.map(item => item.id)
 
-    const payload = { dateOfBirth: formattedDate, ...restOfData, parentIds }
+    const ids = [...existingParentIds, ...parentIds]
+
+
+
+    const payload = { dateOfBirth: formattedDate, registrationDate: formattedRegDate, ...restOfData, parentIds: ids }
+
 
     updateStudent(payload, selectedStudent.id).then(response => {
       if (response.data.success) {
@@ -140,9 +170,9 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-        
+
         //   TransitionComponent={Transition}
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 750 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 990 } }}
       >
         <DialogContent
           sx={{
@@ -161,7 +191,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
               }}
             >
               <Grid container spacing={6}>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='firstName'
                     control={control}
@@ -180,7 +210,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='lastName'
                     control={control}
@@ -199,7 +229,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='middleName'
                     control={control}
@@ -217,7 +247,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='email'
                     control={control}
@@ -236,7 +266,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='gender'
                     control={control}
@@ -261,7 +291,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='phone'
                     control={control}
@@ -280,7 +310,34 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
+                <Controller
+                  name='registrationDate'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='2022-05-07'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Registration Date'
+                          error={Boolean(errors.registrationDate)}
+                          {...(errors.registrationDate && { helperText: errors.registrationDate.message })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='dateOfBirth'
                     control={control}
@@ -307,26 +364,8 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
-                  <Controller
-                    name='residentialAddress'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        fullWidth
-                        label='Residential Address'
-                        placeholder='Enter Address'
-                        value={value}
-                        onChange={onChange}
-                        error={Boolean(errors.residentialAddress)}
-                        {...(errors.residentialAddress && { helperText: ' Residential Address is required ' })}
-                      />
-                    )}
-                  />
-                </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='religion'
                     control={control}
@@ -351,7 +390,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='ethnicity'
                     control={control}
@@ -369,6 +408,77 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                     )}
                   />
                 </Grid>
+
+                <Grid item xs={12} sm={4} md={4}>
+                <Controller
+                  name='currentClassId'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      fullWidth
+                      required
+                      value={value}
+                      label='Class'
+                      onChange={onChange}
+                      id='stepper-linear-personal-currentClassId'
+                      error={Boolean(errors.currentClassId)}
+                      aria-describedby='stepper-linear-personal-currentClassId-helper'
+                      {...(errors.currentClassId && { helperText: errors.currentClassId.message })}
+                    >
+                        <MenuItem value=''>Select Class</MenuItem>
+                        {ClassesList?.map((item)=> {
+                            return (
+                                <MenuItem key={item.id} value={item.id} sx={{textTransform: 'uppercase'}}>{`${item.name.toUpperCase()} ${item.type}`}</MenuItem>
+                            )
+                        })}
+                      
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={4}>
+                <Controller
+                  name='lastSchool'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Last School Attended'
+                      placeholder='BTC Academy'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.lastSchool)}
+                      {...(errors.lastSchool && { helperText: errors.lastSchool.message})}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={12}>
+                <Controller
+                  name='residentialAddress'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      rows={2}
+                      multiline
+                      label='Residential Address'
+                      placeholder="24, school ave"
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.residentialAddress)}
+                      {...(errors.residentialAddress && { helperText:errors.residentialAddress.message })}
+                    />
+                  )}
+                />
+              </Grid>
+
               </Grid>
             </DialogContent>
 
@@ -376,7 +486,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
               <Button type='button' variant='outlined' onClick={toggleParentModal}>
                 Select Guardian
               </Button>
-              <Button type='submit' variant='contained' disabled={isSubmitting || itemsArray.length == 0}>
+              <Button type='submit' variant='contained' disabled={isSubmitting}>
                 {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update Student'}
               </Button>
             </Box>
