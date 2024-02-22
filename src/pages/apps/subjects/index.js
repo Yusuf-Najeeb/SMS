@@ -1,9 +1,12 @@
 
-import SubjectsTable from "../../../views/users/subjects/SubjectsTable"
+import SubjectTab from '../../../views/users/subjects/SubjectTabs'
 
 
-const SubjectstsHome = () => {
-  return <SubjectsTable />
+
+const SubjectsHome = () => {
+
+
+  return <SubjectTab tab='subjects' />
 }
 
-export default SubjectstsHome
+export default SubjectsHome
