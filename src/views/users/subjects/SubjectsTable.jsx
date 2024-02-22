@@ -45,7 +45,7 @@ const SubjectsTable = () => {
     }
   }
 
-  const setActiveCategory = (value) => {
+  const setActiveSubject = (value) => {
     OpenSubjectModal()
     setSelectedSubject(value)
   }
@@ -156,7 +156,7 @@ const SubjectsTable = () => {
                       )} */}
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <IconButton size='small' onClick={() => setActiveCategory(item)}>
+                      <IconButton size='small' onClick={() => setActiveSubject(item)}>
                         <Icon icon='tabler:edit' />
                       </IconButton>
 

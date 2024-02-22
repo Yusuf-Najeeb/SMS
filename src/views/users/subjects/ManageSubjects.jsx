@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -24,6 +24,7 @@ import { CircularProgress, FormControlLabel, FormGroup, MenuItem, Switch } from 
 import {  fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { createSubject, fetchSubjects, updateSubject } from '../../../store/apps/subjects/asyncthunk'
+import SearchTeacher from './SearchTeacher'
 
 const showErrors = (field, valueLen, min) => {
   if (valueLen === 0) {
@@ -58,7 +59,15 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   const dispatch = useAppDispatch()
   const [CategoriesData] = useCategories()
 
+  const [openTeacherModal, setTeacherModal] = useState(false)
+  const [itemsArray, setItemsArray] = useState([])
+
   const [showInputField, setShowInputField] = useState(false)
+
+  const toggleTeacherModal = ()=> {
+    // toggle()
+    setTeacherModal(!openTeacherModal)
+  }
 
   const handleChange = event => {
     setShowInputField(event.target.checked)
@@ -87,19 +96,25 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
   const onSubmit = async data => {
 
+    const teacherIds = itemsArray.map(item => item.id);
+
     let payload 
 
     if(data.categoryId !== ''){
         payload = {
          name: data.name,
-         categoryId: Number(data.categoryId)
+         categoryId: Number(data.categoryId),
+         teacherIds
        }
     }else {
         payload = {
             name: data.name,
-            category_name: data.category_name
+            category_name: data.category_name,
+            teacherIds
           }
     }
+
+    // console.log(payload, 'payload')
 
 
     createSubject(payload).then(response => {
@@ -119,20 +134,30 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
       return acc
     }, {})
+
+    const teacherIds = itemsArray.map(item => item.id);
    
     let payload 
 
+    
+
     if(data.categoryId !== ''){
         payload = {
+          teacherIds,
           ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),  
         ...(changedFields.hasOwnProperty('categoryId') && { categoryId: Number(changedFields.categoryId) })
+        
        }
     }else {
         payload = {
+          teacherIds,
           ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),  
-          ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name })
+          ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name }),
+          
           }
     }
+
+    console.log(payload, 'upload payload')
 
     updateSubject(subjectToEdit?.id, payload).then(response => {
       if (response.data.success) {
@@ -159,12 +184,14 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   }, [])
 
   return (
+    <Fragment>
+
     <Drawer
       open={open}
       anchor='right'
       variant='temporary'
       ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
+      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 450 } } }}
     >
       <Header>
         <Typography variant='h5'>{subjectToEdit ? 'Edit Subject' : 'Create Subject'}</Typography>
@@ -261,8 +288,14 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
             />
           )}
 
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button type='submit' variant='contained' sx={{ width: '100%' }}>
+          <Box sx={{ display: 'flex', mt: 5, alignItems: 'center', justifyContent: 'space-between' }}>
+
+          <Button type='button' variant='outlined' onClick={toggleTeacherModal} sx={{ width: '45%' }}>
+              Select Teachers
+            </Button>
+            
+
+            <Button type='submit' variant='contained' sx={{ width: '45%' }}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} />}
               {subjectToEdit ? 'Update' : 'Create'}
             </Button>
@@ -270,6 +303,9 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
         </form>
       </Box>
     </Drawer>
+
+    <SearchTeacher itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openTeacherModal} closeModal={toggleTeacherModal} />
+    </Fragment>
   )
 }
 

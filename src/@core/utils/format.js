@@ -23,7 +23,6 @@ export const formatDate = (value, formatting = { month: 'short', day: 'numeric',
 }
 
 export const formatDateToReadableFormat = (inputDate) => {
-  console.log(inputDate, 'input date')
 
   const options = { month: 'short', day: 'numeric', year: 'numeric' };
   const formattedDate = new Date(inputDate).toLocaleDateString('en-US', options);
