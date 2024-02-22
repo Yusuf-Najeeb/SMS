@@ -1,8 +1,8 @@
-import Staffs from "../../../views/users/staff/Staffs"
+import StaffTable from "../../../views/users/staff/StaffTable"
 
 
 const StaffHome = () => {
-  return <Staffs />
+  return <StaffTable />
 }
 
 export default StaffHome
