@@ -41,7 +41,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
-        sx={{ mr: 2.5, width: 38, height: 38 }}
+        sx={{ mr: 2.5, width: 32, height: 32 }}
       />
     )
   } else {
@@ -278,13 +278,18 @@ const StudentsTable = () => {
 
                           <TableCell
                             align='left'
-                            sx={{
-                              display: 'flex',
 
-                              // justifyContent: 'center',
-                              gap: '10px',
-                              transform: 'translateY(7.4px)'
-                            }}
+                            sx={ item?.profilePicture.length > 5 ? {
+                                display: 'flex',
+                                justifyContent: 'center',
+                                gap: '10px',
+                               transform: 'translateY(0px)'
+                              }
+                             : {display: 'flex',
+                             justifyContent: 'center',
+                             gap: '10px',
+                            transform: 'translateY(7.4px)'
+                           }}
                           >
                             <IconButton size='small' onClick={() => setStudentToEdit(item)}>
                               <Icon icon='tabler:edit' />
