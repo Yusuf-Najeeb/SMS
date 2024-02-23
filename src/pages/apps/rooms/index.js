@@ -1,5 +1,4 @@
 import RoomsTable from "../../../views/users/rooms/RoomsTable"
-import Staffs from "../../../views/users/staff/Staffs"
 
 
 const RoomsHome = () => {

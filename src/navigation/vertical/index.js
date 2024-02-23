@@ -9,7 +9,7 @@ const navigation = () => {
       path: '/dashboard'
     },
     {
-      sectionTitle: 'Staff Manager'
+      sectionTitle: 'Staff Management'
     },
     {
       title: 'Staff',
