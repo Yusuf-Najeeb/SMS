@@ -62,3 +62,31 @@ export const fetchSubjects = createAsyncThunk('subjects', async (query) => {
       
     }
   }
+
+  export const assignTeacher = async (payload)=>{
+    try {
+      const res = await axios.post('/subjects/associate', payload)
+
+      if(res.data.success){
+        notifySuccess('Teacher Assigned')
+      }
+
+      return res
+    } catch (error) {
+      notifyError('Unable to Assign Subject To Teacher')
+    }
+  }
+
+  export const removeTeacher = async (payload)=>{
+    try {
+      const res = await axios.post('/subjects/dissociate', payload)
+
+      if(res.data.success){
+        notifySuccess('Teacher Removed')
+      }
+
+      return res
+    } catch (error) {
+      notifyError('Unable to Remove Subject From Teacher')
+    }
+  }
