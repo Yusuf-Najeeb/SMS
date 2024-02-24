@@ -77,7 +77,7 @@ const VerticalNavHeader = props => {
         userNavMenuBranding(props)
       ) : (
         <LinkStyled href='/'>
-          <img src='/images/favicon.png' width={'150px'} height={'30px'} alt=''  />
+          <img src='/images/logo.webp' width={'30px'} height={'30px'} alt=''  />
 
 
           {/* <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -109,9 +109,9 @@ const VerticalNavHeader = props => {
             />
           </svg> */}
 
-          {/* <HeaderTitle variant='h4' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}>
-            {themeConfig.templateName}
-          </HeaderTitle> */}
+          <HeaderTitle variant='h4' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}>
+            {"RAY JACOBS"}
+          </HeaderTitle>
         </LinkStyled>
       )}
 

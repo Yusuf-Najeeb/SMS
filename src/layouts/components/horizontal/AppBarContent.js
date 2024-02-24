@@ -121,7 +121,7 @@ const AppBarContent = props => {
 
       {/* <LanguageDropdown settings={settings} saveSettings={saveSettings} /> */}
 
-      {/* <ModeToggler settings={settings} saveSettings={saveSettings} /> */}
+      <ModeToggler settings={settings} saveSettings={saveSettings} />
    
         <>
           {/* <ShortcutsDropdown settings={settings} shortcuts={shortcuts} /> */}

@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton } from '@mui/material'
+import { IconButton, Menu, MenuItem } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -23,6 +23,8 @@ import { deleteRoom, fetchRooms } from '../../../store/apps/rooms/asyncthunk'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import ManageRooms from './ManageRooms'
+import ManageTeacherInRoom from './ManageTeachersInRoom'
+import ManageStudentInRoom from './ManageStudentInRoom'
 
 
 
@@ -37,9 +39,25 @@ const RoomsTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [RoomToDelete, setRoomToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+  const [openAssignStaffModal, setAssignStaffModal] = useState(false)
+  const [openAssignStudentModal, setAssignStudentModal] = useState(false)
+  const [roomToAssignToStaff, setRoomToAssignToStaff] = useState(null)
+  const [roomToAssignToStudent, setRoomToAssignToStudent] = useState(null)
+  const [assignRoomToStaff, setAssignRoomToStaff] = useState(false)
+  const [assignRoomToStudent, setAssignRoomToStudent] = useState(false)
   const [selectedRoom, setSelectedRoom] = useState(null)
   const [type, setType] = useState('')
   const [key, setKey] = useState('')
+  const [anchorEl, setAnchorEl] = useState(null)
+  const rowOptionsOpen = Boolean(anchorEl)
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
 
   const OpenSubjectModal = () => {
     if (openModal) {
@@ -48,6 +66,52 @@ const RoomsTable = () => {
     } else {
       setOpenModal(true)
     }
+  }
+
+  const toggleAssignStaffModal = () => {
+    if (openAssignStaffModal) {
+        setAssignStaffModal(false)
+        setRoomToAssignToStaff(null)
+    } else {
+        setAssignStaffModal(true)
+    }
+  }
+
+  const toggleAssignStudentModal = () => {
+    if (openAssignStudentModal) {
+        setAssignStudentModal(false)
+        setRoomToAssignToStaff(null)
+    } else {
+        setAssignStudentModal(true)
+    }
+  }
+
+  const setRoomToAssignStaff = value => {
+    setAssignRoomToStaff(true)
+    toggleAssignStudentModal()
+    handleRowOptionsClose()
+    setRoomToAssignToStaff(value)
+  }
+
+  const setRoomToRemoveStaff = value => {
+    setAssignRoomToStaff(false)
+    toggleAssignStudentModal()
+    handleRowOptionsClose()
+    setRoomToAssignToStaff(value)
+  }
+
+  const setRoomToAssignStudent = value => {
+    setAssignRoomToStudent(true)
+    toggleAssignStudentModal()
+    handleRowOptionsClose()
+    setRoomToAssignToStudent(value)
+  }
+
+  const setRoomToRemoveStudent = value => {
+    setAssignRoomToStudent(false)
+    toggleAssignStudentModal()
+    handleRowOptionsClose()
+    setRoomToAssignToStudent(value)
   }
 
   const setActiveCategory = (value) => {
@@ -174,13 +238,63 @@ const RoomsTable = () => {
                       )} */}
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <IconButton size='small' onClick={() => setActiveCategory(item)}>
+                      {/* <IconButton size='small' onClick={() => setActiveCategory(item)}>
                         <Icon icon='tabler:edit' />
                       </IconButton>
 
                       <IconButton size='small' onClick={() => doDelete(item)}>
                         <Icon icon='tabler:trash' />
-                      </IconButton>
+                      </IconButton> */}
+
+<>
+                        <IconButton size='small' onClick={handleRowOptionsClick}>
+                          <Icon icon='tabler:dots-vertical' />
+                        </IconButton>
+                        <Menu
+                          keepMounted
+                          anchorEl={anchorEl}
+                          open={rowOptionsOpen}
+                          onClose={handleRowOptionsClose}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right'
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right'
+                          }}
+                          PaperProps={{ style: { minWidth: '8rem' } }}
+                        >
+                         
+                          <MenuItem onClick={() => setActiveCategory(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:edit' fontSize={20} />
+                            Edit Subject
+                          </MenuItem>
+                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:trash' fontSize={20} />
+                            Delete Subject
+                          </MenuItem>
+                          <MenuItem onClick={() => setRoomToAssignStaff(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Staff
+                          </MenuItem>
+
+                            <MenuItem onClick={() => setRoomToRemoveStaff(item)} sx={{ '& svg': { mr: 2 } } }>
+                              <Icon icon='mingcute:user-remove-fill' fontSize={20} />
+                              Remove Staff
+                            </MenuItem>
+
+                            <MenuItem onClick={() => setRoomToAssignStudent(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Student
+                          </MenuItem>
+
+                            <MenuItem onClick={() => setRoomToRemoveStudent(item)} sx={{ '& svg': { mr: 2 } } }>
+                              <Icon icon='mingcute:user-remove-fill' fontSize={20} />
+                              Remove Student
+                            </MenuItem>
+                        </Menu>
+                      </>
                     </TableCell>
                   </TableRow>
                 )}
@@ -212,6 +326,8 @@ const RoomsTable = () => {
 
         {openModal && <ManageRooms open={openModal} toggle={OpenSubjectModal} roomToEdit={selectedRoom} />}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+      <ManageTeacherInRoom open={openAssignStaffModal} toggle={toggleAssignStaffModal} room={roomToAssignToStaff} status={assignRoomToStaff}/>
+      <ManageStudentInRoom open={openAssignStudentModal} toggle={toggleAssignStudentModal} Room={roomToAssignToStudent} status={assignRoomToStudent} />
     </Fragment>
   )
 }

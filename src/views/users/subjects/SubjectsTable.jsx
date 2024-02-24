@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useAppDispatch } from 'src/hooks'
 
 import Paper from '@mui/material/Paper'
@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton } from '@mui/material'
+import { IconButton, Menu, MenuItem } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -20,12 +20,11 @@ import { useSubjects } from '../../../hooks/useSubjects'
 import { deleteSubject, fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import ManageSubjects from './ManageSubjects'
 import PageHeader from '../component/PageHeader'
-
-
+import AssignSubjectTeacher from './ManageSubjectTeacher'
+import ManageSubjectTeacher from './ManageSubjectTeacher'
 
 const SubjectsTable = () => {
   const dispatch = useAppDispatch()
-
 
   const [SubjectsList, loading, paging] = useSubjects()
   const [deleteModal, setDeleteModal] = useState(false)
@@ -33,8 +32,21 @@ const SubjectsTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [subjectToDelete, setSubjectToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+  const [openAssignSubjectModal, setAssignSubjectModal] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState(null)
   const [type, setType] = useState('')
+  const [subjectToAssign, setSubjectToAssign] = useState(null)
+  const [assignSubject, setAssignSubject] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const rowOptionsOpen = Boolean(anchorEl)
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
 
   const OpenSubjectModal = () => {
     if (openModal) {
@@ -45,7 +57,31 @@ const SubjectsTable = () => {
     }
   }
 
-  const setActiveSubject = (value) => {
+  const toggleAssignModal = () => {
+    if (openAssignSubjectModal) {
+      setAssignSubjectModal(false)
+      setSubjectToAssign(null)
+    } else {
+      setAssignSubjectModal(true)
+    }
+  }
+
+  const setSubjectToAssignTeacher = value => {
+    setAssignSubject(true)
+    toggleAssignModal()
+    handleRowOptionsClose()
+    setSubjectToAssign(value)
+  }
+
+  const setSubjectToRemoveTeacher = value => {
+    setAssignSubject(false)
+    toggleAssignModal()
+    handleRowOptionsClose()
+    setSubjectToAssign(value)
+  }
+
+  const setActiveSubject = value => {
+    handleRowOptionsClose()
     OpenSubjectModal()
     setSelectedSubject(value)
   }
@@ -54,12 +90,13 @@ const SubjectsTable = () => {
     setPage(newPage)
   }
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  const doDelete = (category) => {
+  const doDelete = category => {
+    handleRowOptionsClose()
     setDeleteModal(true)
     setSubjectToDelete(category.id)
   }
@@ -70,8 +107,8 @@ const SubjectsTable = () => {
   }
 
   const ondeleteClick = () => {
-    deleteSubject(subjectToDelete).then((res)=>{
-      if(res.data.success){
+    deleteSubject(subjectToDelete).then(res => {
+      if (res.data.success) {
         dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }
     })
@@ -81,13 +118,12 @@ const SubjectsTable = () => {
   useEffect(() => {
     dispatch(fetchSubjects({ page: page + 1, limit: 10, categoryId: '' }))
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, type])
 
   return (
     <Fragment>
-
-<PageHeader toggle={OpenSubjectModal} action={'Add Subject'} />
+      <PageHeader toggle={OpenSubjectModal} action={'Add Subject'} />
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
@@ -121,8 +157,6 @@ const SubjectsTable = () => {
                 </TableCell>
               </TableRow>
             ) : (
-
-              // </Box>
               <Fragment>
                 {SubjectsList?.map((item, i) => (
                   <TableRow hover role='checkbox' key={item.id}>
@@ -136,14 +170,14 @@ const SubjectsTable = () => {
                     {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
                     <TableCell align='center'>
                       {/* {item.status ? ( */}
-                        <CustomChip
-                          rounded
-                          skin='light'
-                          size='small'
-                          label='Active'
-                          color='success'
-                          sx={{ textTransform: 'capitalize' }}
-                        />
+                      <CustomChip
+                        rounded
+                        skin='light'
+                        size='small'
+                        label='Active'
+                        color='success'
+                        sx={{ textTransform: 'capitalize' }}
+                      />
                       {/* ) : (
                         <CustomChip
                           rounded
@@ -156,13 +190,48 @@ const SubjectsTable = () => {
                       )} */}
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <IconButton size='small' onClick={() => setActiveSubject(item)}>
-                        <Icon icon='tabler:edit' />
-                      </IconButton>
+                      
 
-                      <IconButton size='small' onClick={() => doDelete(item)}>
-                        <Icon icon='tabler:trash' />
-                      </IconButton>
+                      <>
+                        <IconButton size='small' onClick={handleRowOptionsClick}>
+                          <Icon icon='tabler:dots-vertical' />
+                        </IconButton>
+                        <Menu
+                          keepMounted
+                          anchorEl={anchorEl}
+                          open={rowOptionsOpen}
+                          onClose={handleRowOptionsClose}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right'
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right'
+                          }}
+                          PaperProps={{ style: { minWidth: '8rem' } }}
+                        >
+                         
+                          <MenuItem onClick={() => setActiveSubject(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:edit' fontSize={20} />
+                            Edit Subject
+                          </MenuItem>
+                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:trash' fontSize={20} />
+                            Delete Subject
+                          </MenuItem>
+                          <MenuItem onClick={() => setSubjectToAssignTeacher(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Teacher
+                          </MenuItem>
+                          {item?.staffs?.length > 0 && (
+                            <MenuItem onClick={() => setSubjectToRemoveTeacher(item)} sx={{ '& svg': { mr: 2 } } }>
+                              <Icon icon='mingcute:user-remove-fill' fontSize={20} />
+                              Remove Teacher
+                            </MenuItem>
+                          )}
+                        </Menu>
+                      </>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -182,7 +251,6 @@ const SubjectsTable = () => {
       <TablePagination
         page={page}
         component='div'
-
         count={paging?.totalItems}
         rowsPerPage={rowsPerPage}
         onPageChange={handleChangePage}
@@ -190,7 +258,16 @@ const SubjectsTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-        {openModal && <ManageSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} />}
+      {openModal && <ManageSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} />}
+
+      {openAssignSubjectModal && 
+      <ManageSubjectTeacher
+        open={openAssignSubjectModal}
+        toggle={toggleAssignModal}
+        subject={subjectToAssign}
+        status={assignSubject}
+      /> }
+
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )
