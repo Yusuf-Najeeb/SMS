@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
@@ -29,6 +29,7 @@ import { useClasses } from '../../../hooks/useClassess'
 import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import ManageClass from './ManageClass'
 import ViewClass from './ViewClass'
+import ManageClassSubject from './ManageClassSubject'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -74,9 +75,21 @@ const ClassesTable = () => {
   const [selectedClass, setSelectedClass] = useState()
   const [ClassToUpdate, setClassToUpdate] = useState(null)
   const [ClassInView, setClassInView] = useState(null)
-  const [anchorEl, setAnchorEl] = useState(null)
   const [refetch, setFetch] = useState(false)
   const [key, setKey] = useState('')
+  const [openAssignModal, setAssignModal] = useState(false)
+  const [ClassToAssign, setClassToAssign] = useState(null)
+  const [assignSubject, setAssignSubject] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const rowOptionsOpen = Boolean(anchorEl)
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
 
   const toggleModal = ()=>{
     setShowModal(!showModal)
@@ -91,6 +104,30 @@ const ClassesTable = () => {
     }
   }
 
+  const toggleAssignModal = () => {
+    if (openAssignModal) {
+      setAssignModal(false)
+      setClassToAssign(null)
+    } else {
+      setAssignModal(true)
+    }
+  }
+
+  const setClassToAssignSubject = value => {
+    setAssignSubject(true)
+    toggleAssignModal()
+    handleRowOptionsClose()
+    setClassToAssign(value)
+  }
+
+  const setClassToRemoveSubject = value => {
+    setAssignSubject(false)
+    toggleAssignModal()
+    handleRowOptionsClose()
+    setClassToAssign(value)
+  }
+
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -103,11 +140,13 @@ const ClassesTable = () => {
   }
 
   const setClassToEdit = (value) => {
+    handleRowOptionsClose()
     OpenModal()
     setClassToUpdate(value)
   }
 
   const setClassToView = (value) => {
+    handleRowOptionsClose()
     setViewDrawer(!openViewDrawer)
     setClassInView(value)
   }
@@ -119,6 +158,7 @@ const ClassesTable = () => {
 }
 
   const doDelete = value => {
+    handleRowOptionsClose()
     setDeleteModal(true)
     setSelectedClass(value.id)
   }
@@ -212,7 +252,7 @@ const ClassesTable = () => {
                       </TableCell>
 
                       <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' ,}}>
-                        <IconButton size='small' onClick={() => setClassToEdit(item)}>
+                        {/* <IconButton size='small' onClick={() => setClassToEdit(item)}>
                           <Icon icon='tabler:edit' />
                         </IconButton>
 
@@ -222,7 +262,54 @@ const ClassesTable = () => {
 
                         <IconButton size='small' onClick={() => doDelete(item)}>
                           <Icon icon='tabler:trash' />
+                        </IconButton> */}
+
+                        <>
+                        <IconButton size='small' onClick={handleRowOptionsClick}>
+                          <Icon icon='tabler:dots-vertical' />
                         </IconButton>
+                        <Menu
+                          keepMounted
+                          anchorEl={anchorEl}
+                          open={rowOptionsOpen}
+                          onClose={handleRowOptionsClose}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right'
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right'
+                          }}
+                          PaperProps={{ style: { minWidth: '8rem' } }}
+                        >
+                         
+                          <MenuItem onClick={() => setClassToEdit(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:edit' fontSize={20} />
+                            Edit Class
+                          </MenuItem>
+
+                          <MenuItem onClick={() => setClassToView(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:eye' fontSize={20} />
+                            View Class
+                          </MenuItem>
+
+                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:trash' fontSize={20} />
+                            Delete Class
+                          </MenuItem>
+                          <MenuItem onClick={() => setClassToAssignSubject(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
+                            Assign Subject
+                          </MenuItem>
+                          {/* {item?.staffs?.length > 0 && ( */}
+                            <MenuItem onClick={() => setClassToRemoveSubject(item)} sx={{ '& svg': { mr: 2 } } }>
+                              <Icon icon='solar:notification-lines-remove-bold' fontSize={20} />
+                              Remove Subject
+                            </MenuItem>
+                          {/* )} */}
+                        </Menu>
+                      </>
                       </TableCell>
                     </TableRow>
                   )})}
@@ -256,6 +343,9 @@ const ClassesTable = () => {
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
 
       <ViewClass open={openViewDrawer} closeCanvas={closeViewModal} classRoom={ClassInView} />
+
+      <ManageClassSubject open={openAssignModal} Classroom={ClassToAssign} status={assignSubject} toggle={toggleAssignModal} />
+
     </Fragment>
 
     </>
