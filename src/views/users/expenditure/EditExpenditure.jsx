@@ -195,7 +195,7 @@ const EditExpenditure = ({ open, closeModal, fetchData, selectedExpenditure }) =
     }
 
     updateExpenditure(payload, selectedExpenditure.id).then(res => {
-      if (res.data.success) {
+      if (res?.data.success) {
         notifySuccess('Expenditure Updated')
         reset()
         closeModal()

@@ -101,3 +101,15 @@ export const searchStaff = async (key)=> {
     
   }
 }
+
+export const fetchTeacherSubjects = async (email)=> {
+  try {
+    const response = await axios.get(`/staffs/subjects/${email}`)
+
+    console.log(response, 'teacher subjects')
+
+    return response
+  } catch (error) {
+    
+  }
+}

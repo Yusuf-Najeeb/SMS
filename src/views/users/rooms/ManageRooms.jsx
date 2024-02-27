@@ -108,7 +108,7 @@ const ManageRooms = ({ open, toggle, roomToEdit = null }) => {
 
 
     createRoom(payload).then(response => {
-      if (response.data.success) {
+      if (response?.data.success) {
         handleClose()
         dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
       }
@@ -145,7 +145,7 @@ const ManageRooms = ({ open, toggle, roomToEdit = null }) => {
     }
 
     updateRoom(roomToEdit?.id, payload).then(response => {
-      if (response.data.success) {
+      if (response?.data.success) {
         handleClose()
         dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
       }

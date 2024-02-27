@@ -78,11 +78,19 @@ const navigation = () => {
       path: '/apps/classes'
     },
 
-    // {
-    //   title: 'Subjects',
-    //   icon: 'mdi:learn-outline',
-    //   path: '/apps/subject-list/list'
-    // },
+    {
+      title: 'Grading Parameters',
+      icon: 'carbon:result',
+      path: '/apps/grading-parameters'
+    },
+
+    {
+      title: 'Session',
+      icon: 'iwwa:year',
+      path: '/apps/session'
+    },
+
+    
 
     // {
     //   title: 'Tests and Exams',

@@ -91,7 +91,7 @@ const PayIncomeBalance = ({ open, income, togglePayModal, fetchData }) => {
     const payload = {id: income.id, ...data}
 
     processIncome(payload).then((res)=>{
-        if(res.data.success){
+        if(res?.data.success){
             reset()
             fetchData()
             togglePayModal()

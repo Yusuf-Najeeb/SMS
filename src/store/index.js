@@ -22,6 +22,8 @@ import subjects from 'src/store/apps/subjects'
 import classes from 'src/store/apps/classes'
 import states from 'src/store/apps/states'
 import rooms from 'src/store/apps/rooms'
+import gradingParameters from 'src/store/apps/gradingParameters'
+import session from 'src/store/apps/session'
 
 export const store = configureStore({
   reducer: {
@@ -44,7 +46,9 @@ export const store = configureStore({
     subjects,
     classes,
     states, 
-    rooms
+    rooms,
+    gradingParameters,
+    session
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

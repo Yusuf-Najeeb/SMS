@@ -55,6 +55,10 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import { useEffect } from 'react'
+import { useAppDispatch } from '../hooks'
+import { fetchClasses } from '../store/apps/classes/asyncthunk'
+import { fetchCategories } from '../store/apps/categories/asyncthunk'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -83,6 +87,7 @@ if (themeConfig.routingLoader) {
 
 // ** Configure JSS & ClassName
 const App = props => {
+
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
   // Variables
@@ -94,6 +99,23 @@ const App = props => {
 
   const guestGuard = Component.guestGuard ?? false
   const aclAbilities = Component.acl ?? defaultACLObj
+
+  const initData = () => {
+    store.dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
+    store.dispatch(fetchCategories({ page: 1, limit: 300, type: 'subject' }))
+  }
+  
+  let accessToken = null
+  
+  if (typeof window !== 'undefined') {
+    accessToken = window.localStorage.getItem('authToken')
+
+    // window.localStorage.removeItem('settings')
+  }
+  
+  if (accessToken) {
+    initData()
+  }
 
   return (
     <Provider store={store}>

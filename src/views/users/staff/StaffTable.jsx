@@ -174,11 +174,11 @@ const StaffTable = () => {
 
   return (
     <>
-      <Stats data={StaffData} statTitle='Student' />
+      <Stats data={StaffData} statTitle='Staff' />
 
       <PageHeaderWithSearch
-        searchPlaceholder={'Search Student'}
-        action='Add Student'
+        searchPlaceholder={'Search Staff'}
+        action='Add Staff'
         toggle={toggleModal}
         handleFilter={setKey}
       />

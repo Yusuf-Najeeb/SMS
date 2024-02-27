@@ -87,7 +87,7 @@ const ManagePayment = ({ open, toggle, paymentToEdit = null }) => {
 
       const response = await axios.post('settings/payment-mode', payload)
 
-      if (response.data.success){
+      if (response?.data.success){
         notifySuccess('Payment Method Successfully added')
         handleClose()
         dispatch(fetchPaymentMethods({ page: 1, limit: 10 }))
@@ -108,7 +108,7 @@ const ManagePayment = ({ open, toggle, paymentToEdit = null }) => {
 
       const response = await axios.patch(`settings/payment-mode/${paymentToEdit?.id}`, payload)
 
-      if (response.data.success){
+      if (response?.data.success){
 
         console.log(payload)
         notifySuccess('Payment method Successfully updated')
@@ -169,7 +169,7 @@ const ManagePayment = ({ open, toggle, paymentToEdit = null }) => {
                 sx={{ mb: 4 }}
                 label='Name'
                 onChange={onChange}
-                placeholder='mode of payment'
+                placeholder='GT debit card'
                 error={Boolean(errors.name)}
                 {...(errors.name && { helperText: errors.name.message })}
               />

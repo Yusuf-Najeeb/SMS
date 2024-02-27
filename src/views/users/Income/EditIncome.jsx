@@ -189,7 +189,7 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
     }
 
     updateIncome(payload, selectedIncome.id).then(res => {
-      if (res.data.success) {
+      if (res?.data.success) {
         notifySuccess('Income Updated')
         reset()
         closeModal()

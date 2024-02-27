@@ -68,3 +68,17 @@ export const updateStudent = async (payload, id)=> {
     
   }
 }
+
+export const getStudentSubjects = async(id)=>{
+  try {
+    const response = await axios.get(`/students/subjects/${id}`)
+
+    console.log(response, 'students subject')
+
+    return response
+  } catch (error) {
+    
+    // notifyError('Unable to update student')
+    
+  }
+}
