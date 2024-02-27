@@ -22,18 +22,10 @@ import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
 import { CircularProgress } from '@mui/material'
 import { createCategory, fetchCategories, updateCategory } from '../../../store/apps/categories/asyncthunk'
+import { createGradingParameter, fetchGradingParameters, updateGradingParameter } from '../../../store/apps/gradingParameters/asyncthunk'
 
 
 
-const showErrors = (field, valueLen, min) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
 
 const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -43,18 +35,18 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
+  percentage: yup.string().required(),
   name: yup
     .string()
-    .min(3, obj => showErrors('name', obj.value.length, obj.min))
     .required()
 })
 
 const defaultValues = {
   name: '',
-  type: 'class'
+  percentage: ''
 }
 
-const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
+const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
   const dispatch = useAppDispatch()
 
   const {
@@ -74,18 +66,20 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
     reset()
   }
 
+
   const onSubmit = async (data) => {
 
     const payload = {
         name: data.name,
-        type: defaultValues.type
+        percentage: Number(data.percentage)
       }
 
+      console.log(payload, 'payload')
 
-      createCategory(payload).then((response)=>{
+      createGradingParameter(payload).then((response)=>{
           if (response?.data.success){
             handleClose()
-            dispatch(fetchCategories({ page: 1, limit: 10, type: 'class' }))
+            dispatch(fetchGradingParameters({ page: 1, limit: 10 }))
           }
       })
 
@@ -94,15 +88,15 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
   const onUpdate = async (data) => {
     
       const payload = {
-        name: data.name,
-        type: defaultValues.type
+         name: data.name ,  
+        percentage: Number(data.percentage) ,
       }
 
 
-      updateCategory(categoryToEdit?.id, payload).then((response)=>{
+      updateGradingParameter(parameterToEdit?.id, payload).then((response)=>{
         if (response?.data.success){
             handleClose()
-            dispatch(fetchCategories({ page: 1, limit: 10, type: '' }))
+            dispatch(fetchGradingParameters({ page: 1, limit: 10 }))
           }
       })
 
@@ -112,9 +106,9 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
   }
 
   useEffect(() => {
-    if (categoryToEdit !== null) {
-      setValue('name', categoryToEdit.name)
-      setValue('type', categoryToEdit.type)
+    if (parameterToEdit !== null) {
+      setValue('name', parameterToEdit.name)
+      setValue('percentage', parameterToEdit.percentage)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,7 +123,7 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>{categoryToEdit ? 'Edit Category' : 'Create Category'}</Typography>
+        <Typography variant='h5'>{parameterToEdit ? 'Edit Grading Parameter' : 'Create Grading Parameter'}</Typography>
         <IconButton
           size='small'
           onClick={handleClose}
@@ -147,28 +141,9 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
         </IconButton>
       </Header>
       <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
-        <form onSubmit={handleSubmit(categoryToEdit ? onUpdate : onSubmit)}>
+        <form onSubmit={handleSubmit(parameterToEdit ? onUpdate : onSubmit)}>
 
-        {/* <Controller
-            name='type'
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <CustomTextField
-                required
-                fullWidth
-                label='Category Type'
-                value={value}
-                sx={{ mb: 4 }}
-                onChange={onChange}
-                error={Boolean(errors.type)}
-                {...(errors.type && { helperText: errors.type.message })}
-              />
-                
-            )}
-          /> */}
-
-          <Controller
+        <Controller
             name='name'
             control={control}
             rules={{ required: true }}
@@ -177,20 +152,41 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Category Name'
+                label='Name'
                 required
                 onChange={onChange}
-                placeholder='Category Name'
+                placeholder='Name'
                 error={Boolean(errors.name)}
                 {...(errors.name && { helperText: errors.name.message })}
               />
             )}
           />
 
+        <Controller
+            name='percentage'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                required
+                fullWidth
+                label='Percentage'
+                value={value}
+                sx={{ mb: 4 }}
+                onChange={onChange}
+                error={Boolean(errors.percentage)}
+                {...(errors.percentage && { helperText: errors.percentage.message })}
+              />
+                
+            )}
+          />
+
+        
+
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button type='submit' variant='contained' sx={{ width: '100%' }}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} />}
-              {categoryToEdit ? 'Update' : 'Create'}
+              {parameterToEdit ? 'Update' : 'Create'}
             </Button>
           </Box>
         </form>
@@ -199,4 +195,4 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
   )
 }
 
-export default ManageCategories
+export default ManageGradingParameters

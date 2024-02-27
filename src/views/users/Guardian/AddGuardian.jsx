@@ -101,7 +101,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
     const payload = {personalInformation}
 
     createGuardian(payload).then((response)=> {
-            if (response.data.success) {
+            if (response?.data.success) {
                 reset()
                 closeModal()
                 refetchData()

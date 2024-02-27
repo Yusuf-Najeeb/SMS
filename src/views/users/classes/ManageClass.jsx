@@ -102,7 +102,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
       }
 
       createClass(payload).then((res)=>{
-          if (res.data.success){
+          if (res?.data.success){
             toggle()
             handleClose()
             reset()
@@ -123,7 +123,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
       }
 
       updateClass(classToEdit?.id, payload).then((res)=>{
-          if (res.data.success){
+          if (res?.data.success){
             toggle()
             handleClose()
             reset()

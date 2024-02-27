@@ -106,14 +106,14 @@ const ManageClassSubject = ({ open, toggle, Classroom, status }) => {
        if (status){
 
         assignSubjectToClass(payload).then(response => {
-        if (response.data.success) {
+        if (response?.data.success) {
           handleClose()
           dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
         }
       })
        }else {
         removeSubjectInClass(payload).then(response => {
-          if (response.data.success) {
+          if (response?.data.success) {
             handleClose()
             dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
           }

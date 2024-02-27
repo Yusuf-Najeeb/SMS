@@ -99,7 +99,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
 
     createSubject(payload).then(response => {
-      if (response.data.success) {
+      if (response?.data.success) {
         handleClose()
         dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }
@@ -124,7 +124,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
     }
 
     updateSubject(subjectToEdit?.id, payload).then(response => {
-      if (response.data.success) {
+      if (response?.data.success) {
         handleClose()
         dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }

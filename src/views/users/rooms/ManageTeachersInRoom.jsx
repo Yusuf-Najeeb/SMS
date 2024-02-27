@@ -92,14 +92,14 @@ const ManageTeacherInRoom = ({ open, toggle, room, status }) => {
        if (status){
 
         assignRoomToStaff(payload).then(response => {
-        if (response.data.success) {
+        if (response?.data.success) {
           handleClose()
           dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
         }
       })
        }else {
         removeStaffInRoom(payload).then(response => {
-          if (response.data.success) {
+          if (response?.data.success) {
             handleClose()
             dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
           }

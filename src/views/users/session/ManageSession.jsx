@@ -19,9 +19,10 @@ import { useForm, Controller } from 'react-hook-form'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import { useAppDispatch } from 'src/hooks'
-import { CircularProgress } from '@mui/material'
-import { createCategory, fetchCategories, updateCategory } from '../../../store/apps/categories/asyncthunk'
+import { useAppDispatch, useAppSelector } from 'src/hooks'
+import { CircularProgress, MenuItem } from '@mui/material'
+import { createSession, fetchSession, updateSession } from '../../../store/apps/session/asyncthunk'
+import { notifyError } from '../../../@core/components/toasts/notifyError'
 
 
 
@@ -45,16 +46,16 @@ const Header = styled(Box)(({ theme }) => ({
 const schema = yup.object().shape({
   name: yup
     .string()
-    .min(3, obj => showErrors('name', obj.value.length, obj.min))
+
+    // .min(3, obj => showErrors('name', obj.value.length, obj.min))
     .required()
 })
 
 const defaultValues = {
   name: '',
-  type: 'class'
 }
 
-const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
+const ManageSession = ({ open, toggle, sessionToEdit = null }) => {
   const dispatch = useAppDispatch()
 
   const {
@@ -75,46 +76,41 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
   }
 
   const onSubmit = async (data) => {
-
-    const payload = {
-        name: data.name,
-        type: defaultValues.type
-      }
-
-
-      createCategory(payload).then((response)=>{
-          if (response?.data.success){
-            handleClose()
-            dispatch(fetchCategories({ page: 1, limit: 10, type: 'class' }))
-          }
-      })
-
-  }
-
-  const onUpdate = async (data) => {
     
       const payload = {
         name: data.name,
-        type: defaultValues.type
       }
+      
+      console.log(payload, 'payload')
 
-
-      updateCategory(categoryToEdit?.id, payload).then((response)=>{
-        if (response?.data.success){
+      createSession(payload).then((response)=>{
+          if (response.data.success){
             handleClose()
-            dispatch(fetchCategories({ page: 1, limit: 10, type: '' }))
+            dispatch(fetchSession({ page: 1, limit: 10 }))
           }
       })
 
      
+  }
 
+  const onUpdate = async (data) => {
+    const payload = {
+        name: data.name,
+      }
+      
+      console.log(payload, 'payload')
 
+      updateSession(sessionToEdit?.id, payload).then((response)=>{
+          if (response?.data.success){
+            handleClose()
+            dispatch(fetchSession({ page: 1, limit: 10 }))
+          }
+      })
   }
 
   useEffect(() => {
-    if (categoryToEdit !== null) {
-      setValue('name', categoryToEdit.name)
-      setValue('type', categoryToEdit.type)
+    if (sessionToEdit !== null) {
+      setValue('name', sessionToEdit.name)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,7 +125,7 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>{categoryToEdit ? 'Edit Category' : 'Create Category'}</Typography>
+        <Typography variant='h5'>{sessionToEdit ? 'Edit Session' : 'Create Session'}</Typography>
         <IconButton
           size='small'
           onClick={handleClose}
@@ -147,27 +143,7 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
         </IconButton>
       </Header>
       <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
-        <form onSubmit={handleSubmit(categoryToEdit ? onUpdate : onSubmit)}>
-
-        {/* <Controller
-            name='type'
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <CustomTextField
-                required
-                fullWidth
-                label='Category Type'
-                value={value}
-                sx={{ mb: 4 }}
-                onChange={onChange}
-                error={Boolean(errors.type)}
-                {...(errors.type && { helperText: errors.type.message })}
-              />
-                
-            )}
-          /> */}
-
+        <form onSubmit={handleSubmit(sessionToEdit ? onUpdate : onSubmit)}>
           <Controller
             name='name'
             control={control}
@@ -177,20 +153,21 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Category Name'
-                required
+                label='Name'
                 onChange={onChange}
-                placeholder='Category Name'
+                placeholder='2017/2018'
                 error={Boolean(errors.name)}
                 {...(errors.name && { helperText: errors.name.message })}
               />
             )}
           />
 
+       
+
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button type='submit' variant='contained' sx={{ width: '100%' }}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} />}
-              {categoryToEdit ? 'Update' : 'Create'}
+              {sessionToEdit ? 'Update' : 'Create'}
             </Button>
           </Box>
         </form>
@@ -199,4 +176,4 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
   )
 }
 
-export default ManageCategories
+export default ManageSession

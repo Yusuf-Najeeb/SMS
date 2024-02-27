@@ -134,7 +134,7 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
 
 
     updateGuardian(payload, selectedGuardian.email).then((response)=> {
-            if (response.data.success) {
+            if (response?.data.success) {
                 reset()
                 closeModal()
                 fetchData()

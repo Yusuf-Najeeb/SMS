@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, {Fragment, useEffect, useState } from 'react'
 import { useAppDispatch } from 'src/hooks'
 
 import Paper from '@mui/material/Paper'
@@ -16,27 +16,29 @@ import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
-import { useSubjects } from '../../../hooks/useSubjects'
-import { deleteSubject, fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
-import ManageSubjects from './ManageSubjects'
 import PageHeader from '../component/PageHeader'
-import AssignSubjectTeacher from './ManageSubjectTeacher'
-import ManageSubjectTeacher from './ManageSubjectTeacher'
+import { useSession } from '../../../hooks/useSession'
+import { deleteSession, fetchSession, makeCurrentSession } from '../../../store/apps/session/asyncthunk'
+import ManageSession from './ManageSession'
+import MakeCurrentSessionDialog from './MakeCurrentSession'
 
-const SubjectsTable = () => {
+
+
+const SessionTable = () => {
   const dispatch = useAppDispatch()
 
-  const [SubjectsList, loading, paging] = useSubjects()
+
+//   const [GradingParametersList, loading, paging] = useCategories()
+
+  const [SessionData, loading, paging] = useSession()
   const [deleteModal, setDeleteModal] = useState(false)
+  const [currentSessionModal, setCurrentSessionModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [subjectToDelete, setSubjectToDelete] = useState(null)
+  const [SessionToDelete, setSessionToDelete] = useState(null)
+  const [SessionToMakeCurrent, setSessionToMakeCurrent] = useState(null)
   const [openModal, setOpenModal] = useState(false)
-  const [openAssignSubjectModal, setAssignSubjectModal] = useState(false)
-  const [selectedSubject, setSelectedSubject] = useState(null)
-  const [type, setType] = useState('')
-  const [subjectToAssign, setSubjectToAssign] = useState(null)
-  const [assignSubject, setAssignSubject] = useState(false)
+  const [selectedSession, setSelectedSession] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const rowOptionsOpen = Boolean(anchorEl)
 
@@ -48,82 +50,83 @@ const SubjectsTable = () => {
     setAnchorEl(null)
   }
 
-  const OpenSubjectModal = () => {
+  const OpenSessionModal = () => {
     if (openModal) {
       setOpenModal(false)
-      setSelectedSubject(null)
+      setSelectedSession(null)
     } else {
       setOpenModal(true)
     }
   }
 
-  const toggleAssignModal = () => {
-    if (openAssignSubjectModal) {
-      setAssignSubjectModal(false)
-      setSubjectToAssign(null)
-    } else {
-      setAssignSubjectModal(true)
-    }
-  }
-
-  const setSubjectToAssignTeacher = value => {
-    setAssignSubject(true)
-    toggleAssignModal()
+  const setActiveSession = (value) => {
     handleRowOptionsClose()
-    setSubjectToAssign(value)
-  }
-
-  const setSubjectToRemoveTeacher = value => {
-    setAssignSubject(false)
-    toggleAssignModal()
-    handleRowOptionsClose()
-    setSubjectToAssign(value)
-  }
-
-  const setActiveSubject = value => {
-    handleRowOptionsClose()
-    OpenSubjectModal()
-    setSelectedSubject(value)
+    OpenSessionModal()
+    setSelectedSession(value)
   }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  const doDelete = category => {
+  const doDelete = (category) => {
     handleRowOptionsClose()
     setDeleteModal(true)
-    setSubjectToDelete(category.id)
+    setSessionToDelete(category.id)
   }
+
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSubjectToDelete(null)
+    setSessionToDelete(null)
   }
 
   const ondeleteClick = () => {
-    deleteSubject(subjectToDelete).then(res => {
-      if (res.data.success) {
-        dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
+    deleteSession(SessionToDelete).then((res)=>{
+      if(res?.data.success){
+        dispatch(fetchSession({ page: page + 1, limit: 10 }))
       }
     })
     doCancelDelete()
   }
 
-  useEffect(() => {
-    dispatch(fetchSubjects({ page: page + 1, limit: 10, categoryId: '' }))
+  const toggleCurrentSessionModal = (session) => {
+    console.log(session, 'session')
+    handleRowOptionsClose()
+    setCurrentSessionModal(true)
+    setSessionToMakeCurrent(session?.id)
+  }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, type])
+  const doCancelMakeSession = () => {
+    setCurrentSessionModal(false)
+    setSessionToMakeCurrent(null)
+  }
+
+  const onConfirmation = () => {
+    makeCurrentSession(SessionToMakeCurrent).then((res)=>{
+      if(res?.data.success){
+        dispatch(fetchSession({ page: 1, limit: 10 }))
+      }
+    })
+    doCancelMakeSession()
+  }
+
+  useEffect(() => {
+    dispatch(fetchSession({ page: page + 1, limit: 10 }))
+
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, rowsPerPage])
 
   return (
     <Fragment>
-      <PageHeader toggle={OpenSubjectModal} action={'Add Subject'} />
+
+
+<PageHeader toggle={OpenSessionModal} action={'Add Session'} />
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
@@ -136,13 +139,13 @@ const SubjectsTable = () => {
                 Name
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Category
+                Term
               </TableCell>
               {/* <TableCell align='center' sx={{ minWidth: 100 }}>
                 Created By
               </TableCell> */}
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Status
+                Current 
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Actions
@@ -157,40 +160,49 @@ const SubjectsTable = () => {
                 </TableCell>
               </TableRow>
             ) : (
+
+              // </Box>
               <Fragment>
-                {SubjectsList?.map((item, i) => (
+                {SessionData?.map((item, i) => (
                   <TableRow hover role='checkbox' key={item.id}>
                     <TableCell align='left'>{i + 1}</TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {item?.name || '--'}
                     </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {item?.category.name || '--'}
+                      {item?.term || '--'}
                     </TableCell>
                     {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
                     <TableCell align='center'>
-                      {/* {item.status ? ( */}
-                      <CustomChip
-                        rounded
-                        skin='light'
-                        size='small'
-                        label='Active'
-                        color='success'
-                        sx={{ textTransform: 'capitalize' }}
-                      />
-                      {/* ) : (
+                      {item.isCurrent ? 
+
+                         <CustomChip
+                          rounded
+                          skin='light'
+                          size='small'
+                          label='True'
+                          color='success'
+                          sx={{ textTransform: 'capitalize' }}
+                        /> 
+                      : 
                         <CustomChip
                           rounded
                           skin='light'
                           size='small'
-                          label='Inactive'
-                          color='warning'
+                          label='False'
+                          color='error'
                           sx={{ textTransform: 'capitalize' }}
                         />
-                      )} */}
+                      }
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      
+                      {/* <IconButton size='small' onClick={() => setActiveSession(item)}>
+                        <Icon icon='tabler:edit' />
+                      </IconButton>
+
+                      <IconButton size='small' onClick={() => doDelete(item)}>
+                        <Icon icon='tabler:trash' />
+                      </IconButton> */}
 
                       <>
                         <IconButton size='small' onClick={handleRowOptionsClick}>
@@ -212,31 +224,26 @@ const SubjectsTable = () => {
                           PaperProps={{ style: { minWidth: '8rem' } }}
                         >
                          
-                          <MenuItem onClick={() => setActiveSubject(item)} sx={{ '& svg': { mr: 2 } }}>
+                          {/* <MenuItem onClick={() => setActiveSession(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:edit' fontSize={20} />
-                            Edit Subject
-                          </MenuItem>
+                            Edit Session
+                          </MenuItem> */}
                           <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:trash' fontSize={20} />
-                            Delete Subject
+                            Delete Session
                           </MenuItem>
-                          <MenuItem onClick={() => setSubjectToAssignTeacher(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                            Assign Teacher
+                          <MenuItem onClick={() => toggleCurrentSessionModal(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
+                            Make Current Session
                           </MenuItem>
-                          {/* {item?.staffs?.length > 0 && ( */}
-                            <MenuItem onClick={() => setSubjectToRemoveTeacher(item)} sx={{ '& svg': { mr: 2 } } }>
-                              <Icon icon='mingcute:user-remove-fill' fontSize={20} />
-                              Remove Teacher
-                            </MenuItem>
-                          {/* )} */}
+                          
                         </Menu>
                       </>
                     </TableCell>
                   </TableRow>
                 ))}
 
-                {SubjectsList?.length === 0 && (
+                {SessionData?.length === 0 && (
                   <tr className='text-center'>
                     <td colSpan={6}>
                       <NoData />
@@ -251,6 +258,7 @@ const SubjectsTable = () => {
       <TablePagination
         page={page}
         component='div'
+
         count={paging?.totalItems}
         rowsPerPage={rowsPerPage}
         onPageChange={handleChangePage}
@@ -258,19 +266,11 @@ const SubjectsTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      {openModal && <ManageSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} />}
-
-      {openAssignSubjectModal && 
-      <ManageSubjectTeacher
-        open={openAssignSubjectModal}
-        toggle={toggleAssignModal}
-        subject={subjectToAssign}
-        status={assignSubject}
-      /> }
-
+        {openModal && <ManageSession open={openModal} toggle={OpenSessionModal} sessionToEdit={selectedSession} />}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+      <MakeCurrentSessionDialog open={currentSessionModal} handleClose={doCancelMakeSession} handleConfirm={onConfirmation} />
     </Fragment>
   )
 }
 
-export default SubjectsTable
+export default SessionTable
