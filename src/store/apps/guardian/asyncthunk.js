@@ -69,3 +69,15 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
       
     }
   }
+
+  export const getStudentsUnderGuardian = async (email)=> {
+    try {
+      const response = await axios.get(`/parents/students/${email}`)
+
+      console.log(response, 'students under guardian response')
+  
+      return response
+    } catch (error) {
+      
+    }
+  }

@@ -28,7 +28,7 @@ import Icon from 'src/@core/components/icon'
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { loginStaff } from '../../store/apps/auth/asyncthunk'
+import { loginUser } from '../../store/apps/auth/asyncthunk'
 import { notifyError } from '../../@core/components/toasts/notifyError'
 
 // ** Hooks
@@ -90,11 +90,11 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'SuperAdmin@123',
-  userId: 'super.admin@email.com'
+  password: '',
+  userId: ''
 }
 
-const LoginPage = () => {
+const UserLoginPage = () => {
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -121,9 +121,8 @@ const LoginPage = () => {
   })
 
   const onSubmit = async data => {
-    const { userId, password } = data
 
-    const resp = loginStaff(data)
+    const resp = loginUser(data)
 
       .then(res => {
         if (res.data.success) {
@@ -287,9 +286,9 @@ const LoginPage = () => {
                 {isSubmitting ? <SubmitSpinnerMessage message={'Logging In'} /> : 'Login'}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Not a Staff?</Typography>
-                <Typography href='/userlogin' component={LinkStyled}>
-                  Login as Student/Guardian
+                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Not a Student/Guardian?</Typography>
+                <Typography href='/login' component={LinkStyled}>
+                  Login as Staff
                 </Typography>
               </Box>
               <Divider
@@ -328,7 +327,7 @@ const LoginPage = () => {
     </Box>
   )
 }
-LoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
-LoginPage.guestGuard = true
+UserLoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
+UserLoginPage.guestGuard = true
 
-export default LoginPage
+export default UserLoginPage
