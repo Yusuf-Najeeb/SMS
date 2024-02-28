@@ -1,8 +1,20 @@
 import React, { Fragment, useState, useEffect } from 'react'
 
 import Paper from '@mui/material/Paper'
-import { Card, CardHeader, Icon, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import {
+  Card,
+  CardHeader,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material'
 import { Box } from '@mui/system'
+import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import CustomAvatar from 'src/@core/components/mui/avatar'
@@ -14,6 +26,7 @@ import { useAppDispatch } from 'src/hooks'
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
 import { formatDate } from '../../../@core/utils/format'
+import ViewStudent from '../../../views/users/Student/ViewStudent'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -41,59 +54,69 @@ const renderClient = row => {
   }
 }
 
-const WardTable = ({user}) => {
-
-    const dispatch = useAppDispatch()
+const WardTable = ({ user }) => {
+  const dispatch = useAppDispatch()
 
   const [ClassesList] = useClasses()
 
-    const [wardData, setWard] = useState(0)
-    const [loading, setLoading]= useState(false)
+  const [wardData, setWard] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [openViewDrawer, setViewDrawer] = useState(false)
+  const [studentInView, setStudentInView] = useState(null)
 
-    useEffect(() => {
-        dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
-    
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
+  const setStudentToView = value => {
+    setViewDrawer(!openViewDrawer)
+    setStudentInView(value)
+  }
 
+  const closeViewModal = () => {
+    setViewDrawer(!openViewDrawer)
+  }
 
-    useEffect(()=>{
-        if(user){
-            setLoading(true)
-            getStudentsUnderGuardian(user?.email).then((res)=>{
-                if(res?.data.success){
-                    setLoading(false)
-                    setWard(res?.data.data)
-                }
-            }).catch(()=>{
-                setLoading(false)
-            })
-        }
-      },[user])
+  useEffect(() => {
+    dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (user) {
+      setLoading(true)
+      getStudentsUnderGuardian(user?.email)
+        .then(res => {
+          if (res?.data.success) {
+            setLoading(false)
+            setWard(res?.data.data)
+          }
+        })
+        .catch(() => {
+          setLoading(false)
+        })
+    }
+  }, [user])
 
   return (
+    <Fragment>
+      <Card>
+        <CardHeader
+          title='Student'
+          titleTypographyProps={{ sx: { mb: [2, 0] } }}
 
-    <Card>
-    <CardHeader
-      title='Student'
-      titleTypographyProps={{ sx: { mb: [2, 0] } }}
+          //   action={<CustomTextField value={value} placeholder='Search' onChange={e => handleFilter(e.target.value)} />}
+          sx={{
+            py: 4,
+            flexDirection: ['column', 'row'],
+            '& .MuiCardHeader-action': { m: 0 },
+            alignItems: ['flex-start', 'center']
+          }}
+        />
 
-    //   action={<CustomTextField value={value} placeholder='Search' onChange={e => handleFilter(e.target.value)} />}
-      sx={{
-        py: 4,
-        flexDirection: ['column', 'row'],
-        '& .MuiCardHeader-action': { m: 0 },
-        alignItems: ['flex-start', 'center']
-      }}
-    />
-
-
-    <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
               <TableRow>
                 <TableCell align='left' sx={{ minWidth: 250 }}>
-                Student
+                  Student
                 </TableCell>
                 {/* <TableCell align='center' sx={{ minWidth: 150 }}>
                 Religion
@@ -102,12 +125,14 @@ const WardTable = ({user}) => {
                   Class
                 </TableCell>
                 <TableCell align='left' sx={{ minWidth: 150 }}>
-                  Date of Birth
+                  Registration Date
                 </TableCell>
-                <TableCell align='left' sx={{ minWidth: 150 }}>
+                {/* <TableCell align='left' sx={{ minWidth: 150 }}>
                   Gender
+                </TableCell> */}
+                <TableCell align='center' sx={{ minWidth: 150 }}>
+                  Actions
                 </TableCell>
-              
               </TableRow>
             </TableHead>
             <TableBody>
@@ -118,7 +143,6 @@ const WardTable = ({user}) => {
                   </TableCell>
                 </TableRow>
               ) : (
-
                 <Fragment>
                   {wardData?.length &&
                     wardData.map(item => {
@@ -142,12 +166,34 @@ const WardTable = ({user}) => {
                             {`${className.name} ${className.type}` || '--'}
                           </TableCell>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                            {formatDate(item.dateOfBirth) || '--'}
+                            {formatDate(item.registrationDate) || '--'}
                           </TableCell>
-                          <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
+                          {/* <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
                             {item?.gender || '--'}
-                          </TableCell>
+                          </TableCell> */}
 
+                          <TableCell
+                            align='center'
+                            sx={
+                              item?.profilePicture?.length > 5
+                                ? {
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    gap: '10px',
+                                    transform: 'translateY(0px)'
+                                  }
+                                : {
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    gap: '10px',
+                                    transform: 'translateY(12.5px)'
+                                  }
+                            }
+                          >
+                            <IconButton size='small' onClick={() => setStudentToView(item)}>
+                              <Icon icon='tabler:eye' />
+                            </IconButton>
+                          </TableCell>
                         </TableRow>
                       )
                     })}
@@ -164,8 +210,10 @@ const WardTable = ({user}) => {
             </TableBody>
           </Table>
         </TableContainer>
+      </Card>
 
-    </Card>
+      <ViewStudent open={openViewDrawer} closeCanvas={closeViewModal} student={studentInView} />
+    </Fragment>
   )
 }
 
