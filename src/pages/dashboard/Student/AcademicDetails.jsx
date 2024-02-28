@@ -14,14 +14,14 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { useEffect } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchGuardian } from '../../store/apps/guardian/asyncthunk'
-import { useAppSelector } from '../../hooks'
-import { fetchStaffs } from '../../store/apps/staff/asyncthunk'
-import { useStaff } from '../../hooks/useStaff'
-import { useStudent } from '../../hooks/useStudent'
-import { fetchStudents } from '../../store/apps/Student/asyncthunk'
-import { fetchClasses } from '../../store/apps/classes/asyncthunk'
-import { useClasses } from '../../hooks/useClassess'
+import { fetchGuardian } from 'src/store/apps/guardian/asyncthunk'
+import { useAppSelector } from 'src/hooks'
+import { fetchStaffs } from 'src/store/apps/staff/asyncthunk'
+import { useStaff } from 'src/hooks/useStaff'
+import { useStudent } from 'src/hooks/useStudent'
+import { fetchStudents } from 'src/store/apps/Student/asyncthunk'
+import { fetchClasses } from 'src/store/apps/classes/asyncthunk'
+import { useClasses } from 'src/hooks/useClassess'
 
 const data = [
   {
