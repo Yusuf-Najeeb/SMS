@@ -100,10 +100,10 @@ const App = props => {
   const guestGuard = Component.guestGuard ?? false
   const aclAbilities = Component.acl ?? defaultACLObj
 
-  const initData = () => {
-    store.dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
-    store.dispatch(fetchCategories({ page: 1, limit: 300, type: 'subject' }))
-  }
+  // const initData = () => {
+  //   store.dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
+  //   store.dispatch(fetchCategories({ page: 1, limit: 300, type: 'subject' }))
+  // }
   
   let accessToken = null
   
@@ -113,9 +113,9 @@ const App = props => {
     // window.localStorage.removeItem('settings')
   }
   
-  if (accessToken) {
-    initData()
-  }
+  // if (accessToken) {
+  //   initData()
+  // }
 
   return (
     <Provider store={store}>

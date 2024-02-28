@@ -19,14 +19,13 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
-import { formatCurrency, formatFirstLetter } from '../../../@core/utils/format'
-import { formatDateToReadableFormat } from '../../../@core/utils/format'
-import StaffDetailCard from '../component/StaffDetailCard'
+import { formatCurrency, formatFirstLetter } from 'src/@core/utils/format'
+import { formatDateToReadableFormat } from 'src/@core/utils/format'
 import { getInitials } from 'src/@core/utils/get-initials'
-import { Stack } from '@mui/material'
-import { calculateAge } from '../../../@core/utils/calculateAge'
-import { useClasses } from '../../../hooks/useClassess'
-import { getStudentByIdentification } from '../../../store/apps/Student/asyncthunk'
+import { calculateAge } from 'src/@core/utils/calculateAge'
+import { useClasses } from 'src/hooks/useClassess'
+import { getStudentByIdentification } from 'src/store/apps/Student/asyncthunk'
+import StaffDetailCard from 'src/views/users/component/StaffDetailCard'
 
 const roleColors = {
   superadmin: 'error',
@@ -56,7 +55,6 @@ const StudentCard = ({ Student }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
   const [studentClass, setStudentClass] = useState()
-
 
   const [ClassesList] = useClasses()
 
@@ -125,7 +123,7 @@ const StudentCard = ({ Student }) => {
                 rounded
                 skin='light'
                 size='small'
-                label={'Student'}
+                label={Student?.role?.name}
                 color='primary'
                 sx={{ textTransform: 'capitalize' }}
               />
@@ -296,7 +294,7 @@ const StudentCard = ({ Student }) => {
               })
             ) : (
               <Typography variant='body2' sx={{ color: 'white', textTransform: 'capitalize' }}>
-                No Guardian Available
+                No Student Available
               </Typography>
             )}
           </CardContent>
