@@ -26,6 +26,7 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import { Stack } from '@mui/material'
 import { calculateAge } from '../../../@core/utils/calculateAge'
 import { useClasses } from '../../../hooks/useClassess'
+import { getStudentByIdentification } from '../../../store/apps/Student/asyncthunk'
 
 const roleColors = {
   superadmin: 'error',
@@ -72,6 +73,8 @@ const StudentCard = ({ Student }) => {
   useEffect(() => {
     if (Student) {
       setInitials(`${Student.firstName} ${Student.lastName}`)
+
+      getStudentByIdentification(Student?.identificationNumber)
     }
   }, [Student])
 
@@ -149,7 +152,7 @@ const StudentCard = ({ Student }) => {
                   </Typography>
                 </div>
               </Box>
-              
+
               {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <CustomAvatar skin='light' variant='rounded'  sx={{ mr: 2.5, width: 38, height: 38 }}>
                     <Icon fontSize='1.75rem' icon='mdi:google-classroom' />

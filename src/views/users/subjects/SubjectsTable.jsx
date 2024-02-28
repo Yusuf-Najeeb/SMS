@@ -22,6 +22,7 @@ import ManageSubjects from './ManageSubjects'
 import PageHeader from '../component/PageHeader'
 import AssignSubjectTeacher from './ManageSubjectTeacher'
 import ManageSubjectTeacher from './ManageSubjectTeacher'
+import ManageGradingParameter from './ManageGradingParameter'
 
 const SubjectsTable = () => {
   const dispatch = useAppDispatch()
@@ -32,10 +33,12 @@ const SubjectsTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [subjectToDelete, setSubjectToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+  const [openParameterModal, setOpenParameterModal] = useState(false)
   const [openAssignSubjectModal, setAssignSubjectModal] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState(null)
   const [type, setType] = useState('')
   const [subjectToAssign, setSubjectToAssign] = useState(null)
+  const [subjectToAssignParameter, setSubjectToAssignParameter] = useState(null)
   const [assignSubject, setAssignSubject] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const rowOptionsOpen = Boolean(anchorEl)
@@ -66,6 +69,10 @@ const SubjectsTable = () => {
     }
   }
 
+  const toggleParameterModal = ()=>{
+    setOpenParameterModal(!openParameterModal)
+  }
+
   const setSubjectToAssignTeacher = value => {
     setAssignSubject(true)
     toggleAssignModal()
@@ -84,6 +91,12 @@ const SubjectsTable = () => {
     handleRowOptionsClose()
     OpenSubjectModal()
     setSelectedSubject(value)
+  }
+
+  const setSubjectToAssignGradingParameter = value => {
+    handleRowOptionsClose()
+    toggleParameterModal()
+    setSubjectToAssignParameter(value)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -230,6 +243,10 @@ const SubjectsTable = () => {
                               Remove Teacher
                             </MenuItem>
                           {/* )} */}
+                          <MenuItem onClick={() => setSubjectToAssignGradingParameter(item)} sx={{ '& svg': { mr: 2 } } }>
+                              <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                              Assign Parameter
+                            </MenuItem>
                         </Menu>
                       </>
                     </TableCell>
@@ -269,6 +286,7 @@ const SubjectsTable = () => {
       /> }
 
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+      <ManageGradingParameter open={openParameterModal} toggle={toggleParameterModal}  subject={subjectToAssignParameter} />
     </Fragment>
   )
 }

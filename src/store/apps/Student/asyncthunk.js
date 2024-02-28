@@ -69,6 +69,20 @@ export const updateStudent = async (payload, id)=> {
   }
 }
 
+export const getStudentByIdentification = async(id)=>{
+  try {
+    const response = await axios.get(`/students/identification/${id}`)
+
+    console.log(response, 'single student')
+
+    return response
+  } catch (error) {
+    
+    // notifyError('Unable to update student')
+    
+  }
+}
+
 export const getStudentSubjects = async(id)=>{
   try {
     const response = await axios.get(`/students/subjects/${id}`)
@@ -77,7 +91,7 @@ export const getStudentSubjects = async(id)=>{
 
     return response
   } catch (error) {
-    
+
     // notifyError('Unable to update student')
     
   }
