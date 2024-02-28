@@ -23,51 +23,7 @@ import { fetchStudents } from 'src/store/apps/Student/asyncthunk'
 import { fetchClasses } from 'src/store/apps/classes/asyncthunk'
 import { useClasses } from 'src/hooks/useClassess'
 
-const data = [
-  {
-    stats: '230k',
-    title: 'Staff',
-    color: 'primary',
-    icon: 'tabler:chart-pie-2'
-  },
-  {
-    color: 'info',
-    stats: '8.549k',
-    title: 'Students',
-    icon: 'tabler:users'
-  },
-  {
-    color: 'error',
-    stats: '1.423k',
-    title: 'Guardian',
-    icon: 'tabler:shopping-cart'
-  },
-  {
-    stats: '$9745',
-    color: 'success',
-    title: 'Classes',
-    icon: 'tabler:currency-dollar'
-  }
-]
 
-const renderStats = () => {
-
-   
-
-  return data.map((sale, index) => (
-    <Grid item xs={6} md={3} key={index}>
-      <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
-        <CustomAvatar skin='light' color={sale.color} sx={{ mr: 4, width: 42, height: 42 }}>
-          <Icon icon={sale.icon} fontSize='1.5rem' />
-        </CustomAvatar>
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant='h5'>{sale.stats}</Typography>
-          <Typography variant='body2'>{sale.title}</Typography>
-        </Box>
-      </Box>
-    </Grid>
-  ))
-}
 
 const Statistics = () => {
 

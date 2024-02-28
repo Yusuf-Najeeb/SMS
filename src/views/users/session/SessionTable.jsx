@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton, Menu, MenuItem } from '@mui/material'
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -204,7 +204,19 @@ const SessionTable = () => {
                         <Icon icon='tabler:trash' />
                       </IconButton> */}
 
-                      <>
+                        <Tooltip title='Delete Session'>
+                        <IconButton size='small' onClick={() => doDelete(item)}>
+                          <Icon icon='tabler:trash' />
+                        </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title='Make Current Session'>
+                        <IconButton size='small' onClick={() => toggleCurrentSessionModal(item)}>
+                          <Icon icon='fluent:stack-add-20-filled' />
+                        </IconButton>
+                        </Tooltip>
+
+                      {/* <>
                         <IconButton size='small' onClick={handleRowOptionsClick}>
                           <Icon icon='tabler:dots-vertical' />
                         </IconButton>
@@ -224,10 +236,6 @@ const SessionTable = () => {
                           PaperProps={{ style: { minWidth: '8rem' } }}
                         >
                          
-                          {/* <MenuItem onClick={() => setActiveSession(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='tabler:edit' fontSize={20} />
-                            Edit Session
-                          </MenuItem> */}
                           <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:trash' fontSize={20} />
                             Delete Session
@@ -238,7 +246,7 @@ const SessionTable = () => {
                           </MenuItem>
                           
                         </Menu>
-                      </>
+                      </> */}
                     </TableCell>
                   </TableRow>
                 ))}

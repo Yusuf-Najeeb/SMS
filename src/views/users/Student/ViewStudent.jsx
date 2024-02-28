@@ -26,8 +26,6 @@ const ViewStudent = ({ open, closeCanvas, student }) => {
 
   const theme = useTheme()
 
-  console.log(student, 'student')
-
 
   return (
     <Drawer

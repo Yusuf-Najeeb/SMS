@@ -15,6 +15,8 @@ import NonTeachingStaffCardInDasboard from './NonTeachingStaff/StaffCard'
 import TeacherCardInDasboard from './Teacher/TeacherCard'
 import TeacherStatistics from './Teacher/TeacherStatistics'
 import TeacherSubjects from './Teacher/Subjects'
+import GuardianTable from './Student/GuardianTable'
+import StudentSubjects from './Student/Subjects'
 
 // import StoreStatistics from 'src/views/users/dashboard/StoreStatistics'
 // import TopPopularCustomers from 'src/views/users/dashboard/TopPopularCustomers'
@@ -32,7 +34,7 @@ const UsersDashboard = () => {
 
   console.log(userData, 'userData')
 
-  if(userData?.role.name == 'student') {
+  if(userData?.role?.name == 'student') {
     return  (
       <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -45,9 +47,13 @@ const UsersDashboard = () => {
           <CurrentSession />
         </Grid>
 
-        {/* <Grid item xs={12} md={7}>
-          <StoreStatistics />
-        </Grid> */}
+        <Grid item xs={12} md={8}>
+          <GuardianTable user={userData} />
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+            <StudentSubjects user={userData} />
+          </Grid>
 
         {/* <Grid item xs={12} md={6} lg={4}>
           <EcommerceEarningReports />
@@ -66,7 +72,7 @@ const UsersDashboard = () => {
     )
   }
 
-  if(userData?.role.name == 'parent') {
+  if(userData?.role?.name == 'parent') {
     return  (
       <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -100,7 +106,7 @@ const UsersDashboard = () => {
     )
   }
 
-  if(userData?.role.name == 'teacher') {
+  if(userData?.role?.name == 'teacher') {
     return (
       <ApexChartWrapper>
         <Grid container spacing={6}>
@@ -140,7 +146,7 @@ const UsersDashboard = () => {
     )
   }
 
-  if(userData?.role.name == 'super-admin') {
+  if(userData?.role?.name == 'super-admin') {
     return (
       <ApexChartWrapper>
         <Grid container spacing={6}>
