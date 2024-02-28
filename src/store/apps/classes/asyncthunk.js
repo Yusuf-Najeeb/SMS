@@ -103,3 +103,14 @@ export const fetchClasses = createAsyncThunk('classrooms', async (query) => {
       
     }
   }
+
+  export const getSingleClass = async (id)=>{
+    try {
+      const res = await axios.get(`/classes/${id}`)
+
+      return res
+      
+    } catch (error) {
+      
+    }
+  }

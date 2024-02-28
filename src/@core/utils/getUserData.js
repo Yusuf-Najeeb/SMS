@@ -6,7 +6,7 @@ const GetUserData = () => {
       userData = JSON.parse(localStorage.getItem('authUser'))
     }
   
-    return userData
+    return userData ? userData : {}
   }
   
   export default GetUserData

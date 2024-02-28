@@ -23,7 +23,7 @@ import Icon from 'src/@core/components/icon'
 import { Alert, Stack } from '@mui/material'
 import { formatCurrency, formatDate } from 'src/@core/utils/format'
 import { formatDateToReadableFormat } from '../../../@core/utils/format'
-import { fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
+import { fetchStudentsInClass, getSingleClass } from '../../../store/apps/classes/asyncthunk'
 import { TableCellStyled } from '../Guardian/GuardianTable'
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
@@ -56,6 +56,8 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
           setStudentsInClass(res.data.data)
         }
       })
+
+      getSingleClass(classRoom?.id)
     }
   }, [classRoom])
 

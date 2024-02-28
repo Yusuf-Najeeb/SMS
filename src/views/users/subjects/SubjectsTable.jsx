@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton, Menu, MenuItem } from '@mui/material'
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -76,25 +76,27 @@ const SubjectsTable = () => {
   const setSubjectToAssignTeacher = value => {
     setAssignSubject(true)
     toggleAssignModal()
-    handleRowOptionsClose()
+    
+    // handleRowOptionsClose()
     setSubjectToAssign(value)
   }
 
   const setSubjectToRemoveTeacher = value => {
     setAssignSubject(false)
     toggleAssignModal()
-    handleRowOptionsClose()
+
+    // handleRowOptionsClose()
     setSubjectToAssign(value)
   }
 
   const setActiveSubject = value => {
-    handleRowOptionsClose()
+    // handleRowOptionsClose()
     OpenSubjectModal()
     setSelectedSubject(value)
   }
 
   const setSubjectToAssignGradingParameter = value => {
-    handleRowOptionsClose()
+    // handleRowOptionsClose()
     toggleParameterModal()
     setSubjectToAssignParameter(value)
   }
@@ -205,7 +207,39 @@ const SubjectsTable = () => {
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                       
 
-                      <>
+                    <Tooltip title='Edit Subject'>
+                        <IconButton size='small' onClick={() => setActiveSubject(item)}>
+                          <Icon icon='tabler:edit' />
+                        </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title='Delete Subject'>
+                        <IconButton size='small' onClick={() => doDelete(item)}>
+                          <Icon icon='tabler:trash' />
+                        </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title='Assign Subject To Teacher'>
+                        <IconButton size='small' onClick={() => setSubjectToAssignTeacher(item)}>
+                          <Icon icon='fluent:stack-add-20-filled' />
+                        </IconButton>
+                        </Tooltip>
+
+                        {item?.staffs?.length > 0 && 
+                        <Tooltip title='Remove Subject From Teacher'>
+                        <IconButton size='small' onClick={() => setSubjectToRemoveTeacher(item)}>
+                          <Icon icon='mingcute:user-remove-fill' />
+                        </IconButton>
+                        </Tooltip>
+                        }
+
+                        <Tooltip title='Assign Grading Parameter to Subject '>
+                        <IconButton size='small' onClick={() => setSubjectToAssignGradingParameter(item)}>
+                          <Icon icon='solar:notification-lines-remove-bold' />
+                        </IconButton>
+                        </Tooltip>
+
+                      {/* <>
                         <IconButton size='small' onClick={handleRowOptionsClick}>
                           <Icon icon='tabler:dots-vertical' />
                         </IconButton>
@@ -237,18 +271,16 @@ const SubjectsTable = () => {
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Teacher
                           </MenuItem>
-                          {/* {item?.staffs?.length > 0 && ( */}
                             <MenuItem onClick={() => setSubjectToRemoveTeacher(item)} sx={{ '& svg': { mr: 2 } } }>
                               <Icon icon='mingcute:user-remove-fill' fontSize={20} />
                               Remove Teacher
                             </MenuItem>
-                          {/* )} */}
                           <MenuItem onClick={() => setSubjectToAssignGradingParameter(item)} sx={{ '& svg': { mr: 2 } } }>
                               <Icon icon='clarity:assign-user-solid' fontSize={20} />
                               Assign Parameter
                             </MenuItem>
                         </Menu>
-                      </>
+                      </> */}
                     </TableCell>
                   </TableRow>
                 ))}

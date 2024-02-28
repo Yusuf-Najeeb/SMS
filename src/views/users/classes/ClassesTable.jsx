@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
@@ -116,14 +116,16 @@ const ClassesTable = () => {
   const setClassToAssignSubject = value => {
     setAssignSubject(true)
     toggleAssignModal()
-    handleRowOptionsClose()
+
+    // handleRowOptionsClose()
     setClassToAssign(value)
   }
 
   const setClassToRemoveSubject = value => {
     setAssignSubject(false)
     toggleAssignModal()
-    handleRowOptionsClose()
+
+    // handleRowOptionsClose()
     setClassToAssign(value)
   }
 
@@ -140,13 +142,13 @@ const ClassesTable = () => {
   }
 
   const setClassToEdit = (value) => {
-    handleRowOptionsClose()
+    // handleRowOptionsClose()
     OpenModal()
     setClassToUpdate(value)
   }
 
   const setClassToView = (value) => {
-    handleRowOptionsClose()
+    // handleRowOptionsClose()                            
     setViewDrawer(!openViewDrawer)
     setClassInView(value)
   }
@@ -252,19 +254,37 @@ const ClassesTable = () => {
                       </TableCell>
 
                       <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' ,}}>
-                        {/* <IconButton size='small' onClick={() => setClassToEdit(item)}>
+                        <Tooltip title='Edit Class'>
+                        <IconButton size='small' onClick={() => setClassToEdit(item)}>
                           <Icon icon='tabler:edit' />
                         </IconButton>
+                        </Tooltip>
 
+                        <Tooltip title='View Class'>
                         <IconButton size='small' onClick={() => setClassToView(item)}>
                           <Icon icon='tabler:eye' />
                         </IconButton>
+                        </Tooltip>
 
+                        <Tooltip title='Delete Class'>
                         <IconButton size='small' onClick={() => doDelete(item)}>
                           <Icon icon='tabler:trash' />
-                        </IconButton> */}
+                        </IconButton>
+                        </Tooltip>
 
-                        <>
+                        <Tooltip title='Assign Subject To Class'>
+                        <IconButton size='small' onClick={() => setClassToAssignSubject(item)}>
+                          <Icon icon='fluent:stack-add-20-filled' />
+                        </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title='Remove Subject From Class'>
+                        <IconButton size='small' onClick={() => setClassToRemoveSubject(item)}>
+                          <Icon icon='solar:notification-lines-remove-bold' />
+                        </IconButton>
+                        </Tooltip>
+
+                        {/* <>
                         <IconButton size='small' onClick={handleRowOptionsClick}>
                           <Icon icon='tabler:dots-vertical' />
                         </IconButton>
@@ -284,7 +304,7 @@ const ClassesTable = () => {
                           PaperProps={{ style: { minWidth: '8rem' } }}
                         >
                          
-                          <MenuItem onClick={() => setClassToEdit(item)} sx={{ '& svg': { mr: 2 } }}>
+                          <MenuItem onClick={() => console.log(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:edit' fontSize={20} />
                             Edit Class
                           </MenuItem>
@@ -302,14 +322,13 @@ const ClassesTable = () => {
                             <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
                             Assign Subject
                           </MenuItem>
-                          {/* {item?.staffs?.length > 0 && ( */}
                             <MenuItem onClick={() => setClassToRemoveSubject(item)} sx={{ '& svg': { mr: 2 } } }>
                               <Icon icon='solar:notification-lines-remove-bold' fontSize={20} />
                               Remove Subject
                             </MenuItem>
-                          {/* )} */}
                         </Menu>
-                      </>
+                      </> */}
+
                       </TableCell>
                     </TableRow>
                   )})}

@@ -1,4 +1,23 @@
+import GetUserData from "../../@core/utils/getUserData"
+
+const userData = GetUserData()
+
+
 const navigation = () => {
+
+  if (userData?.role?.name == 'parent') {
+    return [
+      {
+        sectionTitle: 'Dashboard'
+      },
+      {
+        title: 'Dashboard',
+        icon: 'tabler:smart-home',
+        path: '/dashboard'
+      },
+    ]
+  }
+
   return [
     {
       sectionTitle: 'Dashboard'

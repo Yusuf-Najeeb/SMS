@@ -15,10 +15,12 @@ import OptionsMenu from 'src/@core/components/option-menu'
 import { useEffect, useState } from 'react'
 import { fetchTeacherSubjects } from '../../../store/apps/staff/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
+import { getSingleClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useAppDispatch } from 'src/hooks'
 
-const TeacherSubjects = ({ user }) => {
+const StudentSubjects = ({ user }) => {
+
   const dispatch = useAppDispatch()
 
   const [CategoriesData] = useCategories()
@@ -33,9 +35,9 @@ const TeacherSubjects = ({ user }) => {
 
   useEffect(() => {
     if (user) {
-      fetchTeacherSubjects(user?.email).then(res => {
-        if (res?.data.success) {
-          setSubjects(res?.data.data)
+      getSingleClass(user?.classId).then(res => {
+        if (res?.data?.success) {
+          setSubjects(res?.data?.data?.subjects)
         }
       })
     }
@@ -100,7 +102,7 @@ const TeacherSubjects = ({ user }) => {
                     skin='light'
                     sx={{ lineHeight: 1 }}
                     color={item.categoryId % 2 === 0 ? 'error' : 'success'}
-                    
+
                     // label={`${item.trend === 'negative' ? '-' : '+'}${item.trendNumber}%`}
                     label={subjectCategory?.name}
                   />
@@ -114,4 +116,4 @@ const TeacherSubjects = ({ user }) => {
   )
 }
 
-export default TeacherSubjects
+export default StudentSubjects

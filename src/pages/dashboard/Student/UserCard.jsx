@@ -17,7 +17,7 @@ import Icon from 'src/@core/components/icon'
 // ** Custom Components
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import { formatDateToReadableFormat } from '../../../@core/utils/format'
-import { getStudentSubjects } from '../../../store/apps/Student/asyncthunk'
+import { getStudentByIdentification, getStudentSubjects } from '../../../store/apps/Student/asyncthunk'
 
 const Illustration = styled('img')(({ theme }) => ({
   right: 20,
@@ -59,6 +59,7 @@ const UsercardInDasboard = ({user}) => {
     }
 
   },[ClassesList, user])
+
 
   useEffect(() => {
     // This forces a rerender, so the date is rendered
