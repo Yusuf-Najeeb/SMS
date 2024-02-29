@@ -35,19 +35,25 @@ const MenuNavLink = styled(ListItemButton)(({ theme }) => ({
   },
   '&.active': {
     '&, &:hover': {
-      boxShadow: `0px 2px 6px ${hexToRGBA(theme.palette.primary.main, 0.48)}`,
-      background: `linear-gradient(72.47deg, ${
-        theme.direction === 'ltr' ? theme.palette.primary.main : hexToRGBA(theme.palette.primary.main, 0.7)
-      } 22.16%, ${
-        theme.direction === 'ltr' ? hexToRGBA(theme.palette.primary.main, 0.7) : theme.palette.primary.main
-      } 76.47%)`,
-      '&.Mui-focusVisible': {
-        background: `linear-gradient(72.47deg, ${theme.palette.primary.dark} 22.16%, ${hexToRGBA(
-          theme.palette.primary.dark,
-          0.7
-        )} 76.47%)`
-      }
+      // boxShadow: `0px 2px 6px ${hexToRGBA(theme.palette.primary.main, 0.48)}`,
+
+      boxShadow: `0px 1px 3px ${hexToRGBA(theme.palette.primary.main, 0.48)}`,
+
+      // background: `linear-gradient(72.47deg, ${
+      //   theme.direction === 'ltr' ? theme.palette.primary.main : hexToRGBA(theme.palette.primary.main, 0.7)
+      // } 22.16%, ${
+      //   theme.direction === 'ltr' ? hexToRGBA(theme.palette.primary.main, 0.7) : theme.palette.primary.main
+      // } 76.47%)`,
+      // '&.Mui-focusVisible': {
+      //   background: `linear-gradient(72.47deg, ${theme.palette.primary.dark} 22.16%, ${hexToRGBA(
+      //     theme.palette.primary.dark,
+      //     0.7
+      //   )} 76.47%)`
+      // },
+
+      background: '#2e313d',
     },
+
     '& .MuiTypography-root, & svg': {
       color: `${theme.palette.common.white} !important`
     }
@@ -96,7 +102,7 @@ const VerticalNavLink = ({
         disablePadding
         className='nav-link'
         disabled={item.disabled || false}
-        sx={{ mt: 1, px: '0 !important' }}
+        sx={{ mt: 1, px: '0 !important', }}
       >
         <MenuNavLink
           component={Link}
