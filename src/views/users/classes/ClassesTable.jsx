@@ -80,16 +80,21 @@ const ClassesTable = () => {
   const [openAssignModal, setAssignModal] = useState(false)
   const [ClassToAssign, setClassToAssign] = useState(null)
   const [assignSubject, setAssignSubject] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const rowOptionsOpen = Boolean(anchorEl)
+  const [anchorEl, setAnchorEl] = useState(Array(ClassesList?.length)?.fill(null));
 
-  const handleRowOptionsClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
 
-  const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
+const handleRowOptionsClick = (event, index) => {
+    const newAnchorEl = [...anchorEl];
+    newAnchorEl[index] = event.currentTarget;
+    setAnchorEl(newAnchorEl);
+  };
+
+
+const handleRowOptionsClose = (index) => {
+    const newAnchorEl = [...anchorEl];
+    newAnchorEl[index] = null;
+    setAnchorEl(newAnchorEl);
+  };
 
   const toggleModal = ()=>{
     setShowModal(!showModal)
@@ -117,7 +122,7 @@ const ClassesTable = () => {
     setAssignSubject(true)
     toggleAssignModal()
 
-    // handleRowOptionsClose()
+    handleRowOptionsClose(ClassesList?.indexOf(value))
     setClassToAssign(value)
   }
 
@@ -125,7 +130,7 @@ const ClassesTable = () => {
     setAssignSubject(false)
     toggleAssignModal()
 
-    // handleRowOptionsClose()
+    handleRowOptionsClose(ClassesList?.indexOf(value))
     setClassToAssign(value)
   }
 
@@ -142,13 +147,13 @@ const ClassesTable = () => {
   }
 
   const setClassToEdit = (value) => {
-    // handleRowOptionsClose()
+    handleRowOptionsClose(ClassesList?.indexOf(value))
     OpenModal()
     setClassToUpdate(value)
   }
 
   const setClassToView = (value) => {
-    // handleRowOptionsClose()                            
+    handleRowOptionsClose(ClassesList?.indexOf(value))                            
     setViewDrawer(!openViewDrawer)
     setClassInView(value)
   }
@@ -232,7 +237,7 @@ const ClassesTable = () => {
 
               <Fragment>
                 {ClassesList?.length &&
-                  ClassesList?.map((item) => {
+                  ClassesList?.map((item, i) => {
 
                     return (
                     <TableRow hover role='checkbox' key={item.id} >
@@ -254,45 +259,17 @@ const ClassesTable = () => {
                       </TableCell>
 
                       <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' ,}}>
-                        <Tooltip title='Edit Class'>
-                        <IconButton size='small' onClick={() => setClassToEdit(item)}>
-                          <Icon icon='tabler:edit' />
-                        </IconButton>
-                        </Tooltip>
+                      
 
-                        <Tooltip title='View Class'>
-                        <IconButton size='small' onClick={() => setClassToView(item)}>
-                          <Icon icon='tabler:eye' />
-                        </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title='Delete Class'>
-                        <IconButton size='small' onClick={() => doDelete(item)}>
-                          <Icon icon='tabler:trash' />
-                        </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title='Assign Subject To Class'>
-                        <IconButton size='small' onClick={() => setClassToAssignSubject(item)}>
-                          <Icon icon='fluent:stack-add-20-filled' />
-                        </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title='Remove Subject From Class'>
-                        <IconButton size='small' onClick={() => setClassToRemoveSubject(item)}>
-                          <Icon icon='solar:notification-lines-remove-bold' />
-                        </IconButton>
-                        </Tooltip>
-
-                        {/* <>
-                        <IconButton size='small' onClick={handleRowOptionsClick}>
+                         <>
+                        <IconButton size='small' onClick={(event)=> handleRowOptionsClick(event, i)}>
                           <Icon icon='tabler:dots-vertical' />
                         </IconButton>
                         <Menu
                           keepMounted
-                          anchorEl={anchorEl}
-                          open={rowOptionsOpen}
-                          onClose={handleRowOptionsClose}
+                          anchorEl={anchorEl[i]}
+                          open={Boolean(anchorEl[i])}
+                          onClose={() => handleRowOptionsClose(i)}
                           anchorOrigin={{
                             vertical: 'bottom',
                             horizontal: 'right'
@@ -304,7 +281,7 @@ const ClassesTable = () => {
                           PaperProps={{ style: { minWidth: '8rem' } }}
                         >
                          
-                          <MenuItem onClick={() => console.log(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
+                          <MenuItem onClick={() => setClassToEdit(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:edit' fontSize={20} />
                             Edit Class
                           </MenuItem>
@@ -327,7 +304,7 @@ const ClassesTable = () => {
                               Remove Subject
                             </MenuItem>
                         </Menu>
-                      </> */}
+                      </> 
 
                       </TableCell>
                     </TableRow>

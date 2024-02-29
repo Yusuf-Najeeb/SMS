@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useAppDispatch } from 'src/hooks'
 
 import Paper from '@mui/material/Paper'
@@ -25,12 +25,10 @@ import { useCategories } from '../../../hooks/useCategories'
 import ManageRooms from './ManageRooms'
 import ManageTeacherInRoom from './ManageTeachersInRoom'
 import ManageStudentInRoom from './ManageStudentInRoom'
-
-
+import { indexof } from 'stylis'
 
 const RoomsTable = () => {
   const dispatch = useAppDispatch()
-
 
   const [CategoriesData] = useCategories()
   const [RoomsList, loading, paging] = useRooms()
@@ -48,16 +46,22 @@ const RoomsTable = () => {
   const [selectedRoom, setSelectedRoom] = useState(null)
   const [type, setType] = useState('')
   const [key, setKey] = useState('')
-  const [anchorEl, setAnchorEl] = useState(null)
-  const rowOptionsOpen = Boolean(anchorEl)
 
-  const handleRowOptionsClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+const [anchorEl, setAnchorEl] = useState(Array(RoomsList?.length)?.fill(null));
 
-  const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
+
+const handleRowOptionsClick = (event, index) => {
+    const newAnchorEl = [...anchorEl];
+    newAnchorEl[index] = event.currentTarget;
+    setAnchorEl(newAnchorEl);
+  };
+
+
+const handleRowOptionsClose = (index) => {
+    const newAnchorEl = [...anchorEl];
+    newAnchorEl[index] = null;
+    setAnchorEl(newAnchorEl);
+  };
 
   const OpenSubjectModal = () => {
     if (openModal) {
@@ -70,52 +74,55 @@ const RoomsTable = () => {
 
   const toggleAssignStaffModal = () => {
     if (openAssignStaffModal) {
-        setAssignStaffModal(false)
-        setRoomToAssignToStaff(null)
+      setAssignStaffModal(false)
+      setRoomToAssignToStaff(null)
     } else {
-        setAssignStaffModal(true)
+      setAssignStaffModal(true)
     }
   }
 
   const toggleAssignStudentModal = () => {
     if (openAssignStudentModal) {
-        setAssignStudentModal(false)
-        setRoomToAssignToStaff(null)
+      setAssignStudentModal(false)
+      setRoomToAssignToStaff(null)
     } else {
-        setAssignStudentModal(true)
+      setAssignStudentModal(true)
     }
   }
 
   const setRoomToAssignStaff = value => {
     setAssignRoomToStaff(true)
-    toggleAssignStudentModal()
-    handleRowOptionsClose()
+    toggleAssignStaffModal()
+    handleRowOptionsClose(RoomsList?.indexOf(value))
     setRoomToAssignToStaff(value)
   }
 
   const setRoomToRemoveStaff = value => {
     setAssignRoomToStaff(false)
-    toggleAssignStudentModal()
-    handleRowOptionsClose()
+    toggleAssignStaffModal()
+    handleRowOptionsClose(RoomsList?.indexOf(value))
     setRoomToAssignToStaff(value)
   }
 
   const setRoomToAssignStudent = value => {
     setAssignRoomToStudent(true)
     toggleAssignStudentModal()
-    handleRowOptionsClose()
+    handleRowOptionsClose(RoomsList?.indexOf(value))
     setRoomToAssignToStudent(value)
   }
 
   const setRoomToRemoveStudent = value => {
     setAssignRoomToStudent(false)
     toggleAssignStudentModal()
-    handleRowOptionsClose()
+    handleRowOptionsClose(RoomsList?.indexOf(value))
     setRoomToAssignToStudent(value)
   }
 
-  const setActiveCategory = (value) => {
+  const setActiveCategory = value => {
     OpenSubjectModal()
+    handleRowOptionsClose(RoomsList?.indexOf(value))
+
+    // console.log(RoomsList?.indexOf(value), 'index')
     setSelectedRoom(value)
   }
 
@@ -123,12 +130,12 @@ const RoomsTable = () => {
     setPage(newPage)
   }
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  const doDelete = (room) => {
+  const doDelete = room => {
     setDeleteModal(true)
     setRoomToDelete(room.id)
   }
@@ -139,8 +146,8 @@ const RoomsTable = () => {
   }
 
   const ondeleteClick = () => {
-    deleteRoom(RoomToDelete).then((res)=>{
-      if(res.data.success){
+    deleteRoom(RoomToDelete).then(res => {
+      if (res.data.success) {
         dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
       }
     })
@@ -150,19 +157,18 @@ const RoomsTable = () => {
   useEffect(() => {
     dispatch(fetchCategories({ page: 1, limit: 300, type: 'room' }))
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    dispatch(fetchRooms({ page: page + 1, limit: 10, key  }))
+    dispatch(fetchRooms({ page: page + 1, limit: 10, key }))
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, key])
 
   return (
     <Fragment>
-
-<PageHeader toggle={OpenSubjectModal} action={'Add Room'} />
+      <PageHeader toggle={OpenSubjectModal} action={'Add Room'} />
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
@@ -196,28 +202,25 @@ const RoomsTable = () => {
                 </TableCell>
               </TableRow>
             ) : (
-
-              // </Box>
               <Fragment>
                 {RoomsList?.map((item, i) => {
-                 const roomCategory = CategoriesData.find((category)=> item.categoryId == category.id)
+                  const roomCategory = CategoriesData.find(category => item.categoryId == category.id)
 
-                return (
-
-                  <TableRow hover role='checkbox' key={item.id}>
-                    <TableCell align='left'>{i + 1}</TableCell>
-                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {item?.name || '--'}
-                    </TableCell>
-                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {item?.capacity || '--'}
-                    </TableCell>
-                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {roomCategory?.name || '--'}
-                    </TableCell>
-                    {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
-                    <TableCell align='center'>
-                      {/* {item.status ? ( */}
+                  return (
+                    <TableRow hover role='checkbox' key={item.id}>
+                      <TableCell align='left'>{i + 1}</TableCell>
+                      <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                        {item?.name || '--'}
+                      </TableCell>
+                      <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                        {item?.capacity || '--'}
+                      </TableCell>
+                      <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                        {roomCategory?.name || '--'}
+                      </TableCell>
+                      {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
+                      <TableCell align='center'>
+                        {/* {item.status ? ( */}
                         <CustomChip
                           rounded
                           skin='light'
@@ -226,7 +229,7 @@ const RoomsTable = () => {
                           color='success'
                           sx={{ textTransform: 'capitalize' }}
                         />
-                      {/* ) : (
+                        {/* ) : (
                         <CustomChip
                           rounded
                           skin='light'
@@ -236,70 +239,61 @@ const RoomsTable = () => {
                           sx={{ textTransform: 'capitalize' }}
                         />
                       )} */}
-                    </TableCell>
-                    <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      {/* <IconButton size='small' onClick={() => setActiveCategory(item)}>
-                        <Icon icon='tabler:edit' />
-                      </IconButton>
+                      </TableCell>
+                      <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                        <>
+                          <IconButton size='small' onClick={(event)=> handleRowOptionsClick(event, i)}>
+                            <Icon icon='tabler:dots-vertical' />
+                          </IconButton>
+                          <Menu
+                            keepMounted
+                            anchorEl={anchorEl[i]}
+                            open={Boolean(anchorEl[i])}
+                            onClose={() => handleRowOptionsClose(i)}
+                            anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'right'
+                            }}
+                            transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'right'
+                            }}
+                            PaperProps={{ style: { minWidth: '8rem' } }}
+                          >
+                            <MenuItem onClick={() => setActiveCategory(item)} sx={{ '& svg': { mr: 2 } }}>
+                              <Icon icon='tabler:edit' fontSize={20} />
+                              Edit Room
+                            </MenuItem>
+                            <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                              <Icon icon='tabler:trash' fontSize={20} />
+                              Delete Room
+                            </MenuItem>
 
-                      <IconButton size='small' onClick={() => doDelete(item)}>
-                        <Icon icon='tabler:trash' />
-                      </IconButton> */}
+                            <MenuItem onClick={() => setRoomToAssignStaff(item)} sx={{ '& svg': { mr: 2 } }}>
+                              <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                              Assign Staff
+                            </MenuItem>
 
-<>
-                        <IconButton size='small' onClick={handleRowOptionsClick}>
-                          <Icon icon='tabler:dots-vertical' />
-                        </IconButton>
-                        <Menu
-                          keepMounted
-                          anchorEl={anchorEl}
-                          open={rowOptionsOpen}
-                          onClose={handleRowOptionsClose}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right'
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                          }}
-                          PaperProps={{ style: { minWidth: '8rem' } }}
-                        >
-                         
-                          <MenuItem onClick={() => setActiveCategory(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='tabler:edit' fontSize={20} />
-                            Edit Subject
-                          </MenuItem>
-                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='tabler:trash' fontSize={20} />
-                            Delete Subject
-                          </MenuItem>
-                          <MenuItem onClick={() => setRoomToAssignStaff(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                            Assign Staff
-                          </MenuItem>
-
-                            <MenuItem onClick={() => setRoomToRemoveStaff(item)} sx={{ '& svg': { mr: 2 } } }>
+                            <MenuItem onClick={() => setRoomToRemoveStaff(item)} sx={{ '& svg': { mr: 2 } }}>
                               <Icon icon='mingcute:user-remove-fill' fontSize={20} />
                               Remove Staff
                             </MenuItem>
 
                             <MenuItem onClick={() => setRoomToAssignStudent(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                            Assign Student
-                          </MenuItem>
+                              <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                              Assign Student
+                            </MenuItem>
 
-                            <MenuItem onClick={() => setRoomToRemoveStudent(item)} sx={{ '& svg': { mr: 2 } } }>
+                            <MenuItem onClick={() => setRoomToRemoveStudent(item)} sx={{ '& svg': { mr: 2 } }}>
                               <Icon icon='mingcute:user-remove-fill' fontSize={20} />
                               Remove Student
                             </MenuItem>
-                        </Menu>
-                      </>
-                    </TableCell>
-                  </TableRow>
-                )}
-                
-                )}
+                          </Menu>
+                        </>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
 
                 {RoomsList?.length === 0 && (
                   <tr className='text-center'>
@@ -316,7 +310,6 @@ const RoomsTable = () => {
       <TablePagination
         page={page}
         component='div'
-
         count={paging?.totalItems}
         rowsPerPage={rowsPerPage}
         onPageChange={handleChangePage}
@@ -324,10 +317,20 @@ const RoomsTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-        {openModal && <ManageRooms open={openModal} toggle={OpenSubjectModal} roomToEdit={selectedRoom} />}
+      {openModal && <ManageRooms open={openModal} toggle={OpenSubjectModal} roomToEdit={selectedRoom} />}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
-      <ManageTeacherInRoom open={openAssignStaffModal} toggle={toggleAssignStaffModal} room={roomToAssignToStaff} status={assignRoomToStaff}/>
-      <ManageStudentInRoom open={openAssignStudentModal} toggle={toggleAssignStudentModal} Room={roomToAssignToStudent} status={assignRoomToStudent} />
+      <ManageTeacherInRoom
+        open={openAssignStaffModal}
+        toggle={toggleAssignStaffModal}
+        room={roomToAssignToStaff}
+        status={assignRoomToStaff}
+      />
+      <ManageStudentInRoom
+        open={openAssignStudentModal}
+        toggle={toggleAssignStudentModal}
+        Room={roomToAssignToStudent}
+        status={assignRoomToStudent}
+      />
     </Fragment>
   )
 }
