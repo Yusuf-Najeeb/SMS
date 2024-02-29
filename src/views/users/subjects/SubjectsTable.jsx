@@ -40,16 +40,21 @@ const SubjectsTable = () => {
   const [subjectToAssign, setSubjectToAssign] = useState(null)
   const [subjectToAssignParameter, setSubjectToAssignParameter] = useState(null)
   const [assignSubject, setAssignSubject] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const rowOptionsOpen = Boolean(anchorEl)
+  const [anchorEl, setAnchorEl] = useState(Array(SubjectsList?.length)?.fill(null));
 
-  const handleRowOptionsClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
 
-  const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
+const handleRowOptionsClick = (event, index) => {
+    const newAnchorEl = [...anchorEl];
+    newAnchorEl[index] = event.currentTarget;
+    setAnchorEl(newAnchorEl);
+  };
+
+
+const handleRowOptionsClose = (index) => {
+    const newAnchorEl = [...anchorEl];
+    newAnchorEl[index] = null;
+    setAnchorEl(newAnchorEl);
+  };
 
   const OpenSubjectModal = () => {
     if (openModal) {
@@ -76,8 +81,8 @@ const SubjectsTable = () => {
   const setSubjectToAssignTeacher = value => {
     setAssignSubject(true)
     toggleAssignModal()
-    
-    // handleRowOptionsClose()
+
+    handleRowOptionsClose(SubjectsList?.indexOf(value))
     setSubjectToAssign(value)
   }
 
@@ -85,18 +90,18 @@ const SubjectsTable = () => {
     setAssignSubject(false)
     toggleAssignModal()
 
-    // handleRowOptionsClose()
+    handleRowOptionsClose(SubjectsList?.indexOf(value))
     setSubjectToAssign(value)
   }
 
   const setActiveSubject = value => {
-    // handleRowOptionsClose()
+    handleRowOptionsClose(SubjectsList?.indexOf(value))
     OpenSubjectModal()
     setSelectedSubject(value)
   }
 
   const setSubjectToAssignGradingParameter = value => {
-    // handleRowOptionsClose()
+    handleRowOptionsClose(SubjectsList?.indexOf(value))
     toggleParameterModal()
     setSubjectToAssignParameter(value)
   }
@@ -111,7 +116,7 @@ const SubjectsTable = () => {
   }
 
   const doDelete = category => {
-    handleRowOptionsClose()
+    handleRowOptionsClose(SubjectsList?.indexOf(value))
     setDeleteModal(true)
     setSubjectToDelete(category.id)
   }
@@ -205,49 +210,16 @@ const SubjectsTable = () => {
                       )} */}
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      
 
-                    <Tooltip title='Edit Subject'>
-                        <IconButton size='small' onClick={() => setActiveSubject(item)}>
-                          <Icon icon='tabler:edit' />
-                        </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title='Delete Subject'>
-                        <IconButton size='small' onClick={() => doDelete(item)}>
-                          <Icon icon='tabler:trash' />
-                        </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title='Assign Subject To Teacher'>
-                        <IconButton size='small' onClick={() => setSubjectToAssignTeacher(item)}>
-                          <Icon icon='fluent:stack-add-20-filled' />
-                        </IconButton>
-                        </Tooltip>
-
-                        {item?.staffs?.length > 0 && 
-                        <Tooltip title='Remove Subject From Teacher'>
-                        <IconButton size='small' onClick={() => setSubjectToRemoveTeacher(item)}>
-                          <Icon icon='mingcute:user-remove-fill' />
-                        </IconButton>
-                        </Tooltip>
-                        }
-
-                        <Tooltip title='Assign Grading Parameter to Subject '>
-                        <IconButton size='small' onClick={() => setSubjectToAssignGradingParameter(item)}>
-                          <Icon icon='solar:notification-lines-remove-bold' />
-                        </IconButton>
-                        </Tooltip>
-
-                      {/* <>
-                        <IconButton size='small' onClick={handleRowOptionsClick}>
+                      <>
+                        <IconButton size='small' onClick={(event)=> handleRowOptionsClick(event, i)}>
                           <Icon icon='tabler:dots-vertical' />
                         </IconButton>
                         <Menu
                           keepMounted
-                          anchorEl={anchorEl}
-                          open={rowOptionsOpen}
-                          onClose={handleRowOptionsClose}
+                          anchorEl={anchorEl[i]}
+                          open={Boolean(anchorEl[i])}
+                          onClose={() => handleRowOptionsClose(i)}
                           anchorOrigin={{
                             vertical: 'bottom',
                             horizontal: 'right'
@@ -271,16 +243,19 @@ const SubjectsTable = () => {
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Teacher
                           </MenuItem>
+
+                          {item?.staffs?.length > 0 &&
                             <MenuItem onClick={() => setSubjectToRemoveTeacher(item)} sx={{ '& svg': { mr: 2 } } }>
                               <Icon icon='mingcute:user-remove-fill' fontSize={20} />
                               Remove Teacher
                             </MenuItem>
+                           }
                           <MenuItem onClick={() => setSubjectToAssignGradingParameter(item)} sx={{ '& svg': { mr: 2 } } }>
                               <Icon icon='clarity:assign-user-solid' fontSize={20} />
                               Assign Parameter
                             </MenuItem>
                         </Menu>
-                      </> */}
+                      </>
                     </TableCell>
                   </TableRow>
                 ))}

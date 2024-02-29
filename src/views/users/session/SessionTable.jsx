@@ -196,13 +196,6 @@ const SessionTable = () => {
                       }
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      {/* <IconButton size='small' onClick={() => setActiveSession(item)}>
-                        <Icon icon='tabler:edit' />
-                      </IconButton>
-
-                      <IconButton size='small' onClick={() => doDelete(item)}>
-                        <Icon icon='tabler:trash' />
-                      </IconButton> */}
 
                         <Tooltip title='Delete Session'>
                         <IconButton size='small' onClick={() => doDelete(item)}>
