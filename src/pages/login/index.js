@@ -151,7 +151,9 @@ const LoginPage = () => {
             margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
+          {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} /> */}
+
+          <LoginIllustration alt='login-illustration' src={`/images/staff.svg`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -194,14 +196,15 @@ const LoginPage = () => {
                 d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
               />
             </svg> */}
-
-            <img src='/images/favicon.png' width={'150px'} height={'30px'} alt='' />
+            <Box component={'div'} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <img src='/images/logo.webp' style={{objectPosition: 'center', objectFit: 'cover'}} width={'80px'} height={'80px'} alt='' />
+            </Box>
             <Box sx={{ my: 6 }}>
               <Typography variant='h4' sx={{ mb: 1.5 }}>
                 {`Welcome to ${themeConfig.templateName}! 👋🏻`}
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>
-                Please sign-in to your account and start the adventure
+                Please sign-in to your account to access your portal
               </Typography>
             </Box>
             {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>

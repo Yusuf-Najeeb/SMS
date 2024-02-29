@@ -220,7 +220,7 @@ const StudentsTable = () => {
                 <Fragment>
                   {StudentData?.result?.length &&
                     StudentData?.result.map(item => {
-                      const className = ClassesList.find(c => c.id === item.classId)
+                      const className = ClassesList?.find(c => c.id === item.classId)
 
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
@@ -237,10 +237,10 @@ const StudentsTable = () => {
                           </TableCell>
 
                           <TableCell align='left' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
-                            {`${className.name} ${className.type}` || '--'}
+                            {`${className?.name} ${className?.type}` || '--'}
                           </TableCell>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                            {formatDate(item.dateOfBirth) || '--'}
+                            {formatDate(item?.dateOfBirth) || '--'}
                           </TableCell>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
                             {item?.gender || '--'}

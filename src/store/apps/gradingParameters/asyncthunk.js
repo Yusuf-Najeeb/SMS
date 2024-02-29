@@ -47,77 +47,23 @@ export const fetchGradingParameters = createAsyncThunk('grading-parameters', asy
     }
   }
 
-  export const deleteRoom = async (id)=>{
+  export const deleteGradingParameter = async (id)=>{
     try {
-      const res = await axios.delete(`/rooms/${id}`)
+      const res = await axios.delete(`/settings/grading-parameter/${id}`)
       if(res.data.success){
-        notifySuccess('Room Deleted')
+        notifySuccess('Grading Parameter Deleted')
       }
 
       return res
       
     } catch (error) {
-      notifyError('Unable to Delete Room')
+      notifyError('Unable to Delete Grading Parameter')
       
     }
   }
 
-  export const assignRoomToStaff = async (payload)=>{
-    try {
-      const res = await axios.post(`/rooms/staff/associate`, payload)
-      if(res.data.success){
-        notifySuccess('Room Assigned To Staff')
-      }
 
-      return res
-      
-    } catch (error) {
-      notifyError('Unable to Assign Room')
-      
-    }
-  }
 
-  export const removeStaffInRoom = async (payload)=>{
-    try {
-      const res = await axios.post(`/rooms/staff/dissociate`, payload)
-      if(res.data.success){
-        notifySuccess('Staff Removed From Room')
-      }
 
-      return res
-      
-    } catch (error) {
-      notifyError('Unable to Remove Staff From Room')
-      
-    }
-  }
 
-  export const assignRoomToStudent = async (payload)=>{
-    try {
-      const res = await axios.post(`/rooms/student/associate`, payload)
-      if(res.data.success){
-        notifySuccess('Room Assigned To Student')
-      }
 
-      return res
-      
-    } catch (error) {
-      notifyError('Unable to Assign Room')
-      
-    }
-  }
-
-  export const removeStudentInRoom = async (payload)=>{
-    try {
-      const res = await axios.post(`/rooms/student/dissociate`, payload)
-      if(res.data.success){
-        notifySuccess('Student Removed From Room')
-      }
-
-      return res
-      
-    } catch (error) {
-      notifyError('Unable to Remove Student From Room')
-      
-    }
-  }

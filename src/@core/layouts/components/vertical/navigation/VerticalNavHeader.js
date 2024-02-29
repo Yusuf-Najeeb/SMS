@@ -77,7 +77,7 @@ const VerticalNavHeader = props => {
         userNavMenuBranding(props)
       ) : (
         <LinkStyled href='/'>
-          <img src='/images/logo.webp' width={'30px'} height={'30px'} alt=''  />
+          <img src='/images/logo.webp' width={'40px'} height={'40px'} alt=''  />
 
 
           {/* <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>

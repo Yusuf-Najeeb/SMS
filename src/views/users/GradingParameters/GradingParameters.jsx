@@ -18,7 +18,7 @@ import NoData from 'src/@core/components/emptydata/NoData'
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import { deleteCategory, fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useGradingParameters } from '../../../hooks/useGradingParameters'
-import { fetchGradingParameters } from '../../../store/apps/gradingParameters/asyncthunk'
+import { deleteGradingParameter, fetchGradingParameters } from '../../../store/apps/gradingParameters/asyncthunk'
 import PageHeader from '../component/PageHeader'
 import ManageGradingParameters from './ManageGradingParameters'
 import { formatDate, formatDateToReadableFormat } from '../../../@core/utils/format'
@@ -35,7 +35,7 @@ const GradingParametersTable = () => {
   const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [categoryToDelete, setCategoryToDelete] = useState(null)
+  const [ParameterToDelete, setParameterToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [selectedParameter, setSelectedParameter] = useState(null)
   const [type, setType] = useState('')
@@ -65,18 +65,18 @@ const GradingParametersTable = () => {
 
   const doDelete = (category) => {
     setDeleteModal(true)
-    setCategoryToDelete(category.id)
+    setParameterToDelete(category.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setCategoryToDelete(null)
+    setParameterToDelete(null)
   }
 
   const ondeleteClick = () => {
-    deleteCategory(categoryToDelete).then((res)=>{
+    deleteGradingParameter(ParameterToDelete).then((res)=>{
       if(res.data.success){
-        dispatch(fetchCategories({ page: 1, limit: 10, type: '' }))
+        dispatch(fetchGradingParameters({ page: 1, limit: 10 }))
       }
     })
     doCancelDelete()

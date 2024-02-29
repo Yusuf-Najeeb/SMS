@@ -150,7 +150,9 @@ const UserLoginPage = () => {
             margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
+          {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} /> */}
+
+          <LoginIllustration alt='login-illustration' src={`/images/student.svg`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -194,13 +196,15 @@ const UserLoginPage = () => {
               />
             </svg> */}
 
-            <img src='/images/favicon.png' width={'150px'} height={'30px'} alt='' />
+            <Box component={'div'} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <img src='/images/logo.webp' style={{objectPosition: 'center', objectFit: 'cover'}} width={'80px'} height={'80px'} alt='' />
+            </Box>
             <Box sx={{ my: 6 }}>
               <Typography variant='h4' sx={{ mb: 1.5 }}>
                 {`Welcome to ${themeConfig.templateName}! 👋🏻`}
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>
-                Please sign-in to your account and start the adventure
+                Please sign-in to your account to access your portal
               </Typography>
             </Box>
             {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
