@@ -1,10 +1,8 @@
-import GetUserData from "../../@core/utils/getUserData"
+import GetUserData from '../../@core/utils/getUserData'
 
 const userData = GetUserData()
 
-
 const navigation = () => {
-
   if (userData?.role?.name == 'parent') {
     return [
       {
@@ -14,7 +12,7 @@ const navigation = () => {
         title: 'Dashboard',
         icon: 'tabler:smart-home',
         path: '/dashboard'
-      },
+      }
     ]
   }
 
@@ -55,7 +53,6 @@ const navigation = () => {
       icon: 'fa6-solid:people-line',
       path: '/apps/students'
     },
-  
 
     // {
     //   title: 'New Student',
@@ -82,8 +79,8 @@ const navigation = () => {
     //   icon: 'raphael:parent',
     //   path: '/apps/newGuardian/list'
     // },
-     {
-       sectionTitle: 'Academics '
+    {
+      sectionTitle: 'Academics '
     },
     {
       title: 'Subjects',
@@ -91,7 +88,7 @@ const navigation = () => {
       path: '/apps/subjects'
     },
 
-     {
+    {
       title: 'Classes',
       icon: 'mdi:google-classroom',
       path: '/apps/classes'
@@ -109,15 +106,12 @@ const navigation = () => {
       path: '/apps/session'
     },
 
-    
-
     // {
     //   title: 'Tests and Exams',
     //   icon: 'healthicons:i-exam-multiple-choice',
     //   path: '/apps/tests-exams/list'
     // },
 
-   
     // {
     //   title: 'Result Manager',
     //   icon: 'healthicons:i-exam-qualification',
@@ -144,8 +138,6 @@ const navigation = () => {
       path: '/apps/rooms'
     },
 
-   
-
     {
       sectionTitle: 'Accounts '
     },
@@ -163,7 +155,7 @@ const navigation = () => {
       title: 'Payment Methods',
       icon: 'fxemoji:creditcard',
       path: '/apps/payment-methods'
-    },
+    }
 
     //   {
     //   sectionTitle: 'Settings'
@@ -196,8 +188,6 @@ const navigation = () => {
     //   icon: 'ic:outline-inventory-2',
     //   path: '/apps/inventory/list'
     // },
-
-  
 
     // {
     //   sectionTitle: 'Forms & Tables'

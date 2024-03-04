@@ -51,7 +51,7 @@ const MenuNavLink = styled(ListItemButton)(({ theme }) => ({
       //   )} 76.47%)`
       // },
 
-      background: '#2e313d',
+      background: 'linear-gradient(72.47deg, #8B0000 22.16%, #991F1F 76.47%)'
     },
 
     '& .MuiTypography-root, & svg': {
@@ -97,12 +97,12 @@ const VerticalNavLink = ({
   }
 
   return (
-    <CanViewNavLink >
+    <CanViewNavLink>
       <ListItem
         disablePadding
         className='nav-link'
         disabled={item.disabled || false}
-        sx={{ mt: 1, px: '0 !important', }}
+        sx={{ mt: 1, px: '0 !important' }}
       >
         <MenuNavLink
           component={Link}
