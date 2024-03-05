@@ -75,15 +75,6 @@ if (themeConfig.routingLoader) {
   })
 }
 
-// const Guard = ({ children, authGuard, guestGuard }) => {
-//   if (guestGuard) {
-//     return <GuestGuard fallback={<Spinner />}>{children}</GuestGuard>
-//   } else if (!guestGuard && !authGuard) {
-//     return <>{children}</>
-//   } else {
-//     return <AuthGuard fallback={<Spinner />}>{children}</AuthGuard>
-//   }
-// }
 
 // ** Configure JSS & ClassName
 const App = props => {
@@ -97,8 +88,6 @@ const App = props => {
     Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
   const setConfig = Component.setConfig ?? undefined
 
-  const guestGuard = Component.guestGuard ?? false
-  const aclAbilities = Component.acl ?? defaultACLObj
 
   // const initData = () => {
   //   store.dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
@@ -126,7 +115,7 @@ const App = props => {
             name='description'
             content={`${themeConfig.templateName} – School Management Dashboard `}
           />
-          <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+          <meta name='keywords' content='School Management, Dashboard, Admin Template, React Admin Template' />
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 

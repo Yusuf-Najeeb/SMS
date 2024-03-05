@@ -46,6 +46,7 @@ const restoreSettings = () => {
   return settings
 }
 
+
 // set settings in localStorage
 const storeSettings = settings => {
   const initSettings = Object.assign({}, settings)
@@ -78,6 +79,10 @@ export const SettingsProvider = ({ children, pageSettings }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSettings])
   useEffect(() => {
+
+    // Fix theme issue
+    saveSettings({ ...settings})
+
     if (settings.layout === 'horizontal' && settings.mode === 'semi-dark') {
       saveSettings({ ...settings, mode: 'light' })
     }
