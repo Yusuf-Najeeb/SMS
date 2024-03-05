@@ -26,6 +26,8 @@ import gradingParameters from 'src/store/apps/gradingParameters'
 import session from 'src/store/apps/session'
 import currentSession from 'src/store/apps/currentSession'
 import timetable from 'src/store/apps/timetable'
+import payslip from 'src/store/apps/payslip'
+import deductions from 'src/store/apps/deductions'
 
 export const store = configureStore({
   reducer: {
@@ -52,7 +54,9 @@ export const store = configureStore({
     gradingParameters,
     session,
     currentSession,
-    timetable
+    timetable,
+    payslip,
+    deductions
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -31,10 +31,12 @@ const Calendar = props => {
   // ** Props
   const {
     store,
+
     // calendarApi,
     teachersData,
     calendarsColor,
     direction,
+
     // setCalendarApi,
   } = props
 
@@ -54,6 +56,7 @@ useEffect(()=>{
     setCalendarEvents([...parsedEvents])
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 },[store])
 
 

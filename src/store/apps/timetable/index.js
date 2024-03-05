@@ -25,6 +25,7 @@ export const timetableSlice = createSlice({
     builder.addCase(fetchClassTimetable.fulfilled, (state, action) => {
       state.loading = false
       state.TimetableData = action?.payload?.data.data
+      
     //   state.paging = action?.payload?.data?.paging
     })
     builder.addCase(fetchClassTimetable.rejected, state => {
