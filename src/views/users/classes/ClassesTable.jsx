@@ -9,27 +9,27 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Box, IconButton, Menu, MenuItem } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 import { styled } from '@mui/material/styles'
 
-import { formatDate } from '../../../@core/utils/format'
-
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-import { useAppSelector } from '../../../hooks'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
-import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useClasses } from '../../../hooks/useClassess'
 import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import ManageClass from './ManageClass'
 import ViewClass from './ViewClass'
 import ManageClassSubject from './ManageClassSubject'
+import AddPeriod from './AddPeriod'
+import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
+import { useCurrentSession } from '../../../hooks/useCurrentSession'
+import ViewTimeTable from './ViewTimeTable'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -65,6 +65,10 @@ const ClassesTable = () => {
   const dispatch = useAppDispatch()
 
   const [ClassesList, loading, paging] = useClasses()
+  const [CurrentSessionData] = useCurrentSession()
+
+  // console.log(CurrentSessionData?.includes(id), "length")
+  // console.log(CurrentSessionData, "current session data")
  
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -78,9 +82,17 @@ const ClassesTable = () => {
   const [refetch, setFetch] = useState(false)
   const [key, setKey] = useState('')
   const [openAssignModal, setAssignModal] = useState(false)
+  const [openPeriodModal, setPeriodModal] = useState(false)
+  const [openTimetableModal, setOpenTimeTable] = useState(false)
   const [ClassToAssign, setClassToAssign] = useState(null)
+  const [ClassToViewTimeTable, setClassRoomToViewTimeTable] = useState(null)
+  const [ClassToAddPeriod, setClassRoomToAddPeriod] = useState(null)
   const [assignSubject, setAssignSubject] = useState(false)
   const [anchorEl, setAnchorEl] = useState(Array(ClassesList?.length)?.fill(null));
+
+  // const dateValue = new Date()
+  // console.log(dateValue.getDay(), 'day')
+  // console.log(dateValue.getDate().toString(), 'date to string')
 
 
 const handleRowOptionsClick = (event, index) => {
@@ -134,6 +146,29 @@ const handleRowOptionsClose = (index) => {
     setClassToAssign(value)
   }
 
+  const setClassToAddPeriod = value => {
+    setPeriodModal(true)
+
+    handleRowOptionsClose(ClassesList?.indexOf(value))
+    setClassRoomToAddPeriod(value)
+  }
+
+  const closePeriodModal = ()=> {
+    setPeriodModal(false)
+    setClassRoomToAddPeriod(null)
+}
+
+  const setClassToViewTimeTable = value => {
+    setOpenTimeTable(true)
+
+    handleRowOptionsClose(ClassesList?.indexOf(value))
+    setClassRoomToViewTimeTable(value)
+  }
+
+  const closeTimeTableModal = ()=> {
+    setOpenTimeTable(false)
+    setClassRoomToViewTimeTable(null)
+}
 
 
   const handleChangePage = (event, newPage) => {
@@ -186,8 +221,13 @@ const handleRowOptionsClose = (index) => {
    
   }
 
+  useEffect(()=>{
+    dispatch(fetchCurrentSession())
+  },[])
+
   useEffect(() => {
     dispatch(fetchClasses({page: page + 1, limit: 10, key}))
+
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, key])
@@ -295,6 +335,18 @@ const handleRowOptionsClose = (index) => {
                             <Icon icon='tabler:trash' fontSize={20} />
                             Delete Class
                           </MenuItem>
+                          
+                          {CurrentSessionData && 
+                          <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='mdi:timetable' fontSize={20} />
+                            Add Period
+                          </MenuItem>
+                           }
+
+                          <MenuItem onClick={() => setClassToViewTimeTable(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='mdi:timetable' fontSize={20} />
+                            View Timetable
+                          </MenuItem>
                           <MenuItem onClick={() => setClassToAssignSubject(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
                             Assign Subject
@@ -338,9 +390,13 @@ const handleRowOptionsClose = (index) => {
 
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
 
-      <ViewClass open={openViewDrawer} closeCanvas={closeViewModal} classRoom={ClassInView} />
+      {openViewDrawer &&  <ViewClass open={openViewDrawer} closeCanvas={closeViewModal} classRoom={ClassInView} /> }
 
       <ManageClassSubject open={openAssignModal} Classroom={ClassToAssign} status={assignSubject} toggle={toggleAssignModal} />
+
+      {openTimetableModal &&  <ViewTimeTable open={openTimetableModal} handleClose={closeTimeTableModal} ClassRoom={ClassToViewTimeTable} /> }
+
+      {openPeriodModal &&  <AddPeriod open={openPeriodModal} classRoom={ClassToAddPeriod} toggle={closePeriodModal} /> }
 
     </Fragment>
 

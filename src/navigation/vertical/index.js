@@ -107,6 +107,14 @@ const navigation = () => {
     },
 
     // {
+    //   title: 'Time Table',
+    //   icon: 'mdi:timetable',
+    //   path: '/apps/timetable'
+    // },
+
+    
+
+    // {
     //   title: 'Tests and Exams',
     //   icon: 'healthicons:i-exam-multiple-choice',
     //   path: '/apps/tests-exams/list'
