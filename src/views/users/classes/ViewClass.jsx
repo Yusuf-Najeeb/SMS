@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react'
 import Drawer from '@mui/material/Drawer'
 
 import IconButton from '@mui/material/IconButton'
+import { useAppDispatch } from 'src/hooks'
 
 import Grid from '@mui/material/Grid'
 import Table from '@mui/material/Table'
@@ -25,6 +26,9 @@ import { formatCurrency, formatDate } from 'src/@core/utils/format'
 import { formatDateToReadableFormat } from '../../../@core/utils/format'
 import { fetchStudentsInClass, getSingleClass } from '../../../store/apps/classes/asyncthunk'
 import { TableCellStyled } from '../Guardian/GuardianTable'
+import { fetchClassTimetable } from '../../../store/apps/timetable/asyncthunk'
+import { useCurrentSession } from '../../../hooks/useCurrentSession'
+import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -45,9 +49,21 @@ const Header = styled(Box)(({ theme }) => ({
 const ViewClass = ({ open, closeCanvas, classRoom }) => {
   const [studentsInClass, setStudentsInClass] = useState([])
 
-  console.log(classRoom, 'selected class')
 
   const theme = useTheme()
+  const dispatch = useAppDispatch()
+  const [CurrentSessionData] = useCurrentSession()
+
+  useEffect(()=>{
+    dispatch(fetchCurrentSession())
+  },[])
+
+  useEffect(() => {
+    if (classRoom && CurrentSessionData) {
+     
+      dispatch(fetchClassTimetable({classId: classRoom?.id, sessionId: CurrentSessionData?.id }))
+    }
+  }, [classRoom, CurrentSessionData])
 
   useEffect(() => {
     if (classRoom) {

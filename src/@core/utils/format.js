@@ -189,37 +189,81 @@ export const formatMonthYearr = date => {
 export const parseClass = item => {
   if (item === 'off' || !item || item === '') {
     return 'bg-info'
-  } else if (item === 'morning') {
+  } else if (item === 'Monday') {
     return 'bg-primary'
-  } else if (item === 'night' || 'evening') {
+  } else if (item === 'Tuesday' || 'Thursday') {
     return 'bg-danger'
   } else {
     return 'bg-secondary'
   }
 }
 
-export const parseRoster = result => {
+const getDatesForDayInMonth = (dayOfWeek, month, year) => {
+  const dates = [];
+  const date = new Date(year, month, 1);
+
+  // Find the first occurrence of the dayOfWeek in the month
+  while (date.getDay() !== dayOfWeek) {
+    date.setDate(date.getDate() + 1);
+  }
+
+  // Add all occurrences of the dayOfWeek in the month to the array
+  while (date.getMonth() === month) {
+    dates.push(new Date(date));
+    date.setDate(date.getDate() + 7);
+  }
+
+  return dates;
+}
+
+export const parseCalendarEvents = (result, teachers) => {
+  const dateValue = new Date()
+  const year = dateValue.getFullYear()
+  const month = (dateValue.getMonth() + 1) 
   let rosters = []
-  result.forEach(item => {
-    const parsedSchedule = item.schedule ? JSON.parse(item.schedule) : []
-    parsedSchedule.forEach(schedule => {
-      if (schedule.duty !== '') {
+  // result.forEach(item => {
+  //   const parsedSchedule = item.schedule ? JSON.parse(item.schedule) : []
+  result.forEach(schedule => {
+      if (schedule.day !== '') {
+        let teacher = teachers?.find((teacher)=> teacher.id == schedule.staffId)
+        let day;
+        switch (schedule.day) {
+          case 'Monday':
+            day = 1;
+            break;
+          case 'Tuesday':
+            day = 2;
+            break;
+          case 'Wednesday':
+            day = 3;
+            break;
+            case 'Thursday':
+            day = 4;
+            break;
+            case 'Friday':
+            day = 5;
+            break;
+          default:
+            day = 0;
+        }
+
+        const dates = getDatesForDayInMonth(day, month - 1, year);
+       const datee = (dates[0].getDate().toString().padStart(2, '0'))
         rosters = [
           ...rosters,
           {
-            title: ` ${formatFirstLetter(item.user.firstname)} ${formatAndReturnFirstLetter(item.user.lastname)}  ${
-              schedule.duty ? '[' + schedule.duty + ']' : ''
-            }`,
-            date: `${item.period.substring(0, 4)}-${item.period.substring(4)}-${
-              schedule.date !== '' ? schedule.date?.toString().padStart(2, '0') : ''
-            }`,
+            title: ` ${teacher?.firstName?.toUpperCase()} ${teacher?.lastName?.toUpperCase()} `,
+            // title: ` subject Teacher Name `,
+            date: `${year}-${month.toString().padStart( 2, '0')}-${datee}`,
+            // start: schedule.start,
+            // end: schedule.end,
 
-            className: parseClass(schedule.duty)
+            className: parseClass(schedule.day)
           }
         ]
       }
     })
-  })
+  // })
 
   return rosters
 }
