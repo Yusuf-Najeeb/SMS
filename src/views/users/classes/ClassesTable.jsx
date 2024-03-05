@@ -223,6 +223,8 @@ const handleRowOptionsClose = (index) => {
 
   useEffect(()=>{
     dispatch(fetchCurrentSession())
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   useEffect(() => {

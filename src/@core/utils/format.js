@@ -154,6 +154,18 @@ export const formatMonthYear = date => {
   return formattedDate
 }
 
+export const formatDateToYYYYMM = (dateString)=> {
+  
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const formattedDate = `${year}${month}`;
+  
+
+
+  return formattedDate
+}
+
 export const formatMonthYearr = date => {
   // Check if date is a valid Date object
   if (!(date instanceof Date) || isNaN(date.getTime())) {
@@ -221,8 +233,10 @@ export const parseCalendarEvents = (result, teachers) => {
   const year = dateValue.getFullYear()
   const month = (dateValue.getMonth() + 1) 
   let rosters = []
+
   // result.forEach(item => {
   //   const parsedSchedule = item.schedule ? JSON.parse(item.schedule) : []
+
   result.forEach(schedule => {
       if (schedule.day !== '') {
         let teacher = teachers?.find((teacher)=> teacher.id == schedule.staffId)
@@ -253,8 +267,10 @@ export const parseCalendarEvents = (result, teachers) => {
           ...rosters,
           {
             title: ` ${teacher?.firstName?.toUpperCase()} ${teacher?.lastName?.toUpperCase()} `,
+
             // title: ` subject Teacher Name `,
             date: `${year}-${month.toString().padStart( 2, '0')}-${datee}`,
+
             // start: schedule.start,
             // end: schedule.end,
 
@@ -263,6 +279,7 @@ export const parseCalendarEvents = (result, teachers) => {
         ]
       }
     })
+
   // })
 
   return rosters

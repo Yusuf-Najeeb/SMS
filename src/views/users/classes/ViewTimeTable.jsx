@@ -52,6 +52,8 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
   useEffect(()=>{
     dispatch(fetchCurrentSession())
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
 
@@ -61,6 +63,8 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
      
       dispatch(fetchClassTimetable({classId: ClassRoom?.id, sessionId: CurrentSessionData?.id }))
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ClassRoom, CurrentSessionData])
 
   return (
@@ -107,25 +111,10 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
             store={TimetableData}
             direction={direction}
             teachersData={StaffData?.result}
-
-            // updateEvent={updateEvent}
-            // calendarApi={calendarApi}
             calendarsColor={calendarsColor}
-            // setCalendarApi={setCalendarApi}
-            // handleSelectEvent={handleSelectEvent}
-            // handleLeftSidebarToggle={handleLeftSidebarToggle}
-            // handleAddEventSidebarToggle={handleAddEventSidebarToggle}
           />
       </Dialog>
     </Fragment>
   );
 }
 
-// function renderEventContent(eventInfo) {
-//     return (
-//       <>
-//         <b>{eventInfo.timeText}</b>
-//         <i>{eventInfo.event.title}</i>
-//       </>
-//     )
-//   }

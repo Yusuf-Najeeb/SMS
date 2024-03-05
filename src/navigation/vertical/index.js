@@ -16,6 +16,21 @@ const navigation = () => {
     ]
   }
 
+  if (userData?.role?.name == 'student') {
+    return [
+      {
+        sectionTitle: 'Dashboard'
+      },
+      {
+        title: 'Dashboard',
+        icon: 'tabler:smart-home',
+        path: '/dashboard'
+      }
+    ]
+  }
+
+
+
   return [
     {
       sectionTitle: 'Dashboard'
@@ -163,7 +178,12 @@ const navigation = () => {
       title: 'Payment Methods',
       icon: 'fxemoji:creditcard',
       path: '/apps/payment-methods'
-    }
+    },
+    {
+      title: 'Payroll',
+      icon: 'fluent:payment-16-regular',
+      path: '/apps/payroll'
+    },
 
     //   {
     //   sectionTitle: 'Settings'
@@ -197,92 +217,9 @@ const navigation = () => {
     //   path: '/apps/inventory/list'
     // },
 
-    // {
-    //   sectionTitle: 'Forms & Tables'
-    // },
-    // {
-    //   title: 'Form Elements',
-    //   icon: 'tabler:toggle-left',
-    //   children: [
-    //     {
-    //       title: 'Text Field',
-    //       path: '/forms/form-elements/text-field'
-    //     },
-    //     {
-    //       title: 'Select',
-    //       path: '/forms/form-elements/select'
-    //     },
-    //     {
-    //       title: 'Checkbox',
-    //       path: '/forms/form-elements/checkbox'
-    //     },
-    //     {
-    //       title: 'Radio',
-    //       path: '/forms/form-elements/radio'
-    //     },
-    //     {
-    //       title: 'Custom Inputs',
-    //       path: '/forms/form-elements/custom-inputs'
-    //     },
-    //     {
-    //       title: 'Textarea',
-    //       path: '/forms/form-elements/textarea'
-    //     },
-    //     {
-    //       title: 'Autocomplete',
-    //       path: '/forms/form-elements/autocomplete'
-    //     },
-    //     {
-    //       title: 'Date Pickers',
-    //       path: '/forms/form-elements/pickers'
-    //     },
-    //     {
-    //       title: 'Switch',
-    //       path: '/forms/form-elements/switch'
-    //     },
-    //     {
-    //       title: 'File Uploader',
-    //       path: '/forms/form-elements/file-uploader'
-    //     },
-    //     {
-    //       title: 'Editor',
-    //       path: '/forms/form-elements/editor'
-    //     },
-    //     {
-    //       title: 'Slider',
-    //       path: '/forms/form-elements/slider'
-    //     },
-    //     {
-    //       title: 'Input Mask',
-    //       path: '/forms/form-elements/input-mask'
-    //     }
-    //   ]
-    // },
-    // {
-    //   icon: 'tabler:layout-navbar',
-    //   title: 'Form Layouts',
-    //   path: '/forms/form-layouts'
-    // },
-    // {
-    //   title: 'Form Validation',
-    //   path: '/forms/form-validation',
-    //   icon: 'tabler:checkbox'
-    // },
-    // {
-    //   title: 'Form Wizard',
-    //   path: '/forms/form-wizard',
-    //   icon: 'tabler:text-wrap-disabled'
-    // },
-    // {
-    //   title: 'Table',
-    //   icon: 'tabler:table',
-    //   path: '/tables/mui'
-    // },
-    // {
-    //   title: 'Mui DataGrid',
-    //   icon: 'tabler:layout-grid',
-    //   path: '/tables/data-grid'
-    // }
+   
+
+  
   ]
 }
 

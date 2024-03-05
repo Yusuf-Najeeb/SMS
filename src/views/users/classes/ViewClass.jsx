@@ -56,6 +56,8 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
 
   useEffect(()=>{
     dispatch(fetchCurrentSession())
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   useEffect(() => {
@@ -63,6 +65,8 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
      
       dispatch(fetchClassTimetable({classId: classRoom?.id, sessionId: CurrentSessionData?.id }))
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classRoom, CurrentSessionData])
 
   useEffect(() => {

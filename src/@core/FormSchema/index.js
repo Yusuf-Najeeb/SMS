@@ -149,6 +149,10 @@ export const requireReason = yup.object().shape({
   reason: yup.string().required('Reason is required')
 })
 
+export const requirePeriod = yup.object().shape({
+  period: yup.string().required('Period is required')
+})
+
 export const downloadRosterSchema = yup.object().shape({
   departmentId: yup.number().required('Department Name is required'),
   rosterDate: yup.string().required('Date is required')

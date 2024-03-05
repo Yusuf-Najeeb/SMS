@@ -117,6 +117,7 @@ const AddPeriod = ({ open, toggle, classRoom }) => {
   useEffect(() => {
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
     dispatch(fetchCurrentSession())
+    
     // dispatch(fetchSession({page: 1, limit: 300}))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
