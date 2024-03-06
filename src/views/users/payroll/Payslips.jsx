@@ -19,18 +19,20 @@ import TablePagination from '@mui/material/TablePagination'
 import { useAppDispatch } from '../../../hooks'
 import NoData from '../../../@core/components/emptyData/NoData'
 import CustomSpinner from '../../../@core/components/custom-spinner'
-import { formatDateToYYYYMM, formatFirstLetter, formatMonthYear, getFirstId } from '../../../@core/utils/format'
+import { formatDateToYYYYMM, formatFirstLetter, formatMonthYear } from '../../../@core/utils/format'
 import { usePayslip } from '../../../hooks/usePayslip'
 import { fetchPayslips, printPayslip } from '../../../store/apps/payslip/asyncthunk'
 import GeneratePayslip from './GeneratePayslip'
 import PageHeader from './PayslipPageHeader'
 import { Card, CardContent, CardHeader, CircularProgress, Grid, MenuItem, Tooltip } from '@mui/material'
 import SendPayslip from './SendPayslipToEmail'
+import { useStaff } from '../../../hooks/useStaff'
 
 const PayslipTable = () => {
   // Hooks
   const dispatch = useAppDispatch()
   const [PayslipData, loading] = usePayslip()
+  const [StaffData] = useStaff()
 
   // States
 
@@ -38,7 +40,6 @@ const PayslipTable = () => {
   const [generateModalOpen, setPayslipOpen] = useState(false)
   const [sendModalOpen, setSendModalOpen] = useState(false)
   const [refetch, setFetch] = useState(false)
-  const [period, setPeriod] = useState(formatDateToYYYYMM(new Date()))
   const [defaultStaffId, setDefaultStaffId] = useState('')
   const [isPrinting, setIsPrinting] = useState(false)
   const [isPayslipDownloadLinkAvailable, setIsPayslipAvailable] = useState(false)
@@ -59,7 +60,6 @@ const PayslipTable = () => {
     setIsPrinting(true)
     setPrintingPayslipId(selectedId)
     printPayslip(selectedId, period).then(res => {
-      console.log(res, 'print payslip response')
         setIsPayslipAvailable(true)
         setPayslipDownloadLink(res?.data?.url)
       setIsPrinting(false)
@@ -91,7 +91,7 @@ const PayslipTable = () => {
 
   return (
     <div>
-      {/* <Card>
+       <Card>
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
@@ -104,17 +104,17 @@ const PayslipTable = () => {
 
                 SelectProps={{ value: staffId, onChange: e => handleChangeStaff(e) }}
               >
-                <MenuItem value=''>Select Staff</MenuItem>
-                {DepartmentsData?.map(department => (
-                  <MenuItem key={department?.id} value={department?.id}>
-                    {formatFirstLetter(department?.name)}
+                <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem>
+                {StaffData?.result?.map(staff => (
+                  <MenuItem key={staff?.id} value={staff?.id} sx={{textTransform: 'uppercase'}}>
+                    {`${staff?.firstName} ${staff?.lastName}` }
                   </MenuItem>
                 ))}
               </CustomTextField>
             </Grid>
           </Grid>
         </CardContent>
-      </Card> */}
+      </Card> 
 
       <PageHeader
         action1='Send Payslips to Staffs Email'
