@@ -96,3 +96,18 @@ export const getStudentSubjects = async(id)=>{
     
   }
 }
+
+
+export const assignStudentCategory = async (payload)=>{
+  try {
+    const res = await axios.post('/students/addcategory', payload)
+
+    if(res.data.success){
+      notifySuccess('Category Assigned')
+    }
+
+    return res
+  } catch (error) {
+    notifyError('Unable to Assign Category To Student')
+  }
+}

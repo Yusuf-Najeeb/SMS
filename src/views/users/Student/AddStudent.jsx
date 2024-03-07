@@ -101,7 +101,8 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     ethnicity: '',
     currentClassId: '',
     registrationDate: new (Date),
-    lastSchool: ''
+    lastSchool: '',
+    isStaffChild: ''
   }
 
   const defaultGuardianInfoValues = {
@@ -232,8 +233,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     // }
 
     payload = {personalInformation, guardianData: guardianData}
-
-    
 
          createStudent(payload).then((response)=> {
             if (response.data.success) {
@@ -623,11 +622,37 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
 
               <Grid item xs={12} sm={12} md={6}>
                 <Controller
+                  name='isStaffChild'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      required
+                      fullWidth
+                      label='Staff Child'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.isStaffChild)}
+                      {...(errors.isStaffChild && { helperText: errors.isStaffChild.message})}
+                    >
+                      <MenuItem value={''}>Select Staff Child Status</MenuItem>
+                      <MenuItem value={false}>False</MenuItem>
+                      <MenuItem value={true}>True</MenuItem>
+                      </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={12}>
+                <Controller
                   name='residentialAddress'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
+                      multiline
+                      rows={2}
                       fullWidth
                       label='Residential Address'
                       placeholder="24, school ave"
@@ -847,6 +872,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                     errors.lastName ||
                     errors.firstName ||
                     errors.dateOfBirth ||
+                    errors.isStaffChild ||
 
                     errors.gender 
                      &&

@@ -22,6 +22,9 @@ const UserThemeOptions = () => {
         main: '#991F1F',
         dark: '#A63B3B',
         contrastText: '#FFF'
+      },
+      secondary: {
+        main: '#f54251'
       }
     },
     breakpoints: {

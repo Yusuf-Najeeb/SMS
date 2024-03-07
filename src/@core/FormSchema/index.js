@@ -225,6 +225,7 @@ export const createStudentSchema = yup.object().shape({
   ethnicity: yup.string(),
   registrationDate: yup.string(),
   lastSchool: yup.string(),
+  isStaffChild: yup.boolean().required('This field is required')
 })
 
 export const updateStudentSchema = yup.object().shape({

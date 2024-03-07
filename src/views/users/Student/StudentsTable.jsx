@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useAppDispatch } from 'src/hooks'
 
 import Paper from '@mui/material/Paper'
+import {  Menu, MenuItem } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
@@ -32,6 +33,8 @@ import AddStudent from './AddStudent'
 import EditStudent from './EditStudent'
 import ViewStudent from './ViewStudent'
 import { useClasses } from '../../../hooks/useClassess'
+import AssignGeneralCategory from './AssignGeneralCategory'
+import AssignHostelCategory from './AssignHostelCategory'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -50,8 +53,8 @@ const renderClient = row => {
         skin='light'
 
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
-        color='primary'
-        sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
+        color='info'
+        sx={{ mr: 2.5, width: 30, height: 30, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
         {getInitials(initials || 'John Doe')}
       </CustomAvatar>
@@ -60,7 +63,9 @@ const renderClient = row => {
 }
 
 export const TableCellStyled = styled(TableCell)(({ theme }) => ({
-  color: `${theme.palette.primary.main} !important`
+
+//   color: `${theme.palette.primary.dark} !important`
+//   color: `${theme.palette.secondary.main} !important`
 }))
 
 const StudentsTable = () => {
@@ -74,15 +79,40 @@ const StudentsTable = () => {
   const [showModal, setShowModal] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openViewDrawer, setViewDrawer] = useState(false)
+  const [openStudentCategoryDrawer, setStudentCategoryDrawer] = useState(false)
+  const [openHostelCategoryDrawer, setHostelCategoryDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
   const [studentToUpdate, setStudentToUpdate] = useState(null)
   const [studentInView, setStudentInView] = useState(null)
+  const [studentToAssignCategory, setStudentToAssignCategory] = useState(null)
+  const [studentToAssignHostelCategory, setStudentToAssignHostelCategory] = useState(null)
   const [refetch, setFetch] = useState(false)
   const [key, setKey] = useState('')
+  const [anchorEl, setAnchorEl] = useState(Array(StudentData?.result?.length)?.fill(null))
+
+  const handleRowOptionsClick = (event, index) => {
+    const newAnchorEl = [...anchorEl]
+    newAnchorEl[index] = event.currentTarget
+    setAnchorEl(newAnchorEl)
+  }
+
+  const handleRowOptionsClose = index => {
+    const newAnchorEl = [...anchorEl]
+    newAnchorEl[index] = null
+    setAnchorEl(newAnchorEl)
+  }
 
   const toggleModal = () => {
     setShowModal(!showModal)
+  }
+
+  const toggleCategoryModal = () => {
+    setStudentCategoryDrawer(!openStudentCategoryDrawer)
+  }
+
+  const toggleHostelCategoryModal = () => {
+    setHostelCategoryDrawer(!openHostelCategoryDrawer)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -118,13 +148,27 @@ const StudentsTable = () => {
   }
 
   const setStudentToEdit = value => {
+    handleRowOptionsClose(StudentData?.result?.indexOf(value))
     setEditDrawer(!openEditDrawer)
     setStudentToUpdate(value)
   }
 
   const setStudentToView = value => {
+    handleRowOptionsClose(StudentData?.result?.indexOf(value))
     setViewDrawer(!openViewDrawer)
     setStudentInView(value)
+  }
+
+  const setStudentToAssignCategories = value => {
+    handleRowOptionsClose(StudentData?.result?.indexOf(value))
+    toggleCategoryModal()
+    setStudentToAssignCategory(value)
+  }
+
+  const setStudentToAssignHostelCategories = value => {
+    handleRowOptionsClose(StudentData?.result?.indexOf(value))
+    toggleHostelCategoryModal()
+    setStudentToAssignHostelCategory(value)
   }
 
   const closeEditModal = () => {
@@ -168,7 +212,7 @@ const StudentsTable = () => {
 
   return (
     <>
-      <Stats data={StudentData} statTitle='Student' />
+      <Stats data={StudentData} statTitle='Students' />
 
       <PageHeaderWithSearch
         searchPlaceholder={'Search Student'}
@@ -219,7 +263,7 @@ const StudentsTable = () => {
 
                 <Fragment>
                   {StudentData?.result?.length &&
-                    StudentData?.result.map(item => {
+                    StudentData?.result.map((item, i) => {
                       const className = ClassesList?.find(c => c.id === item.classId)
 
                       return (
@@ -278,33 +322,10 @@ const StudentsTable = () => {
 
                           <TableCell
                             align='left'
-
-                            sx={ item?.profilePicture.length > 5 ? {
-                                display: 'flex',
-                                justifyContent: 'center',
-                                gap: '10px',
-                               transform: 'translateY(0px)'
-                              }
-                             : {display: 'flex',
-                             justifyContent: 'center',
-                             gap: '10px',
-                            transform: 'translateY(7.4px)'
-                           }}
+                            sx={{ display: 'flex', justifyContent: 'center', gap: '10px' , }}
                           >
-                            <IconButton size='small' onClick={() => setStudentToEdit(item)}>
-                              <Icon icon='tabler:edit' />
-                            </IconButton>
 
-                            <IconButton size='small' onClick={() => setStudentToView(item)}>
-                              <Icon icon='tabler:eye' />
-                            </IconButton>
-
-                            {/* {item.status &&  <IconButton size='small' onClick={() => doDelete(item)}>
-                            <Icon icon='tabler:trash' />
-                          </IconButton>
-                            } */}
-
-                            <FormGroup row sx={{ transform: 'translateX(-44%)' }}>
+                            <FormGroup row sx={{ transform: 'translateX(-4%)' }}>
                               <FormControlLabel
                                 value='start'
                                 label=''
@@ -312,6 +333,44 @@ const StudentsTable = () => {
                                 control={<Switch checked={item.status} onChange={() => handleToggle(item)} />}
                               />
                             </FormGroup>
+
+                            <>
+                        <IconButton size='small' onClick={event => handleRowOptionsClick(event, i)}>
+                          <Icon icon='tabler:dots-vertical' />
+                        </IconButton>
+                        <Menu
+                          keepMounted
+                          anchorEl={anchorEl[i]}
+                          open={Boolean(anchorEl[i])}
+                          onClose={() => handleRowOptionsClose(i)}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right'
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right'
+                          }}
+                          PaperProps={{ style: { minWidth: '8rem' } }}
+                        >
+                          <MenuItem onClick={() => setStudentToEdit(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:edit' fontSize={20} />
+                            Edit Student
+                          </MenuItem>
+                          <MenuItem onClick={() => setStudentToView(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:eye' fontSize={20} />
+                            View Student
+                          </MenuItem>
+                          <MenuItem onClick={() => setStudentToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Category
+                          </MenuItem>
+                          <MenuItem onClick={() => setStudentToAssignHostelCategories(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Hostel Category
+                          </MenuItem>
+                          </Menu>
+                          </>
                           </TableCell>
                         </TableRow>
                       )
@@ -348,6 +407,8 @@ const StudentsTable = () => {
         />
         <ViewStudent open={openViewDrawer} closeCanvas={closeViewModal} student={studentInView} />
         <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+        <AssignGeneralCategory open={openStudentCategoryDrawer} toggle={toggleCategoryModal} Student={studentToAssignCategory} page={page}/>
+        <AssignHostelCategory open={openHostelCategoryDrawer} toggle={toggleHostelCategoryModal} Student={studentToAssignHostelCategory} page={page}/>
       </Fragment>
     </>
   )
