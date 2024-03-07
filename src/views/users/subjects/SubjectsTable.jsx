@@ -23,6 +23,7 @@ import PageHeader from '../component/PageHeader'
 import AssignSubjectTeacher from './ManageSubjectTeacher'
 import ManageSubjectTeacher from './ManageSubjectTeacher'
 import ManageGradingParameter from './ManageGradingParameter'
+import AssignSubjectCategories from './SubjectCategoriesModal'
 
 const SubjectsTable = () => {
   const dispatch = useAppDispatch()
@@ -35,26 +36,26 @@ const SubjectsTable = () => {
   const [openModal, setOpenModal] = useState(false)
   const [openParameterModal, setOpenParameterModal] = useState(false)
   const [openAssignSubjectModal, setAssignSubjectModal] = useState(false)
+  const [assignSubject, setAssignSubject] = useState(false)
+  const [openCategoryModal, setCategoryModal] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState(null)
   const [type, setType] = useState('')
   const [subjectToAssign, setSubjectToAssign] = useState(null)
   const [subjectToAssignParameter, setSubjectToAssignParameter] = useState(null)
-  const [assignSubject, setAssignSubject] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(Array(SubjectsList?.length)?.fill(null));
+  const [subjectToAssignCategory, setSubjectToAssignCategory] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(Array(SubjectsList?.length)?.fill(null))
 
+  const handleRowOptionsClick = (event, index) => {
+    const newAnchorEl = [...anchorEl]
+    newAnchorEl[index] = event.currentTarget
+    setAnchorEl(newAnchorEl)
+  }
 
-const handleRowOptionsClick = (event, index) => {
-    const newAnchorEl = [...anchorEl];
-    newAnchorEl[index] = event.currentTarget;
-    setAnchorEl(newAnchorEl);
-  };
-
-
-const handleRowOptionsClose = (index) => {
-    const newAnchorEl = [...anchorEl];
-    newAnchorEl[index] = null;
-    setAnchorEl(newAnchorEl);
-  };
+  const handleRowOptionsClose = index => {
+    const newAnchorEl = [...anchorEl]
+    newAnchorEl[index] = null
+    setAnchorEl(newAnchorEl)
+  }
 
   const OpenSubjectModal = () => {
     if (openModal) {
@@ -74,8 +75,12 @@ const handleRowOptionsClose = (index) => {
     }
   }
 
-  const toggleParameterModal = ()=>{
+  const toggleParameterModal = () => {
     setOpenParameterModal(!openParameterModal)
+  }
+
+  const toggleCategoryModal = () => {
+    setCategoryModal(!openCategoryModal)
   }
 
   const setSubjectToAssignTeacher = value => {
@@ -104,6 +109,12 @@ const handleRowOptionsClose = (index) => {
     handleRowOptionsClose(SubjectsList?.indexOf(value))
     toggleParameterModal()
     setSubjectToAssignParameter(value)
+  }
+
+  const setSubjectToAssignCategories = value => {
+    handleRowOptionsClose(SubjectsList?.indexOf(value))
+    toggleCategoryModal()
+    setSubjectToAssignCategory(value)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -156,7 +167,7 @@ const handleRowOptionsClose = (index) => {
                 Name
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Category
+                Categories
               </TableCell>
               {/* <TableCell align='center' sx={{ minWidth: 100 }}>
                 Created By
@@ -185,7 +196,14 @@ const handleRowOptionsClose = (index) => {
                       {item?.name || '--'}
                     </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {item?.category.name || '--'}
+                      {item?.categories.length > 0
+                        ? item?.categories?.map((category, index) => (
+                            <Fragment key={category.id}>
+                              {index > 0 && ', '}
+                              <span>{category?.name}</span>
+                            </Fragment>
+                          ))
+                        : '--'}
                     </TableCell>
                     {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
                     <TableCell align='center'>
@@ -210,9 +228,8 @@ const handleRowOptionsClose = (index) => {
                       )} */}
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-
                       <>
-                        <IconButton size='small' onClick={(event)=> handleRowOptionsClick(event, i)}>
+                        <IconButton size='small' onClick={event => handleRowOptionsClick(event, i)}>
                           <Icon icon='tabler:dots-vertical' />
                         </IconButton>
                         <Menu
@@ -230,7 +247,6 @@ const handleRowOptionsClose = (index) => {
                           }}
                           PaperProps={{ style: { minWidth: '8rem' } }}
                         >
-                         
                           <MenuItem onClick={() => setActiveSubject(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:edit' fontSize={20} />
                             Edit Subject
@@ -244,16 +260,23 @@ const handleRowOptionsClose = (index) => {
                             Assign Teacher
                           </MenuItem>
 
-                          {item?.staffs?.length > 0 &&
-                            <MenuItem onClick={() => setSubjectToRemoveTeacher(item)} sx={{ '& svg': { mr: 2 } } }>
+                          {item?.staffs?.length > 0 && (
+                            <MenuItem onClick={() => setSubjectToRemoveTeacher(item)} sx={{ '& svg': { mr: 2 } }}>
                               <Icon icon='mingcute:user-remove-fill' fontSize={20} />
                               Remove Teacher
                             </MenuItem>
-                           }
-                          <MenuItem onClick={() => setSubjectToAssignGradingParameter(item)} sx={{ '& svg': { mr: 2 } } }>
-                              <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                              Assign Parameter
-                            </MenuItem>
+                          )}
+                          <MenuItem
+                            onClick={() => setSubjectToAssignGradingParameter(item)}
+                            sx={{ '& svg': { mr: 2 } }}
+                          >
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Parameter
+                          </MenuItem>
+                          <MenuItem onClick={() => setSubjectToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Category
+                          </MenuItem>
                         </Menu>
                       </>
                     </TableCell>
@@ -284,16 +307,26 @@ const handleRowOptionsClose = (index) => {
 
       {openModal && <ManageSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} />}
 
-      {openAssignSubjectModal && 
-      <ManageSubjectTeacher
-        open={openAssignSubjectModal}
-        toggle={toggleAssignModal}
-        subject={subjectToAssign}
-        status={assignSubject}
-      /> }
+      {openAssignSubjectModal && (
+        <ManageSubjectTeacher
+          open={openAssignSubjectModal}
+          toggle={toggleAssignModal}
+          subject={subjectToAssign}
+          status={assignSubject}
+        />
+      )}
 
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
-      <ManageGradingParameter open={openParameterModal} toggle={toggleParameterModal}  subject={subjectToAssignParameter} />
+      <ManageGradingParameter
+        open={openParameterModal}
+        toggle={toggleParameterModal}
+        subject={subjectToAssignParameter}
+      />
+      <AssignSubjectCategories
+        open={openCategoryModal}
+        toggle={toggleCategoryModal}
+        Subject={subjectToAssignCategory}
+      />
     </Fragment>
   )
 }
