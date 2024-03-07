@@ -90,3 +90,17 @@ export const fetchSubjects = createAsyncThunk('subjects', async (query) => {
       notifyError('Unable to Remove Subject From Teacher')
     }
   }
+
+  export const assignSubjectCategory = async (payload)=>{
+    try {
+      const res = await axios.post('/subjects/addcategory', payload)
+
+      if(res.data.success){
+        notifySuccess('Category Assigned')
+      }
+
+      return res
+    } catch (error) {
+      notifyError('Unable to Assign Category To Subject')
+    }
+  }

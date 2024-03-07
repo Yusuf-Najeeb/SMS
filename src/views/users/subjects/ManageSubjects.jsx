@@ -51,8 +51,9 @@ const schema = yup.object().shape({
 
 const defaultValues = {
   name: '',
-  category_name: '',
-  categoryId: ''
+
+  // category_name: '',
+  // categoryId: ''
 }
 
 const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
@@ -98,7 +99,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
     const teacherIds = itemsArray.map(item => item.id);
 
-    let payload 
+    let payload = {name: data.name}
 
     if(data.categoryId !== ''){
         payload = {
