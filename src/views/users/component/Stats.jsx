@@ -14,7 +14,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 
 export const SummaryStats = (props) => {
   // ** Props
-  const { sx, icon, stats, iconSize = 24, avatarSize = 30, title, avatarColor = 'primary' } = props
+  const { sx, icon, stats, iconSize = 24, avatarSize = 30, title, avatarColor = 'info' } = props
 
   return (
     <Card sx={{ ...sx }}>

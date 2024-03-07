@@ -50,7 +50,7 @@ const renderClient = row => {
         skin='light'
 
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
-        color='primary'
+        color='info'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
         {getInitials(initials || 'John Doe')}
@@ -60,7 +60,7 @@ const renderClient = row => {
 }
 
 export const TableCellStyled = styled(TableCell)(({ theme }) => ({
-  color: `${theme.palette.primary.main} !important`
+  // color: `${theme.palette.primary.main} !important`
 }))
 
 const GuardianTable = () => {
