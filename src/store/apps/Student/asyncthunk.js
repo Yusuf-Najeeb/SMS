@@ -73,8 +73,6 @@ export const getStudentByIdentification = async(id)=>{
   try {
     const response = await axios.get(`/students/identification/${id}`)
 
-    console.log(response, 'single student')
-
     return response
   } catch (error) {
     

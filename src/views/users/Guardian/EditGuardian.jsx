@@ -13,9 +13,10 @@ import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
-import InputAdornment from '@mui/material/InputAdornment'
+import Typography from '@mui/material/Typography'
 
-import { CircularProgress, MenuItem } from '@mui/material'
+import { Alert, CircularProgress, MenuItem } from '@mui/material'
+import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
 
 import DatePicker from 'react-datepicker'
 
@@ -30,6 +31,7 @@ import { updateGuardianSchema } from 'src/@core/Formschema'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { updateGuardian } from '../../../store/apps/guardian/asyncthunk'
 import SearchStudent from './SearchStudent'
+import { handleInputImageChange } from '../../../@core/utils/uploadImage'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -51,6 +53,12 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
 })
 
 const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
+
+  const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
+
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(`${backendURL?.replace('api', '')}/${selectedGuardian?.profilePicture}`)
+  const [imageLinkPayload, setImageLinkPayload] = useState(null)
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
 
@@ -122,7 +130,7 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
       
       const { dateOfBirth, ...restOfData } = changedFields
   
-      const formattedDate = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
+      const formattedDOB = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
 
       const existingStudentIds = selectedGuardian.students.map(item => item.parentStudents.studentId)
   
@@ -130,7 +138,20 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
 
       const ids = [...existingStudentIds, ...studentIds]
   
-      const payload = { dateOfBirth: formattedDate, ...restOfData, studentIds: ids }
+      const payload = { 
+        ...(imageLinkPayload ? { profilePicture: imageLinkPayload } : {}),
+        ...(changedFields.hasOwnProperty('firstName') && { firstName: changedFields.firstName }),
+      ...(changedFields.hasOwnProperty('lastName') && { lastName: changedFields.lastName }),
+      ...(changedFields.hasOwnProperty('middleName') && { middleName: changedFields.middleName }),
+      ...(changedFields.hasOwnProperty('email') && { email: changedFields.email }),
+      ...(changedFields.hasOwnProperty('phone') && { phone: changedFields.phone }),
+      ...(changedFields.hasOwnProperty('religion') && { religion: changedFields.religion }),
+      ...(changedFields.hasOwnProperty('ethnicity') && { ethnicity: changedFields.ethnicity }),
+      ...(changedFields.hasOwnProperty('dateOfBirth') && { dateOfBirth: formattedDOB }),
+      ...(changedFields.hasOwnProperty('gender') && { gender: changedFields.gender }),
+      ...(changedFields.hasOwnProperty('residentialAddress') && { residentialAddress: changedFields.residentialAddress }),
+      ...(changedFields.hasOwnProperty('relationship') && { relationship: changedFields.relationship }),
+         studentIds: ids }
 
 
     updateGuardian(payload, selectedGuardian.email).then((response)=> {
@@ -138,6 +159,8 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
                 reset()
                 closeModal()
                 fetchData()
+                setPreviewUrl('')
+                setItemsArray([])
               }
          })
 
@@ -164,6 +187,58 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
         <CustomCloseButton onClick={closeModal}>
           <Icon icon='tabler:x' fontSize='1.25rem' />
         </CustomCloseButton>
+
+        <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
+              <Grid item xs={12} sm={6}>
+                <Box
+                  sx={{
+                    border: '3px dotted black',
+                    borderRadius: 3,
+                    p: 3,
+                    display: 'flex',
+                    textAlign: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column'
+                  }}
+                >
+                  <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
+                    <input
+                      hidden
+                      type='file'
+                      accept='image/png, image/jpeg'
+                      onChange={e => handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
+                      id='account-settings-upload-image'
+                    />
+
+                    <Icon icon='tabler:upload' fontSize='1.45rem' />
+                  </ButtonStyled>
+                  <Typography variant='body2' sx={{ mt: 2 }}>
+                    Upload Student Image
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center'
+                }}
+              >
+                {previewUrl.includes('uploads') || previewUrl.includes('blob') &&
+                <img
+                  src={`${previewUrl}`}
+                  width={120}
+                  height={100}
+                  
+                  style={{ objectFit: 'cover', objectPosition: 'center', outline: 'none', borderColor: 'none' }}
+                  alt=''
+                />
+              } 
+              </Box>
+            </Grid>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent
@@ -457,6 +532,20 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
               </Grid>
               
             </Grid>
+
+            {itemsArray?.length > 0 && 
+            <Grid item sx={{mt: 5}} xs={12} sm={12} md={12}>
+              <Typography variant='h5'>Selected Students </Typography>
+          <Alert severity='success'>  
+          {itemsArray?.map((student, index) => (
+                            <Fragment key={student.id}>
+                              {index > 0 && ', '}
+                              <span>{`${index + 1}. ${student?.firstName} ${student?.lastName}`}</span>
+                            </Fragment>
+                          ))}
+           </Alert>
+          </Grid>
+          }
           </DialogContent>
 
          
