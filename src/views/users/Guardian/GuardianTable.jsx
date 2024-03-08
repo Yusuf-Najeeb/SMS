@@ -41,7 +41,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
-        sx={{ mr: 2.5, width: 32, height: 32 }}
+        sx={{ mr: 2.5, width: 32, height: 32, transform: 'translateY(10px)' }}
       />
     )
   } else {

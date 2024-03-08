@@ -16,7 +16,7 @@ import { styled } from '@mui/material/styles'
 import Avatar from '@mui/material/Avatar'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { Card, CardContent, CircularProgress, Divider, MenuItem, Step, StepLabel, Stepper, Typography } from '@mui/material'
+import { Card, CardContent, CircularProgress, Divider, FormControlLabel, FormGroup, MenuItem, Step, StepLabel, Stepper, Switch, Typography } from '@mui/material'
 
 import DatePicker from 'react-datepicker'
 
@@ -51,6 +51,7 @@ import SelectedGuardianTable from './SelectedGuardianTable'
 import { useClasses } from '../../../hooks/useClassess'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useAppDispatch } from '../../../hooks'
+import SearchedGuardianTable from './SearchedGuardianTable'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -81,6 +82,16 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [imageLinkPayload, setImageLinkPayload] = useState('')
   const [guardianArray, setGuardianArray] = useState([])
   const [selectedGuardianId, setSelectedGuardianId] = useState(0)
+  const [showSearchModal, setShowSearchModal] = useState(false)
+
+  const handleChange = event => {
+    if(event.target.checked == true){
+      toggleParentModal()
+      setShowSearchModal(event.target.checked)
+    }else {
+      setShowSearchModal(event.target.checked)
+    }
+  }
 
   const toggleParentModal = ()=> {
     closeModal()
@@ -710,7 +721,8 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 </Typography>
               </Grid>
 
-
+              {!showSearchModal ? 
+              <Fragment>
               <Grid item xs={12} sm={4}>
                 <FormController name='firstName' control={guardianInfoControl} requireBoolean={false} label="Guardian's First Name" error={guardianInfoErrors['firstName']} errorMessage={guardianInfoErrors.firstName?.message} />
               </Grid>
@@ -797,15 +809,36 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
 
               <SelectedGuardianTable tableData={guardianArray} updateTable={setGuardianArray} />
 
+              </Fragment>
+
+              : <Fragment>
+              <SearchedGuardianTable tableData={itemsArray}/>
+            </Fragment>
+               }
+
+
+              <FormGroup row>
+            <FormControlLabel
+              value='start'
+              label= {'Search Guardian'}
+              labelPlacement='start'
+              sx={{ mr: 4 }}
+              control={<Switch checked={showSearchModal} onChange={handleChange} />}
+            />
+          </FormGroup>
+
+
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 
                 <Button variant='tonal' color='secondary' onClick={handleBack}>
                   Back
                 </Button>
-                <Button type='button' variant='outlined' onClick={toggleParentModal}>
+
+                {/* <Button type='button' variant='outlined' onClick={toggleParentModal}>
               Select Guardian
-            </Button>
+            </Button> */}
+
                 <Button type='submit' variant='contained' >
                   Create
                 </Button>

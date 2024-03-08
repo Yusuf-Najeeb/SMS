@@ -18,7 +18,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
 
-import { CircularProgress, MenuItem } from '@mui/material'
+import { Alert, CircularProgress, MenuItem } from '@mui/material'
 
 import DatePicker from 'react-datepicker'
 
@@ -58,7 +58,6 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
 })
 
 const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
-
   const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
   const [selectedImage, setSelectedImage] = useState(null)
@@ -67,12 +66,8 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
 
-  console.log(selectedStudent, 'selected student')
-
-
   const dispatch = useAppDispatch()
   const [ClassesList] = useClasses()
-
 
   const toggleParentModal = () => {
     closeModal()
@@ -106,7 +101,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(updateStudentSchema) })
 
   useEffect(() => {
-    dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
+    dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -130,8 +125,9 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       setValue('dateOfBirth', new Date(selectedStudent.dateOfBirth))
       setValue('registrationDate', new Date(selectedStudent.registrationDate))
       Number(setValue('currentClassId', selectedStudent.classId))
-      selectedStudent?.isStaffChild !== null ? setValue('isStaffChild', selectedStudent.isStaffChild) : setValue('isStaffChild', false)
-      
+      selectedStudent?.isStaffChild !== null
+        ? setValue('isStaffChild', selectedStudent.isStaffChild)
+        : setValue('isStaffChild', false)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,7 +150,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
 
     const formattedDOB = formatDateToYYYMMDDD(dateOfBirth)
 
-    const formattedRegDate = (registrationDate !== '') ? formatDateToYYYMMDDD(registrationDate) : ''
+    const formattedRegDate = registrationDate !== '' ? formatDateToYYYMMDDD(registrationDate) : ''
 
     const existingParentIds = selectedStudent.parents.map(item => item.parentStudents.parentId)
 
@@ -178,9 +174,10 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       ...(changedFields.hasOwnProperty('gender') && { gender: changedFields.gender }),
       ...(changedFields.hasOwnProperty('isStaffChild') && { isStaffChild: changedFields.isStaffChild }),
       ...(changedFields.hasOwnProperty('lastSchool') && { lastSchool: changedFields.lastSchool }),
-      ...(changedFields.hasOwnProperty('residentialAddress') && { residentialAddress: changedFields.residentialAddress }),
+      ...(changedFields.hasOwnProperty('residentialAddress') && {
+        residentialAddress: changedFields.residentialAddress
+      })
     }
-
 
     updateStudent(payload, selectedStudent.id).then(response => {
       if (response.data.success) {
@@ -188,6 +185,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
         closeModal()
         fetchData()
         setPreviewUrl('')
+        setItemsArray([])
       }
     })
   }
@@ -199,7 +197,6 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-
         //   TransitionComponent={Transition}
         sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 990 } }}
       >
@@ -214,56 +211,56 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
           </CustomCloseButton>
 
           <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
-              <Grid item xs={12} sm={6}>
-                <Box
-                  sx={{
-                    border: '3px dotted black',
-                    borderRadius: 3,
-                    p: 3,
-                    display: 'flex',
-                    textAlign: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column'
-                  }}
-                >
-                  <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                    <input
-                      hidden
-                      type='file'
-                      accept='image/png, image/jpeg'
-                      onChange={e => handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
-                      id='account-settings-upload-image'
-                    />
-
-                    <Icon icon='tabler:upload' fontSize='1.45rem' />
-                  </ButtonStyled>
-                  <Typography variant='body2' sx={{ mt: 2 }}>
-                    Upload Student Image
-                  </Typography>
-                </Box>
-              </Grid>
-
+            <Grid item xs={12} sm={6}>
               <Box
                 sx={{
+                  border: '3px dotted black',
+                  borderRadius: 3,
+                  p: 3,
                   display: 'flex',
-                  flexDirection: 'column',
                   textAlign: 'center',
                   alignItems: 'center',
-                  alignSelf: 'center'
+                  flexDirection: 'column'
                 }}
               >
-                {previewUrl.includes('uploads') || previewUrl.includes('blob') &&
-                <img
-                  src={`${previewUrl}`}
-                  width={120}
-                  height={100}
-                  
-                  style={{ objectFit: 'cover', objectPosition: 'center', outline: 'none', borderColor: 'none' }}
-                  alt=''
-                />
-              } 
+                <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
+                  <input
+                    hidden
+                    type='file'
+                    accept='image/png, image/jpeg'
+                    onChange={e => handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
+                    id='account-settings-upload-image'
+                  />
+
+                  <Icon icon='tabler:upload' fontSize='1.45rem' />
+                </ButtonStyled>
+                <Typography variant='body2' sx={{ mt: 2 }}>
+                  Upload Student Image
+                </Typography>
               </Box>
             </Grid>
+
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                textAlign: 'center',
+                alignItems: 'center',
+                alignSelf: 'center'
+              }}
+            >
+              {previewUrl.includes('uploads') ||
+                (previewUrl.includes('blob') && (
+                  <img
+                    src={`${previewUrl}`}
+                    width={120}
+                    height={100}
+                    style={{ objectFit: 'cover', objectPosition: 'center', outline: 'none', borderColor: 'none' }}
+                    alt=''
+                  />
+                ))}
+            </Box>
+          </Grid>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent
@@ -392,31 +389,31 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={4}>
-                <Controller
-                  name='registrationDate'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <DatePicker
-                      selected={value}
-                      popperPlacement='bottom-end'
-                      showYearDropdown
-                      showMonthDropdown
-                      onChange={e => onChange(e)}
-                      placeholderText='2022-05-07'
-                      customInput={
-                        <CustomInput
-                          value={value}
-                          onChange={onChange}
-                          label='Registration Date'
-                          error={Boolean(errors.registrationDate)}
-                          {...(errors.registrationDate && { helperText: errors.registrationDate.message })}
-                        />
-                      }
-                    />
-                  )}
-                />
-              </Grid>
+                  <Controller
+                    name='registrationDate'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <DatePicker
+                        selected={value}
+                        popperPlacement='bottom-end'
+                        showYearDropdown
+                        showMonthDropdown
+                        onChange={e => onChange(e)}
+                        placeholderText='2022-05-07'
+                        customInput={
+                          <CustomInput
+                            value={value}
+                            onChange={onChange}
+                            label='Registration Date'
+                            error={Boolean(errors.registrationDate)}
+                            {...(errors.registrationDate && { helperText: errors.registrationDate.message })}
+                          />
+                        }
+                      />
+                    )}
+                  />
+                </Grid>
 
                 <Grid item xs={12} sm={12} md={4}>
                   <Controller
@@ -444,7 +441,6 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                     )}
                   />
                 </Grid>
-
 
                 <Grid item xs={12} sm={12} md={4}>
                   <Controller
@@ -491,100 +487,116 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='currentClassId'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      select
-                      fullWidth
-                      required
-                      value={value}
-                      label='Class'
-                      onChange={onChange}
-                      id='stepper-linear-personal-currentClassId'
-                      error={Boolean(errors.currentClassId)}
-                      aria-describedby='stepper-linear-personal-currentClassId-helper'
-                      {...(errors.currentClassId && { helperText: errors.currentClassId.message })}
-                    >
+                  <Controller
+                    name='currentClassId'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        select
+                        fullWidth
+                        required
+                        value={value}
+                        label='Class'
+                        onChange={onChange}
+                        id='stepper-linear-personal-currentClassId'
+                        error={Boolean(errors.currentClassId)}
+                        aria-describedby='stepper-linear-personal-currentClassId-helper'
+                        {...(errors.currentClassId && { helperText: errors.currentClassId.message })}
+                      >
                         <MenuItem value=''>Select Class</MenuItem>
-                        {ClassesList?.map((item)=> {
-                            return (
-                                <MenuItem key={item.id} value={item.id} sx={{textTransform: 'uppercase'}}>{`${item.name.toUpperCase()} ${item.type}`}</MenuItem>
-                            )
+                        {ClassesList?.map(item => {
+                          return (
+                            <MenuItem
+                              key={item.id}
+                              value={item.id}
+                              sx={{ textTransform: 'uppercase' }}
+                            >{`${item.name.toUpperCase()} ${item.type}`}</MenuItem>
+                          )
                         })}
-                      
-                    </CustomTextField>
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='lastSchool'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      label='Last School Attended'
-                      placeholder='BTC Academy'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.lastSchool)}
-                      {...(errors.lastSchool && { helperText: errors.lastSchool.message})}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={6}>
-                <Controller
-                  name='isStaffChild'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      select
-                      required
-                      fullWidth
-                      label='Staff Child'
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.isStaffChild)}
-                      {...(errors.isStaffChild && { helperText: errors.isStaffChild.message})}
-                    >
-                      <MenuItem value={''}>Select Staff Child Status</MenuItem>
-                      <MenuItem value={true}>True</MenuItem>
-                      <MenuItem value={false}>False</MenuItem>
                       </CustomTextField>
-                  )}
-                />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={6}>
+                  <Controller
+                    name='lastSchool'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        label='Last School Attended'
+                        placeholder='BTC Academy'
+                        value={value}
+                        onChange={onChange}
+                        error={Boolean(errors.lastSchool)}
+                        {...(errors.lastSchool && { helperText: errors.lastSchool.message })}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={6}>
+                  <Controller
+                    name='isStaffChild'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        select
+                        required
+                        fullWidth
+                        label='Staff Child'
+                        value={value}
+                        onChange={onChange}
+                        error={Boolean(errors.isStaffChild)}
+                        {...(errors.isStaffChild && { helperText: errors.isStaffChild.message })}
+                      >
+                        <MenuItem value={''}>Select Staff Child Status</MenuItem>
+                        <MenuItem value={true}>True</MenuItem>
+                        <MenuItem value={false}>False</MenuItem>
+                      </CustomTextField>
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={12}>
+                  <Controller
+                    name='residentialAddress'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        rows={2}
+                        multiline
+                        label='Residential Address'
+                        placeholder='24, school ave'
+                        value={value}
+                        onChange={onChange}
+                        error={Boolean(errors.residentialAddress)}
+                        {...(errors.residentialAddress && { helperText: errors.residentialAddress.message })}
+                      />
+                    )}
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item xs={12} sm={12} md={12}>
-                <Controller
-                  name='residentialAddress'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      fullWidth
-                      rows={2}
-                      multiline
-                      label='Residential Address'
-                      placeholder="24, school ave"
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(errors.residentialAddress)}
-                      {...(errors.residentialAddress && { helperText:errors.residentialAddress.message })}
-                    />
-                  )}
-                />
-              </Grid>
-
-              </Grid>
+              {itemsArray?.length > 0 && (
+                <Grid item sx={{ mt: 5 }} xs={12} sm={12} md={12}>
+                  <Typography variant='h5'>Selected Guardian </Typography>
+                  <Alert severity='success'>
+                    {itemsArray?.map((guardian, index) => (
+                      <Fragment key={guardian.id}>
+                        {index > 0 && ', '}
+                        <span>{`${index + 1}. ${guardian?.firstName} ${guardian?.lastName}`}</span>
+                      </Fragment>
+                    ))}
+                  </Alert>
+                </Grid>
+              )}
             </DialogContent>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>

@@ -15,7 +15,7 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { CircularProgress, MenuItem, Typography } from '@mui/material'
+import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
 
 import DatePicker from 'react-datepicker'
 
@@ -105,6 +105,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                 reset()
                 closeModal()
                 refetchData()
+                setItemsArray([])
               }
          })
 
@@ -486,7 +487,23 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
               </Grid>
               
             </Grid>
+
+            {itemsArray?.length > 0 && 
+            <Grid item sx={{mt: 5}} xs={12} sm={12} md={12}>
+              <Typography variant='h5'>Selected Students </Typography>
+          <Alert severity='success'>  
+          {itemsArray?.map((student, index) => (
+                            <Fragment key={student.id}>
+                              {index > 0 && ', '}
+                              <span>{`${index + 1}. ${student?.firstName} ${student?.lastName}`}</span>
+                            </Fragment>
+                          ))}
+           </Alert>
+          </Grid>
+          }
+
           </DialogContent>
+
 
          
 

@@ -54,7 +54,7 @@ const renderClient = row => {
 
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='info'
-        sx={{ mr: 2.5, width: 30, height: 30, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
+        sx={{ mr: 2.5, width: 32, height: 32, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
         {getInitials(initials || 'John Doe')}
       </CustomAvatar>
@@ -268,7 +268,20 @@ const StudentsTable = () => {
 
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
-                          <TableCell align='left' sx={{ display: 'flex', gap: '10px' }}>
+                          <TableCell align='left' 
+                               sx={ item?.profilePicture.length > 5 ? {
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                gap: '8px',
+                               transform: 'translateY(10.8px)'
+                              }
+                             : {display: 'flex',
+                            //  justifyContent: 'center',
+                             gap: '8px',
+                            transform: 'translateY(0.7px)'
+                           }}
+                          
+                          >
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
@@ -323,6 +336,18 @@ const StudentsTable = () => {
                           <TableCell
                             align='left'
                             sx={{ display: 'flex', justifyContent: 'center', gap: '10px' , }}
+
+                        //     sx={ item?.profilePicture.length > 5 ? {
+                        //         display: 'flex',
+                        //         justifyContent: 'center',
+                        //         gap: '10px',
+                        //        transform: 'translateY(0px)'
+                        //       }
+                        //      : {display: 'flex',
+                        //      justifyContent: 'center',
+                        //      gap: '10px',
+                        //     transform: 'translateY(7.4px)'
+                        //    }}
                           >
 
                             <FormGroup row sx={{ transform: 'translateX(-4%)' }}>
@@ -369,6 +394,7 @@ const StudentsTable = () => {
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Hostel Category
                           </MenuItem> */}
+                            
                           </Menu>
                           </>
                           </TableCell>

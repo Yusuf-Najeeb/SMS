@@ -55,29 +55,53 @@ const StudentCard = ({ Student }) => {
   // ** States
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
-  const [studentClass, setStudentClass] = useState()
+  const [studentClass, setStudentClass] = useState({})
+  const [activeStudent, setActiveStudent] = useState({})
+
+  
 
 
   const [ClassesList] = useClasses()
 
  useEffect(()=>{
+  let isMounted = true;
 
   if(ClassesList.length > 1){
+
     const classInfo =  ClassesList.find((c)=> c.id === Student.classId)
-    setStudentClass(classInfo)
+    if(isMounted){
+      setStudentClass({...classInfo})
+    }
   }
+   // Cleanup function
+   return () => {
+    isMounted = false;
+    setStudentClass({});
+};
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
  },[])
 
 
-  useEffect(() => {
-    if (Student) {
-      setInitials(`${Student.firstName} ${Student.lastName}`)
+ useEffect(() => {
+  let isMounted = true;
 
-      getStudentByIdentification(Student?.identificationNumber).then((res)=> console.log(res, 'res'))
-    }
-  }, [Student])
+  if (Student) {
+      setInitials(`${Student.firstName} ${Student.lastName}`);
+
+      getStudentByIdentification(Student?.identificationNumber).then((res) => {
+          if (isMounted) {
+              setActiveStudent({ ...res });
+          }
+      });
+  }
+
+  // Cleanup function
+  return () => {
+      isMounted = false;
+      setActiveStudent({});
+  };
+}, [Student]);
 
   useEffect(() => {
     if (Student) {
@@ -103,7 +127,7 @@ const StudentCard = ({ Student }) => {
               ) : (
                 <CustomAvatar
                   skin='light'
-                  color='primary'
+                  color='info'
                   sx={{
                     mr: 2.5,
                     width: 50,
@@ -125,13 +149,13 @@ const StudentCard = ({ Student }) => {
                 rounded
                 skin='light'
                 size='small'
-                label={'Student'}
-                color='primary'
+                label={activeStudent?.categories?.length > 0 ? `${activeStudent?.categories[0]?.name} Student` : 'Student'}
+                color='info'
                 sx={{ textTransform: 'capitalize' }}
               />
             </Box>
             <Box sx={{ display: 'flex', position: 'relative' }}>
-              <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'primary.main', fontSize: '2rem !important' }}>
+              <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'secondary.main', fontSize: '2rem !important' }}>
                 {/* {grossSalary.toLocaleString()} */}
                 {/* {formatCurrency(grossSalary, true)} */}
                 {`${studentClass?.name} ${studentClass?.type}`}
@@ -143,7 +167,7 @@ const StudentCard = ({ Student }) => {
           <CardContent sx={{ pt: theme => `${theme.spacing(2)} !important` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
-                <CustomAvatar skin='light' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
+                <CustomAvatar skin='light' color='info' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
                   <Icon fontSize='1.75rem' icon='fluent-mdl2:date-time-2' />
                 </CustomAvatar>
                 <div>
