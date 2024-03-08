@@ -637,8 +637,8 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       {...(errors.isStaffChild && { helperText: errors.isStaffChild.message})}
                     >
                       <MenuItem value={''}>Select Staff Child Status</MenuItem>
-                      <MenuItem value={false}>False</MenuItem>
                       <MenuItem value={true}>True</MenuItem>
+                      <MenuItem value={false}>False</MenuItem>
                       </CustomTextField>
                   )}
                 />

@@ -365,10 +365,10 @@ const StudentsTable = () => {
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Category
                           </MenuItem>
-                          <MenuItem onClick={() => setStudentToAssignHostelCategories(item)} sx={{ '& svg': { mr: 2 } }}>
+                          {/* <MenuItem onClick={() => setStudentToAssignHostelCategories(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Hostel Category
-                          </MenuItem>
+                          </MenuItem> */}
                           </Menu>
                           </>
                           </TableCell>
@@ -407,8 +407,8 @@ const StudentsTable = () => {
         />
         <ViewStudent open={openViewDrawer} closeCanvas={closeViewModal} student={studentInView} />
         <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
-        <AssignGeneralCategory open={openStudentCategoryDrawer} toggle={toggleCategoryModal} Student={studentToAssignCategory} page={page}/>
-        <AssignHostelCategory open={openHostelCategoryDrawer} toggle={toggleHostelCategoryModal} Student={studentToAssignHostelCategory} page={page}/>
+        {studentToAssignCategory &&  <AssignGeneralCategory open={openStudentCategoryDrawer} toggle={toggleCategoryModal} Student={studentToAssignCategory} page={page}/> }
+        {studentToAssignHostelCategory && <AssignHostelCategory open={openHostelCategoryDrawer} toggle={toggleHostelCategoryModal} Student={studentToAssignHostelCategory} page={page}/> }
       </Fragment>
     </>
   )
