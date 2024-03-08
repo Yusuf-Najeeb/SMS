@@ -141,7 +141,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
   const [activeStep, setActiveStep] = useState(0)
   const [openDepartmentsModal, setOpenDepartmentsModal] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState(`${backendURL?.replace('api', '')}/${selectedStaff.profilePicture}`)
+  const [previewUrl, setPreviewUrl] = useState(`${backendURL?.replace('api', '')}/${selectedStaff?.profilePicture}`)
   const [imageLinkPayload, setImageLinkPayload] = useState(null)
   const [refetch, setFetch] = useState(false)
 
@@ -378,6 +378,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
         setActiveStep(0)
         closeModal()
         refetchStaffs()
+        setPreviewUrl('')
       }
     })
   }

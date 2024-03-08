@@ -18,6 +18,7 @@ import { useClassTimetable } from '../../../hooks/useClassTimeTable';
 import { useCurrentSession } from '../../../hooks/useCurrentSession';
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk';
 import { useStaff } from '../../../hooks/useStaff';
+import { Box } from '@mui/system';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -75,10 +76,11 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
+        
         <AppBar sx={{ position: 'relative', }}>
           <Toolbar>
             
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
               {`${ClassRoom?.name} Timetable`}
             </Typography>
             {/* <Button autoFocus color="inherit" onClick={handleClose}>
@@ -94,18 +96,8 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
             </IconButton>
           </Toolbar>
         </AppBar>
-        {/* <List>
-          <ListItemButton>
-            <ListItemText primary="Phone ringtone" secondary="Titania" />
-          </ListItemButton>
-          <Divider />
-          <ListItemButton>
-            <ListItemText
-              primary="Default notification ringtone"
-              secondary="Tethys"
-            />
-          </ListItemButton>
-        </List> */}
+
+        {/* <Box sx={{ height: '100%', border: '1px solid red' }} > */}
 
 <Calendar
             store={TimetableData}
@@ -113,6 +105,8 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
             teachersData={StaffData?.result}
             calendarsColor={calendarsColor}
           />
+
+{/* </Box> */}
       </Dialog>
     </Fragment>
   );

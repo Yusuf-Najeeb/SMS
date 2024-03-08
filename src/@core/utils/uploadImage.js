@@ -17,6 +17,7 @@ export const handleInputImageChange = (e, setPreviewUrl, setSelectedImage,setIma
 
       if (file.type.startsWith('image/')) {
         const fileUrl = URL.createObjectURL(file)
+        // console.log(fileUrl, 'file url')
 
         const formData = new FormData();
         formData.append("picture", file);

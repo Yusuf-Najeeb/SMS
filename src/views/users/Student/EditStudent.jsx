@@ -12,8 +12,11 @@ import Icon from 'src/@core/components/icon'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
+
+import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
 
 import { CircularProgress, MenuItem } from '@mui/material'
 
@@ -33,6 +36,7 @@ import SearchParent from './SearchParent'
 import { useClasses } from '../../../hooks/useClassess'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useAppDispatch } from '../../../hooks'
+import { handleInputImageChange } from '../../../@core/utils/uploadImage'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -54,11 +58,17 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
 })
 
 const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
-  const [activeStep, setActiveStep] = useState(0)
+
+  const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
+
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(`${backendURL?.replace('api', '')}/${selectedStudent?.profilePicture}`)
+  const [imageLinkPayload, setImageLinkPayload] = useState(null)
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
 
   console.log(selectedStudent, 'selected student')
+
 
   const dispatch = useAppDispatch()
   const [ClassesList] = useClasses()
@@ -82,7 +92,8 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
     ethnicity: '',
     currentClassId: '',
     registrationDate: '',
-    lastSchool: ''
+    lastSchool: '',
+    isStaffChild: ''
   }
 
   const {
@@ -119,6 +130,8 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       setValue('dateOfBirth', new Date(selectedStudent.dateOfBirth))
       setValue('registrationDate', new Date(selectedStudent.registrationDate))
       Number(setValue('currentClassId', selectedStudent.classId))
+      selectedStudent?.isStaffChild !== null ? setValue('isStaffChild', selectedStudent.isStaffChild) : setValue('isStaffChild', false)
+      
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +152,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
 
     const { dateOfBirth, registrationDate, ...restOfData } = changedFields
 
-    const formattedDate = formatDateToYYYMMDDD(dateOfBirth)
+    const formattedDOB = formatDateToYYYMMDDD(dateOfBirth)
 
     const formattedRegDate = (registrationDate !== '') ? formatDateToYYYMMDDD(registrationDate) : ''
 
@@ -149,9 +162,24 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
 
     const ids = [...existingParentIds, ...parentIds]
 
-
-
-    const payload = { dateOfBirth: formattedDate, registrationDate: formattedRegDate, ...restOfData, parentIds: ids }
+    const payload = {
+      parentIds: ids,
+      ...(imageLinkPayload ? { profilePicture: imageLinkPayload } : {}),
+      ...(changedFields.hasOwnProperty('firstName') && { firstName: changedFields.firstName }),
+      ...(changedFields.hasOwnProperty('lastName') && { lastName: changedFields.lastName }),
+      ...(changedFields.hasOwnProperty('middleName') && { middleName: changedFields.middleName }),
+      ...(changedFields.hasOwnProperty('email') && { email: changedFields.email }),
+      ...(changedFields.hasOwnProperty('phone') && { phone: changedFields.phone }),
+      ...(changedFields.hasOwnProperty('religion') && { religion: changedFields.religion }),
+      ...(changedFields.hasOwnProperty('ethnicity') && { ethnicity: changedFields.ethnicity }),
+      ...(changedFields.hasOwnProperty('currentClassId') && { currentClassId: Number(changedFields.currentClassId) }),
+      ...(changedFields.hasOwnProperty('registrationDate') && { registrationDate: formattedRegDate }),
+      ...(changedFields.hasOwnProperty('dateOfBirth') && { dateOfBirth: formattedDOB }),
+      ...(changedFields.hasOwnProperty('gender') && { gender: changedFields.gender }),
+      ...(changedFields.hasOwnProperty('isStaffChild') && { isStaffChild: changedFields.isStaffChild }),
+      ...(changedFields.hasOwnProperty('lastSchool') && { lastSchool: changedFields.lastSchool }),
+      ...(changedFields.hasOwnProperty('residentialAddress') && { residentialAddress: changedFields.residentialAddress }),
+    }
 
 
     updateStudent(payload, selectedStudent.id).then(response => {
@@ -159,6 +187,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
         reset()
         closeModal()
         fetchData()
+        setPreviewUrl('')
       }
     })
   }
@@ -183,6 +212,58 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
           <CustomCloseButton onClick={closeModal}>
             <Icon icon='tabler:x' fontSize='1.25rem' />
           </CustomCloseButton>
+
+          <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
+              <Grid item xs={12} sm={6}>
+                <Box
+                  sx={{
+                    border: '3px dotted black',
+                    borderRadius: 3,
+                    p: 3,
+                    display: 'flex',
+                    textAlign: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column'
+                  }}
+                >
+                  <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
+                    <input
+                      hidden
+                      type='file'
+                      accept='image/png, image/jpeg'
+                      onChange={e => handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
+                      id='account-settings-upload-image'
+                    />
+
+                    <Icon icon='tabler:upload' fontSize='1.45rem' />
+                  </ButtonStyled>
+                  <Typography variant='body2' sx={{ mt: 2 }}>
+                    Upload Student Image
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center'
+                }}
+              >
+                {previewUrl.includes('uploads') || previewUrl.includes('blob') &&
+                <img
+                  src={`${previewUrl}`}
+                  width={120}
+                  height={100}
+                  
+                  style={{ objectFit: 'cover', objectPosition: 'center', outline: 'none', borderColor: 'none' }}
+                  alt=''
+                />
+              } 
+              </Box>
+            </Grid>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent
@@ -266,7 +347,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='gender'
                     control={control}
@@ -365,7 +446,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                 </Grid>
 
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='religion'
                     control={control}
@@ -390,7 +471,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={4}>
+                <Grid item xs={12} sm={12} md={6}>
                   <Controller
                     name='ethnicity'
                     control={control}
@@ -409,7 +490,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4} md={4}>
+                <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='currentClassId'
                   control={control}
@@ -439,7 +520,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='lastSchool'
                   control={control}
@@ -454,6 +535,30 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                       error={Boolean(errors.lastSchool)}
                       {...(errors.lastSchool && { helperText: errors.lastSchool.message})}
                     />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <Controller
+                  name='isStaffChild'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      required
+                      fullWidth
+                      label='Staff Child'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.isStaffChild)}
+                      {...(errors.isStaffChild && { helperText: errors.isStaffChild.message})}
+                    >
+                      <MenuItem value={''}>Select Staff Child Status</MenuItem>
+                      <MenuItem value={true}>True</MenuItem>
+                      <MenuItem value={false}>False</MenuItem>
+                      </CustomTextField>
                   )}
                 />
               </Grid>

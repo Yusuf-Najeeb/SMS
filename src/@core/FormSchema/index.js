@@ -242,6 +242,7 @@ export const updateStudentSchema = yup.object().shape({
   ethnicity: yup.string(),
   registrationDate: yup.string(),
   lastSchool: yup.string(),
+  isStaffChild: yup.boolean()
 })
 
 export const updateGuardianSchema = yup.object().shape({

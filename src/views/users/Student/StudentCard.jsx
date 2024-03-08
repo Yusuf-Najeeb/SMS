@@ -75,7 +75,7 @@ const StudentCard = ({ Student }) => {
     if (Student) {
       setInitials(`${Student.firstName} ${Student.lastName}`)
 
-      getStudentByIdentification(Student?.identificationNumber)
+      getStudentByIdentification(Student?.identificationNumber).then((res)=> console.log(res, 'res'))
     }
   }, [Student])
 
