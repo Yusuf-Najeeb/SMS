@@ -73,7 +73,9 @@ const StudentCard = ({ Student }) => {
       setStudentClass({...classInfo})
     }
   }
+
    // Cleanup function
+   
    return () => {
     isMounted = false;
     setStudentClass({});
