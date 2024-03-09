@@ -10,32 +10,28 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
 // ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
-
-// ** Third Party Imports
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useForm, Controller } from 'react-hook-form'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
-import { CircularProgress, FormControlLabel, FormGroup, MenuItem, Switch } from '@mui/material'
+import {
+  Checkbox,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from '@mui/material'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
-import { assignSubjectCategory, createSubject, fetchSubjects, updateSubject } from '../../../store/apps/subjects/asyncthunk'
-import { createRoom, fetchRooms, updateRoom } from '../../../store/apps/rooms/asyncthunk'
-import DataGrid from '../../../@core/theme/overrides/dataGrid'
+import { notifyError } from '../../../@core/components/toasts/notifyError'
+import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
+import axios from 'axios'
 
-const showErrors = (field, valueLen, min) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
+
 
 const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -44,51 +40,65 @@ const Header = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between'
 }))
 
-const schema = yup.object().shape({
-  categoryId: yup.string()
-})
+const ITEM_HEIGHT = 28
+const ITEM_PADDING_TOP = 8
 
-const defaultValues = {
-  categoryId: '',
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
 }
 
-const AssignSubjectCategories = ({ open, toggle, Subject  }) => {
+const AssignSubjectCategories = ({ open, toggle, Subject, page }) => {
   const dispatch = useAppDispatch()
   const [CategoriesData] = useCategories()
 
-  const {
-    reset,
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting }
-  } = useForm({
-    defaultValues,
-    mode: 'onChange',
-    resolver: yupResolver(schema)
-  })
+  const [CategoryNames, setCategoryNames] = useState([])
+  const [isSubmitting, setSubmitting] = useState(false)
 
-  const handleClose = () => {
-    toggle()
-    reset()
+  const handleChange = event => {
+    const {
+      target: { value }
+    } = event
+    setCategoryNames(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    )
   }
 
+  const onSubmit = async e => {
+    e.preventDefault()
 
-  const onSubmit = async data => {
-    let payload = {
-        categoryId: Number(data.categoryId),
-        subjectId: Subject.id
-      }
-    
+    const categoryId = CategoryNames.map(item => {
+      const matchingObject = CategoriesData.find(obj => obj.name === item)
 
-
-      assignSubjectCategory(payload).then(response => {
-      if (response?.data.success) {
-        handleClose()
-        dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
-      }
+      return matchingObject ? matchingObject.id : null
     })
-  }
 
+    const payload = {
+      subjectId: Subject.id,
+      categoryId
+    }
+
+    console.log(payload, 'payload')
+
+    try {
+      setSubmitting(true)
+      const res = await axios.post('/subjects/addcategory', payload)
+
+      if (res.data.success) {
+        toggle()
+        notifySuccess(categoryId.length > 1 ? 'Categories Assigned' : 'Category Assigned')
+        dispatch(fetchSubjects({ page: page == 0 ? page + 1 : page, limit: 10, categoryId: '' }))
+      }
+    } catch (error) {
+      setSubmitting(false)
+      notifyError(categoryId?.length > 1 ? 'Unable to Assign Categories' : 'Unable to Assign Category')
+    }
+  }
 
   useEffect(() => {
     dispatch(fetchCategories({ page: 1, limit: 300, type: 'subject' }))
@@ -108,7 +118,7 @@ const AssignSubjectCategories = ({ open, toggle, Subject  }) => {
         <Typography variant='h5'>Assign Category</Typography>
         <IconButton
           size='small'
-          onClick={handleClose}
+          onClick={toggle}
           sx={{
             p: '0.438rem',
             borderRadius: 1,
@@ -123,40 +133,30 @@ const AssignSubjectCategories = ({ open, toggle, Subject  }) => {
         </IconButton>
       </Header>
       <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-         
-
-            <Controller
-              name='categoryId'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <CustomTextField
-                  select
-                  fullWidth
-                  label='Category Name'
-                  value={value}
-                  sx={{ mb: 4 }}
-                  onChange={onChange}
-                  error={Boolean(errors.categoryId)}
-                  {...(errors.categoryId && { helperText: errors.categoryId.message })}
-                >
-                  <MenuItem value=''>Select Subject Category</MenuItem>
-                  {CategoriesData?.map((item, i) => {
-                    return (
-                      <MenuItem key={i} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    )
-                  })}
-                </CustomTextField>
-              )}
-            />
-
-         
+        <form onSubmit={onSubmit}>
+          <FormControl sx={{ mt: 10, mb: 5, width: '100%' }}>
+            <InputLabel id='demo-multiple-name-label'>Select Category</InputLabel>
+            <Select
+              labelId='demo-multiple-name-label'
+              id='demo-multiple-name'
+              multiple
+              value={CategoryNames}
+              onChange={handleChange}
+              input={<OutlinedInput label='Category' />}
+              renderValue={selected => selected.join(', ')}
+              MenuProps={MenuProps}
+            >
+              {CategoriesData?.map(parameter => (
+                <MenuItem key={parameter?.id} value={parameter?.name} style={{ textTransform: 'uppercase' }}>
+                  <Checkbox checked={CategoryNames.indexOf(parameter) > -1} />
+                  <ListItemText primary={parameter?.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button type='submit' variant='contained' sx={{ width: '100%' }}>
+            <Button type='submit' variant='contained' sx={{ width: '100%' }} disabled= {CategoryNames?.length < 1}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} />}
               {'Assign'}
             </Button>

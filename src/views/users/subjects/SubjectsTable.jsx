@@ -326,6 +326,7 @@ const SubjectsTable = () => {
         open={openCategoryModal}
         toggle={toggleCategoryModal}
         Subject={subjectToAssignCategory}
+        page={page}
       />
     </Fragment>
   )
