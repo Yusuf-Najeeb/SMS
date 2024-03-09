@@ -22,7 +22,6 @@ import DeleteDialog from '../../../@core/components/delete-dialog'
 import { useDeductions } from '../../../hooks/useDeductions'
 import { deleteDeduction, fetchDeductions } from '../../../store/apps/deductions/asyncthunk'
 import CreateDeduction from './CreateDeduction'
-// import { findDeductionCategory } from '../../../@core/utils/utils'
 import PageHeader from '../component/PageHeader'
 import { de } from 'date-fns/locale'
 

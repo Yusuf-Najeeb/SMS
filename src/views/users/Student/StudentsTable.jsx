@@ -271,12 +271,10 @@ const StudentsTable = () => {
                           <TableCell align='left' 
                                sx={ item?.profilePicture.length > 5 ? {
                                 display: 'flex',
-                                // justifyContent: 'center',
                                 gap: '8px',
                                transform: 'translateY(10.8px)'
                               }
                              : {display: 'flex',
-                            //  justifyContent: 'center',
                              gap: '8px',
                             transform: 'translateY(0.7px)'
                            }}

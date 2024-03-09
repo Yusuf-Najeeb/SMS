@@ -64,6 +64,7 @@ const AssignSubjectCategories = ({ open, toggle, Subject, page }) => {
       target: { value }
     } = event
     setCategoryNames(
+        
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     )

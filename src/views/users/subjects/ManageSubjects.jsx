@@ -97,6 +97,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   const [showInputField, setShowInputField] = useState(false)
 
   const toggleTeacherModal = () => {
+
     // toggle()
     setTeacherModal(!openTeacherModal)
   }
@@ -110,6 +111,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
       target: { value }
     } = event
     setTeacherNames(
+
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     )
@@ -137,6 +139,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   const watchedFields = watch()
 
   const onSubmit = async data => {
+
     // const teacherIds = itemsArray.map(item => item.id);
 
     let payload = { name: data.name }
@@ -162,7 +165,6 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
       }
     }
 
-    // console.log(payload, 'payload')
 
     createSubject(payload).then(response => {
       if (response.data.success) {
@@ -183,6 +185,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
     }, {})
 
     const existingStaffIds = subjectToEdit.staffs.map(item => item.id)
+    
     const teacherIds = TeacherNames.map(item => {
       const matchingObject = StaffData?.result?.find(obj => obj.email === item)
 
@@ -313,6 +316,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                 {StaffData?.result?.map(parameter => (
                   <MenuItem
                     key={parameter?.id}
+
                     // value={`${parameter?.firstName} ${parameter?.lastName}`}
                     value={` ${parameter?.email}`}
                     style={{ textTransform: 'uppercase' }}
