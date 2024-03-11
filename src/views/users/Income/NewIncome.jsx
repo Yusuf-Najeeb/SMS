@@ -21,15 +21,18 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
-import { useClasses } from '../../../hooks/useClassess'
+import { useIncome } from '../../../hooks/useIncome'
 import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
-import ManageClass from './ManageClass'
-import ViewClass from './ViewClass'
-import ManageClassSubject from './ManageClassSubject'
-import AddPeriod from './AddPeriod'
-import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
+
+// import ManageClass from './ManageClass'
+// import ViewClass from './ViewClass'
+// import ManageClassSubject from './ManageClassSubject'
+// import AddPeriod from './AddPeriod'
+// import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
-import ViewTimeTable from './ViewTimeTable'
+import { display } from '@mui/system'
+
+// import ViewTimeTable from './ViewTimeTable'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -60,10 +63,10 @@ const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-const ClassesTable = () => {
+const IncomeTable = () => {
   const dispatch = useAppDispatch()
 
-  const [ClassesList, loading, paging] = useClasses()
+  const [IncomeData, loading, paging] = useIncome()
   const [CurrentSessionData] = useCurrentSession()
 
   // console.log(CurrentSessionData?.includes(id), "length")
@@ -87,7 +90,7 @@ const ClassesTable = () => {
   const [ClassToViewTimeTable, setClassRoomToViewTimeTable] = useState(null)
   const [ClassToAddPeriod, setClassRoomToAddPeriod] = useState(null)
   const [assignSubject, setAssignSubject] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(Array(ClassesList?.length)?.fill(null))
+  const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
 
   // const dateValue = new Date()
   // console.log(dateValue.getDay(), 'day')
@@ -131,7 +134,7 @@ const ClassesTable = () => {
     setAssignSubject(true)
     toggleAssignModal()
 
-    handleRowOptionsClose(ClassesList?.indexOf(value))
+    handleRowOptionsClose(IncomeData?.indexOf(value))
     setClassToAssign(value)
   }
 
@@ -139,14 +142,14 @@ const ClassesTable = () => {
     setAssignSubject(false)
     toggleAssignModal()
 
-    handleRowOptionsClose(ClassesList?.indexOf(value))
+    handleRowOptionsClose(IncomeData?.indexOf(value))
     setClassToAssign(value)
   }
 
   const setClassToAddPeriod = value => {
     setPeriodModal(true)
 
-    handleRowOptionsClose(ClassesList?.indexOf(value))
+    handleRowOptionsClose(IncomeData?.indexOf(value))
     setClassRoomToAddPeriod(value)
   }
 
@@ -158,7 +161,7 @@ const ClassesTable = () => {
   const setClassToViewTimeTable = value => {
     setOpenTimeTable(true)
 
-    handleRowOptionsClose(ClassesList?.indexOf(value))
+    handleRowOptionsClose(IncomeData?.indexOf(value))
     setClassRoomToViewTimeTable(value)
   }
 
@@ -177,13 +180,13 @@ const ClassesTable = () => {
   }
 
   const setClassToEdit = value => {
-    handleRowOptionsClose(ClassesList?.indexOf(value))
+    handleRowOptionsClose(IncomeData?.indexOf(value))
     OpenModal()
     setClassToUpdate(value)
   }
 
   const setClassToView = value => {
-    handleRowOptionsClose(ClassesList?.indexOf(value))
+    handleRowOptionsClose(IncomeData?.indexOf(value))
     setViewDrawer(!openViewDrawer)
     setClassInView(value)
   }
@@ -213,11 +216,13 @@ const ClassesTable = () => {
     })
   }
 
-  useEffect(() => {
-    dispatch(fetchCurrentSession())
+  //eslint-disable-next-line
+  // I commented this out coz I haven't figured what it does yet
+  // useEffect(() => {
+  //   dispatch(fetchCurrentSession())
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
 
   useEffect(() => {
     dispatch(fetchClasses({ page: page + 1, limit: 10, key }))
@@ -227,13 +232,14 @@ const ClassesTable = () => {
 
   return (
     <>
-      {/* <Stats data={ClassesList} statTitle='Classes'/> */}
+      {/* <Stats data={IncomeData} statTitle='Classes'/> */}
 
       <PageHeaderWithSearch
-        searchPlaceholder={'Search Class'}
-        action='Add Class'
-        toggle={toggleModal}
-        handleFilter={setKey}
+        searchPlaceholder={'Search Income'}
+        action='Add Income'
+
+        // toggle={toggleModal}
+        // handleFilter={setKey}
       />
 
       <Fragment>
@@ -241,22 +247,21 @@ const ClassesTable = () => {
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
               <TableRow>
-                <TableCell align='left' sx={{ minWidth: 200 }}>
-                  Class
-                </TableCell>
-                {/* <TableCell align='center' sx={{ minWidth: 150 }}>
-                Religion
-              </TableCell> */}
-                <TableCell align='center' sx={{ minWidth: 180 }}>
-                  Type
+                <TableCell align='left' sx={{ minWidth: 100 }}>
+                  S/N
                 </TableCell>
                 <TableCell align='center' sx={{ minWidth: 180 }}>
-                  Capacity
+                  Amount
                 </TableCell>
                 <TableCell align='center' sx={{ minWidth: 180 }}>
-                  Class Category
+                  Amount Paid
                 </TableCell>
-
+                <TableCell align='center' sx={{ minWidth: 180 }}>
+                  Category
+                </TableCell>
+                <TableCell align='center' sx={{ minWidth: 140 }}>
+                  Payment Date
+                </TableCell>
                 <TableCell align='center' sx={{ minWidth: 140 }}>
                   Actions
                 </TableCell>
@@ -270,20 +275,14 @@ const ClassesTable = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                // </Box>
-
                 <Fragment>
-                  {ClassesList?.length &&
-                    ClassesList?.map((item, i) => {
+                  {IncomeData?.length &&
+                    IncomeData?.map((item, i) => {
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                            {`${item?.name} ${item.type}` || '--'}
+                            {`${item.id}` || '--'}
                           </TableCell>
-
-                          {/* <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                        {item?.religion || '--'}
-                      </TableCell> */}
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                             {item?.type || '--'}
                           </TableCell>
@@ -293,7 +292,9 @@ const ClassesTable = () => {
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                             {item?.category?.name?.toUpperCase() || '--'}
                           </TableCell>
-
+                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                            {item?.category?.name?.toUpperCase() || '--'}
+                          </TableCell>
                           <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                             <>
                               <IconButton size='small' onClick={event => handleRowOptionsClick(event, i)}>
@@ -316,20 +317,23 @@ const ClassesTable = () => {
                               >
                                 <MenuItem onClick={() => setClassToEdit(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:edit' fontSize={20} />
-                                  Edit Class
+                                  Edit Income
                                 </MenuItem>
 
                                 <MenuItem onClick={() => setClassToView(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:eye' fontSize={20} />
-                                  View Class
+                                  View Income
                                 </MenuItem>
 
                                 <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='tabler:trash' fontSize={20} />
-                                  Delete Class
+                                  <Icon icon='ph:hand-coins-light' fontSize={20} />
+                                  Pay Outstanding
                                 </MenuItem>
-
-                                {CurrentSessionData && (
+                                <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                                  <Icon icon='tabler:trash' fontSize={20} />
+                                  Delete Income
+                                </MenuItem>
+                                {/* {CurrentSessionData && (
                                   <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
                                     <Icon icon='mdi:timetable' fontSize={20} />
                                     Add Period
@@ -347,7 +351,7 @@ const ClassesTable = () => {
                                 <MenuItem onClick={() => setClassToRemoveSubject(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='solar:notification-lines-remove-bold' fontSize={20} />
                                   Remove Subject
-                                </MenuItem>
+                                </MenuItem>*/}
                               </Menu>
                             </>
                           </TableCell>
@@ -355,7 +359,7 @@ const ClassesTable = () => {
                       )
                     })}
 
-                  {ClassesList?.length === 0 && (
+                  {IncomeData?.length === 0 && (
                     <tr className='text-center'>
                       <td colSpan={6}>
                         <NoData />
@@ -377,27 +381,27 @@ const ClassesTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 
-        {showModal && <ManageClass open={showModal} toggle={OpenModal} classToEdit={ClassToUpdate} />}
+        {/* {showModal && <ManageClass open={showModal} toggle={OpenModal} classToEdit={ClassToUpdate} />} */}
 
-        <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+        {/* <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
 
-        {openViewDrawer && <ViewClass open={openViewDrawer} closeCanvas={closeViewModal} classRoom={ClassInView} />}
+        {openViewDrawer && <ViewClass open={openViewDrawer} closeCanvas={closeViewModal} classRoom={ClassInView} />} */}
 
-        <ManageClassSubject
+        {/* <ManageClassSubject
           open={openAssignModal}
           Classroom={ClassToAssign}
           status={assignSubject}
           toggle={toggleAssignModal}
-        />
+        /> */}
 
-        {openTimetableModal && (
+        {/* {openTimetableModal && (
           <ViewTimeTable open={openTimetableModal} handleClose={closeTimeTableModal} ClassRoom={ClassToViewTimeTable} />
         )}
 
-        {openPeriodModal && <AddPeriod open={openPeriodModal} classRoom={ClassToAddPeriod} toggle={closePeriodModal} />}
+        {openPeriodModal && <AddPeriod open={openPeriodModal} classRoom={ClassToAddPeriod} toggle={closePeriodModal} />} */}
       </Fragment>
     </>
   )
 }
 
-export default ClassesTable
+export default IncomeTable
