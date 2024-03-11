@@ -35,15 +35,16 @@ import ViewStudent from './ViewStudent'
 import { useClasses } from '../../../hooks/useClassess'
 import AssignGeneralCategory from './AssignGeneralCategory'
 import AssignHostelCategory from './AssignHostelCategory'
+import AssignSubject from './AssignSubject'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const renderClient = row => {
   const initials = `${row.firstName} ${row.lastName}`
-  if (row.profilePicture?.length) {
+  if (row?.profilePicture !== null && row?.profilePicture?.length) {
     return (
       <CustomAvatar
-        src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
+        src={`${backendURL?.replace('api', '')}/${row?.profilePicture}`}
         sx={{ mr: 2.5, width: 32, height: 32 }}
       />
     )
@@ -80,12 +81,14 @@ const StudentsTable = () => {
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [openStudentCategoryDrawer, setStudentCategoryDrawer] = useState(false)
+  const [openStudentSubjectDrawer, setStudentSubjectDrawer] = useState(false)
   const [openHostelCategoryDrawer, setHostelCategoryDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
   const [studentToUpdate, setStudentToUpdate] = useState(null)
   const [studentInView, setStudentInView] = useState(null)
   const [studentToAssignCategory, setStudentToAssignCategory] = useState(null)
+  const [studentToAssignSubject, setStudentToAssignSubject] = useState(null)
   const [studentToAssignHostelCategory, setStudentToAssignHostelCategory] = useState(null)
   const [refetch, setFetch] = useState(false)
   const [key, setKey] = useState('')
@@ -113,6 +116,10 @@ const StudentsTable = () => {
 
   const toggleHostelCategoryModal = () => {
     setHostelCategoryDrawer(!openHostelCategoryDrawer)
+  }
+
+  const toggleSubjectModal = () => {
+    setStudentSubjectDrawer(!openStudentSubjectDrawer)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -163,6 +170,12 @@ const StudentsTable = () => {
     handleRowOptionsClose(StudentData?.result?.indexOf(value))
     toggleCategoryModal()
     setStudentToAssignCategory(value)
+  }
+
+  const setStudentToAssignSubjects = value => {
+    handleRowOptionsClose(StudentData?.result?.indexOf(value))
+    toggleSubjectModal()
+    setStudentToAssignSubject(value)
   }
 
   const setStudentToAssignHostelCategories = value => {
@@ -269,7 +282,7 @@ const StudentsTable = () => {
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
                           <TableCell align='left' 
-                               sx={ item?.profilePicture.length > 5 ? {
+                               sx={item?.profilePicture !== null && item?.profilePicture.length > 5 ? {
                                 display: 'flex',
                                 gap: '8px',
                                transform: 'translateY(10.8px)'
@@ -334,18 +347,6 @@ const StudentsTable = () => {
                           <TableCell
                             align='left'
                             sx={{ display: 'flex', justifyContent: 'center', gap: '10px' , }}
-
-                        //     sx={ item?.profilePicture.length > 5 ? {
-                        //         display: 'flex',
-                        //         justifyContent: 'center',
-                        //         gap: '10px',
-                        //        transform: 'translateY(0px)'
-                        //       }
-                        //      : {display: 'flex',
-                        //      justifyContent: 'center',
-                        //      gap: '10px',
-                        //     transform: 'translateY(7.4px)'
-                        //    }}
                           >
 
                             <FormGroup row sx={{ transform: 'translateX(-4%)' }}>
@@ -387,6 +388,10 @@ const StudentsTable = () => {
                           <MenuItem onClick={() => setStudentToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Category
+                          </MenuItem>
+                          <MenuItem onClick={() => setStudentToAssignSubjects(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
+                            Assign Subject
                           </MenuItem>
                           {/* <MenuItem onClick={() => setStudentToAssignHostelCategories(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
@@ -433,6 +438,7 @@ const StudentsTable = () => {
         <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
         {studentToAssignCategory &&  <AssignGeneralCategory open={openStudentCategoryDrawer} toggle={toggleCategoryModal} Student={studentToAssignCategory} page={page}/> }
         {studentToAssignHostelCategory && <AssignHostelCategory open={openHostelCategoryDrawer} toggle={toggleHostelCategoryModal} Student={studentToAssignHostelCategory} page={page}/> }
+        {studentToAssignSubject && <AssignSubject open={openStudentSubjectDrawer} toggle={toggleSubjectModal} Student={studentToAssignSubject} page={page}  />}
       </Fragment>
     </>
   )

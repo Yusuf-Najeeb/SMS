@@ -317,3 +317,13 @@ export const roomSchema = yup.object().shape({
   capacity: yup.string().required('Room Capacity is required'),
   category_name: yup.string().required('Category Name is required'),
 })
+
+export const inputScoreSchema = yup.object().shape({
+  categoryId: yup.string().required('Assessment Category is required'),
+  staffId: yup.string().required('Teacher is required'),
+  studentId: yup.string().required('Student is required'),
+  subjectId: yup.string().required('Subject is required'),
+  score: yup.string().required('Score is required'),
+  classId: yup.string().required('Class is required'),
+  sessionId: yup.string().required('Session is required'),
+})

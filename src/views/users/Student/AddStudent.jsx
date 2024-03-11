@@ -246,11 +246,12 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     payload = {personalInformation, guardianData: guardianData}
 
          createStudent(payload).then((response)=> {
-            if (response.data.success) {
+            if (response?.data?.success) {
                 setActiveStep(0)
                 personalInfoReset()
                 closeModal()
                 refetchData()
+                setGuardianArray([])
               }
          })
 
