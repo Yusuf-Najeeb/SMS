@@ -196,7 +196,7 @@ const SubjectsTable = () => {
                       {item?.name || '--'}
                     </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {item?.categories.length > 0
+                      {item?.categories?.length > 0
                         ? item?.categories?.map((category, index) => (
                             <Fragment key={category.id}>
                               {index > 0 && ', '}

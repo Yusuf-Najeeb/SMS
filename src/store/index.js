@@ -28,6 +28,7 @@ import currentSession from 'src/store/apps/currentSession'
 import timetable from 'src/store/apps/timetable'
 import payslip from 'src/store/apps/payslip'
 import deductions from 'src/store/apps/deductions'
+import reportCard from 'src/store/apps/reportCard'
 
 export const store = configureStore({
   reducer: {
@@ -56,7 +57,8 @@ export const store = configureStore({
     currentSession,
     timetable,
     payslip,
-    deductions
+    deductions,
+    reportCard
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

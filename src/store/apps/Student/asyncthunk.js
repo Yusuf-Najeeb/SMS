@@ -11,7 +11,7 @@ export const createStudent =  async vals => {
 
     return response
   } catch (error) {
-    notifyError('Failed to Add Student')
+    notifyError(error?.response?.data?.message || 'Failed to Add Student')
 
    
   }
@@ -107,5 +107,19 @@ export const assignStudentCategory = async (payload)=>{
     return res
   } catch (error) {
     notifyError('Unable to Assign Category To Student')
+  }
+}
+
+export const assignSubjectToStudent = async (payload)=>{
+  try {
+    const res = await axios.post('/subjects/associatestudent', payload)
+
+    if(res.data.success){
+      notifySuccess('Subject Assigned')
+    }
+
+    return res
+  } catch (error) {
+    notifyError('Unable to Assign Subject To Student')
   }
 }

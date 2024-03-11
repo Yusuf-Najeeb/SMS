@@ -37,10 +37,10 @@ const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const renderClient = row => {
   const initials = `${row.firstName} ${row.lastName}`
-  if (row.profilePicture?.length) {
+  if (row?.profilePicture !== null && row?.profilePicture?.length) {
     return (
       <CustomAvatar
-        src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
+        src={`${backendURL?.replace('api', '')}/${row?.profilePicture}`}
         sx={{ mr: 2.5, width: 32, height: 32, transform: 'translateY(10px)' }}
       />
     )
@@ -275,7 +275,7 @@ const GuardianTable = () => {
                         <TableCell
                           align='left'
                           
-                          sx={ item?.profilePicture.length > 5 ? {
+                          sx={ item?.profilePicture !== null && item?.profilePicture?.length > 5 ? {
                             display: 'flex',
                             justifyContent: 'center',
                             gap: '10px',

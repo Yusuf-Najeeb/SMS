@@ -54,3 +54,5 @@ export const deleteDeduction = createAsyncThunk('/delete-deduction', async (id) 
 
   }
 })
+
+
