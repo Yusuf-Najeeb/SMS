@@ -17,8 +17,9 @@ import MuiTabList from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import SubjectsTable from './SubjectsTable'
 import SubjectCategoriesTable from './SubjectCategoriesTable'
+import SubjectsHome from './SubjectsHome'
+import CategoriesHome from './CategoriesHome'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -71,8 +72,8 @@ const SubjectTab = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    subjects: <SubjectsTable />,
-    categories: <SubjectCategoriesTable />,
+    subjects: <SubjectsHome />,
+    categories: <CategoriesHome />,
   }
 
   return (

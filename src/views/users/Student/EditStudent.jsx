@@ -128,6 +128,9 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       selectedStudent?.isStaffChild !== null
         ? setValue('isStaffChild', selectedStudent.isStaffChild)
         : setValue('isStaffChild', false)
+        selectedStudent?.boarder !== null
+        ? setValue('boarder', selectedStudent.boarder)
+        : setValue('boarder', false)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,6 +176,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       ...(changedFields.hasOwnProperty('dateOfBirth') && { dateOfBirth: formattedDOB }),
       ...(changedFields.hasOwnProperty('gender') && { gender: changedFields.gender }),
       ...(changedFields.hasOwnProperty('isStaffChild') && { isStaffChild: changedFields.isStaffChild }),
+      ...(changedFields.hasOwnProperty('boarder') && { boarder: changedFields.boarder }),
       ...(changedFields.hasOwnProperty('lastSchool') && { lastSchool: changedFields.lastSchool }),
       ...(changedFields.hasOwnProperty('residentialAddress') && {
         residentialAddress: changedFields.residentialAddress
@@ -518,7 +522,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='lastSchool'
                     control={control}
@@ -537,7 +541,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={4}>
                   <Controller
                     name='isStaffChild'
                     control={control}
@@ -560,6 +564,30 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                     )}
                   />
                 </Grid>
+
+                <Grid item xs={12} sm={12} md={4}>
+                <Controller
+                  name='boarder'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      required
+                      fullWidth
+                      label='Student Type'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.boarder)}
+                      {...(errors.boarder && { helperText: errors.boarder.message})}
+                    >
+                      <MenuItem value={''}>Select Student Type</MenuItem>
+                      <MenuItem value={false}>Day</MenuItem>
+                      <MenuItem value={true}>Boarding</MenuItem>
+                      </CustomTextField>
+                  )}
+                />
+              </Grid>
 
                 <Grid item xs={12} sm={12} md={12}>
                   <Controller

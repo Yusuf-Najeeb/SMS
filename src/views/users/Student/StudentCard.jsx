@@ -57,7 +57,6 @@ const StudentCard = ({ Student }) => {
   const [initials, setInitials] = useState('')
   const [studentClass, setStudentClass] = useState({})
   const [activeStudent, setActiveStudent] = useState({})
-
   
 
 
@@ -75,7 +74,7 @@ const StudentCard = ({ Student }) => {
   }
 
    // Cleanup function
-   
+
    return () => {
     isMounted = false;
     setStudentClass({});
@@ -83,6 +82,8 @@ const StudentCard = ({ Student }) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
  },[])
+
+//  console.log(activeStudent, 'active student')
 
 
  useEffect(() => {
@@ -93,7 +94,7 @@ const StudentCard = ({ Student }) => {
 
       getStudentByIdentification(Student?.identificationNumber).then((res) => {
           if (isMounted) {
-              setActiveStudent({ ...res });
+              setActiveStudent({...res.data.data});
           }
       });
   }
@@ -151,7 +152,7 @@ const StudentCard = ({ Student }) => {
                 rounded
                 skin='light'
                 size='small'
-                label={activeStudent?.categories?.length > 0 ? `${activeStudent?.categories[0]?.name} Student` : 'Student'}
+                label={Student?.boarder ? `Boarding Student` : 'Day Student'}
                 color='info'
                 sx={{ textTransform: 'capitalize' }}
               />
@@ -325,6 +326,33 @@ const StudentCard = ({ Student }) => {
                 No Guardian Available
               </Typography>
             )}
+          </CardContent>
+
+          <Divider sx={{ my: '0 !important', mx: 6 }} />
+
+          <CardContent sx={{ pb: 4 }}>
+            <Typography variant='body2' sx={{ color: 'text.secondary', textTransform: 'uppercase' }}>
+              Subjects
+            </Typography>
+
+            {activeStudent?.subjects?.length > 0 ? 
+            activeStudent?.subjects?.map((subject, i)=>(
+              <Box sx={{ pt: 4 }} key={subject.id}>
+              <Grid container spacing={5}>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='mdi:learn-outline'
+                    cardTitle={`${i+1}.`}
+                    value={subject?.name}
+                  />
+                </Grid>
+                </Grid>
+                </Box>
+            ))
+            : 
+            <Typography variant='body1' sx={{ color: 'text.secondary', textTransform: 'uppercase', fontSize: '14px' }}>No Registered Subject</Typography>
+            }
+
           </CardContent>
         </Fragment>
       </Grid>

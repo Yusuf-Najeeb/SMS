@@ -16,7 +16,7 @@ import { styled } from '@mui/material/styles'
 import Avatar from '@mui/material/Avatar'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { Card, CardContent, CircularProgress, Divider, FormControlLabel, FormGroup, MenuItem, Step, StepLabel, Stepper, Switch, Typography } from '@mui/material'
+import { Alert, Card, CardContent, CircularProgress, Divider, FormControlLabel, FormGroup, MenuItem, Step, StepLabel, Stepper, Switch, Typography } from '@mui/material'
 
 import DatePicker from 'react-datepicker'
 
@@ -83,6 +83,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [guardianArray, setGuardianArray] = useState([])
   const [selectedGuardianId, setSelectedGuardianId] = useState(0)
   const [showSearchModal, setShowSearchModal] = useState(false)
+  const [showAlert, setShowAlert] = useState(false)
 
   const handleChange = event => {
     if(event.target.checked == true){
@@ -113,7 +114,8 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     currentClassId: '',
     registrationDate: new (Date),
     lastSchool: '',
-    isStaffChild: ''
+    isStaffChild: '',
+    boarder: ''
   }
 
   const defaultGuardianInfoValues = {
@@ -184,7 +186,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
       setGuardianArray((prevItems) => [...prevItems, newItem]);
       
     } else {
-      
+      setShowAlert(true)
     }
   };
 
@@ -249,10 +251,12 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
             if (response?.data?.success) {
                 setActiveStep(0)
                 personalInfoReset()
+                guardianInfoReset()
                 closeModal()
                 refetchData()
                 setGuardianArray([])
                 setItemsArray([])
+                setShowAlert(false)
               }
          })
 
@@ -614,7 +618,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='lastSchool'
                   control={control}
@@ -633,7 +637,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='isStaffChild'
                   control={control}
@@ -652,6 +656,30 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       <MenuItem value={''}>Select Staff Child Status</MenuItem>
                       <MenuItem value={true}>True</MenuItem>
                       <MenuItem value={false}>False</MenuItem>
+                      </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={4}>
+                <Controller
+                  name='boarder'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      select
+                      required
+                      fullWidth
+                      label='Student Type'
+                      value={value}
+                      onChange={onChange}
+                      error={Boolean(errors.boarder)}
+                      {...(errors.boarder && { helperText: errors.boarder.message})}
+                    >
+                      <MenuItem value={''}>Select Student Type</MenuItem>
+                      <MenuItem value={false}>Day</MenuItem>
+                      <MenuItem value={true}>Boarding</MenuItem>
                       </CustomTextField>
                   )}
                 />
@@ -750,7 +778,10 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       label="Guardian's Email"
                       placeholder='guardian@email.com'
                       value={value}
-                      onChange={onChange}
+                      onChange={(e)=> {
+                        onChange(e)
+                        setShowAlert(false)
+                     }}
                       error={Boolean(guardianInfoErrors.email)}
                       {...(guardianInfoErrors.email && { helperText: guardianInfoErrors.email.message})}
                     />
@@ -769,7 +800,10 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       fullWidth
                       value={value}
                       label="Guardian's Gender"
-                      onChange={onChange}
+                      onChange={(e)=> {
+                        onChange(e)
+                        setShowAlert(false)
+                     }}
                       id='stepper-linear-personal-gender'
                       error={Boolean(guardianInfoErrors.gender)}
                       aria-describedby='stepper-linear-personal-gender-helper'
@@ -795,7 +829,10 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       label="Guardian's Residential Address"
                       placeholder='24, sch ave, Lagos'
                       value={value}
-                      onChange={onChange}
+                      onChange={(e)=> {
+                         onChange(e)
+                         setShowAlert(false)
+                      }}
                       error={Boolean(guardianInfoErrors.residentialAddress)}
                       {...(guardianInfoErrors.residentialAddress && { helperText: guardianInfoErrors.residentialAddress.message})}
                     />
@@ -803,11 +840,15 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={1} sx={{mt: 4}}>
+              <Grid item xs={12} sm={1} sx={{mt: 2, mb: 2}}>
                 <IconButton size='large' sx={{ justifySelf: 'flex-end', fontSize: '50px' }} onClick={handleAddGuardian}>
                   <Icon fontSize='2rem' icon='basil:add-outline'  />
                 </IconButton>
               </Grid>
+                
+              {showAlert && <Grid item xs={12} sm={12} sx={{mt: 4}}> 
+              <Alert severity='error'>Please fill all guardian fields</Alert>
+              </Grid> }
 
               <SelectedGuardianTable tableData={guardianArray} updateTable={setGuardianArray} />
 

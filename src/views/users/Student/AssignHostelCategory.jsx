@@ -100,7 +100,7 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>Assign Hostel Category</Typography>
+        <Typography variant='h5'>Assign Hostel Room</Typography>
         <IconButton
           size='small'
           onClick={handleClose}

@@ -385,18 +385,18 @@ const StudentsTable = () => {
                             <Icon icon='tabler:eye' fontSize={20} />
                             View Student
                           </MenuItem>
-                          <MenuItem onClick={() => setStudentToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
+                          {/* <MenuItem onClick={() => setStudentToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Category
-                          </MenuItem>
+                          </MenuItem> */}
                           <MenuItem onClick={() => setStudentToAssignSubjects(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
                             Assign Subject
                           </MenuItem>
-                          {/* <MenuItem onClick={() => setStudentToAssignHostelCategories(item)} sx={{ '& svg': { mr: 2 } }}>
+                          {item.boarder && <MenuItem onClick={() => setStudentToAssignHostelCategories(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                            Assign Hostel Category
-                          </MenuItem> */}
+                            Assign Hostel Room
+                          </MenuItem>}
                             
                           </Menu>
                           </>
