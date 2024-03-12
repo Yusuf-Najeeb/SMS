@@ -1,8 +1,12 @@
-import RoomsTable from "../../../views/users/rooms/RoomsTable"
+
+import RoomsTab from '../../../views/users/rooms/RoomsTab'
+
 
 
 const RoomsHome = () => {
-  return <RoomsTable />
+
+
+  return <RoomsTab tab='rooms' />
 }
 
 export default RoomsHome

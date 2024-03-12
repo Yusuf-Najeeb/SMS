@@ -203,15 +203,20 @@ const ManageRooms = ({ open, toggle, roomToEdit = null }) => {
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
+                select
                 value={value}
                 sx={{ mb: 4 }}
                 label='Room Name'
                 required
                 onChange={onChange}
-                placeholder='Room 1'
                 error={Boolean(errors.name)}
                 {...(errors.name && { helperText: errors.name.message })}
-              />
+              >
+                <MenuItem value='Red'>Red</MenuItem>
+                <MenuItem value='Green'>Green</MenuItem>
+                <MenuItem value='Blue'>Blue</MenuItem>
+                <MenuItem value='Yellow'>Yellow</MenuItem>
+                </CustomTextField>
             )}
           />
 
