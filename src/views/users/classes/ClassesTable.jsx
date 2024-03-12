@@ -46,6 +46,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
+        //eslint-disable-next-line
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='primary'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
@@ -270,8 +271,8 @@ const ClassesTable = () => {
                   </TableCell>
                 </TableRow>
               ) : (
+                // eslint_disable-next-line
                 // </Box>
-
                 <Fragment>
                   {ClassesList?.length &&
                     ClassesList?.map((item, i) => {

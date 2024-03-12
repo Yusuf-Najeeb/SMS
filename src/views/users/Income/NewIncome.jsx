@@ -14,6 +14,7 @@ import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 import { styled } from '@mui/material/styles'
+import CreateIncome from './CreateIncome'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import CustomAvatar from 'src/@core/components/mui/avatar'
@@ -22,17 +23,13 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useIncome } from '../../../hooks/useIncome'
+import { fetchIncome } from '../../../store/apps/income/asyncthunk'
+
 import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 
-// import ManageClass from './ManageClass'
-// import ViewClass from './ViewClass'
-// import ManageClassSubject from './ManageClassSubject'
-// import AddPeriod from './AddPeriod'
 // import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { display } from '@mui/system'
-
-// import ViewTimeTable from './ViewTimeTable'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -49,6 +46,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
+        //eslint-disable-next-line
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='primary'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
@@ -64,38 +62,108 @@ const TableCellStyled = styled(TableCell)(({ theme }) => ({
 }))
 
 const IncomeTable = () => {
+  // ** State
+  const [page, setPage] = useState(0)
+  const [key, setKey] = useState('')
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+
+  const [showModal, setShowModal] = useState(false)
+  const [refetch, setFetch] = useState(false)
+  const [openEditDrawer, setEditDrawer] = useState(false)
+  const [openDeleteModal, setDeleteModal] = useState(false)
+  const [openPayModal, setOpenPayModal] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState()
+  const [incomeToUpdate, setIncomeToUpdate] = useState(null)
+  const [incomeToPay, setIncomeToPay] = useState(null)
+  const [incomeInView, setIncomeInView] = useState(null)
+  const [openViewModal, setOpenViewModal] = useState(false)
   const dispatch = useAppDispatch()
 
   const [IncomeData, loading, paging] = useIncome()
   const [CurrentSessionData] = useCurrentSession()
 
-  // console.log(CurrentSessionData?.includes(id), "length")
-  // console.log(CurrentSessionData, "current session data")
-
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [showModal, setShowModal] = useState(false)
-  const [openEditDrawer, setEditDrawer] = useState(false)
-  const [openViewDrawer, setViewDrawer] = useState(false)
-  const [deleteModal, setDeleteModal] = useState(false)
-  const [selectedClass, setSelectedClass] = useState()
-  const [ClassToUpdate, setClassToUpdate] = useState(null)
-  const [ClassInView, setClassInView] = useState(null)
-  const [refetch, setFetch] = useState(false)
-  const [key, setKey] = useState('')
-  const [openAssignModal, setAssignModal] = useState(false)
-  const [openPeriodModal, setPeriodModal] = useState(false)
-  const [openTimetableModal, setOpenTimeTable] = useState(false)
-  const [ClassToAssign, setClassToAssign] = useState(null)
-  const [ClassToViewTimeTable, setClassRoomToViewTimeTable] = useState(null)
-  const [ClassToAddPeriod, setClassRoomToAddPeriod] = useState(null)
-  const [assignSubject, setAssignSubject] = useState(false)
+  // const [showModal, setShowModal] = useState(false)
+  // const [openEditDrawer, setEditDrawer] = useState(false)
+  // const [openViewDrawer, setViewDrawer] = useState(false)
+  // const [deleteModal, setDeleteModal] = useState(false)
+  // const [selectedClass, setSelectedClass] = useState()
+  // const [ClassToUpdate, setClassToUpdate] = useState(null)
+  // const [ClassInView, setClassInView] = useState(null)
+  // const [key, setKey] = useState('')
+  // const [openAssignModal, setAssignModal] = useState(false)
+  // const [openPeriodModal, setPeriodModal] = useState(false)
+  // const [openTimetableModal, setOpenTimeTable] = useState(false)
+  // const [ClassToAssign, setClassToAssign] = useState(null)
+  // const [ClassToViewTimeTable, setClassRoomToViewTimeTable] = useState(null)
+  // const [ClassToAddPeriod, setClassRoomToAddPeriod] = useState(null)
+  // const [assignSubject, setAssignSubject] = useState(false)
   const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
 
   // const dateValue = new Date()
   // console.log(dateValue.getDay(), 'day')
   // console.log(dateValue.getDate().toString(), 'date to string')
 
+  //Functions from ALl Income component
+  // ** Hooks
+  // const dispatch = useDispatch()
+
+  // const [IncomeData, loading] = useIncome()
+
+  const toggleModal = () => {
+    setShowModal(!showModal)
+  }
+
+  const toggleViewModal = () => {
+    setOpenViewModal(!openViewModal)
+  }
+
+  const setIncomeToView = value => {
+    setOpenViewModal(true)
+    setIncomeInView(value)
+  }
+
+  const updateFetch = () => setFetch(!refetch)
+
+  const doDelete = value => {
+    setDeleteModal(true)
+    setSelectedStudent(value?.id)
+  }
+
+  const doCancelDelete = () => {
+    setDeleteModal(false)
+    setSelectedStudent(null)
+  }
+
+  const ondeleteClick = async () => {
+    deleteStudent(selectedStudent).then(res => {
+      if (res.status) {
+        dispatch(fetchStudents({ page: 1, key }))
+        doCancelDelete()
+      }
+    })
+  }
+
+  const setPayIncome = value => {
+    setIncomeToPay(value)
+    setOpenPayModal(true)
+  }
+
+  const togglePayModal = () => setOpenPayModal(!openPayModal)
+
+  const setIncomeToEdit = value => {
+    setEditDrawer(true)
+    setIncomeToUpdate(value)
+  }
+
+  const closeEditModal = () => setEditDrawer(!openEditDrawer)
+
+  useEffect(() => {
+    dispatch(fetchIncome({ page: page + 1, key }))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refetch, page, key])
+
+  //  functions from classes
   const handleRowOptionsClick = (event, index) => {
     const newAnchorEl = [...anchorEl]
     newAnchorEl[index] = event.currentTarget
@@ -106,10 +174,6 @@ const IncomeTable = () => {
     const newAnchorEl = [...anchorEl]
     newAnchorEl[index] = null
     setAnchorEl(newAnchorEl)
-  }
-
-  const toggleModal = () => {
-    setShowModal(!showModal)
   }
 
   const OpenModal = () => {
@@ -196,28 +260,7 @@ const IncomeTable = () => {
     setClassInView(null)
   }
 
-  const doDelete = value => {
-    handleRowOptionsClose()
-    setDeleteModal(true)
-    setSelectedClass(value.id)
-  }
-
-  const doCancelDelete = () => {
-    setDeleteModal(false)
-    setSelectedClass(null)
-  }
-
-  const ondeleteClick = async () => {
-    deleteClass(selectedClass).then(res => {
-      if (res.status) {
-        dispatch(fetchClasses({ page: 1, limit: 10, key }))
-        doCancelDelete()
-      }
-    })
-  }
-
   //eslint-disable-next-line
-  // I commented this out coz I haven't figured what it does yet
   // useEffect(() => {
   //   dispatch(fetchCurrentSession())
 
@@ -236,11 +279,12 @@ const IncomeTable = () => {
 
       <PageHeaderWithSearch
         searchPlaceholder={'Search Income'}
-        action='Add Income'
+        action='Create Income'
+        toggle={toggleModal}
 
-        // toggle={toggleModal}
         // handleFilter={setKey}
       />
+      <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
@@ -284,16 +328,16 @@ const IncomeTable = () => {
                             {`${item.id}` || '--'}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.type || '--'}
+                            {item?.amount || '--'}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.capacity || '--'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.category?.name?.toUpperCase() || '--'}
+                            {item?.amountPaid || '--'}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                             {item?.category?.name?.toUpperCase() || '--'}
+                          </TableCell>
+                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                            {`${new Date(item?.createdAt).toLocaleDateString()}` || '--'}
                           </TableCell>
                           <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                             <>
@@ -325,7 +369,7 @@ const IncomeTable = () => {
                                   View Income
                                 </MenuItem>
 
-                                <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                                <MenuItem onClick={() => {}} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='ph:hand-coins-light' fontSize={20} />
                                   Pay Outstanding
                                 </MenuItem>

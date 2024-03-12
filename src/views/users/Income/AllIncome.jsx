@@ -340,6 +340,7 @@ const AllIncome = () => {
                 rowHeight={62}
                 rows={IncomeData?.length ? IncomeData : []}
                 columns={columns}
+                //eslint_disable-next-line
                 //   disableRowSelectionOnClick
                 pageSizeOptions={[10, 25, 50]}
                 paginationModel={paginationModel}
