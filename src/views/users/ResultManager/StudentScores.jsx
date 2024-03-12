@@ -216,7 +216,6 @@ const displayScores = ()=>{
                     const Student = StudentData?.result?.find((student)=> student.id == item.studentId)
                     const StudentClass = ClassesList?.find((classRoom)=> classRoom.id == item.classId)
                     const Subject = SubjectsList?.find((subject)=> subject.id == item.subjectId)
-                  // const StudentName = matchingDepartment?.name
 
                   return (
                     <TableRow hover role='checkbox' key={item?.id}>

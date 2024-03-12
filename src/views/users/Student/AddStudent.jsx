@@ -252,6 +252,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 closeModal()
                 refetchData()
                 setGuardianArray([])
+                setItemsArray([])
               }
          })
 

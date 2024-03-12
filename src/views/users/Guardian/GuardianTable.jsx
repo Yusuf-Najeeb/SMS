@@ -312,7 +312,7 @@ const GuardianTable = () => {
                       </TableRow>
                     ))}
 
-                  {GuardianData?.length === 0 && (
+                  {GuardianData?.result?.length === 0 && (
                     <tr className='text-center'>
                       <td colSpan={6}>
                         <NoData />
