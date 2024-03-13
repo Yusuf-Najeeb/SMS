@@ -287,6 +287,17 @@ export const createIncomeSchema = yup.object().shape({
   
 })
 
+export const updateIncomeSchema = yup.object().shape({
+  amount: yup.number().typeError('Amount must be a number'),
+
+  // title: yup.string().required('Description is required'),
+  // amountPaid: yup.number().typeError('Amount Received must be a number'),
+  // categoryId: yup.string().required('Category is required'),
+  // incomeOwner: yup.string(),
+  // paymentMode: yup.string().required('Payment Method is required'),
+  
+})
+
 export const createExpenditureSchema = yup.object().shape({
   title: yup.string().required('Description is required'),
   amount: yup.number().typeError('Amount must be a number'),

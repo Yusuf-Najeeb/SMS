@@ -24,13 +24,14 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useIncome } from '../../../hooks/useIncome'
-import { fetchIncome } from '../../../store/apps/income/asyncthunk'
+import { deleteIncome, fetchIncome } from '../../../store/apps/income/asyncthunk'
 import EditIncome from './EditIncome'
 import ViewIncome from './ViewIncome'
 import PayIncomeBalance from './PayIncome'
 
 // import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
+import DeleteDialog from '../../../@core/components/delete-dialog'
 
 // import { display } from '@mui/system'
 
@@ -78,6 +79,7 @@ const IncomeTable = () => {
   const [incomeToUpdate, setIncomeToUpdate] = useState(null)
   const [incomeToPay, setIncomeToPay] = useState(null)
   const [incomeInView, setIncomeInView] = useState(null)
+  const [incomeToDelete, setIncomeToDelete] = useState(null)
   const [openViewModal, setOpenViewModal] = useState(false)
   const dispatch = useAppDispatch()
 
@@ -86,9 +88,6 @@ const IncomeTable = () => {
 
   const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
 
-  // const dateValue = new Date()
-  // console.log(dateValue.getDay(), 'day')
-  // console.log(dateValue.getDate().toString(), 'date to string')
 
   //Functions from ALl Income component
   // ** Hooks
@@ -134,11 +133,6 @@ const IncomeTable = () => {
 
   const closeModal = () => setEditDrawer(!openEditDrawer)
 
-  // useEffect(() => {
-  //   dispatch(fetchIncome({ page: page + 1, key }))
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [refetch, page, key])
 
   //  functions from classes
   const handleRowOptionsClick = (event, index) => {
@@ -162,29 +156,37 @@ const IncomeTable = () => {
     setPage(0)
   }
 
-  // const setClassToView = value => {
-  //   handleRowOptionsClose(IncomeData?.indexOf(value))
-  //   setViewDrawer(!openViewDrawer)
-  //   setClassInView(value)
-  // }
 
   const closeViewModal = () => {
     setViewDrawer(!openViewDrawer)
     setClassInView(null)
   }
 
-  //eslint-disable-next-line
-  // useEffect(() => {
-  //   dispatch(fetchCurrentSession())
+  const doDelete = value => {
+    handleRowOptionsClose(IncomeData?.indexOf(value))
+    setDeleteModal(true)
+    setIncomeToDelete(value.id)
+  }
 
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
+  const doCancelDelete = () => {
+    setDeleteModal(false)
+    setIncomeToDelete(null)
+  }
+
+  const ondeleteClick = () => {
+    deleteIncome(incomeToDelete).then(res => {
+      if (res?.data) {
+        dispatch(fetchIncome({ page: page == 0 ? page + 1 : page, limit: 10, key: '' }))
+      }
+    })
+    doCancelDelete()
+  }
 
   useEffect(() => {
     dispatch(fetchIncome({ page: page + 1, limit: 10, key }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, key])
+  }, [page, rowsPerPage, key, refetch])
 
   return (
     <>
@@ -197,7 +199,7 @@ const IncomeTable = () => {
 
         // handleFilter={setKey}
       />
-      <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch} />
+      
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
@@ -279,12 +281,17 @@ const IncomeTable = () => {
                                   sx={{ '& svg': { mr: 2 } }}
                                 >
                                   <Icon icon='tabler:edit' fontSize={20} />
-                                  Edit Income
+                                  Edit Amount
                                 </MenuItem>
 
                                 <MenuItem onClick={() => setIncomeToView(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:eye' fontSize={20} />
                                   View Income
+                                </MenuItem>
+
+                                <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                                  <Icon icon='tabler:trash' fontSize={20} />
+                                  Delete Income
                                 </MenuItem>
                                 {item.amount !== item.amountPaid ? (
                                   <MenuItem onClick={() => setPayIncome(item)} sx={{ '& svg': { mr: 2 } }}>
@@ -344,6 +351,7 @@ const IncomeTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 
+        <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch} />
         <EditIncome
           open={openEditDrawer}
           closeModal={closeModal}
@@ -357,6 +365,7 @@ const IncomeTable = () => {
           fetchData={updateFetch}
         />
         {openViewModal && <ViewIncome open={openViewModal} closeCanvas={toggleViewModal} income={incomeInView} />}
+        <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
       </Fragment>
     </>
   )
