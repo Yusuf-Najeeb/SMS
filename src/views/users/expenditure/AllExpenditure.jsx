@@ -38,11 +38,12 @@ import { formatCurrency, formatDateToReadableFormat } from '../../../@core/utils
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import PageHeader from '../component/PageHeader'
 import { useExpenditure } from '../../../hooks/useExpenditure'
-import { fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
+import { deleteExpenditure, fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
 import CreateExpenditure from './CreateExpenditure'
 import EditExpenditure from './EditExpenditure'
 import PayExpenditureBalance from './PayExpenditure'
 import ViewExpenditure from './ViewExpenditure'
+import DeleteDialog from '../../../@core/components/delete-dialog'
 
 // ** Styled component for typography
 const TypographyStyled = styled(Typography)(({ theme }) => ({
@@ -195,6 +196,7 @@ const AllExpenditure = () => {
   const [expenditureToUpdate, setExpenditureToUpdate] = useState(null)
   const [expenditureToPay, setExpenditureToPay] = useState(null)
   const [expenditureInView, setExpenditureInView] = useState(null)
+  const [expenditureToDelete, setExpenditureToDelete] = useState(null)
   const [openPayModal, setOpenPayModal] = useState(false)
   const [openViewModal, setOpenViewModal] = useState(false)
 
@@ -227,18 +229,18 @@ const AllExpenditure = () => {
 
   const doDelete = value => {
     setDeleteModal(true)
-    setSelectedStudent(value?.id)
+    setExpenditureToDelete(value?.id)
   }
 
   const doCancelDelete = () => {
     setDeleteModal(false)
-    setSelectedStudent(null)
+    setExpenditureToDelete(null)
   }
 
   const ondeleteClick = async () => {
-    deleteStudent(selectedStudent).then(res => {
-      if (res.status) {
-        dispatch(fetchStudents({ page: 1, key }))
+    deleteExpenditure(expenditureToDelete).then(res => {
+      if (res.data) {
+        dispatch(fetchExpenditure({ page: page == 0 ? page + 1 : page, key: '' }))
         doCancelDelete()
       }
     })
@@ -267,7 +269,7 @@ const AllExpenditure = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title='Edit Expenditure'>
+          <Tooltip title='Edit Amount'>
             <IconButton size='small' onClick={() => setExpenditureToEdit(row)}>
               <Icon icon='tabler:edit' />
             </IconButton>
@@ -283,6 +285,12 @@ const AllExpenditure = () => {
           <Tooltip title='View Expenditure'>
             <IconButton size='small' onClick={() => setExpenditureToView(row)}>
               <Icon icon='tabler:eye' />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title='Delete Expenditure'>
+            <IconButton size='small' onClick={() => doDelete(row)}>
+              <Icon icon='tabler:trash' />
             </IconButton>
           </Tooltip>
 
@@ -371,6 +379,8 @@ const AllExpenditure = () => {
       />
 
       { openViewModal && <ViewExpenditure open={openViewModal} closeCanvas={toggleViewModal} expenditure={expenditureInView}/> }
+
+      <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )
 }
