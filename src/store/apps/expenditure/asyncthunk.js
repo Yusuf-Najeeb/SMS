@@ -52,3 +52,18 @@ export const fetchExpenditure = createAsyncThunk('/expenditure/FetchExpenditure'
       notifyError('Failed to update expenditure')
     }
   }
+
+  export const deleteExpenditure = async (id)=> {
+    try {
+      const res = await axios.delete(`/accounts/${id}`, ) 
+
+      if(res.data){
+        notifySuccess("Expenditure Deleted")
+      }
+
+
+      return res
+    } catch (error) {
+      notifyError('Failed to delete expenditure')
+    }
+  }

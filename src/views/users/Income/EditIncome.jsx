@@ -1,5 +1,5 @@
-// ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
+import { useEffect, Fragment } from 'react'
+
 
 import Grid from '@mui/material/Grid'
 
@@ -12,29 +12,17 @@ import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 
-import { Alert, CircularProgress, MenuItem } from '@mui/material'
-
-// ** Store & Actions Imports
-import { useDispatch, useSelector } from 'react-redux'
+import {  CircularProgress,  } from '@mui/material'
 
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { updateIncomeSchema } from 'src/@core/Formschema'
 
 import { updateIncome } from '../../../store/apps/income/asyncthunk'
 import FormController from '../component/FormController'
-import { fetchIncomeCategory } from '../../../store/apps/incomeCategory/asyncthunk'
-import { useEffect, useState } from 'react'
-import { useIncomeCategory } from '../../../hooks/useIncomeCategory'
-import { Fragment } from 'react'
-import SearchStaff from '../component/SearchStaff'
-import SearchParent from '../component/SearchParent'
-import SearchStudent from '../component/SearchStudent'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
-import { usePaymentMethods } from '../../../hooks/usePaymentMethods'
-import { fetchPaymentMethods } from '../../../store/apps/settings/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -56,16 +44,6 @@ const defaultValues = {
 }
 
 const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
-  const [staffItemsArray, setStaffItemsArray] = useState([])
-  const [guardianId, setGuardianId] = useState()
-  const [studentId, setStudentId] = useState()
-  const [staffId, setStaffId] = useState()
-  const [payError, setPayError] = useState()
-
-  console.log(selectedIncome, 'selected income')
-
-  // ** Hooks
-  const dispatch = useDispatch()
 
 
   useEffect(() => {

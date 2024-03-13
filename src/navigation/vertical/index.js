@@ -29,6 +29,37 @@ const navigation = () => {
     ]
   }
 
+  if (userData?.role?.name == 'teacher') {
+    return [
+      {
+        sectionTitle: 'Dashboard'
+      },
+      {
+        title: 'Dashboard',
+        icon: 'tabler:smart-home',
+        path: '/dashboard'
+      },
+      {
+        sectionTitle: 'Academics '
+      },
+      {
+        title: 'Subjects',
+        icon: 'mdi:learn-outline',
+        path: '/apps/subjects'
+      },
+      {
+        title: 'Grading Parameters',
+        icon: 'carbon:result',
+        path: '/apps/grading-parameters'
+      },
+      {
+        title: 'Result Manager',
+        icon: 'healthicons:i-exam-qualification',
+        path: '/apps/result-manager'
+      },
+    ]
+  }
+
 
 
   return [
@@ -140,7 +171,7 @@ const navigation = () => {
       icon: 'healthicons:i-exam-qualification',
       path: '/apps/result-manager'
     },
-    
+
     // {
     //   title: 'Library',
     //   icon: 'arcticons:classroom',
