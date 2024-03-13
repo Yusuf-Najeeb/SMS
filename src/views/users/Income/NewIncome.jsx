@@ -9,8 +9,9 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { Box, IconButton, Menu, MenuItem } from '@mui/material'
-import DeleteDialog from 'src/@core/components/delete-dialog'
+import { IconButton, Menu, MenuItem } from '@mui/material'
+
+// import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 import { styled } from '@mui/material/styles'
@@ -26,12 +27,12 @@ import { useIncome } from '../../../hooks/useIncome'
 import { fetchIncome } from '../../../store/apps/income/asyncthunk'
 import EditIncome from './EditIncome'
 import ViewIncome from './ViewIncome'
+import PayIncomeBalance from './PayIncome'
 
-import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
-
-// import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
+// import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
-import { display } from '@mui/system'
+
+// import { display } from '@mui/system'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -74,7 +75,6 @@ const IncomeTable = () => {
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [openDeleteModal, setDeleteModal] = useState(false)
   const [openPayModal, setOpenPayModal] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState()
   const [incomeToUpdate, setIncomeToUpdate] = useState(null)
   const [incomeToPay, setIncomeToPay] = useState(null)
   const [incomeInView, setIncomeInView] = useState(null)
@@ -84,20 +84,6 @@ const IncomeTable = () => {
   const [IncomeData, loading, paging] = useIncome()
   const [CurrentSessionData] = useCurrentSession()
 
-  // const [showModal, setShowModal] = useState(false)
-  // const [openViewDrawer, setViewDrawer] = useState(false)
-  // const [deleteModal, setDeleteModal] = useState(false)
-  // const [selectedClass, setSelectedClass] = useState()
-  // const [ClassToUpdate, setClassToUpdate] = useState(null)
-  // const [ClassInView, setClassInView] = useState(null)
-  // const [key, setKey] = useState('')
-  // const [openAssignModal, setAssignModal] = useState(false)
-  // const [openPeriodModal, setPeriodModal] = useState(false)
-  // const [openTimetableModal, setOpenTimeTable] = useState(false)
-  // const [ClassToAssign, setClassToAssign] = useState(null)
-  // const [ClassToViewTimeTable, setClassRoomToViewTimeTable] = useState(null)
-  // const [ClassToAddPeriod, setClassRoomToAddPeriod] = useState(null)
-  // const [assignSubject, setAssignSubject] = useState(false)
   const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
 
   // const dateValue = new Date()
@@ -106,10 +92,6 @@ const IncomeTable = () => {
 
   //Functions from ALl Income component
   // ** Hooks
-  // const dispatch = useDispatch()
-
-  // const [IncomeData, loading] = useIncome()
-
   const toggleModal = () => {
     setShowModal(!showModal)
   }
@@ -121,6 +103,7 @@ const IncomeTable = () => {
   const setIncomeToView = value => {
     setOpenViewModal(true)
     setIncomeInView(value)
+    handleRowOptionsClose(IncomeData?.indexOf(value))
   }
 
   const updateFetch = () => setFetch(!refetch)
@@ -133,15 +116,6 @@ const IncomeTable = () => {
   const doCancelDelete = () => {
     setDeleteModal(false)
     setSelectedStudent(null)
-  }
-
-  const ondeleteClick = async () => {
-    deleteStudent(selectedStudent).then(res => {
-      if (res.status) {
-        dispatch(fetchStudents({ page: 1, key }))
-        doCancelDelete()
-      }
-    })
   }
 
   const setPayIncome = value => {
@@ -179,64 +153,6 @@ const IncomeTable = () => {
     setAnchorEl(newAnchorEl)
   }
 
-  const OpenModal = () => {
-    if (showModal) {
-      setShowModal(false)
-      setClassToUpdate(null)
-    } else {
-      setShowModal(true)
-    }
-  }
-
-  const toggleAssignModal = () => {
-    if (openAssignModal) {
-      setAssignModal(false)
-      setClassToAssign(null)
-    } else {
-      setAssignModal(true)
-    }
-  }
-
-  const setClassToAssignSubject = value => {
-    setAssignSubject(true)
-    toggleAssignModal()
-
-    handleRowOptionsClose(IncomeData?.indexOf(value))
-    setClassToAssign(value)
-  }
-
-  const setClassToRemoveSubject = value => {
-    setAssignSubject(false)
-    toggleAssignModal()
-
-    handleRowOptionsClose(IncomeData?.indexOf(value))
-    setClassToAssign(value)
-  }
-
-  const setClassToAddPeriod = value => {
-    setPeriodModal(true)
-
-    handleRowOptionsClose(IncomeData?.indexOf(value))
-    setClassRoomToAddPeriod(value)
-  }
-
-  const closePeriodModal = () => {
-    setPeriodModal(false)
-    setClassRoomToAddPeriod(null)
-  }
-
-  const setClassToViewTimeTable = value => {
-    setOpenTimeTable(true)
-
-    handleRowOptionsClose(IncomeData?.indexOf(value))
-    setClassRoomToViewTimeTable(value)
-  }
-
-  const closeTimeTableModal = () => {
-    setOpenTimeTable(false)
-    setClassRoomToViewTimeTable(null)
-  }
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
@@ -246,17 +162,11 @@ const IncomeTable = () => {
     setPage(0)
   }
 
-  const setClassToEdit = value => {
-    handleRowOptionsClose(IncomeData?.indexOf(value))
-    OpenModal()
-    setClassToUpdate(value)
-  }
-
-  const setClassToView = value => {
-    handleRowOptionsClose(IncomeData?.indexOf(value))
-    setViewDrawer(!openViewDrawer)
-    setClassInView(value)
-  }
+  // const setClassToView = value => {
+  //   handleRowOptionsClose(IncomeData?.indexOf(value))
+  //   setViewDrawer(!openViewDrawer)
+  //   setClassInView(value)
+  // }
 
   const closeViewModal = () => {
     setViewDrawer(!openViewDrawer)
@@ -271,7 +181,7 @@ const IncomeTable = () => {
   // }, [])
 
   useEffect(() => {
-    dispatch(fetchClasses({ page: page + 1, limit: 10, key }))
+    dispatch(fetchIncome({ page: page + 1, limit: 10, key }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, key])
@@ -372,19 +282,20 @@ const IncomeTable = () => {
                                   Edit Income
                                 </MenuItem>
 
-                                <MenuItem onClick={() => setClassToView(item)} sx={{ '& svg': { mr: 2 } }}>
+                                <MenuItem onClick={() => setIncomeToView(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:eye' fontSize={20} />
                                   View Income
                                 </MenuItem>
-
-                                <MenuItem onClick={() => {}} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='ph:hand-coins-light' fontSize={20} />
-                                  Pay Outstanding
-                                </MenuItem>
-                                <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                                {item.amount !== item.amountPaid ? (
+                                  <MenuItem onClick={() => setPayIncome(item)} sx={{ '& svg': { mr: 2 } }}>
+                                    <Icon icon='ph:hand-coins-light' fontSize={20} />
+                                    Pay Outstanding
+                                  </MenuItem>
+                                ) : null}
+                                {/* <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:trash' fontSize={20} />
                                   Delete Income
-                                </MenuItem>
+                                </MenuItem> */}
                                 {/* {CurrentSessionData && (
                                   <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
                                     <Icon icon='mdi:timetable' fontSize={20} />
@@ -437,6 +348,12 @@ const IncomeTable = () => {
           closeModal={closeModal}
           fetchData={updateFetch}
           selectedIncome={incomeToUpdate}
+        />
+        <PayIncomeBalance
+          income={incomeToPay}
+          open={openPayModal}
+          togglePayModal={togglePayModal}
+          fetchData={updateFetch}
         />
         {openViewModal && <ViewIncome open={openViewModal} closeCanvas={toggleViewModal} income={incomeInView} />}
       </Fragment>
