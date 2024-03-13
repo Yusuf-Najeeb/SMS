@@ -18,6 +18,7 @@ import MuiTabList from '@mui/lab/TabList'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import AllIncome from './AllIncome'
+import NewIncome from './NewIncome'
 import IncomeCategory from './IncomeCategory'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
@@ -59,7 +60,6 @@ const IncomeTab = ({ tab }) => {
 
   const handleChange = (e, value) => {
     setActiveTab(value)
-
   }
 
   useEffect(() => {
@@ -71,8 +71,8 @@ const IncomeTab = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    income: <AllIncome />,
-    categories: <IncomeCategory />,
+    income: <NewIncome />,
+    categories: <IncomeCategory />
   }
 
   return (

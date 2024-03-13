@@ -32,7 +32,7 @@ export const fetchIncome = createAsyncThunk('/ncome/FetchIncome', async (query) 
 
   export const updateIncome = async (vals, id)=> {
     try {
-      const res = await axios.patch(`/accounts/updateincomeandexpenditure/${id}`, vals) 
+      const res = await axios.patch(`/accounts/${id}`, vals) 
 
 
       return res
@@ -53,6 +53,21 @@ export const fetchIncome = createAsyncThunk('/ncome/FetchIncome', async (query) 
       return res
     } catch (error) {
       notifyError('Failed to update income')
+    }
+  }
+
+  export const deleteIncome = async (id)=> {
+    try {
+      const res = await axios.delete(`/accounts/${id}`, ) 
+
+      if(res.data){
+        notifySuccess("Income Deleted")
+      }
+
+
+      return res
+    } catch (error) {
+      notifyError('Failed to delete income')
     }
   }
 

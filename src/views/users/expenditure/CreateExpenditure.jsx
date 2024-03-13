@@ -172,18 +172,19 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
 
     let payload = {
       categoryId: parsedCategoryId,
+      income: defaultValues.income,
 
       ...restData
     }
 
     // Add userId to payload if it has a value
     if (guardianId) {
-      payload = { ...payload, userId: guardianId }
+      payload = { ...payload, parentId: guardianId }
     }
 
     // Add userId to payload if it has a value
     if (studentId) {
-      payload = { ...payload, userId: studentId }
+      payload = { ...payload, studentId: studentId }
     }
 
     // Add staffId to payload if it has a value

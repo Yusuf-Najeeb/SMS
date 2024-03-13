@@ -34,7 +34,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { deleteStudent } from '../../../store/apps/Student/asyncthunk'
-import { formatCurrency, formatDate, formatDateToReadableFormat,  } from '../../../@core/utils/format'
+import { formatCurrency, formatDate, formatDateToReadableFormat } from '../../../@core/utils/format'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { fetchIncome } from '../../../store/apps/income/asyncthunk'
 import { useIncome } from '../../../hooks/useIncome'
@@ -45,15 +45,14 @@ import PayIncomeBalance from './PayIncome'
 import ViewIncome from './ViewIncome'
 
 // ** Styled component for typography
-const TypographyStyled = styled(Typography)(({theme})=> ({
-    fontSize: theme.typography.body1.fontSize,
-    color: `${theme.palette.primary.main} !important` 
+const TypographyStyled = styled(Typography)(({ theme }) => ({
+  fontSize: theme.typography.body1.fontSize,
+  color: `${theme.palette.primary.main} !important`
 }))
-
 
 // ** renders client column
 const renderClient = row => {
-    const initials = `${row.firstName} ${row.lastName}`
+  const initials = `${row.firstName} ${row.lastName}`
   if (row.profilePicture?.length) {
     return <CustomAvatar src={row.profilePicture} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
@@ -70,27 +69,39 @@ const renderClient = row => {
 }
 
 const defaultColumns = [
-
-    {
-        field: 'id' , 
-        headerName: 'S/N', 
-        filterable: false,
-        renderCell:(index) => <Typography component={TypographyStyled}> {index.api.getRowIndexRelativeToVisibleRows(index.row.id) + 1} </Typography>
-    },
+  {
+    field: 'id',
+    headerName: 'S/N',
+    filterable: false,
+    renderCell: index => (
+      <Typography component={TypographyStyled}>
+        {' '}
+        {index.api.getRowIndexRelativeToVisibleRows(index.row.id) + 1}{' '}
+      </Typography>
+    )
+  },
 
   {
     flex: 0.1,
     minWidth: 100,
     field: 'amount',
     headerName: 'Amount',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{formatCurrency(row.amount) || '--'}</Typography>
+    renderCell: ({ row }) => (
+      <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+        {formatCurrency(row.amount) || '--'}
+      </Typography>
+    )
   },
   {
     flex: 0.1,
     minWidth: 100,
     field: 'amountPaid',
     headerName: 'Amount Paid',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{formatCurrency(row.amountPaid) || '--'}</Typography>
+    renderCell: ({ row }) => (
+      <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+        {formatCurrency(row.amountPaid) || '--'}
+      </Typography>
+    )
   },
   {
     flex: 0.15,
@@ -99,73 +110,75 @@ const defaultColumns = [
     headerName: 'Category',
     renderCell: ({ row }) => <CustomChip rounded size='small' skin='light' color='success' label={row.category.name} />
   },
-  
-//   {
-//     flex: 0.15,
-//     minWidth: 140,
-//     field: 'paymentMode',
-//     headerName: 'Payment Method',
-//     renderCell: ({ row }) => <CustomChip rounded size='small' skin='light' color='success' label={row.paymentMode || '--'} />
-//   },
+
+  //   {
+  //     flex: 0.15,
+  //     minWidth: 140,
+  //     field: 'paymentMode',
+  //     headerName: 'Payment Method',
+  //     renderCell: ({ row }) => <CustomChip rounded size='small' skin='light' color='success' label={row.paymentMode || '--'} />
+  //   },
   {
     flex: 0.15,
     minWidth: 140,
     field: 'createdAt',
     headerName: 'Payment Date',
-    renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{formatDateToReadableFormat(row.createdAt)}</Typography>
-  },
+    renderCell: ({ row }) => (
+      <Typography sx={{ color: 'text.secondary' }}>{formatDateToReadableFormat(row.createdAt)}</Typography>
+    )
+  }
 
+  //   {
+  //     flex: 0.1,
+  //     minWidth: 100,
+  //     field: 'balance',
+  //     headerName: 'Balance',
+  //     renderCell: ({ row }) => {
+  //       return row.balance !== 0 ? (
+  //         <Typography sx={{ color: 'text.secondary' }}>{row.balance}</Typography>
+  //       ) : (
+  //         <CustomChip rounded size='small' skin='light' color='success' label='Paid' />
+  //       )
+  //     }
+  //   },
+  //   {
+  //     flex: 0.1,
+  //     minWidth: 80,
+  //     field: 'invoiceStatus',
+  //     renderHeader: () => <Icon icon='tabler:trending-up' />,
+  //     renderCell: ({ row }) => {
+  //       const { dueDate, balance, invoiceStatus } = row
+  //       const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
 
-//   {
-//     flex: 0.1,
-//     minWidth: 100,
-//     field: 'balance',
-//     headerName: 'Balance',
-//     renderCell: ({ row }) => {
-//       return row.balance !== 0 ? (
-//         <Typography sx={{ color: 'text.secondary' }}>{row.balance}</Typography>
-//       ) : (
-//         <CustomChip rounded size='small' skin='light' color='success' label='Paid' />
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.1,
-//     minWidth: 80,
-//     field: 'invoiceStatus',
-//     renderHeader: () => <Icon icon='tabler:trending-up' />,
-//     renderCell: ({ row }) => {
-//       const { dueDate, balance, invoiceStatus } = row
-//       const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
-
-//       return (
-//         <Tooltip
-//           title={
-//             <div>
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 {invoiceStatus}
-//               </Typography>
-//               <br />
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 Balance:
-//               </Typography>{' '}
-//               {balance}
-//               <br />
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 Due Date:
-//               </Typography>{' '}
-//               {dueDate}
-//             </div>
-//           }
-//         >
-//           <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
-//             <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
-//           </CustomAvatar>
-//         </Tooltip>
-//       )
-//     }
-//   }
+  //       return (
+  //         <Tooltip
+  //           title={
+  //             <div>
+  //               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //                 {invoiceStatus}
+  //               </Typography>
+  //               <br />
+  //               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //                 Balance:
+  //               </Typography>{' '}
+  //               {balance}
+  //               <br />
+  //               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //                 Due Date:
+  //               </Typography>{' '}
+  //               {dueDate}
+  //             </div>
+  //           }
+  //         >
+  //           <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
+  //             <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
+  //           </CustomAvatar>
+  //         </Tooltip>
+  //       )
+  //     }
+  //   }
 ]
+
 /* eslint-disable */
 const CustomInput = forwardRef((props, ref) => {
   const startDate = props.start !== null ? format(props.start, 'MM/dd/yyyy') : ''
@@ -194,29 +207,25 @@ const AllIncome = () => {
   const [incomeInView, setIncomeInView] = useState(null)
   const [openViewModal, setOpenViewModal] = useState(false)
 
-  
-
   // ** Hooks
   const dispatch = useDispatch()
 
   const [IncomeData, loading] = useIncome()
 
-
-
-  const toggleModal = ()=>{
+  const toggleModal = () => {
     setShowModal(!showModal)
   }
 
   const toggleViewModal = () => {
     setOpenViewModal(!openViewModal)
   }
-  
+
   const setIncomeToView = value => {
     setOpenViewModal(true)
     setIncomeInView(value)
-}
+  }
 
-  const updateFetch = ()=> setFetch(!refetch)
+  const updateFetch = () => setFetch(!refetch)
 
   const doDelete = value => {
     setDeleteModal(true)
@@ -229,36 +238,33 @@ const AllIncome = () => {
   }
 
   const ondeleteClick = async () => {
-    deleteStudent(selectedStudent).then((res)=>{
-
-        if (res.status) {
-            dispatch(fetchStudents({page: 1, key}))
-          doCancelDelete()
-        }
+    deleteStudent(selectedStudent).then(res => {
+      if (res.status) {
+        dispatch(fetchStudents({ page: 1, key }))
+        doCancelDelete()
+      }
     })
-   
   }
 
-  const setPayIncome = (value) => {
+  const setPayIncome = value => {
     setIncomeToPay(value)
     setOpenPayModal(true)
   }
 
-  const togglePayModal = ()=> setOpenPayModal(!openPayModal)
+  const togglePayModal = () => setOpenPayModal(!openPayModal)
 
-  const setIncomeToEdit = (value) => {
+  const setIncomeToEdit = value => {
     setEditDrawer(true)
     setIncomeToUpdate(value)
   }
 
-  const closeEditModal = ()=> setEditDrawer(!openEditDrawer)
+  const closeEditModal = () => setEditDrawer(!openEditDrawer)
 
-
-  useEffect(()=>{
-    dispatch(fetchIncome({page: page + 1, key}))
+  useEffect(() => {
+    dispatch(fetchIncome({ page: page + 1, key }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[refetch, page, key])
+  }, [refetch, page, key])
 
   const columns = [
     ...defaultColumns,
@@ -270,18 +276,18 @@ const AllIncome = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title='Edit Income'>
-             <IconButton size='small' onClick={() => setIncomeToEdit(row)}>
-            <Icon icon='tabler:edit' />
+          <Tooltip title='Edit Income'>
+            <IconButton size='small' onClick={() => setIncomeToEdit(row)}>
+              <Icon icon='tabler:edit' />
             </IconButton>
-            </Tooltip>
-            {row.amount !== row.amountPaid && 
-            <Tooltip title='Pay Outstanding'>
-           <IconButton size='small' onClick={() => setPayIncome(row)}>
-                          <Icon icon='ph:hand-coins-light' />
-                        </IconButton>
           </Tooltip>
-          }
+          {row.amount !== row.amountPaid && (
+            <Tooltip title='Pay Outstanding'>
+              <IconButton size='small' onClick={() => setPayIncome(row)}>
+                <Icon icon='ph:hand-coins-light' />
+              </IconButton>
+            </Tooltip>
+          )}
           <Tooltip title='View Income'>
             <IconButton size='small' onClick={() => setIncomeToView(row)}>
               <Icon icon='tabler:eye' />
@@ -293,7 +299,6 @@ const AllIncome = () => {
               <Icon icon='tabler:trash' />
             </IconButton>
           </Tooltip> */}
-          
 
           {/* <OptionsMenu
             menuProps={{ sx: { '& .MuiMenuItem-root svg': { mr: 2 } } }}
@@ -321,40 +326,48 @@ const AllIncome = () => {
 
   return (
     <Fragment>
-    <DatePickerWrapper>
-
-    {/* <Stats data={IncomeData} statTitle={'Students'}/> */}
+      <DatePickerWrapper>
+        {/* <Stats data={IncomeData} statTitle={'Students'}/> */}
 
         <PageHeader action={'Create Income'} toggle={toggleModal} />
 
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Card>
-            <DataGrid
-              autoHeight
-              pagination
-              rowHeight={62}
-              rows={IncomeData?.length ? IncomeData : []}
-              columns={columns}
-
-            //   disableRowSelectionOnClick
-              pageSizeOptions={[10, 25, 50]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              disableRowSelectionOnClick
-            />
-          </Card>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Card>
+              <DataGrid
+                autoHeight
+                pagination
+                rowHeight={62}
+                rows={IncomeData?.length ? IncomeData : []}
+                columns={columns}
+                //eslint_disable-next-line
+                //   disableRowSelectionOnClick
+                pageSizeOptions={[10, 25, 50]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                disableRowSelectionOnClick
+              />
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      </DatePickerWrapper>
 
-    </DatePickerWrapper>
-
-    {/* <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
-    {/* <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  /> */}
-    <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch}  />
-    <EditIncome open={openEditDrawer} closeModal={closeEditModal} fetchData={updateFetch} selectedIncome={incomeToUpdate} />
-    <PayIncomeBalance income={incomeToPay} open={openPayModal} togglePayModal={togglePayModal} fetchData={updateFetch} />
-    { openViewModal && <ViewIncome open={openViewModal} closeCanvas={toggleViewModal} income={incomeInView}/> }
+      {/* <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
+      {/* <AddStudent open={showModal} closeModal={toggleModal} refetchData={updateFetch}  /> */}
+      <CreateIncome open={showModal} closeModal={toggleModal} fetchData={updateFetch} />
+      <EditIncome
+        open={openEditDrawer}
+        closeModal={closeEditModal}
+        fetchData={updateFetch}
+        selectedIncome={incomeToUpdate}
+      />
+      <PayIncomeBalance
+        income={incomeToPay}
+        open={openPayModal}
+        togglePayModal={togglePayModal}
+        fetchData={updateFetch}
+      />
+      {openViewModal && <ViewIncome open={openViewModal} closeCanvas={toggleViewModal} income={incomeInView} />}
     </Fragment>
   )
 }

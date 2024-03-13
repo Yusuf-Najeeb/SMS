@@ -21,9 +21,9 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { createIncomeSchema } from 'src/@core/Formschema'
+import { updateIncomeSchema } from 'src/@core/Formschema'
 
-import { createIncome, updateIncome } from '../../../store/apps/income/asyncthunk'
+import { updateIncome } from '../../../store/apps/income/asyncthunk'
 import FormController from '../component/FormController'
 import { fetchIncomeCategory } from '../../../store/apps/incomeCategory/asyncthunk'
 import { useEffect, useState } from 'react'
@@ -33,6 +33,8 @@ import SearchStaff from '../component/SearchStaff'
 import SearchParent from '../component/SearchParent'
 import SearchStudent from '../component/SearchStudent'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { usePaymentMethods } from '../../../hooks/usePaymentMethods'
+import { fetchPaymentMethods } from '../../../store/apps/settings/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -50,108 +52,31 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
 }))
 
 const defaultValues = {
-  title: '',
   amount: Number(''),
-  amountPaid: Number(''),
-  categoryId: '',
-  income: true,
-  incomeOwner: ''
 }
 
 const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
-  const [refetch, setFetch] = useState(false)
-  const [incomeSource, setIncomeSource] = useState()
-  const [openGuardianModal, setGuardianModal] = useState(false)
-  const [openStaffModal, setStaffModal] = useState(false)
-  const [openStudentModal, setStudentModal] = useState(false)
-  const [guardianItemsArray, setGuardianItemsArray] = useState([])
-  const [StudentsItemsArray, setStudentsItemsArray] = useState([])
   const [staffItemsArray, setStaffItemsArray] = useState([])
   const [guardianId, setGuardianId] = useState()
   const [studentId, setStudentId] = useState()
   const [staffId, setStaffId] = useState()
   const [payError, setPayError] = useState()
 
+  console.log(selectedIncome, 'selected income')
+
   // ** Hooks
   const dispatch = useDispatch()
-  const [IncomeCategoryData] = useIncomeCategory()
 
-  const validatePayment = amountReceived => {
-    if (amountReceived > Number(getValues('amount'))) {
-      setPayError('Amount Received cannot be greater then Amount')
-
-      return
-    }
-
-    setPayError('')
-  }
-
-  const toggleGuardianModal = () => {
-    closeModal()
-    setGuardianModal(!openGuardianModal)
-  }
-
-  const toggleStaffModal = () => {
-    closeModal()
-    setStaffModal(!openStaffModal)
-  }
-
-  const toggleStudentModal = () => {
-    closeModal()
-    setStudentModal(!openStudentModal)
-  }
-
-  const clearStaffArray = () => {
-    setStaffItemsArray([])
-  }
-
-  const clearGuardianArray = () => {
-    setGuardianItemsArray([])
-  }
-
-  const clearStudentArray = () => {
-    setStudentsItemsArray([])
-  }
 
   useEffect(() => {
-    if (guardianItemsArray.length) {
-      const id = guardianItemsArray[0].id
-      setGuardianId(id)
-      setStudentId(null)
-      setStaffId(null)
-    }
-  }, [guardianItemsArray])
+    if (selectedIncome) {
 
-  useEffect(() => {
-    if (StudentsItemsArray.length) {
-      const id = StudentsItemsArray[0].id
-      setStudentId(id)
-      setStaffId(null)
-      setGuardianId(null)
-    }
-  }, [StudentsItemsArray])
-
-  useEffect(() => {
-    if (staffItemsArray.length) {
-      const id = staffItemsArray[0].id
-      setStaffId(id)
-      setStudentId(null)
-      setGuardianId(null)
-    }
-  }, [staffItemsArray])
-
-  useEffect(()=>{
-    if(selectedIncome){
-
-        setValue('title', selectedIncome.title)
-        Number(setValue('categoryId', selectedIncome.categoryId))
-        Number(setValue('amount', selectedIncome.amount))
-        Number(setValue('amountPaid', selectedIncome.amountPaid))
+      Number(setValue('amount', selectedIncome.amount))
 
     }
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[selectedIncome])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIncome])
 
   const {
     control,
@@ -160,35 +85,13 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
     reset,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createIncomeSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(updateIncomeSchema) })
+  
 
-  const onSubmit = async data => {
-    const { categoryId, incomeOwner, ...restData } = data
+  const onSubmitt = async (data) => {
 
-    const parsedCategoryId = Number(categoryId)
 
-    let payload = {
-      categoryId: parsedCategoryId,
-
-      ...restData
-    }
-
-    // Add userId to payload if it has a value
-    if (guardianId) {
-      payload = { ...payload, userId: guardianId }
-    }
-
-    // Add userId to payload if it has a value
-    if (studentId) {
-      payload = { ...payload, userId: studentId }
-    }
-
-    // Add staffId to payload if it has a value
-    if (staffId) {
-      payload = { ...payload, staffId }
-    }
-
-    updateIncome(payload, selectedIncome.id).then(res => {
+    updateIncome(data, selectedIncome.id).then(res => {
       if (res?.data.success) {
         notifySuccess('Income Updated')
         reset()
@@ -198,12 +101,6 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
     })
   }
 
-  useEffect(() => {
-    dispatch(fetchIncomeCategory({ page: 1, limit: 300 }))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refetch])
-
   return (
     <Fragment>
       <Dialog
@@ -211,10 +108,10 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-
+        //eslint_disable-next-line
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 450 } }}
       >
         <DialogContent
           sx={{
@@ -226,160 +123,35 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
             <Icon icon='tabler:x' fontSize='1.25rem' />
           </CustomCloseButton>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogContent
-              sx={{
-                pb: theme => `${theme.spacing(8)} !important`
-              }}
-            >
+          <form onSubmit={handleSubmit(onSubmitt)}>
+            
               <Grid container spacing={6}>
-                <Grid item xs={12} sm={6}>
-                  <Controller
-                    name='title'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        fullWidth
-                        label='Title'
-                        required
-                        placeholder='Enter Income title'
-                        value={value}
-                        onChange={onChange}
-                        error={Boolean(errors.title)}
-                        {...(errors.title && { helperText: errors.title.message })}
-                      />
-                    )}
-                  />
-                </Grid>
+               
 
-                <Grid item xs={12} sm={6}>
-                  <Controller
-                    name='categoryId'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        select
-                        fullWidth
-                        required
-                        value={value}
-                        label='Income Category'
-                        onChange={e => {
-                          onChange(e)
-                        }}
-                        id='stepper-linear-personal-categoryId'
-                        error={Boolean(errors.categoryId)}
-                        aria-describedby='stepper-linear-personal-categoryId-helper'
-                        {...(errors.categoryId && { helperText: errors.categoryId.message })}
-                      >
-                        <MenuItem value=''>Select Category</MenuItem>
-                        {IncomeCategoryData?.map(category => (
-                          <MenuItem key={category?.id} value={category?.id}>
-                            {category.name}
-                          </MenuItem>
-                        ))}
-                      </CustomTextField>
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={12}>
                   <FormController
                     name='amount'
                     control={control}
                     required={true}
                     requireBoolean={true}
                     label='Amount'
-                    error={errors['amount']}
+
+                    // error={errors['amount']}
+                    error={Boolean(errors.amount)}
                     errorMessage={errors?.amount?.message}
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
-
-                  <Controller
-                    name='amountPaid'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        fullWidth
-                        required
-                        value={value}
-                        label='Amount Received'
-                        onChange={e => {
-                          onChange(e)
-                          parseInt(validatePayment(e.target.value))
-                        }}
-                        error={Boolean(errors.amountPaid)}
-                        aria-describedby={`stepper-linear-amountPaid`}
-                        {...(errors.amountPaid && { helperText: errors.amountPaid.message })}
-                      />
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                  <Controller
-                    name='incomeOwner'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        select
-                        fullWidth
-                        required
-                        value={value}
-                        label='Income Source'
-                        onChange={e => {
-                          onChange(e)
-                          setIncomeSource(e.target.value)
-                        }}
-                        id='stepper-linear-personal-incomeOwner'
-                        error={Boolean(errors.incomeOwner)}
-                        aria-describedby='stepper-linear-personal-incomeOwner-helper'
-                        {...(errors.incomeOwner && { helperText: errors.incomeOwner.message })}
-                      >
-                        <MenuItem value='staff'>Staff</MenuItem>
-                        <MenuItem value='guardian'> Guardian</MenuItem>
-                        <MenuItem value='student'> Student</MenuItem>
-                      </CustomTextField>
-                    )}
-                  />
-                </Grid>
-
-                <Grid item sx={{ mt: 2 }} sm={12}>
-                  {payError && (
-                    <div>
-                      <Alert severity='error'>
-                        <div className='alert-body'>{payError}</div>
-                      </Alert>
-                    </div>
-                  )}
-                </Grid>
               </Grid>
-            </DialogContent>
+            
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
-              {incomeSource == 'staff' ? (
-                <Button type='button' variant='outlined' onClick={toggleStaffModal}>
-                  Select Staff
-                </Button>
-              ) : incomeSource == 'guardian' ? (
-                <Button type='button' variant='outlined' onClick={toggleGuardianModal}>
-                  Select Guardian
-                </Button>
-              ) : incomeSource == 'student' ? (
-                <Button type='button' variant='outlined' onClick={toggleStudentModal}>
-                  Select Student
-                </Button>
-              ) : null}
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '20px' }}>
 
               <Button
+                // onClick={fetchData}
                 type='submit'
                 variant='contained'
-                disabled={isSubmitting || staffId === undefined || guardianId === undefined || studentId === undefined}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update'}
               </Button>
@@ -387,30 +159,7 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
           </form>
         </DialogContent>
       </Dialog>
-      <SearchParent
-        itemsArray={guardianItemsArray}
-        setItemsArray={setGuardianItemsArray}
-        openModal={openGuardianModal}
-        closeModal={toggleGuardianModal}
-        clearStaffArray={clearStaffArray}
-        clearStudentArray={clearStudentArray}
-      />
-      <SearchStudent
-        itemsArray={StudentsItemsArray}
-        setItemsArray={setStudentsItemsArray}
-        openModal={openStudentModal}
-        closeModal={toggleStudentModal}
-        clearParentArray={clearGuardianArray}
-        clearStaffArray={clearStaffArray}
-      />
-      <SearchStaff
-        itemsArray={staffItemsArray}
-        setItemsArray={setStaffItemsArray}
-        openModal={openStaffModal}
-        closeModal={toggleStaffModal}
-        clearStudentArray={clearStudentArray}
-        clearGuardianArray={clearGuardianArray}
-      />
+
     </Fragment>
   )
 }
