@@ -209,6 +209,7 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
         open={open}
         maxWidth='md'
         scroll='body'
+        //eslint_disable-next-line
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
         sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}

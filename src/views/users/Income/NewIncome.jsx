@@ -108,15 +108,15 @@ const IncomeTable = () => {
 
   const updateFetch = () => setFetch(!refetch)
 
-  const doDelete = value => {
-    setDeleteModal(true)
-    setSelectedStudent(value?.id)
-  }
+  // const doDelete = value => {
+  //   setDeleteModal(true)
+  //   setSelectedStudent(value?.id)
+  // }
 
-  const doCancelDelete = () => {
-    setDeleteModal(false)
-    setSelectedStudent(null)
-  }
+  // const doCancelDelete = () => {
+  //   setDeleteModal(false)
+  //   setSelectedStudent(null)
+  // }
 
   const setPayIncome = value => {
     setIncomeToPay(value)
@@ -134,11 +134,11 @@ const IncomeTable = () => {
 
   const closeModal = () => setEditDrawer(!openEditDrawer)
 
-  useEffect(() => {
-    dispatch(fetchIncome({ page: page + 1, key }))
+  // useEffect(() => {
+  //   dispatch(fetchIncome({ page: page + 1, key }))
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refetch, page, key])
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [refetch, page, key])
 
   //  functions from classes
   const handleRowOptionsClick = (event, index) => {
@@ -241,10 +241,10 @@ const IncomeTable = () => {
                             {`${item.id}` || '--'}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.amount || '--'}
+                            {`₦${item?.amount || '--'}`}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.amountPaid || '--'}
+                            {`₦${item?.amountPaid || '--'}`}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                             {item?.category?.name?.toUpperCase() || '--'}
@@ -340,9 +340,10 @@ const IncomeTable = () => {
           count={paging?.totalItems}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10]}
+          rowsPerPageOptions={[10, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+
         <EditIncome
           open={openEditDrawer}
           closeModal={closeModal}
