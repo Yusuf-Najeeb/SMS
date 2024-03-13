@@ -24,6 +24,8 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useIncome } from '../../../hooks/useIncome'
 import { fetchIncome } from '../../../store/apps/income/asyncthunk'
+import EditIncome from './EditIncome'
+import ViewIncome from './ViewIncome'
 
 import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 
@@ -83,7 +85,6 @@ const IncomeTable = () => {
   const [CurrentSessionData] = useCurrentSession()
 
   // const [showModal, setShowModal] = useState(false)
-  // const [openEditDrawer, setEditDrawer] = useState(false)
   // const [openViewDrawer, setViewDrawer] = useState(false)
   // const [deleteModal, setDeleteModal] = useState(false)
   // const [selectedClass, setSelectedClass] = useState()
@@ -151,11 +152,13 @@ const IncomeTable = () => {
   const togglePayModal = () => setOpenPayModal(!openPayModal)
 
   const setIncomeToEdit = value => {
+    handleRowOptionsClose(IncomeData?.indexOf(value))
+
     setEditDrawer(true)
     setIncomeToUpdate(value)
   }
 
-  const closeEditModal = () => setEditDrawer(!openEditDrawer)
+  const closeModal = () => setEditDrawer(!openEditDrawer)
 
   useEffect(() => {
     dispatch(fetchIncome({ page: page + 1, key }))
@@ -359,7 +362,12 @@ const IncomeTable = () => {
                                 }}
                                 PaperProps={{ style: { minWidth: '8rem' } }}
                               >
-                                <MenuItem onClick={() => setClassToEdit(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
+                                <MenuItem
+                                  onClick={() => {
+                                    setIncomeToEdit(item)
+                                  }}
+                                  sx={{ '& svg': { mr: 2 } }}
+                                >
                                   <Icon icon='tabler:edit' fontSize={20} />
                                   Edit Income
                                 </MenuItem>
@@ -424,25 +432,13 @@ const IncomeTable = () => {
           rowsPerPageOptions={[5, 10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-
-        {/* {showModal && <ManageClass open={showModal} toggle={OpenModal} classToEdit={ClassToUpdate} />} */}
-
-        {/* <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
-
-        {openViewDrawer && <ViewClass open={openViewDrawer} closeCanvas={closeViewModal} classRoom={ClassInView} />} */}
-
-        {/* <ManageClassSubject
-          open={openAssignModal}
-          Classroom={ClassToAssign}
-          status={assignSubject}
-          toggle={toggleAssignModal}
-        /> */}
-
-        {/* {openTimetableModal && (
-          <ViewTimeTable open={openTimetableModal} handleClose={closeTimeTableModal} ClassRoom={ClassToViewTimeTable} />
-        )}
-
-        {openPeriodModal && <AddPeriod open={openPeriodModal} classRoom={ClassToAddPeriod} toggle={closePeriodModal} />} */}
+        <EditIncome
+          open={openEditDrawer}
+          closeModal={closeModal}
+          fetchData={updateFetch}
+          selectedIncome={incomeToUpdate}
+        />
+        {openViewModal && <ViewIncome open={openViewModal} closeCanvas={toggleViewModal} income={incomeInView} />}
       </Fragment>
     </>
   )
