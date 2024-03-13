@@ -1,7 +1,5 @@
 import axios from 'axios'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { notifyError } from '../../../@core/components/toasts/notifyError'
-import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import GetUserData from '../../../@core/utils/getUserData'
 
 const userData = GetUserData()

@@ -25,6 +25,7 @@ export const subjectsSlice = createSlice({
     builder.addCase(fetchSubjectsForTeacher.fulfilled, (state, action) => {
       state.loading = false
       state.SubjectsList = action?.payload?.data.data
+      
     //   state.paging = action?.payload?.data?.paging
     })
     builder.addCase(fetchSubjectsForTeacher.rejected, state => {
