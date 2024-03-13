@@ -140,18 +140,16 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
     }
   }, [staffItemsArray])
 
-  useEffect(()=>{
-    if(selectedIncome){
-
-        setValue('title', selectedIncome.title)
-        Number(setValue('categoryId', selectedIncome.categoryId))
-        Number(setValue('amount', selectedIncome.amount))
-        Number(setValue('amountPaid', selectedIncome.amountPaid))
-
+  useEffect(() => {
+    if (selectedIncome) {
+      setValue('title', selectedIncome.title)
+      Number(setValue('categoryId', selectedIncome.categoryId))
+      Number(setValue('amount', selectedIncome.amount))
+      Number(setValue('amountPaid', selectedIncome.amountPaid))
     }
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[selectedIncome])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIncome])
 
   const {
     control,
@@ -211,7 +209,7 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-
+        //eslint_disable-next-line
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
         sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
@@ -297,7 +295,6 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-
                   <Controller
                     name='amountPaid'
                     control={control}
@@ -377,6 +374,7 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
               ) : null}
 
               <Button
+                onClick={fetchData}
                 type='submit'
                 variant='contained'
                 disabled={isSubmitting || staffId === undefined || guardianId === undefined || studentId === undefined}
