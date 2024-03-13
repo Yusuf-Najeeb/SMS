@@ -29,6 +29,7 @@ import timetable from 'src/store/apps/timetable'
 import payslip from 'src/store/apps/payslip'
 import deductions from 'src/store/apps/deductions'
 import reportCard from 'src/store/apps/reportCard'
+import singleTeacherSubjects from 'src/store/apps/singleTeacherSubjects'
 
 export const store = configureStore({
   reducer: {
@@ -58,7 +59,8 @@ export const store = configureStore({
     timetable,
     payslip,
     deductions,
-    reportCard
+    reportCard,
+    singleTeacherSubjects
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -51,7 +51,7 @@ const SelectedGuardianTable = ({ tableData, updateTable }) => {
           {tableData.length === 0 ? (
             <TableRow className='text-center'>
               <TableCell align='center' colSpan={5}>
-                No items selected yet
+                Click on the + icon above to add guardian
               </TableCell>
             </TableRow>
           ) : (

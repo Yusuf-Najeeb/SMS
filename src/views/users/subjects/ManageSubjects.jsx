@@ -185,7 +185,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
     }, {})
 
     const existingStaffIds = subjectToEdit.staffs.map(item => item.id)
-    
+
     const teacherIds = TeacherNames.map(item => {
       const matchingObject = StaffData?.result?.find(obj => obj.email === item)
 
@@ -341,14 +341,14 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                   <CustomTextField
                     select
                     fullWidth
-                    label='Category Name'
+                    label='Subject Type'
                     value={value}
                     sx={{ mb: 4 }}
                     onChange={onChange}
                     error={Boolean(errors.categoryId)}
                     {...(errors.categoryId && { helperText: errors.categoryId.message })}
                   >
-                    <MenuItem value=''>Select Subject Category</MenuItem>
+                    <MenuItem value=''>Select Subject Type</MenuItem>
                     {CategoriesData?.map((item, i) => {
                       return (
                         <MenuItem key={i} value={item.id}>
@@ -364,7 +364,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
             <FormGroup row>
               <FormControlLabel
                 value='start'
-                label='display category input field'
+                label='display subject type input field'
                 labelPlacement='start'
                 sx={{ mr: 4 }}
                 control={<Switch checked={showInputField} onChange={handleChange} />}
@@ -379,7 +379,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                 render={({ field: { value, onChange } }) => (
                   <CustomTextField
                     fullWidth
-                    label='Category Name'
+                    label='Subject Type'
                     value={value}
                     sx={{ mb: 4 }}
                     onChange={onChange}

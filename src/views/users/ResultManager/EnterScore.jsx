@@ -99,8 +99,8 @@ const EnterStudentScore = ({ open, closeModal }) => {
   useEffect(() => {
     if (ClassRoomId) {
       fetchStudentsInClass(ClassRoomId).then(res => {
-        if (res.data.success) {
-          setStudentsInClass(res.data.data)
+        if (res?.data?.success) {
+          setStudentsInClass(res?.data?.data)
         }
       })
 
