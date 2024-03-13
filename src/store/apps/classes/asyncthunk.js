@@ -66,7 +66,6 @@ export const fetchClasses = createAsyncThunk('classrooms', async (query) => {
     try {
       const res = await axios.get(`/classes/students/${id}`)
       
-      console.log(res, 'students in class')
 
       return res
     } catch (error) {

@@ -87,7 +87,7 @@ const CurrentSession = () => {
 
   useEffect(()=>{
     getCurrentSession().then((res)=>{
-        if(res.data.success){
+        if(res?.data?.success){
             setSessionDetails(res.data.data)
         } else {
             setSessionDetails('')

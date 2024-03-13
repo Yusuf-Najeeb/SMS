@@ -16,16 +16,19 @@ import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
-import { deleteCategory, fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useGradingParameters } from '../../../hooks/useGradingParameters'
 import { deleteGradingParameter, fetchGradingParameters } from '../../../store/apps/gradingParameters/asyncthunk'
 import PageHeader from '../component/PageHeader'
 import ManageGradingParameters from './ManageGradingParameters'
 import { formatDate, formatDateToReadableFormat } from '../../../@core/utils/format'
+import GetUserData from '../../../@core/utils/getUserData'
 
 
 
 const GradingParametersTable = () => {
+
+    const userData = GetUserData()
+
   const dispatch = useAppDispatch()
 
 
@@ -92,7 +95,7 @@ const GradingParametersTable = () => {
     <Fragment>
 
 
-<PageHeader toggle={OpenParameterModal} action={'Add Grading Parameter'} />
+    <PageHeader toggle={OpenParameterModal} action={'Add Grading Parameter'} />
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>

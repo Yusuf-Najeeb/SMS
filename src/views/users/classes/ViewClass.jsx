@@ -48,6 +48,7 @@ const Header = styled(Box)(({ theme }) => ({
 
 const ViewClass = ({ open, closeCanvas, classRoom }) => {
   const [studentsInClass, setStudentsInClass] = useState([])
+  const [classSubjects, setClassSubjects] = useState([])
 
 
   const theme = useTheme()
@@ -72,12 +73,16 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
   useEffect(() => {
     if (classRoom) {
       fetchStudentsInClass(classRoom.id).then(res => {
-        if (res.data.success) {
+        if (res?.data?.success) {
           setStudentsInClass(res.data.data)
         }
       })
 
-      getSingleClass(classRoom?.id)
+      getSingleClass(classRoom?.id).then((res)=>{
+        if(res?.data?.success){
+            setClassSubjects(res?.data?.data?.subjects)
+        }
+      })
     }
   }, [classRoom])
 
@@ -155,6 +160,27 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                 </Stack>
               </CardContent>
 
+              {classSubjects?.length > 0 ? (
+                <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
+                  <Typography variant='h5'>Subjects </Typography>
+                  <Alert severity='success'>
+                    {classSubjects?.map((subject, index) => (
+                      <Fragment key={subject.id}>
+                        {index > 0 && ', '}
+                        <span style={{textTransform: 'uppercase'}} >{`${index + 1}. ${subject?.name}`}</span>
+                      </Fragment>
+                    ))}
+                  </Alert>
+                </Grid>
+              )
+              : 
+              <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
+              <Alert severity='error'>No Registered Subjects For Class</Alert>
+              </Grid>
+              }
+
+
+
               <Divider sx={{ mt: '10px', mb: '10px' }}>Students In Class</Divider>
 
               <TableContainer>
@@ -175,7 +201,7 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                       }
                     }}
                   >
-                    {studentsInClass.length > 1 ? (
+                    {studentsInClass.length > 0 ? (
                       studentsInClass.map((item, i) => (
                         <TableRow key={item.id}>
                           <TableCell>{i + 1}</TableCell>
