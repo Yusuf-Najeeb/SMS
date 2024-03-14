@@ -182,7 +182,7 @@ const NewIncomeCategories = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />}
+      {/* {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />} */}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )
