@@ -6,12 +6,12 @@ const initialState = {
   loading: false,
   ExpenditureData: [],
 
-//   paging: {
-//     currentPage: 1,
-//     totalItems: 0,
-//     itemsPerPage: 0,
-//     totalPages: 0
-//   }
+  paging: {
+    currentPage: 1,
+    totalItems: 0,
+    itemsPerPage: 0,
+    totalPages: 0
+  }
 }
 
 export const expenditureSlice = createSlice({
@@ -23,11 +23,9 @@ export const expenditureSlice = createSlice({
       state.loading = true
     })
     builder.addCase(fetchExpenditure.fulfilled, (state, action) => {
-
       state.loading = false
       state.ExpenditureData = action?.payload?.data.data
-      
-    //   state.paging = action?.payload?.data?.paging
+      state.paging = action?.payload?.data?.paging
     })
     builder.addCase(fetchExpenditure.rejected, state => {
       state.loading = false
