@@ -28,7 +28,6 @@ import EditExpenditure from './EditExpenditure'
 import PayExpenditureBalance from './PayExpenditure'
 import ViewExpenditure from './ViewExpenditure'
 
-import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL

@@ -19,14 +19,14 @@ import CustomSpinner from 'src/@core/components/custom-spinner'
 
 // import ManageCategories from './ManageCategories'
 // import { useCategories } from '../../../hooks/useCategories'
-import { useIncome } from '../../../hooks/useIncome'
+import { useExpenditure } from '../../../hooks/useExpenditure'
 import { deleteCategory, fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import PageHeader from '../component/PageHeader'
 
 const NewIncomeCategories = () => {
   const dispatch = useAppDispatch()
 
-  const [CategoriesData, loading, paging] = useIncome()
+  const [CategoriesData, loading, paging] = useExpenditure()
   const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -95,13 +95,13 @@ const NewIncomeCategories = () => {
                 S/N
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Title
+                Expenditure
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Category
+                Category Type
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Dated Created
+                Date Created
               </TableCell>
               {/* <TableCell align='center' sx={{ minWidth: 100 }}>
                 Actions
