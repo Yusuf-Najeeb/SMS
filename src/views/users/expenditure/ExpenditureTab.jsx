@@ -17,8 +17,10 @@ import MuiTabList from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import NewExpenditure from './NewExpenditure'
 import AllExpenditure from './AllExpenditure'
 import ExpenditureCategory from './ExpenditureCategory'
+import NewExpenditureCategory from './NewExpenditureCategory'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -59,7 +61,6 @@ const ExpenditureTab = ({ tab }) => {
 
   const handleChange = (e, value) => {
     setActiveTab(value)
-
   }
 
   useEffect(() => {
@@ -71,8 +72,8 @@ const ExpenditureTab = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    expenditure: <AllExpenditure />,
-    categories: <ExpenditureCategory />,
+    expenditure: <NewExpenditure />,
+    categories: <NewExpenditureCategory />
   }
 
   return (
