@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from 'react'
+import { useEffect, useState, Fragment , forwardRef} from 'react'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -23,7 +23,11 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { inputScoreSchema } from 'src/@core/Formschema'
+import { singleStudentAttendanceSchema } from 'src/@core/Formschema'
+
+import DatePicker from 'react-datepicker'
+
+import 'react-datepicker/dist/react-datepicker.css'
 
 import FormController from '../component/FormController'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
@@ -38,7 +42,8 @@ import { useSession } from '../../../hooks/useSession'
 import { useCategories } from '../../../hooks/useCategories'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
-import { saveStudentScore } from '../../../store/apps/reportCard/asyncthunk'
+import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
+import { saveStudentAttendance } from '../../../store/apps/attendance/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -55,22 +60,36 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
+export const CustomInput = forwardRef(({ ...props }, ref) => {
+    return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+  })
+
 const defaultValues = {
-  score: '',
-  maxScore: '',
-  categoryId: '',
   staffId: '',
   studentId: '',
-  subjectId: '',
   classId: '',
   sessionId: '',
+  date: new (Date),
+  checkInTime: '',
+  attendanceStatus: '',
+  reasonForAbsence: ''
 }
 
-const EnterStudentScore = ({ open, closeModal }) => {
+const MarkAttendance = ({ open, closeModal }) => {
   const [ClassRoomId, setClassRoomId] = useState()
   const [StudentData] = useStudent()
 
   const [studentsInClass, setStudentsInClass] = useState([])
+  const [attendanceState, setAttendanceState] = useState(false)
+
+  const handleAttendanceState = (e)=>{
+    if(e.target.value == false){
+        setAttendanceState(true)
+    }
+    else {
+        setAttendanceState(false)
+    }
+  }
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -80,7 +99,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
 
-  const handleChangeClass = (e)=> setClassRoomId(Number(e.target.value))
+//   const handleChangeClass = (e)=> setClassRoomId(Number(e.target.value))
 
 
   useEffect(() => {
@@ -111,25 +130,27 @@ const EnterStudentScore = ({ open, closeModal }) => {
     getValues,
     reset,
     handleSubmit,
-    formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(inputScoreSchema) })
+    formState: { errors, isSubmitting,  }
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(singleStudentAttendanceSchema) })
 
   const onSubmit = async data => {
 
 
     let payload = {
-      categoryId: Number(data.categoryId),
-      score: Number(data.score),
-      maxScore: Number(data.maxScore),
       staffId: Number(data.staffId),
       studentId: Number(data.studentId),
       sessionId: Number(data.sessionId),
       classId: Number(data.classId),
-      subjectId: Number(data.subjectId),
+      date: formatDateToYYYMMDDD(data.date),
+      checkInTime: data.checkInTime, 
+      attendanceStatus: data.attendanceStatus,
+      reasonForAbsence: data.reasonForAbsence
     }
 
+    console.log(payload, 'payload')
 
-    saveStudentScore(payload).then(res => {
+
+    saveStudentAttendance(payload).then(res => {
       if (res?.data?.success) {
         reset()
         closeModal()
@@ -147,7 +168,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
 
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 680 } }}
       >
         <DialogContent
           sx={{
@@ -168,38 +189,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
               <Grid container spacing={6}>
                
 
-                <Grid item xs={12} sm={4}>
-                  <Controller
-                    name='categoryId'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        select
-                        fullWidth
-                        required
-                        value={value}
-                        label='Assessment Category'
-                        onChange={e => {
-                          onChange(e)
-                        }}
-                        id='stepper-linear-personal-categoryId'
-                        error={Boolean(errors.categoryId)}
-                        aria-describedby='stepper-linear-personal-categoryId-helper'
-                        {...(errors.categoryId && { helperText: errors.categoryId.message })}
-                      >
-                        <MenuItem value=''>Select Assessment Category</MenuItem>
-                        {CategoriesData?.map(category => (
-                          <MenuItem key={category?.id} value={category?.id}>
-                            {category.name}
-                          </MenuItem>
-                        ))}
-                      </CustomTextField>
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name='classId'
                     control={control}
@@ -213,7 +203,8 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         label='Class'
                         onChange={e => {
                           onChange(e)
-                          handleChangeClass(e)
+
+                        //   handleChangeClass(e)
                         }}
                         id='stepper-linear-personal-paymentMode'
                         error={Boolean(errors.classId)}
@@ -224,37 +215,6 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         {ClassesList?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item.name} ${item.type}`}
-                          </MenuItem>
-                        ))}
-                      </CustomTextField>
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                  <Controller
-                    name='subjectId'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        select
-                        fullWidth
-                        required
-                        value={value}
-                        label='Subject'
-                        onChange={e => {
-                          onChange(e)
-                        }}
-                        id='stepper-linear-personal-paymentMode'
-                        error={Boolean(errors.subjectId)}
-                        aria-describedby='stepper-linear-personal-subjectId-helper'
-                        {...(errors.subjectId && { helperText: errors.subjectId.message })}
-                      >
-                        <MenuItem value=''>Select Subject</MenuItem>
-                        {SubjectsList?.map(item => (
-                          <MenuItem key={item?.id} value={item?.id}>
-                            {item.name}
                           </MenuItem>
                         ))}
                       </CustomTextField>
@@ -273,7 +233,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         fullWidth
                         required
                         value={value}
-                        label='Subject Teacher'
+                        label='Class Teacher'
                         onChange={e => {
                           onChange(e)
                         }}
@@ -282,7 +242,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-staffId-helper'
                         {...(errors.staffId && { helperText: errors.staffId.message })}
                       >
-                        <MenuItem value=''>Select Teacher</MenuItem>
+                        <MenuItem value=''>Select Class Teacher</MenuItem>
                         {StaffData?.result?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item?.firstName} ${item?.lastName}`}
@@ -324,7 +284,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name='sessionId'
                     control={control}
@@ -355,28 +315,103 @@ const EnterStudentScore = ({ open, closeModal }) => {
                   />
                 </Grid>
 
+                <Grid item xs={12} sm={12} md={4}>
+                <Controller
+                  name='date'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <DatePicker
+                      selected={value}
+                      popperPlacement='bottom-end'
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={e => onChange(e)}
+                      placeholderText='2022-05-07'
+                      customInput={
+                        <CustomInput
+                          value={value}
+                          onChange={onChange}
+                          label='Date'
+                          error={Boolean(errors.date)}
+                          {...(errors.date && { helperText: errors.date.message })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+
                 <Grid item xs={12} sm={4}>
-                  <FormController
-                    name='maxScore'
-                    control={control}
-                    required={true}
-                    requireBoolean={true}
-                    label='Maximum Score'
-                    error={errors['maxScore']}
-                    errorMessage={errors?.maxScore?.message}
-                  />
+                <Controller
+            name='checkInTime'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                fullWidth
+                type='time'
+                value={value}
+                sx={{ mb: 4 }}
+                label='Check In Time'
+                required
+                onChange={onChange}
+                placeholder='10:30'
+                error={Boolean(errors.checkInTime)}
+                {...(errors.checkInTime && { helperText: errors.checkInTime.message })}
+              />
+            )}
+          />
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                  <FormController
-                    name='score'
-                    control={control}
-                    required={true}
-                    requireBoolean={true}
-                    label='Score'
-                    error={errors['score']}
-                    errorMessage={errors?.score?.message}
-                  />
+                <Controller
+            name='attendanceStatus'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                fullWidth
+                select
+                value={value}
+                sx={{ mb: 4 }}
+                label='Attendance Status'
+                required
+                onChange={e => {
+                    onChange(e)
+                    
+                    handleAttendanceState(e)
+                }}
+                error={Boolean(errors.attendanceStatus)}
+                {...(errors.attendanceStatus && { helperText: errors.attendanceStatus.message })}
+              >
+                <MenuItem value={true}>Present</MenuItem>
+                <MenuItem value={false}>Absent</MenuItem>
+                </CustomTextField>
+            )}
+          />
+                </Grid>
+
+                <Grid item xs={12} sm={12}>
+                <Controller
+            name='reasonForAbsence'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                fullWidth
+                multiline
+                rows={2}
+                value={value}
+                sx={{ mb: 4 }}
+                label='Reason For Absence'
+                disabled={!attendanceState}
+                onChange={onChange}
+                error={Boolean(errors.reasonForAbsence)}
+                {...(errors.reasonForAbsence && { helperText: errors.reasonForAbsence.message })}
+              />
+            )}
+          />
                 </Grid>
 
               </Grid>
@@ -388,7 +423,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                 variant='contained'
                 disabled={isSubmitting}
               >
-                {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Save'}
+                {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Record'}
               </Button>
             </Box>
           </form>
@@ -399,4 +434,4 @@ const EnterStudentScore = ({ open, closeModal }) => {
   )
 }
 
-export default EnterStudentScore
+export default MarkAttendance

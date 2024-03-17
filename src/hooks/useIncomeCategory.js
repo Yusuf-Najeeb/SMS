@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 export const useIncomeCategory = () => {
   const IncomeCategoryData = useAppSelector(store => store.incomeCategory.IncomeCategoryData)
-  const loading = useAppSelector(store => store.income.loading)
+  const loading = useAppSelector(store => store.incomeCategory.loading)
 
 //   const paging = useAppSelector(store => store.income.paging)
 

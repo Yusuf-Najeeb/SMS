@@ -17,9 +17,7 @@ import MuiTabList from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import AllIncome from './AllIncome'
 import NewIncome from './NewIncome'
-import IncomeCategory from './IncomeCategory'
 import NewIncomeCategories from './NewIncomeCategory'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({

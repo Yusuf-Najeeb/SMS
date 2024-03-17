@@ -17,37 +17,33 @@ import NoData from 'src/@core/components/emptydata/NoData'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
 
-// import ManageCategories from './ManageCategories'
-// import { useCategories } from '../../../hooks/useCategories'
-import { useExpenditure } from '../../../hooks/useExpenditure'
 import { deleteCategory, fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import PageHeader from '../component/PageHeader'
+import { useCategories } from '../../../hooks/useCategories'
+import { formatDate } from '../../../@core/utils/format'
+import CreateCategory from '../component/CreateCategory'
 
 const NewIncomeCategories = () => {
   const dispatch = useAppDispatch()
 
-  const [CategoriesData, loading, paging] = useExpenditure()
+  const [CategoriesData, loading, paging] = useCategories()
   const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [categoryToDelete, setCategoryToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(null)
-  const [type, setType] = useState('')
+  const [fetch, setFetch] = useState(false)
 
-  const OpenCategoryModal = () => {
-    if (openModal) {
-      setOpenModal(false)
-      setSelectedCategory(null)
-    } else {
-      setOpenModal(true)
-    }
+  const toggleCategoryModal = () => {
+      setOpenModal(!openModal)
+    
   }
 
-  const setActiveCategory = value => {
-    OpenCategoryModal()
-    setSelectedCategory(value)
-  }
+  // const setActiveCategory = value => {
+  //   OpenCategoryModal()
+  //   setSelectedCategory(value)
+  // }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -71,21 +67,23 @@ const NewIncomeCategories = () => {
   const ondeleteClick = () => {
     deleteCategory(categoryToDelete).then(res => {
       if (res.data.success) {
-        dispatch(fetchCategories({ page: 1, limit: 10, type: 'class' }))
+        dispatch(fetchCategories({ page: 1, limit: 10, type: 'expenditure' }))
       }
     })
     doCancelDelete()
   }
 
+  const updateFetch = ()=> setFetch(!fetch)
+
   useEffect(() => {
-    dispatch(fetchCategories({ page: page + 1, limit: 10, type: 'class' }))
+    dispatch(fetchCategories({ page: page + 1, limit: 10, type: 'expenditure' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, type])
+  }, [page, rowsPerPage, fetch])
 
   return (
     <Fragment>
-      <PageHeader action={'Add Category'} toggle={OpenCategoryModal} />
+      <PageHeader action={'Add Category'} toggle={toggleCategoryModal} />
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
@@ -95,17 +93,17 @@ const NewIncomeCategories = () => {
                 S/N
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Expenditure
+                Name
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Category Type
+                 Type
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Date Created
               </TableCell>
-              {/* <TableCell align='center' sx={{ minWidth: 100 }}>
+              <TableCell align='center' sx={{ minWidth: 100 }}>
                 Actions
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -121,45 +119,24 @@ const NewIncomeCategories = () => {
                   <TableRow hover role='checkbox' key={item.id}>
                     <TableCell align='left'>{i + 1}</TableCell>
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {item?.title || '--'}
+                      {item?.name || '--'}
                     </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'capitalize' }}>
-                      {item?.category?.name?.toUpperCase() || '--'}
+                    {item?.type || '--'}
                     </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'capitalize' }}>
-                      {`${new Date(item?.createdAt).toLocaleDateString()}` || '--'}
+                      {`${formatDate(item?.createdAt)}` || '--'}
                     </TableCell>
-                    {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
-                    {/* <TableCell align='center'>
-                      {item?.amount === item?.amountPaid ? (
-                        <CustomChip
-                          rounded
-                          skin='light'
-                          size='small'
-                          label='Paid'
-                          color='success'
-                          sx={{ textTransform: 'capitalize' }}
-                        />
-                      ) : (
-                        <CustomChip
-                          rounded
-                          skin='light'
-                          size='small'
-                          label='Deficit'
-                          color='warning'
-                          sx={{ textTransform: 'capitalize' }}
-                        />
-                      )}
-                    </TableCell> */}
-                    {/* <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <IconButton size='small' onClick={() => setActiveCategory(item)}>
+                    <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+
+                      {/* <IconButton size='small' onClick={() => setActiveCategory(item)}>
                         <Icon icon='tabler:edit' />
-                      </IconButton>
+                      </IconButton> */}
 
                       <IconButton size='small' onClick={() => doDelete(item)}>
                         <Icon icon='tabler:trash' />
                       </IconButton>
-                    </TableCell> */}
+                    </TableCell>
                   </TableRow>
                 ))}
 
@@ -186,7 +163,9 @@ const NewIncomeCategories = () => {
       />
 
       {/* {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />} */}
-      {/* <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
+
+      <CreateCategory open={openModal} closeModal={toggleCategoryModal} fetchData={updateFetch} type={'expenditure'} />
+      <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )
 }

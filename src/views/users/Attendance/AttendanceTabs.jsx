@@ -17,8 +17,7 @@ import MuiTabList from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import NewExpenditure from './NewExpenditure'
-import NewExpenditureCategory from './NewExpenditureCategory'
+import ClassAttendanceTable from './ClassAttendance'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -49,7 +48,7 @@ const TabList = styled(MuiTabList)(({ theme }) => ({
   }
 }))
 
-const ExpenditureTab = ({ tab }) => {
+const AttendanceTabs = ({ tab }) => {
   // ** State
   const [activeTab, setActiveTab] = useState(tab)
 
@@ -59,6 +58,10 @@ const ExpenditureTab = ({ tab }) => {
 
   const handleChange = (e, value) => {
     setActiveTab(value)
+
+    // router.push({
+    //   pathname: `/users/products/finishedProducts/${value.toLowerCase()}`
+    // })
   }
 
   useEffect(() => {
@@ -70,8 +73,11 @@ const ExpenditureTab = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    expenditure: <NewExpenditure />,
-    categories: <NewExpenditureCategory />
+    classAttendance: <ClassAttendanceTable />,
+
+    // reportCard: <StudentsReportCardTable/>,
+
+    // // deductions: <DeductionsHome />
   }
 
   return (
@@ -81,25 +87,27 @@ const ExpenditureTab = ({ tab }) => {
           <TabContext value={activeTab}>
             <Grid container spacing={6}>
               <Grid item xs={12}>
-                <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='payroll tabs'>
+                <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='result tabs'>
                   <Tab
-                    value='expenditure'
+                    value='classAttendance'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='fluent:payment-16-regular' />
-                        {!hideText && 'Expenditure'}
+                        {!hideText && 'Class Attendance'}
                       </Box>
                     }
                   />
-                  <Tab
-                    value='categories'
+
+                  {/* <Tab
+                    value='reportCard'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='ic:twotone-minus' />
-                        {!hideText && 'Categories'}
+                        {!hideText && 'Report Card'}
                       </Box>
                     }
-                  />
+                  /> */}
+                  
                 </TabList>
               </Grid>
               <Grid item xs={12}>
@@ -115,4 +123,4 @@ const ExpenditureTab = ({ tab }) => {
   )
 }
 
-export default ExpenditureTab
+export default AttendanceTabs

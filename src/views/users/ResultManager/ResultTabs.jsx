@@ -18,6 +18,7 @@ import MuiTabList from '@mui/lab/TabList'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import StudentsScoreTable from './StudentScores'
+import StudentsReportCardTable from './StudentsReportCard'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -74,6 +75,7 @@ const ResultsTab = ({ tab }) => {
 
   const tabContentList = {
     scores: <StudentsScoreTable />,
+    reportCard: <StudentsReportCardTable/>,
 
     // deductions: <DeductionsHome />
   }
@@ -85,7 +87,7 @@ const ResultsTab = ({ tab }) => {
           <TabContext value={activeTab}>
             <Grid container spacing={6}>
               <Grid item xs={12}>
-                <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='payroll tabs'>
+                <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='result tabs'>
                   <Tab
                     value='scores'
                     label={
@@ -95,15 +97,16 @@ const ResultsTab = ({ tab }) => {
                       </Box>
                     }
                   />
-                  {/* <Tab
-                    value='deductions'
+                  <Tab
+                    value='reportCard'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='ic:twotone-minus' />
-                        {!hideText && 'Deductions'}
+                        {!hideText && 'Report Card'}
                       </Box>
                     }
-                  /> */}
+                  />
+                  
                 </TabList>
               </Grid>
               <Grid item xs={12}>

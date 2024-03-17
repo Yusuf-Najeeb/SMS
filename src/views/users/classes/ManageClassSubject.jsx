@@ -101,7 +101,6 @@ const ManageClassSubject = ({ open, toggle, Classroom, status }) => {
          subjectId: Number(data.subjectId),
        }
 
-       console.log(payload, 'payload')
 
        if (status){
 

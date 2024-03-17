@@ -21,7 +21,7 @@ import NoData from '../../../@core/components/emptyData/NoData'
 import CustomSpinner from '../../../@core/components/custom-spinner'
 import {  formatFirstLetter, } from '../../../@core/utils/format'
 import { usePayslip } from '../../../hooks/usePayslip'
-import { Button, Card, CardContent, CardHeader, Grid, MenuItem, Tooltip } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, Grid, MenuItem, Tooltip, Typography } from '@mui/material'
 import { useStaff } from '../../../hooks/useStaff'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
@@ -55,6 +55,9 @@ const StudentsScoreTable = () => {
   const [subjectId, setSubjectId] = useState('')
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
+  const [showScores, setShowScores] = useState(false)
+  const [Subject, setSelectedSubject] = useState({})
+  const [classRoom, setClassroom] = useState({})
 
 
   const handleChangeStaff = e => {
@@ -74,8 +77,11 @@ const StudentsScoreTable = () => {
   }
 
 
-const displayScores = ()=>{
-    dispatch(fetchStudentScores({subjectId, classId, staffId, sessionId}))
+const displayScores = async ()=>{
+  const res = await  dispatch(fetchStudentScores({subjectId, classId, staffId, sessionId}))
+    if(res.payload.data.success){
+        setShowScores(true)
+      }
 }
   
 
@@ -90,6 +96,32 @@ const displayScores = ()=>{
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    if (subjectId && SubjectsList?.length > 0) {
+      const selectedSubject = SubjectsList?.find(subject => subject.id == subjectId)
+
+      if (isMounted) {
+        setSelectedSubject({ ...selectedSubject })
+      }
+    }
+
+  }, [subjectId, SubjectsList])
+
+  useEffect(() => {
+    let isMounted = true
+
+    if (classId && ClassesList?.length > 0) {
+      const selectedClass = ClassesList?.find(classroom => classroom.id == classId)
+
+      if (isMounted) {
+        setClassroom({ ...selectedClass })
+      }
+    }
+
+  }, [classId, ClassesList])
 
 
 
@@ -172,13 +204,31 @@ const displayScores = ()=>{
           Display Scores
         </Button>
             </Grid>
+
+            <Grid item xs={12} sm={3}>
+            <Button onClick={toggleScoreDrawer} variant='contained'  sx={{ '& svg': { mr: 2 }, backgroundColor: 'green' }}>
+          <Icon fontSize='1.125rem' icon='tabler:plus' />
+          Input Student Score
+        </Button>
+            </Grid>
           </Grid>
         </CardContent>
       </Card> 
 
-      <PageHeader action={'Input Student Score'} toggle={toggleScoreDrawer}
-      />
-      <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
+      {/* <PageHeader action={'Input Student Score'} toggle={toggleScoreDrawer}
+      /> */}
+
+{(!loading && showScores )  &&
+        <Box className='resultBg' sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#fff"}}>
+        <Box className="bgOverlay"></Box>
+
+        <Box sx={{color: '#fff', backgroundColor: "transparent", height: '70px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+           <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', color: "#333", textAlign: 'center', textTransform: 'uppercase'}}>
+             {`${classRoom?.name} Students Assessment Score Sheet For ${Subject?.name}`}
+             </Typography> 
+           </Box>
+
+      <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 15 }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
@@ -203,13 +253,6 @@ const displayScores = ()=>{
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
-              <TableRow className='text-center'>
-                <TableCell colSpan={6}>
-                  <CustomSpinner />
-                </TableCell>
-              </TableRow>
-            ) : (
               <Fragment>
                 {StudentsScoresData?.map((item, i) => {
 
@@ -230,28 +273,13 @@ const displayScores = ()=>{
                   )
                 })}
 
-                {StudentsScoresData?.length === 0 && (
-                  <tr className='text-center'>
-                    <td colSpan={6}>
-                      <NoData />
-                    </td>
-                  </tr>
-                )}
               </Fragment>
-            )}
           </TableBody>
         </Table>
       </TableContainer>
+      </Box>
+}
 
-      {/* <TablePagination
-        page={page}
-        component='div'
-        count={Paging?.totalItems}
-        rowsPerPage={rowsPerPage}
-        onPageChange={handleChangePage}
-        rowsPerPageOptions={[5, 10, 20]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
 
       {/* 
 

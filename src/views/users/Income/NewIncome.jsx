@@ -33,33 +33,6 @@ import PayIncomeBalance from './PayIncome'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 
-// import { display } from '@mui/system'
-
-const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
-
-const renderClient = row => {
-  const initials = `${row.firstName} ${row.lastName}`
-  if (row.profilePicture?.length) {
-    return (
-      <CustomAvatar
-        src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
-        sx={{ mr: 2.5, width: 38, height: 38 }}
-      />
-    )
-  } else {
-    return (
-      <CustomAvatar
-        skin='light'
-        //eslint-disable-next-line
-        // color={row?.title.length > 2 ? 'primary' : 'secondary'}
-        color='primary'
-        sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
-      >
-        {getInitials(initials || 'John Doe')}
-      </CustomAvatar>
-    )
-  }
-}
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
@@ -106,16 +79,6 @@ const IncomeTable = () => {
   }
 
   const updateFetch = () => setFetch(!refetch)
-
-  // const doDelete = value => {
-  //   setDeleteModal(true)
-  //   setSelectedStudent(value?.id)
-  // }
-
-  // const doCancelDelete = () => {
-  //   setDeleteModal(false)
-  //   setSelectedStudent(null)
-  // }
 
   const setPayIncome = value => {
     setIncomeToPay(value)
@@ -194,7 +157,7 @@ const IncomeTable = () => {
 
       <PageHeaderWithSearch
         searchPlaceholder={'Search Income'}
-        action='Create Income'
+        action='Add Income'
         toggle={toggleModal}
 
         // handleFilter={setKey}
@@ -235,8 +198,7 @@ const IncomeTable = () => {
                 </TableRow>
               ) : (
                 <Fragment>
-                  {IncomeData?.length &&
-                    IncomeData?.map((item, i) => {
+                  {IncomeData?.map((item, i) => {
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
@@ -347,7 +309,7 @@ const IncomeTable = () => {
           count={paging?.totalItems}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[10, 25]}
+          rowsPerPageOptions={[10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 

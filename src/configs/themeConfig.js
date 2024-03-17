@@ -7,6 +7,10 @@
 const themeConfig = {
   // ** Layout Configs
   templateName: 'Ray Jacobs Boarding School' /* App Name */,
+  organizationAddress: 'P.O BOX 20, College Road Mgbidi,Imo State',
+  organizationWebsite: 'http://www.rayjacobsschool.com',
+  organizationEmail: 'info@rayjacobsschool.com',
+  organizationPhone: '08104955195, 08104955195',
   layout: 'vertical' /* vertical | horizontal */,
   mode: 'dark' /* light | dark | semi-dark /*! Note: semi-dark value will only work for Vertical Layout */,
   direction: 'ltr' /* ltr | rtl */,

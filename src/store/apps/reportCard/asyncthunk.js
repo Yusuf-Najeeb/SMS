@@ -26,9 +26,28 @@ export const saveStudentScore = async (payload)=>{
         return response
 
     } catch (error) {
-        notifyError('Unable to Save Student Score')
+        notifyError(error.response.data.message ||  'Unable to Save Student Score')
     }
 }
 
+export const fetchStudentReportCard = createAsyncThunk('report-card/fetch ', async (query) => {
+    try {
+      const response = await axios.get(`/gradebook/studentacademicreportbyterm/${query.classId}/${query.studentId}/${query.sessionId}`)
+  
+      return response
+    } catch (error) {
+  
+    }
+  })
+
+  export const fetchStudentSubjectPosition = createAsyncThunk('subject-summary-card/fetch ', async (query) => {
+    try {
+      const response = await axios.get(`/gradebook/studentsubjectpositionsummary/${query.classId}/${query.sessionId}`)
+  
+      return response
+    } catch (error) {
+  
+    }
+  })
 
 
