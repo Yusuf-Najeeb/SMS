@@ -10,8 +10,7 @@ export const getStaticPaths = () => {
   return {
     paths: [
       { params: { tab: 'scores' } },
-      
-    //   { params: { tab: 'deductions' } },
+      { params: { tab: 'reportCard' } },
     ],
     fallback: false
   }

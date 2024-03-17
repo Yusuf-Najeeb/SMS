@@ -8,7 +8,7 @@ import Icon from 'src/@core/components/icon'
 
 
 
-const PageHeader = ({ toggle, action }) => {
+const PageHeader = ({ toggle, action, icon }) => {
 
   return (
     <Box
@@ -28,7 +28,7 @@ const PageHeader = ({ toggle, action }) => {
 
 
       <Button onClick={toggle} variant='contained' sx={{ '& svg': { mr: 2 } }}>
-        <Icon fontSize='1.125rem' icon='tabler:plus' />
+        <Icon fontSize='1.125rem' icon={icon ? icon : 'tabler:plus'} />
         {action}
       </Button>
     </Box>

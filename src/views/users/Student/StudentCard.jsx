@@ -19,7 +19,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
-import { formatCurrency, formatFirstLetter } from '../../../@core/utils/format'
+import {  formatFirstLetter } from '../../../@core/utils/format'
 import { formatDateToReadableFormat } from '../../../@core/utils/format'
 import StaffDetailCard from '../component/StaffDetailCard'
 import { getInitials } from 'src/@core/utils/get-initials'

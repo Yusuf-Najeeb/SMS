@@ -17,8 +17,7 @@ import MuiTabList from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import StudentsScoreTable from './StudentScores'
-import StudentsReportCardTable from './StudentsReportCard'
+import ClassAttendanceTable from './ClassAttendance'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -49,7 +48,7 @@ const TabList = styled(MuiTabList)(({ theme }) => ({
   }
 }))
 
-const ResultsTab = ({ tab }) => {
+const AttendanceTabs = ({ tab }) => {
   // ** State
   const [activeTab, setActiveTab] = useState(tab)
 
@@ -74,10 +73,11 @@ const ResultsTab = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    scores: <StudentsScoreTable />,
-    reportCard: <StudentsReportCardTable/>,
+    classAttendance: <ClassAttendanceTable />,
 
-    // deductions: <DeductionsHome />
+    // reportCard: <StudentsReportCardTable/>,
+
+    // // deductions: <DeductionsHome />
   }
 
   return (
@@ -89,15 +89,16 @@ const ResultsTab = ({ tab }) => {
               <Grid item xs={12}>
                 <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='result tabs'>
                   <Tab
-                    value='scores'
+                    value='classAttendance'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='fluent:payment-16-regular' />
-                        {!hideText && 'Scores'}
+                        {!hideText && 'Class Attendance'}
                       </Box>
                     }
                   />
-                  <Tab
+
+                  {/* <Tab
                     value='reportCard'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
@@ -105,7 +106,7 @@ const ResultsTab = ({ tab }) => {
                         {!hideText && 'Report Card'}
                       </Box>
                     }
-                  />
+                  /> */}
                   
                 </TabList>
               </Grid>
@@ -122,4 +123,4 @@ const ResultsTab = ({ tab }) => {
   )
 }
 
-export default ResultsTab
+export default AttendanceTabs

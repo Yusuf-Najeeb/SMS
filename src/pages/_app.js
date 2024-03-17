@@ -30,11 +30,10 @@ import ThemeComponent from 'src/@core/theme/ThemeComponent'
 
 import axiosConfig from '../configs/axiosConfig'
 
-// ** Spinner Import
-import Spinner from 'src/@core/components/spinner'
+import 'react-datepicker/dist/react-datepicker.css'
+
 
 // ** Contexts
-import { AuthProvider } from 'src/context/AuthContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
 
 // ** Styled Components

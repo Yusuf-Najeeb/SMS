@@ -243,8 +243,8 @@ export const updateStudentSchema = yup.object().shape({
   ethnicity: yup.string(),
   registrationDate: yup.string(),
   lastSchool: yup.string(),
-  isStaffChild: yup.boolean(),
-  boarder: yup.boolean(),
+  isStaffChild: yup.boolean().required("This field is required"),
+  boarder: yup.boolean().required('Student Category is required'),
 })
 
 export const updateGuardianSchema = yup.object().shape({
@@ -337,6 +337,20 @@ export const inputScoreSchema = yup.object().shape({
   studentId: yup.string().required('Student is required'),
   subjectId: yup.string().required('Subject is required'),
   score: yup.string().required('Score is required'),
+  maxScore: yup.string().required('Maximum Score is required'),
   classId: yup.string().required('Class is required'),
   sessionId: yup.string().required('Session is required'),
+})
+
+export const singleStudentAttendanceSchema = yup.object().shape({
+  staffId: yup.string().required('Class Teacher is required'),
+  studentId: yup.string().required('Student is required'),
+  classId: yup.string().required('Class is required'),
+  sessionId: yup.string().required('Session is required'),
+  date: yup.string().required('Date is required'),
+  checkInTime: yup.string().required('Check In Time is required'),
+  attendanceStatus: yup.boolean().required('Attendance Status is required'),
+  reasonForAbsence: yup.string(),
+
+
 })

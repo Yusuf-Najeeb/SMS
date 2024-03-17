@@ -152,6 +152,12 @@ const navigation = () => {
       path: '/apps/session'
     },
 
+    {
+      title: 'Attendance',
+      icon: 'mdi:timetable',
+      path: '/apps/attendance'
+    },
+
     // {
     //   title: 'Time Table',
     //   icon: 'mdi:timetable',

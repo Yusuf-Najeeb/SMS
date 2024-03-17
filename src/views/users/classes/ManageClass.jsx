@@ -25,6 +25,8 @@ import { CustomCloseButton } from '../Guardian/AddGuardian'
 import { useStaff } from '../../../hooks/useStaff'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { createClass, fetchClasses, updateClass } from '../../../store/apps/classes/asyncthunk'
+import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
+import { useCategories } from '../../../hooks/useCategories'
 
 
 
@@ -51,7 +53,7 @@ const schema = yup.object().shape({
     .string()
     .min(3, obj => showErrors('className', obj.value.length, obj.min))
     .required(),
-  category_name: yup.string().required('Class Category is required'),
+  categoryId: yup.string().required('Class Category is required'),
   capacity: yup.string().required('Capacity is required'),
   staffId: yup.string().required('Class Teacher is required'),
 })
@@ -60,16 +62,21 @@ const defaultValues = {
   className: '',
   type: '',
   capacity: '',
-  staffId: ''
+  staffId: '',
+  categoryId: ''
 }
 
 const ManageClass = ({ open, toggle, classToEdit = null }) => {
   const dispatch = useAppDispatch()
 
   const [StaffData] = useStaff()
+  const [CategoriesData] = useCategories()
+
+  console.log(classToEdit, 'class to edit')
 
   useEffect(() => {
-    dispatch(fetchStaffs({page: 1, limit: 500, key: ''}))
+    dispatch(fetchStaffs({page: 1, limit: 500, key: 'teacher'}))
+    dispatch(fetchCategories({ page: 1, limit: 30, type: 'class' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -97,9 +104,11 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
         name: data.className,
         type: data.type,
         capacity: Number(data.capacity),
-        category_name: data.category_name,
+        categoryId: Number(data.categoryId),
         staffId: Number(data.staffId)
       }
+
+      console.log(payload, 'payload')
 
       createClass(payload).then((res)=>{
           if (res?.data.success){
@@ -118,7 +127,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
         name: data.className,
         type: data.type,
         capacity: Number(data.capacity),
-        category_name: data.category_name,
+        categoryId: Number(data.categoryId),
         staffId: Number(data.staffId)
       }
 
@@ -139,7 +148,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
     if (classToEdit !== null) {
       setValue('className', classToEdit.name)
       setValue('type', classToEdit.type)
-      setValue('category_name', classToEdit.category_name)
+      Number(setValue('categoryId', classToEdit.categoryId))
       setValue('capacity', classToEdit.capacity)
       setValue('staffId', classToEdit.staffId)
     }
@@ -248,21 +257,28 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
 
           <Grid item xs={12} sm={12} md={6}>    
           <Controller
-            name='category_name'
+            name='categoryId'
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
               required
                 fullWidth
-                label='Category Name'
+                select
+                label='Class Category'
                 value={value}
                 sx={{ mb: 4 }}
                 placeholder='Secondary'
                 onChange={onChange}
-                error={Boolean(errors.category_name)}
-                {...(errors.category_name && { helperText: errors.category_name.message })}
-              />
+                error={Boolean(errors.categoryId)}
+                {...(errors.categoryId && { helperText: errors.categoryId.message })}
+              >
+                {CategoriesData?.map((category)=>{ 
+                   return  (
+                <MenuItem key={category.id} value={category.id} sx={{textTransform: 'uppercase'}}>{category.name}</MenuItem>
+                )})}
+
+                </CustomTextField>
                
             )}
           />
