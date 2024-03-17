@@ -40,7 +40,7 @@ const PaymentHeader = (props) => {
           sx={{ '& svg': { mr: 0 } }}
           startIcon={<Icon fontSize='1.125rem' icon='tabler:plus' />}
         >
-          Add
+          Add Payment Method
         </Button>
       </Box>
     </Box>
