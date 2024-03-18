@@ -35,6 +35,8 @@ import { fetchExpenditureCategory } from '../../../store/apps/expenditureCategor
 import { createExpenditure } from '../../../store/apps/expenditure/asyncthunk'
 import { fetchPaymentMethods } from '../../../store/apps/settings/asyncthunk'
 import { usePaymentMethods } from '../../../hooks/usePaymentMethods'
+import { useSession } from '../../../hooks/useSession'
+import { fetchSession } from '../../../store/apps/session/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -56,6 +58,7 @@ const defaultValues = {
   amount: Number(''),
   amountPaid: Number(''),
   categoryId: '',
+  sessionId: '',
   income: false,
   expenditureOwner: '',
   paymentMode: ''
@@ -79,6 +82,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
   const dispatch = useDispatch()
   const [ExpenditureCategoryData] = useExpenditureCategory()
   const [PaymentMethodsList] = usePaymentMethods()
+  const [SessionData] = useSession()
 
   const validatePayment = amountPaid => {
     if (amountPaid > Number(getValues('amount'))) {
@@ -146,15 +150,12 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
 
   useEffect(() => {
     dispatch(fetchPaymentMethods({ page: 1, limit: 300 }))
+    dispatch(fetchSession({ page: 1, limit: 300 }))
+    dispatch(fetchExpenditureCategory({ page: 1, limit: 300 }))
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    dispatch(fetchExpenditureCategory({ page: 1, limit: 300 }))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refetch])
 
   const {
     control,
@@ -166,13 +167,14 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createExpenditureSchema) })
 
   const onSubmit = async data => {
-    const { categoryId, expenditureOwner, ...restData } = data
+    const { categoryId, expenditureOwner, sessionId, ...restData } = data
 
     const parsedCategoryId = Number(categoryId)
 
     let payload = {
       categoryId: parsedCategoryId,
       income: defaultValues.income,
+      sessionId: Number(sessionId),
 
       ...restData
     }
@@ -209,7 +211,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 700 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
       >
         <DialogContent
           sx={{
@@ -281,7 +283,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                         aria-describedby='stepper-linear-personal-paymentMode-helper'
                         {...(errors.paymentMode && { helperText: errors.paymentMode.message })}
                       >
-                        <MenuItem value=''>Select Category</MenuItem>
+                        <MenuItem value=''>Select Payment Method</MenuItem>
                         {PaymentMethodsList?.map(method => (
                           <MenuItem key={method?.id} value={method?.name}>
                             {method.name}
@@ -304,7 +306,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
 
                   <Controller
                     name='amountPaid'
@@ -328,7 +330,38 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='sessionId'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        select
+                        fullWidth
+                        required
+                        value={value}
+                        label='Session'
+                        onChange={e => {
+                          onChange(e)
+                        }}
+                        id='stepper-linear-personal-sessionId'
+                        error={Boolean(errors.sessionId)}
+                        aria-describedby='stepper-linear-personal-sessionId-helper'
+                        {...(errors.sessionId && { helperText: errors.sessionId.message })}
+                      >
+                        <MenuItem value=''>Select Session</MenuItem>
+                        {SessionData?.map(session => (
+                          <MenuItem key={session?.id} value={session?.id}>
+                            {session.name}
+                          </MenuItem>
+                        ))}
+                      </CustomTextField>
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='expenditureOwner'
                     control={control}

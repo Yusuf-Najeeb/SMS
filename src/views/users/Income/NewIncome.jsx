@@ -11,17 +11,15 @@ import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 import { IconButton, Menu, MenuItem } from '@mui/material'
 
-// import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 import { styled } from '@mui/material/styles'
 import CreateIncome from './CreateIncome'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
-import CustomAvatar from 'src/@core/components/mui/avatar'
+import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
-import { getInitials } from 'src/@core/utils/get-initials'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useIncome } from '../../../hooks/useIncome'
 import { deleteIncome, fetchIncome } from '../../../store/apps/income/asyncthunk'
@@ -29,9 +27,9 @@ import EditIncome from './EditIncome'
 import ViewIncome from './ViewIncome'
 import PayIncomeBalance from './PayIncome'
 
-// import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import DeleteDialog from '../../../@core/components/delete-dialog'
+import { formatDate } from '../../../@core/utils/format'
 
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
@@ -181,6 +179,9 @@ const IncomeTable = () => {
                 <TableCell align='center' sx={{ minWidth: 180 }}>
                   Category
                 </TableCell>
+                <TableCell align='center' sx={{ minWidth: 180 }}>
+                  Session
+                </TableCell>
                 <TableCell align='center' sx={{ minWidth: 140 }}>
                   Payment Date
                 </TableCell>
@@ -208,13 +209,34 @@ const IncomeTable = () => {
                             {`₦${item?.amount || '--'}`}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {`₦${item?.amountPaid || '--'}`}
+                          {item.amount == item.amountPaid ? (
+                              <CustomChip
+                                rounded
+                                skin='light'
+                                size='small'
+                                label={`₦${item?.amountPaid || '--'}`}
+                                color='success'
+                                sx={{ textTransform: 'uppercase' }}
+                              />
+                            ) : (
+                              <CustomChip
+                                rounded
+                                skin='light'
+                                size='small'
+                                label={`₦${item?.amountPaid || '--'}`}
+                                color='error'
+                                sx={{ textTransform: 'uppercase' }}
+                              />
+                            )}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.category?.name?.toUpperCase() || '--'}
+                            {item?.category?.name || '--'}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {`${new Date(item?.createdAt).toLocaleDateString()}` || '--'}
+                            {item?.year || '--'}
+                          </TableCell>
+                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                            {`${formatDate(item?.createdAt)}` || '--'}
                           </TableCell>
                           <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                             <>

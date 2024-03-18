@@ -113,8 +113,6 @@ const EditExpenditure = ({ open, closeModal, fetchData, selectedExpenditure }) =
                     required={true}
                     requireBoolean={true}
                     label='Amount'
-
-                    // error={errors['amount']}
                     error={Boolean(errors.amount)}
                     errorMessage={errors?.amount?.message}
                   />
@@ -126,7 +124,6 @@ const EditExpenditure = ({ open, closeModal, fetchData, selectedExpenditure }) =
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '20px' }}>
 
               <Button
-                // onClick={fetchData}
                 type='submit'
                 variant='contained'
                 disabled={isSubmitting}

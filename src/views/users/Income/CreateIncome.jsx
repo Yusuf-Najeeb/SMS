@@ -35,6 +35,8 @@ import SearchStudent from '../component/SearchStudent'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { usePaymentMethods } from '../../../hooks/usePaymentMethods'
 import { fetchPaymentMethods } from '../../../store/apps/settings/asyncthunk'
+import { useSession } from '../../../hooks/useSession'
+import { fetchSession } from '../../../store/apps/session/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -56,6 +58,7 @@ const defaultValues = {
   amount: Number(''),
   amountPaid: Number(''),
   categoryId: '',
+  sessionId: '',
   income: true,
   incomeOwner: '',
   paymentMode: ''
@@ -79,6 +82,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
   const dispatch = useDispatch()
   const [IncomeCategoryData] = useIncomeCategory()
   const [PaymentMethodsList] = usePaymentMethods()
+  const [SessionData] = useSession()
 
   const validatePayment = amountReceived => {
     if (amountReceived > Number(getValues('amount'))) {
@@ -146,6 +150,8 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
 
   useEffect(() => {
     dispatch(fetchPaymentMethods({ page: 1, limit: 300 }))
+    dispatch(fetchSession({ page: 1, limit: 300 }))
+    dispatch(fetchIncomeCategory({ page: 1, limit: 300 }))
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -160,13 +166,14 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createIncomeSchema) })
 
   const onSubmit = async data => {
-    const { categoryId, incomeOwner, ...restData } = data
+    const { categoryId, incomeOwner, sessionId, ...restData } = data
 
     const parsedCategoryId = Number(categoryId)
 
     let payload = {
       categoryId: parsedCategoryId,
       income: defaultValues.income,
+      sessionId: Number(sessionId),
 
       ...restData
     }
@@ -196,12 +203,6 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
     })
   }
 
-  useEffect(() => {
-    dispatch(fetchIncomeCategory({ page: 1, limit: 300 }))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refetch])
-
   return (
     <Fragment>
       <Dialog
@@ -212,7 +213,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
 
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 700 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
       >
         <DialogContent
           sx={{
@@ -284,7 +285,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                         aria-describedby='stepper-linear-personal-paymentMode-helper'
                         {...(errors.paymentMode && { helperText: errors.paymentMode.message })}
                       >
-                        <MenuItem value=''>Select Category</MenuItem>
+                        <MenuItem value=''>Select Payment Method</MenuItem>
                         {PaymentMethodsList?.map(method => (
                           <MenuItem key={method?.id} value={method?.name}>
                             {method.name}
@@ -307,7 +308,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
 
                   <Controller
                     name='amountPaid'
@@ -331,7 +332,38 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='sessionId'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        select
+                        fullWidth
+                        required
+                        value={value}
+                        label='Session'
+                        onChange={e => {
+                          onChange(e)
+                        }}
+                        id='stepper-linear-personal-sessionId'
+                        error={Boolean(errors.sessionId)}
+                        aria-describedby='stepper-linear-personal-sessionId-helper'
+                        {...(errors.sessionId && { helperText: errors.sessionId.message })}
+                      >
+                        <MenuItem value=''>Select Session</MenuItem>
+                        {SessionData?.map(session => (
+                          <MenuItem key={session?.id} value={session?.id}>
+                            {session.name}
+                          </MenuItem>
+                        ))}
+                      </CustomTextField>
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
                   <Controller
                     name='incomeOwner'
                     control={control}

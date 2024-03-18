@@ -17,6 +17,7 @@ import { styled } from '@mui/material/styles'
 import CreateExpenditure from './CreateExpenditure'
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import CustomAvatar from 'src/@core/components/mui/avatar'
+import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -29,32 +30,8 @@ import PayExpenditureBalance from './PayExpenditure'
 import ViewExpenditure from './ViewExpenditure'
 
 import DeleteDialog from '../../../@core/components/delete-dialog'
+import { formatDate } from '../../../@core/utils/format'
 
-const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
-
-const renderClient = row => {
-  const initials = `${row.firstName} ${row.lastName}`
-  if (row.profilePicture?.length) {
-    return (
-      <CustomAvatar
-        src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
-        sx={{ mr: 2.5, width: 38, height: 38 }}
-      />
-    )
-  } else {
-    return (
-      <CustomAvatar
-        skin='light'
-        //eslint-disable-next-line
-        // color={row?.title.length > 2 ? 'primary' : 'secondary'}
-        color='primary'
-        sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
-      >
-        {getInitials(initials || 'John Doe')}
-      </CustomAvatar>
-    )
-  }
-}
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
@@ -195,6 +172,9 @@ const ExpenditureTable = () => {
                 <TableCell align='center' sx={{ minWidth: 180 }}>
                   Category
                 </TableCell>
+                <TableCell align='center' sx={{ minWidth: 180 }}>
+                  Year
+                </TableCell>
                 <TableCell align='center' sx={{ minWidth: 140 }}>
                   Payment Date
                 </TableCell>
@@ -212,7 +192,7 @@ const ExpenditureTable = () => {
                 </TableRow>
               ) : (
                 <Fragment>
-                  {ExpenditureData?.length &&
+                  {
                     ExpenditureData?.map((item, i) => {
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
@@ -223,13 +203,34 @@ const ExpenditureTable = () => {
                             {`₦${item?.amount || '--'}`}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {`₦${item?.amountPaid || '--'}`}
+                          {item.amount == item.amountPaid ? (
+                              <CustomChip
+                                rounded
+                                skin='light'
+                                size='small'
+                                label={`₦${item?.amountPaid || '--'}`}
+                                color='success'
+                                sx={{ textTransform: 'uppercase' }}
+                              />
+                            ) : (
+                              <CustomChip
+                                rounded
+                                skin='light'
+                                size='small'
+                                label={`₦${item?.amountPaid || '--'}`}
+                                color='error'
+                                sx={{ textTransform: 'uppercase' }}
+                              />
+                            )}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.category?.name?.toUpperCase() || '--'}
+                            {item?.category?.name || '--'}
                           </TableCell>
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {`${new Date(item?.createdAt).toLocaleDateString()}` || '--'}
+                            {item?.year || '--'}
+                          </TableCell>
+                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                            {`${formatDate(item?.createdAt)}` || '--'}
                           </TableCell>
                           <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                             <>
