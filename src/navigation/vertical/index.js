@@ -81,11 +81,6 @@ const navigation = () => {
     },
 
     // {
-    //   title: 'New Staff',
-    //   icon: 'tabler:mail',
-    //   path: '/apps/new-staff/list'
-    // },
-    // {
     //   title: 'Staff Attendance',
     //   icon: 'material-symbols:co-present-rounded',
     //   path: '/apps/staff-attendence/list'

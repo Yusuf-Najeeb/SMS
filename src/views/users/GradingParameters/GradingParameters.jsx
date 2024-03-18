@@ -95,7 +95,7 @@ const GradingParametersTable = () => {
     <Fragment>
 
 
-   {!userData?.role.name == 'teacher' &&  <PageHeader toggle={OpenParameterModal} action={'Add Grading Parameter'} /> }
+   {!userData?.role?.name == 'teacher' &&  <PageHeader toggle={OpenParameterModal} action={'Add Grading Parameter'} /> }
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>
@@ -116,7 +116,7 @@ const GradingParametersTable = () => {
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Date Created
               </TableCell>
-              {!userData?.role.name == 'teacher' && 
+              {!userData?.role?.name == 'teacher' && 
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Actions
               </TableCell>
@@ -168,7 +168,7 @@ const GradingParametersTable = () => {
                       )} */}
                     </TableCell>
 
-                    {!userData?.role.name == 'teacher' && 
+                    {!userData?.role?.name == 'teacher' && 
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                       <IconButton size='small' onClick={() => setActiveCategory(item)}>
                         <Icon icon='tabler:edit' />
