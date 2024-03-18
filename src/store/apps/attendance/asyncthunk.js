@@ -9,7 +9,7 @@ export const fetchClassAttendance = createAsyncThunk('class-attendance', async (
     try {
       const response = await axios.get(`/attendance/classattendance/${query.classId}/${query.sessionId}/${query.date}`)
 
-      console.log(response, 'response')
+
       return response
     } catch (error) {
 

@@ -55,6 +55,7 @@ const router = useRouter()
           '& .MuiTableCell-head:last-child, & .MuiTableCell-root:last-child': {
             paddingRight: theme.spacing(6)
           },
+          
           // '& .css-16u3ru3-MuiTableRow-root, & .MuiTableCell-root:last-child': {
           //   border: '1px solid red'
           // },
