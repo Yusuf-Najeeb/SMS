@@ -12,12 +12,9 @@ import Icon from 'src/@core/components/icon'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
-import CustomAvatar from 'src/@core/components/mui/avatar'
 
 import { useAppDispatch } from '../../../hooks'
-import NoData from '../../../@core/components/emptyData/NoData'
-import CustomSpinner from '../../../@core/components/custom-spinner'
-import { Box, Button, Card, CardContent, CardHeader, Grid, MenuItem, Stack, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, Grid, MenuItem, Typography } from '@mui/material'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
@@ -31,8 +28,6 @@ import { useStudentSubjectPosition } from '../../../hooks/useStudentsSubjectPosi
 import { useTheme } from '@mui/material/styles'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
-import { formatFirstLetter } from '../../../@core/utils/format'
-import themeConfig from 'src/configs/themeConfig'
 import SchoolDetails from './SchoolDetails'
 import StudentReportCardDetails from './StudentReportCardDetails'
 
@@ -47,8 +42,6 @@ const StudentsReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
-  console.log(StudentSubjectPosition, 'StudentSubjectPosition')
-  console.log(StudentReportCard, 'students report card')
 
   // States
 

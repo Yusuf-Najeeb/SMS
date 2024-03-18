@@ -126,7 +126,6 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '20px' }}>
 
               <Button
-                // onClick={fetchData}
                 type='submit'
                 variant='contained'
                 disabled={isSubmitting}
