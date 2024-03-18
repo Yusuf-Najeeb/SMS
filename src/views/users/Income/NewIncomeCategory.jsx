@@ -17,6 +17,7 @@ import NoData from 'src/@core/components/emptydata/NoData'
 import CustomSpinner from 'src/@core/components/custom-spinner'
 
 import { deleteCategory, fetchCategories } from '../../../store/apps/categories/asyncthunk'
+import ManageCategories from '../classes/ManageCategories'
 import PageHeader from '../component/PageHeader'
 import { useCategories } from '../../../hooks/useCategories'
 import CreateCategory from '../component/CreateCategory'
@@ -37,13 +38,12 @@ const NewIncomeCategories = () => {
 
   const toggleCategoryModal = () => {
     setOpenModal(!openModal)
-  
-}
+  }
 
-  // const setActiveCategory = value => {
-  //   OpenCategoryModal()
-  //   setSelectedCategory(value)
-  // }
+  const setActiveCategory = value => {
+    OpenCategoryModal()
+    setSelectedCategory(value)
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -73,7 +73,7 @@ const NewIncomeCategories = () => {
     doCancelDelete()
   }
 
-  const updateFetch = ()=> setFetch(!fetch)
+  const updateFetch = () => setFetch(!fetch)
 
   useEffect(() => {
     dispatch(fetchCategories({ page: page + 1, limit: 10, type: 'income' }))
@@ -125,13 +125,13 @@ const NewIncomeCategories = () => {
                       {item?.type || '--'}
                     </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'capitalize' }}>
-                    {`${formatDate(item?.createdAt)}` || '--'}
+                      {`${formatDate(item?.createdAt)}` || '--'}
                     </TableCell>
-                  
+
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      {/* <IconButton size='small' onClick={() => setActiveCategory(item)}>
+                      <IconButton size='small' onClick={() => setActiveCategory(item)}>
                         <Icon icon='tabler:edit' />
-                      </IconButton> */}
+                      </IconButton>
 
                       <IconButton size='small' onClick={() => doDelete(item)}>
                         <Icon icon='tabler:trash' />
@@ -162,7 +162,7 @@ const NewIncomeCategories = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      {/* {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />} */}
+      {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />}
       <CreateCategory open={openModal} closeModal={toggleCategoryModal} fetchData={updateFetch} type={'income'} />
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
