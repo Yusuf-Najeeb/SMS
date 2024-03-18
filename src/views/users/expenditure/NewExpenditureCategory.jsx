@@ -36,6 +36,15 @@ const NewIncomeCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [fetch, setFetch] = useState(false)
 
+  const OpenCategoryModal = () => {
+    if (openModal) {
+      setOpenModal(false)
+      setSelectedCategory(null)
+    } else {
+      setOpenModal(true)
+    }
+  }
+
   const toggleCategoryModal = () => {
     setOpenModal(!openModal)
   }
@@ -163,7 +172,6 @@ const NewIncomeCategories = () => {
 
       {openModal && <ManageCategories open={openModal} toggle={OpenCategoryModal} categoryToEdit={selectedCategory} />}
 
-      <CreateCategory open={openModal} closeModal={toggleCategoryModal} fetchData={updateFetch} type={'expenditure'} />
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
     </Fragment>
   )
