@@ -30,6 +30,7 @@ import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import SchoolDetails from './SchoolDetails'
 import StudentReportCardDetails from './StudentReportCardDetails'
+import CustomResultTable from '../component/CustomResultTable'
 
 const StudentsReportCardTable = () => {
   // Hooks
@@ -171,7 +172,7 @@ const StudentsReportCardTable = () => {
                 {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.name}`}
+                    {`${item.name} ${item.term} term`}
                   </MenuItem>
                 ))}
               </CustomTextField>
@@ -201,7 +202,7 @@ const StudentsReportCardTable = () => {
 
       <SchoolDetails />
 
-        <Box sx={{color: '#fff', backgroundColor: "#333333", height: '70px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <Box sx={{color: '#fff', backgroundColor: "#333333", height: '50px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
            <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center'}}> {`Termly Report For ${activeStudent?.firstName} ${activeStudent?.lastName}`}</Typography> 
            </Box>
         <StudentReportCardDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} CurrentSessionData={CurrentSessionData}/>
@@ -209,7 +210,7 @@ const StudentsReportCardTable = () => {
       }
 
       
-      <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 10, }}>
+      {/* <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 10, }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead >
             <TableRow>
@@ -304,7 +305,9 @@ const StudentsReportCardTable = () => {
             
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
+
+      <CustomResultTable tableData={StudentReportCard}/>
 
 
       </Box>

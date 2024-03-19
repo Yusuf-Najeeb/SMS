@@ -12,7 +12,8 @@ const router = useRouter()
         root: ({ theme }) => ({
           boxShadow: theme.shadows[0],
           borderTopColor: theme.palette.divider,
-          backgroundColor: router?.pathname == "/apps/result-manager" && '#fff'
+          backgroundColor: router?.pathname == "/apps/result-manager" && '#fff',
+          borderSpacing: 1
         })
       }
     },
@@ -23,7 +24,8 @@ const router = useRouter()
           '& .MuiTableCell-head': {
             fontWeight: 500,
             letterSpacing: '1px',
-            fontSize: theme.typography.body2.fontSize
+            fontSize: theme.typography.body2.fontSize,
+            borderSpacing: 1
           }
         })
       }
@@ -38,7 +40,8 @@ const router = useRouter()
             '&:not(.MuiTableCell-sizeSmall):not(.MuiTableCell-paddingCheckbox):not(.MuiTableCell-paddingNone)': {
               paddingTop: router?.pathname == "/apps/result-manager" ? theme.spacing(2.5) : theme.spacing(3.5),
               paddingBottom: router?.pathname == "/apps/result-manager" ? theme.spacing(2.5) : theme.spacing(3.5),
-              color: router?.pathname == "/apps/result-manager" && '#666'
+              color: router?.pathname == "/apps/result-manager" && '#666',
+              borderSpacing: 1
             }
           }
         })
@@ -55,7 +58,7 @@ const router = useRouter()
           '& .MuiTableCell-head:last-child, & .MuiTableCell-root:last-child': {
             paddingRight: theme.spacing(6)
           },
-          
+
           // '& .css-16u3ru3-MuiTableRow-root, & .MuiTableCell-root:last-child': {
           //   border: '1px solid red'
           // },
@@ -67,7 +70,9 @@ const router = useRouter()
     MuiTableCell: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderBottom: router?.pathname == "/apps/result-manager" ? '1px solid #eee' : `1px solid ${theme.palette.divider}`
+          borderBottom: router?.pathname == "/apps/result-manager" ? '1px solid #eee' : `1px solid ${theme.palette.divider}`,
+          borderSpacing: router?.pathname == "/apps/result-manager" && 1,
+          borderCollapse: router?.pathname == "/apps/result-manager" && 'collapse',
         }),
         paddingCheckbox: ({ theme }) => ({
           paddingLeft: theme.spacing(3.25)

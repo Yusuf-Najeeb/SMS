@@ -50,4 +50,16 @@ export const fetchStudentReportCard = createAsyncThunk('report-card/fetch ', asy
     }
   })
 
+  export const fetchStudentTranscript = createAsyncThunk('transcript/fetch ', async (query) => {
+    try {
+      const response = await axios.get(`/gradebook/transcript/${query.classId}/${query.studentId}`)
+  
+      return response
+    } catch (error) {
+  
+    }
+  })
+
+  
+
 

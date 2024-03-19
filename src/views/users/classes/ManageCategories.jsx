@@ -95,7 +95,7 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
     updateCategory(categoryToEdit?.id, payload).then(response => {
       if (response?.data.success) {
         handleClose()
-        dispatch(fetchCategories({ page: 1, limit: 10, type: '' }))
+        dispatch(fetchCategories({ page: 1, limit: 10, type: 'class' }))
       }
     })
   }

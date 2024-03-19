@@ -11,6 +11,7 @@ export const getStaticPaths = () => {
     paths: [
       { params: { tab: 'scores' } },
       { params: { tab: 'reportCard' } },
+      { params: { tab: 'transcript' } },
     ],
     fallback: false
   }
