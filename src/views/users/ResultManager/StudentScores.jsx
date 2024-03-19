@@ -221,7 +221,7 @@ const displayScores = async ()=>{
 
         <Box sx={{color: '#fff', backgroundColor: "transparent", height: '70px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
            <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', color: "#333", textAlign: 'center', textTransform: 'uppercase'}}>
-             {`${classRoom?.name} Students Assessment Score Sheet For ${Subject?.name}`}
+             {`Termly Score Sheet For ${classRoom?.name} ${classRoom?.type} Students in ${Subject?.name}`}
              </Typography> 
            </Box>
 

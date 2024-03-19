@@ -5,7 +5,7 @@ import { formatFirstLetter } from '../../../@core/utils/format'
 const StudentReportCardDetails = ({activeStudent,profilePictureUrl, classRoom, CurrentSessionData }) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Stack spacing={4} sx={{width: '30%', }}>
+          <Stack spacing={2} sx={{width: '30%', }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between',  }}>
               <Typography sx={{  fontWeight: 700, color: '#666' }}>Name:</Typography>
 
