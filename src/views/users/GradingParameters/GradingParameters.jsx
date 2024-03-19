@@ -95,7 +95,7 @@ const GradingParametersTable = () => {
     <Fragment>
 
 
-   {!userData?.role?.name == 'teacher' &&  <PageHeader toggle={OpenParameterModal} action={'Add Grading Parameter'} /> }
+   {(userData?.role?.name == 'super-admin' || userData?.role?.name == 'admin') &&  <PageHeader toggle={OpenParameterModal} action={'Add Grading Parameter'} /> }
 
       <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
         <Table stickyHeader aria-label='sticky table'>

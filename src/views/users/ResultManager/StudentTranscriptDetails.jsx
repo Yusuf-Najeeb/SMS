@@ -2,7 +2,7 @@ import { Box, Grid, Stack, Typography } from '@mui/material'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import { formatDateToReadableFormat, formatFirstLetter } from '../../../@core/utils/format'
 
-const StudentTranscriptDetails = ({activeStudent,profilePictureUrl, classRoom, CurrentSessionData }) => {
+const StudentTranscriptDetails = ({activeStudent,profilePictureUrl, classRoom, SessionData }) => {
   return (
     <Grid container>
 
@@ -61,7 +61,7 @@ const StudentTranscriptDetails = ({activeStudent,profilePictureUrl, classRoom, C
               <Typography sx={{  fontWeight: 700, color: '#666' }}>Session:</Typography>
 
               <Typography sx={{ color: '#666', textTransform: 'uppercase' }}>
-              {`${CurrentSessionData?.name} `}
+              {`${SessionData?.session} `}
               </Typography>
               </Box>
 
@@ -69,7 +69,7 @@ const StudentTranscriptDetails = ({activeStudent,profilePictureUrl, classRoom, C
               <Typography sx={{  fontWeight: 700, color: '#666' }}>Term:</Typography>
 
               <Typography sx={{ color: '#666', textTransform: 'uppercase' }}>
-              {`${CurrentSessionData?.term} `}
+              {`${SessionData?.term} `}
               </Typography>
               </Box>
 
@@ -79,7 +79,7 @@ const StudentTranscriptDetails = ({activeStudent,profilePictureUrl, classRoom, C
       </Grid>
 
       <Grid item xs={12} sm={3} lg={3} >
-      <Box sx={{width: '20%', display: 'flex', justifyContent:"flex-end"}}>
+      <Box sx={{width: '100%', display: 'flex', justifyContent:"flex-end"}}>
           {(profilePictureUrl.includes('uploads')) ? (
                 <CustomAvatar
                   src={profilePictureUrl}

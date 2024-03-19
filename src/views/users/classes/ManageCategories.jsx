@@ -23,8 +23,6 @@ import { useAppDispatch } from 'src/hooks'
 import { CircularProgress } from '@mui/material'
 import { createCategory, fetchCategories, updateCategory } from '../../../store/apps/categories/asyncthunk'
 
-
-
 const showErrors = (field, valueLen, min) => {
   if (valueLen === 0) {
     return `${field} field is required`
@@ -74,41 +72,32 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
     reset()
   }
 
-  const onSubmit = async (data) => {
-
+  const onSubmit = async data => {
     const payload = {
-        name: data.name,
-        type: defaultValues.type
+      name: data.name,
+      type: defaultValues.type
+    }
+
+    createCategory(payload).then(response => {
+      if (response?.data.success) {
+        handleClose()
+        dispatch(fetchCategories({ page: 1, limit: 10, type: 'class' }))
       }
-
-
-      createCategory(payload).then((response)=>{
-          if (response?.data.success){
-            handleClose()
-            dispatch(fetchCategories({ page: 1, limit: 10, type: 'class' }))
-          }
-      })
-
+    })
   }
 
-  const onUpdate = async (data) => {
-    
-      const payload = {
-        name: data.name,
-        type: defaultValues.type
+  const onUpdate = async data => {
+    const payload = {
+      name: data.name,
+      type: defaultValues.type
+    }
+
+    updateCategory(categoryToEdit?.id, payload).then(response => {
+      if (response?.data.success) {
+        handleClose()
+        dispatch(fetchCategories({ page: 1, limit: 10, type: 'class' }))
       }
-
-
-      updateCategory(categoryToEdit?.id, payload).then((response)=>{
-        if (response?.data.success){
-            handleClose()
-            dispatch(fetchCategories({ page: 1, limit: 10, type: '' }))
-          }
-      })
-
-     
-
-
+    })
   }
 
   useEffect(() => {
@@ -148,8 +137,7 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
       </Header>
       <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
         <form onSubmit={handleSubmit(categoryToEdit ? onUpdate : onSubmit)}>
-
-        {/* <Controller
+          {/* <Controller
             name='type'
             control={control}
             rules={{ required: true }}
@@ -164,7 +152,7 @@ const ManageCategories = ({ open, toggle, categoryToEdit = null }) => {
                 error={Boolean(errors.type)}
                 {...(errors.type && { helperText: errors.type.message })}
               />
-                
+
             )}
           /> */}
 

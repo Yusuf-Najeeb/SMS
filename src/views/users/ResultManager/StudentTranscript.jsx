@@ -33,6 +33,7 @@ import StudentReportCardDetails from './StudentReportCardDetails'
 import { useTranscript } from '../../../hooks/useTranscript'
 import { extractTranscriptData } from '../../../@core/utils/extractTranscriptData'
 import StudentTranscriptDetails from './StudentTranscriptDetails'
+import CustomTable from '../component/CustomTable'
 
 const StudentsTranscript = () => {
   // Hooks
@@ -185,21 +186,8 @@ const StudentsTranscript = () => {
 
       {(!loading && showResult )  &&
 
-      <Box className='resultBg' sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#fff"}}>
-        <Box className="bgOverlay"></Box>
+      <Box  sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#eee"}}>
 
-      {/* {(StudentReportCard.length > 0 && Object.keys(activeStudent).length > 0) && 
-      <CardContent >
-
-      <SchoolDetails />
-
-        <Box sx={{color: '#fff', backgroundColor: "#333333", height: '70px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-           <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center'}}> {`Termly Report For ${activeStudent?.firstName} ${activeStudent?.lastName}`}</Typography> 
-           </Box>
-        <StudentReportCardDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} CurrentSessionData={CurrentSessionData}/>
-      </CardContent>
-      } */}
-      
 
 
 {(!loading && showResult) && TranscriptData.map((sessionData, index) => (
@@ -208,19 +196,22 @@ const StudentsTranscript = () => {
 
           <SchoolDetails />
 
-          <Box sx={{color: '#fff', backgroundColor: "#333333", height: '50px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <Box sx={{color: '#fff', backgroundColor: "#333333", height: '50px', width: '100%', mt: 10, mb: 10, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
            <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center', color: '#fff', textTransform: 'uppercase'}}> {`Student Transcript`}</Typography> 
            </Box>
 
-           <StudentTranscriptDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} CurrentSessionData={CurrentSessionData}/>
+           <StudentTranscriptDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} SessionData={sessionData}/>
 
-          <Typography variant="h5" gutterBottom>{`Session: ${sessionData.session}`}</Typography>
-          <Typography variant="h6" gutterBottom>{`Term: ${sessionData.term}`}</Typography>
-          <Typography variant="h6" gutterBottom>{`Class: ${sessionData.class}`}</Typography>
 
-          <Divider sx={{mt: '10px', mb: '10px', color: '#333'}}>Academic Records</Divider>
+          {/* <Divider sx={{mt: 20, mb: 20, color: '#333'}}>Academic Records</Divider> */}
 
-          <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 10 }}>
+          <Box sx={{mt: 15, mb: 15, position:'relative'}}>
+            <Box sx={{ height: '1px', backgroundColor: '#3333334d',  width: '100%', }}>  </Box>
+            <Box className="linePosition" sx={{  backgroundColor: '#fff', color: "#333", textTransform: 'uppercase', fontWeight: 700, pl: 2, pr: 2  }}> Academic Records </Box>
+
+          </Box>
+
+          {/* <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 10 }}>
             <Table stickyHeader aria-label='sticky table'>
               <TableHead>
                 <TableRow>
@@ -247,7 +238,9 @@ const StudentsTranscript = () => {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
+          </TableContainer> */}
+
+          <CustomTable  tableData={sessionData.subjects} sessionData={sessionData}/>
 
 
       </Box>

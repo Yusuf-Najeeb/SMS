@@ -189,7 +189,7 @@ const displayScores = async ()=>{
                 {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{textTransform: 'uppercase'}}>
-                    {`${item?.name}` }
+                    {`${item.name} ${item.term} term`}
                   </MenuItem>
                 ))}
               </CustomTextField>
