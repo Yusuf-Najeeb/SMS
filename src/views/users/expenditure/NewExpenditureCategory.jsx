@@ -19,10 +19,9 @@ import CustomSpinner from 'src/@core/components/custom-spinner'
 
 import { deleteCategory, fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import PageHeader from '../component/PageHeader'
-import ManageCategories from '../classes/ManageCategories'
+import ManageCategories from './ManageCategories'
 import { useCategories } from '../../../hooks/useCategories'
 import { formatDate } from '../../../@core/utils/format'
-import CreateCategory from '../component/CreateCategory'
 
 const NewIncomeCategories = () => {
   const dispatch = useAppDispatch()
