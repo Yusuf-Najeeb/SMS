@@ -199,7 +199,7 @@ export const formatMonthYearr = date => {
 
 
 export const parseClass = item => {
-  if (item === 'off' || !item || item === '') {
+  if ( !item || item === '') {
     return 'bg-info'
   } else if (item === 'Monday') {
     return 'bg-primary'
@@ -266,7 +266,7 @@ export const parseCalendarEvents = (result, teachers) => {
         rosters = [
           ...rosters,
           {
-            title: ` ${teacher?.firstName?.toUpperCase()} ${teacher?.lastName?.toUpperCase()} `,
+            title: ` ${schedule?.subject?.name?.toUpperCase()} ⏱️ ${schedule.start?.slice(0, 5) || '--'} - ${schedule.end?.slice(0, 5) || '--'} `,
 
             // title: ` subject Teacher Name `,
             date: `${year}-${month.toString().padStart( 2, '0')}-${datee}`,

@@ -26,7 +26,7 @@ export const fetchClassTimetable = createAsyncThunk('timetable', async (query) =
       return res
       
     } catch (error) {
-      notifyError('Unable to Add Period')
+      notifyError(error?.response?.data?.message || 'Unable to Add Period')
       
     }
   }
