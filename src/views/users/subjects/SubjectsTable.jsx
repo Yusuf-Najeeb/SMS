@@ -24,6 +24,7 @@ import AssignSubjectTeacher from './ManageSubjectTeacher'
 import ManageSubjectTeacher from './ManageSubjectTeacher'
 import ManageGradingParameter from './ManageGradingParameter'
 import AssignSubjectCategories from './SubjectCategoriesModal'
+import ViewSubject from './ViewSubject'
 
 const SubjectsTable = () => {
   const dispatch = useAppDispatch()
@@ -34,6 +35,7 @@ const SubjectsTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [subjectToDelete, setSubjectToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+  const [openViewModal, setOpenViewModal] = useState(false)
   const [openParameterModal, setOpenParameterModal] = useState(false)
   const [openAssignSubjectModal, setAssignSubjectModal] = useState(false)
   const [assignSubject, setAssignSubject] = useState(false)
@@ -41,6 +43,7 @@ const SubjectsTable = () => {
   const [selectedSubject, setSelectedSubject] = useState(null)
   const [type, setType] = useState('')
   const [subjectToAssign, setSubjectToAssign] = useState(null)
+  const [subjectToView, setSubjectToView] = useState(null)
   const [subjectToAssignParameter, setSubjectToAssignParameter] = useState(null)
   const [subjectToAssignCategory, setSubjectToAssignCategory] = useState(null)
   const [anchorEl, setAnchorEl] = useState(Array(SubjectsList?.length)?.fill(null))
@@ -97,6 +100,16 @@ const SubjectsTable = () => {
 
     handleRowOptionsClose(SubjectsList?.indexOf(value))
     setSubjectToAssign(value)
+  }
+
+  const toggleViewModal = ()=> setOpenViewModal(!openViewModal)
+
+  const setSubjectInView = value => {
+    // setSubjectToView(false)
+    toggleViewModal()
+
+    handleRowOptionsClose(SubjectsList?.indexOf(value))
+    setSubjectToView(value)
   }
 
   const setActiveSubject = value => {
@@ -160,18 +173,15 @@ const SubjectsTable = () => {
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
-              <TableCell align='left' sx={{ minWidth: 50, maxWidth: 50 }}>
+              <TableCell align='left' sx={{ minWidth: 30, maxWidth: 30 }}>
                 S/N
               </TableCell>
-              <TableCell align='center' sx={{ minWidth: 100 }}>
+              <TableCell align='center' sx={{ minWidth: 150 }}>
                 Name
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Categories
+                Type
               </TableCell>
-              {/* <TableCell align='center' sx={{ minWidth: 100 }}>
-                Created By
-              </TableCell> */}
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Status
               </TableCell>
@@ -205,7 +215,8 @@ const SubjectsTable = () => {
                           ))
                         : '--'}
                     </TableCell>
-                    {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
+
+                   
                     <TableCell align='center'>
                       {/* {item.status ? ( */}
                       <CustomChip
@@ -250,6 +261,10 @@ const SubjectsTable = () => {
                           <MenuItem onClick={() => setActiveSubject(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:edit' fontSize={20} />
                             Edit Subject
+                          </MenuItem>
+                          <MenuItem onClick={() => setSubjectInView(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='tabler:eye' fontSize={20} />
+                            View Subject
                           </MenuItem>
                           <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='tabler:trash' fontSize={20} />
@@ -306,6 +321,8 @@ const SubjectsTable = () => {
       />
 
       {openModal && <ManageSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} />}
+
+      {openViewModal && <ViewSubject open={openViewModal} closeCanvas={toggleViewModal} Subject={subjectToView}/>}
 
       {openAssignSubjectModal && (
         <ManageSubjectTeacher

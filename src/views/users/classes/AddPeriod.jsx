@@ -21,15 +21,14 @@ import { useForm, Controller } from 'react-hook-form'
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, MenuItem } from '@mui/material'
-import { createCategory, fetchCategories, updateCategory } from '../../../store/apps/categories/asyncthunk'
-import { CustomInput } from '../Guardian/AddGuardian'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { useStaff } from '../../../hooks/useStaff'
-import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { useSession } from '../../../hooks/useSession'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import { createTimetablePeriod } from '../../../store/apps/timetable/asyncthunk'
+import { useSubjects } from '../../../hooks/useSubjects'
+import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 
 const showErrors = (field, valueLen, min) => {
   if (valueLen === 0) {
@@ -56,6 +55,7 @@ const schema = yup.object().shape({
   start: yup.string().required('Start Time is required'),
   end: yup.string().required('End Time is required'),
   staffId: yup.string().required('Staff is required'),
+  subjectId: yup.string().required('Subject is required'),
 
 //   sessionId: yup.string().required('Session is required')
 })
@@ -65,6 +65,7 @@ const defaultValues = {
   start: '',
   end: '',
   staffId: '',
+  subjectId: ''
 
 //   sessionId: ''
 }
@@ -74,6 +75,7 @@ const AddPeriod = ({ open, toggle, classRoom }) => {
   const [StaffData] = useStaff()
   const [SessionData] = useSession()
   const [CurrentSessionData] = useCurrentSession()
+  const [SubjectsList] = useSubjects()
 
   const {
     reset,
@@ -97,6 +99,7 @@ const AddPeriod = ({ open, toggle, classRoom }) => {
       day: data.day,
       classId: classRoom.id,
       staffId: Number(data.staffId),
+      subjectId: Number(data.subjectId),
       sessionId: CurrentSessionData ?  CurrentSessionData.id : '',
       start: data.start,
       end: data.end
@@ -117,6 +120,7 @@ const AddPeriod = ({ open, toggle, classRoom }) => {
   useEffect(() => {
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
     dispatch(fetchCurrentSession())
+    dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     
     // dispatch(fetchSession({page: 1, limit: 300}))
 
@@ -238,6 +242,33 @@ const AddPeriod = ({ open, toggle, classRoom }) => {
                     return (
                       <MenuItem key={i} value={item.id}>
                         {`${item.firstName} ${item?.lastName}`}
+                      </MenuItem>
+                    )
+                  })}
+                </CustomTextField>
+              )}
+            />
+
+<Controller
+              name='subjectId'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <CustomTextField
+                  select
+                  fullWidth
+                  label='Subject'
+                  value={value}
+                  sx={{ mb: 4 }}
+                  onChange={onChange}
+                  error={Boolean(errors.subjectId)}
+                  {...(errors.subjectId && { helperText: errors.subjectId.message })}
+                >
+                  <MenuItem value=''>Select Subject</MenuItem>
+                  {SubjectsList?.map((item, i) => {
+                    return (
+                      <MenuItem key={i} value={item.id} sx={{textTransform: 'uppercase'}} >
+                        {`${item.name} `}
                       </MenuItem>
                     )
                   })}

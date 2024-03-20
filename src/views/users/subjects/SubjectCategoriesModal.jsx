@@ -84,7 +84,6 @@ const AssignSubjectCategories = ({ open, toggle, Subject, page }) => {
       categoryId
     }
 
-    console.log(payload, 'payload')
 
     try {
       setSubmitting(true)
