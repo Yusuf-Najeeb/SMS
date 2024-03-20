@@ -203,6 +203,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
         reset()
         closeModal()
         fetchData()
+        setItemsArray([])
       }
     })
   }

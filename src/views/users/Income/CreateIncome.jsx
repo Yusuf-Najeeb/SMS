@@ -205,6 +205,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
         reset()
         closeModal()
         fetchData()
+        setItemsArray([])
       }
     })
   }
