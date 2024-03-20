@@ -12,7 +12,7 @@ import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 
-import { Alert, CircularProgress, MenuItem } from '@mui/material'
+import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -70,6 +70,9 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
   const [openGuardianModal, setGuardianModal] = useState(false)
   const [openStaffModal, setStaffModal] = useState(false)
   const [openStudentModal, setStudentModal] = useState(false)
+
+  const [itemsArray, setItemsArray] = useState([])
+
   const [guardianItemsArray, setGuardianItemsArray] = useState([])
   const [StudentsItemsArray, setStudentsItemsArray] = useState([])
   const [staffItemsArray, setStaffItemsArray] = useState([])
@@ -124,6 +127,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
   useEffect(() => {
     if (guardianItemsArray.length) {
       const id = guardianItemsArray[0].id
+      setItemsArray(guardianItemsArray)
       setGuardianId(id)
       setStudentId(null)
       setStaffId(null)
@@ -133,6 +137,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
   useEffect(() => {
     if (StudentsItemsArray.length) {
       const id = StudentsItemsArray[0].id
+      setItemsArray(StudentsItemsArray)
       setStudentId(id)
       setStaffId(null)
       setGuardianId(null)
@@ -142,6 +147,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
   useEffect(() => {
     if (staffItemsArray.length) {
       const id = staffItemsArray[0].id
+      setItemsArray(staffItemsArray)
       setStaffId(id)
       setStudentId(null)
       setGuardianId(null)
@@ -153,7 +159,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
     dispatch(fetchSession({ page: 1, limit: 300 }))
     dispatch(fetchIncomeCategory({ page: 1, limit: 300 }))
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const {
@@ -210,7 +216,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-
+        //eslint_disable-next-line
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
         sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 800 } }}
@@ -232,8 +238,6 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
               }}
             >
               <Grid container spacing={6}>
-               
-
                 <Grid item xs={12} sm={4}>
                   <Controller
                     name='categoryId'
@@ -309,7 +313,6 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-
                   <Controller
                     name='amountPaid'
                     control={control}
@@ -424,6 +427,19 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                   />
                 </Grid>
               </Grid>
+              {itemsArray?.length > 0 && (
+                <Grid item sx={{ mt: 5 }} xs={12} sm={12} md={12}>
+                  <Typography variant='h5'>Income Source</Typography>
+                  <Alert severity='success'>
+                    {itemsArray?.map((source, index) => (
+                      <Fragment key={source.id}>
+                        {index > 0 && ', '}
+                        <span>{`${index + 1}. ${source?.firstName} ${source?.lastName}`}</span>
+                      </Fragment>
+                    ))}
+                  </Alert>
+                </Grid>
+              )}
             </DialogContent>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
