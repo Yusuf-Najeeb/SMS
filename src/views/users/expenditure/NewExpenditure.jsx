@@ -147,7 +147,7 @@ const ExpenditureTable = () => {
       {/* <Stats data={ExpenditureData} statTitle='Classes'/> */}
 
       <PageHeaderWithSearch
-        searchPlaceholder={'Search'}
+        searchPlaceholder={'Search Expenditure'}
         action='Create Expenditure'
         toggle={toggleModal}
 
