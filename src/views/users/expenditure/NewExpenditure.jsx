@@ -195,7 +195,7 @@ const ExpenditureTable = () => {
                     return (
                       <TableRow hover role='checkbox' key={item.id}>
                         <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                          {`${item.id}` || '--'}
+                          {i + 1}
                         </TableCell>
                         <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                           {`₦${item?.amount || '--'}`}
