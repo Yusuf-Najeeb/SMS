@@ -49,11 +49,15 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
   const dispatch = useAppDispatch()
 
   const [queryParents, setQueryParents] = useState([])
+  const [isFocus, setIsFocus] = useState(false)
 
   //   const [value, setValue] = useState<string>('')
   const [searching, setSearching] = useState(false)
 
   //   const [itemsArray, setItemsArray] = useState([])
+  const handleFocus = () => {
+    setIsFocus(true)
+  }
 
   const handleSearchChange = async value => {
     setSearching(true)
@@ -89,9 +93,9 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
   }
 
   const removeitem = parentId => {
-   const filteredItems =  itemsArray.filter(item => item.id !== parentId)
+    const filteredItems = itemsArray.filter(item => item.id !== parentId)
 
-   setItemsArray(filteredItems)
+    setItemsArray(filteredItems)
   }
 
   const scrollToBottom = () => {
@@ -121,8 +125,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
             }
           }}
         >
-            ❌
-          {/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
+          ❌{/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
         </IconButton>
       </Header>
 
@@ -142,16 +145,21 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
           <FormControl variant='standard' sx={{ width: '100%' }}>
             <Input
               sx={{ padding: '2px', maxWidth: '100%' }}
-              onBlur={e => handleSearchChange(e.target.value)}
+              onBlur={e => {
+                handleSearchChange(e.target.value)
+                setIsFocus(false)
+              }}
+              onFocus={handleFocus}
               placeholder='Search Guardian'
               id='input-with-icon-adornment'
               endAdornment={
-                <InputAdornment position='start' sx={{cursor: 'pointer'}}>
+                <InputAdornment position='start' sx={{ cursor: 'pointer' }}>
                   {/* <Icon icon='el:search-alt' /> */}
                   🔎
                 </InputAdornment>
               }
             />
+            {isFocus ? <Typography variant='caption'>Search by First name, Last name or Student ID</Typography> : null}
           </FormControl>
         </Box>
 
@@ -189,7 +197,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                             {prods.lastName}
                           </Typography>
                           {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                             
+
                           </Box> */}
                         </TableCell>
                       </TableRow>
@@ -220,54 +228,55 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
         </TableContainer>
 
         <Box sx={{ mx: 4, my: 4 }}>
-        <Card>
-          <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead>
-                <TableRow>
-                  <TableCell align='center' sx={{ minWidth: 100 }}>
-                    First Name
-                  </TableCell>
-                  <TableCell align='center' sx={{ minWidth: 80, maxWidth: 80 }}>
-                    Last Name
-                  </TableCell>
-                  <TableCell align='center' sx={{ minWidth: 100 }}>
-                    Gender
-                  </TableCell>
-                  <TableCell align='center' sx={{ minWidth: 100 }}>
-                    ACTIONS
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {itemsArray.map(item => (
-                  <TableRow hover key={item.id}>
-                    <TableCell align='center'>{item.firstName}</TableCell>
-                    <TableCell align='center'>{item.lastName}</TableCell>
-                    <TableCell align='center'>{item.gender}</TableCell>
-                    <TableCell align='center'>
-                      <div style={{cursor: 'pointer'}}
-                        onClick={() => {
-                          removeitem(item.id)
-                        }}
-                      >
-                        🗑️
-                      </div>
-                      {/* <IconButton
+          <Card>
+            <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align='center' sx={{ minWidth: 100 }}>
+                      First Name
+                    </TableCell>
+                    <TableCell align='center' sx={{ minWidth: 80, maxWidth: 80 }}>
+                      Last Name
+                    </TableCell>
+                    <TableCell align='center' sx={{ minWidth: 100 }}>
+                      Gender
+                    </TableCell>
+                    <TableCell align='center' sx={{ minWidth: 100 }}>
+                      ACTIONS
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {itemsArray.map(item => (
+                    <TableRow hover key={item.id}>
+                      <TableCell align='center'>{item.firstName}</TableCell>
+                      <TableCell align='center'>{item.lastName}</TableCell>
+                      <TableCell align='center'>{item.gender}</TableCell>
+                      <TableCell align='center'>
+                        <div
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            removeitem(item.id)
+                          }}
+                        >
+                          🗑️
+                        </div>
+                        {/* <IconButton
                     size='small'
                     onClick={() => {
                         removeitem(item.id)
                     }}
                   >
-                    <Icon icon='tabler:trash' /> 
+                    <Icon icon='tabler:trash' />
                   </IconButton> */}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
         </Box>
       </Card>
     </Drawer>

@@ -150,8 +150,7 @@ const ExpenditureTable = () => {
         searchPlaceholder={'Search Expenditure'}
         action='Create Expenditure'
         toggle={toggleModal}
-
-        // handleFilter={setKey}
+        handleFilter={setKey}
       />
 
       <Fragment>
