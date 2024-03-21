@@ -37,6 +37,7 @@ import AssignGeneralCategory from './AssignGeneralCategory'
 import AssignHostelCategory from './AssignHostelCategory'
 import AssignSubject from './AssignSubject'
 import AssignClass from './AssignClass'
+import ManageStudentInRoom from './AssignStudentToRoom'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -462,7 +463,7 @@ const StudentsTable = () => {
         <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
         {studentToAssignCategory &&  <AssignGeneralCategory open={openStudentCategoryDrawer} toggle={toggleCategoryModal} Student={studentToAssignCategory} page={page}/> }
         {studentToAssignClass &&  <AssignClass open={openClassDrawer} toggle={toggleClassModal} Student={studentToAssignClass} page={page}/> }
-        {studentToAssignHostelCategory && <AssignHostelCategory open={openHostelCategoryDrawer} toggle={toggleHostelCategoryModal} Student={studentToAssignHostelCategory} page={page}/> }
+        {studentToAssignHostelCategory && <ManageStudentInRoom open={openHostelCategoryDrawer} toggle={toggleHostelCategoryModal} Student={studentToAssignHostelCategory} page={page}/> }
         {studentToAssignSubject && <AssignSubject open={openStudentSubjectDrawer} toggle={toggleSubjectModal} Student={studentToAssignSubject} page={page}  />}
       </Fragment>
     </>

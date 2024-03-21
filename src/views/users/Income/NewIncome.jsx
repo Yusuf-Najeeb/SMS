@@ -166,7 +166,7 @@ const IncomeTable = () => {
   return (
     <>
 
-<Card>
+{/* <Card>
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
@@ -179,7 +179,6 @@ const IncomeTable = () => {
                 label='Session*'
                 SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name} ${item.term} term`}
@@ -187,23 +186,10 @@ const IncomeTable = () => {
                 ))}
               </CustomTextField>
             </Grid>
-
-            {/* <Grid item xs={12} sm={6}>
-              <Button
-                onClick={displayReportCard}
-                variant='contained'
-                disabled={ !sessionId}
-                sx={{ '& svg': { mr: 2 } }}
-              >
-                <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
-                Filter
-              </Button>
-            </Grid> */}
             
           </Grid>
         </CardContent>
-      </Card>
-      {/* <Stats data={IncomeData} statTitle='Classes'/> */}
+      </Card> */}
 
       <PageHeaderWithSearch
         searchPlaceholder={'Search Income'}
