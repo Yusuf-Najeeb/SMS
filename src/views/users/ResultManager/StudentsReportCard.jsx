@@ -31,6 +31,7 @@ import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthu
 import SchoolDetails from './SchoolDetails'
 import StudentReportCardDetails from './StudentReportCardDetails'
 import CustomResultTable from '../component/CustomResultTable'
+import DismissibleAlert from '../component/DismissibleAlert'
 
 const StudentsReportCardTable = () => {
   // Hooks
@@ -43,6 +44,8 @@ const StudentsReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
+  console.log(StudentReportCard, 'student report card')
+
 
   // States
 
@@ -54,6 +57,8 @@ const StudentsReportCardTable = () => {
   const [activeStudent, setActiveStudent] = useState({})
   const [classRoom, setClassroom] = useState({})
   const [showResult, setShowResult] = useState(false)
+
+  const [noResult, setNoResult] = useState(false)
 
 
   const handleChangeClass = e => {
@@ -70,8 +75,18 @@ const StudentsReportCardTable = () => {
 
   const displayReportCard = async () => {
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
-    if(res.payload.data.success){
+    
+    if(Object.keys(res.payload.data.data.subject).length > 0){
       setShowResult(true)
+      setNoResult(false)
+      const selectedStudent = StudentData?.result.find(student => student.id == studentId)
+
+        setActiveStudent({ ...selectedStudent })
+    }
+    else {
+      setShowResult(false)
+      setNoResult(true)
+      setActiveStudent({})
     }
     dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
   }
@@ -86,23 +101,6 @@ const StudentsReportCardTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStudent])
 
-  useEffect(() => {
-    let isMounted = true
-
-    if (studentId && StudentData?.result.length > 0) {
-      const selectedStudent = StudentData?.result.find(student => student.id == studentId)
-
-      if (isMounted) {
-        setActiveStudent({ ...selectedStudent })
-      }
-    }
-
-    // Cleanup function
-    // return () => {
-    //   isMounted = false
-    //   setActiveStudent({})
-    // }
-  }, [studentId, StudentData])
 
   useEffect(() => {
     let isMounted = true
@@ -209,109 +207,14 @@ const StudentsReportCardTable = () => {
       </CardContent>
       }
 
-      
-      {/* <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 10, }}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead >
-            <TableRow>
-              <TableCell align='left' sx={{ minWidth: 200 }}>
-                SUBJECT
-              </TableCell>
-
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                C.A 1
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                C.A 2
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                Assignment 1
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                Assignment 2
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                Class Exercise
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                Project
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                Exam
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                Total (100%)
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 100 }}>
-                Grade
-              </TableCell>
-              <TableCell align='left' sx={{ minWidth: 120 }}>
-                REMARK
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-           
-              <Fragment>
-                { StudentReportCard?.map((item, i) => {
-                  const FirstAssignment = item?.result?.find(res => res.category == 'Assignment 1')
-                  const SecondAssignment = item?.result?.find(res => res.category == 'Assignment 2')
-                  const FirstCA = item?.result?.find(res => res.category == 'continuous assessment 1')
-                  const SecondCA = item?.result?.find(res => res.category == 'continuous assessment 2')
-                  const ClassExercise = item?.result?.find(res => res.category == 'class exercise')
-                  const Exam = item?.result?.find(res => res.category == 'Final exam')
-                  const Project = item?.result?.find(res => res.category == 'project / practical')
-
-                  return (
-                    <TableRow hover role='checkbox' key={item?.id}>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {item?.subject || '--'}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {FirstCA?.score || `--`}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {SecondCA?.score || `--`}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {FirstAssignment?.score || `--`}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {SecondAssignment?.score || `--`}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {ClassExercise?.score || `--`}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {Project?.score || `--`}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {Exam?.score || `--`}
-                      </TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase', color: 'yellowgreen' }}>
-                        {item?.total || `--`}
-                      </TableCell>
-
-                      <TableCell align='left'>{item?.grade || '--'}</TableCell>
-                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                        {item?.remark || `--`}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })  }
-
-               
-              </Fragment>
-            
-          </TableBody>
-        </Table>
-      </TableContainer> */}
-
       <CustomResultTable tableData={StudentReportCard}/>
 
 
       </Box>
               }
+
+
+   {noResult && <DismissibleAlert AlertMessage={'No Records Found'}/>}
 
 
       {openScoreModal && <EnterStudentScore open={openScoreModal} closeModal={toggleScoreDrawer} />}

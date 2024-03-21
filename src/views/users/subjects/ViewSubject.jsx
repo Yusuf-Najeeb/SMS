@@ -44,7 +44,6 @@ const ViewSubject = ({ open, closeCanvas, Subject }) => {
 
   const theme = useTheme()
 
- console.log(Subject, 'subject')
 
   return (
     <Drawer
