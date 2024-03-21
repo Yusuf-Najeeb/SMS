@@ -131,13 +131,13 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Category'
+                label='Room Name'
                 required
                 onChange={onChange}
                 error={Boolean(errors.categoryId)}
                 {...(errors.categoryId && { helperText: errors.categoryId.message })}
               >
-                <MenuItem value=''>Select Category</MenuItem>
+                <MenuItem value=''>Select Room</MenuItem>
                 {CategoriesData?.map(item => (
                   <MenuItem sx={{ textTransform: 'uppercase' }} key={item?.id} value={item.id}>
                     {item.name}

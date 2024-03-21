@@ -425,7 +425,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
               </Grid>
               {itemsArray?.length > 0 && (
                 <Grid item sx={{ mt: 5 }} xs={12} sm={12} md={12}>
-                  <Typography variant='h5'>Income Source</Typography>
+                  <Typography variant='h5'>Expenditure Source</Typography>
                   <Alert severity='success'>
                     {itemsArray?.map((source, index) => (
                       <Fragment key={source.id}>
