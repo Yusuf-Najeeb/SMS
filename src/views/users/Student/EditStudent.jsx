@@ -85,7 +85,6 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
     gender: '',
     religion: '',
     ethnicity: '',
-    currentClassId: '',
     registrationDate: '',
     lastSchool: '',
     isStaffChild: ''
@@ -124,7 +123,6 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
 
       setValue('dateOfBirth', new Date(selectedStudent.dateOfBirth))
       setValue('registrationDate', new Date(selectedStudent.registrationDate))
-      Number(setValue('currentClassId', selectedStudent.classId))
       selectedStudent?.isStaffChild !== null
         ? setValue('isStaffChild', selectedStudent.isStaffChild)
         : setValue('isStaffChild', false)
@@ -171,7 +169,6 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       ...(changedFields.hasOwnProperty('phone') && { phone: changedFields.phone }),
       ...(changedFields.hasOwnProperty('religion') && { religion: changedFields.religion }),
       ...(changedFields.hasOwnProperty('ethnicity') && { ethnicity: changedFields.ethnicity }),
-      ...(changedFields.hasOwnProperty('currentClassId') && { currentClassId: Number(changedFields.currentClassId) }),
       ...(changedFields.hasOwnProperty('registrationDate') && { registrationDate: formattedRegDate }),
       ...(changedFields.hasOwnProperty('dateOfBirth') && { dateOfBirth: formattedDOB }),
       ...(changedFields.hasOwnProperty('gender') && { gender: changedFields.gender }),
@@ -185,15 +182,15 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
 
     console.log(payload, 'payload')
 
-    // updateStudent(payload, selectedStudent.id).then(response => {
-    //   if (response.data.success) {
-    //     reset()
-    //     closeModal()
-    //     fetchData()
-    //     setPreviewUrl('')
-    //     setItemsArray([])
-    //   }
-    // })
+    updateStudent(payload, selectedStudent.id).then(response => {
+      if (response.data.success) {
+        reset()
+        closeModal()
+        fetchData()
+        setPreviewUrl('')
+        setItemsArray([])
+      }
+    })
   }
 
   return (
@@ -491,40 +488,9 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
-                  <Controller
-                    name='currentClassId'
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <CustomTextField
-                        select
-                        fullWidth
-                        required
-                        value={value}
-                        label='Class'
-                        onChange={onChange}
-                        id='stepper-linear-personal-currentClassId'
-                        error={Boolean(errors.currentClassId)}
-                        aria-describedby='stepper-linear-personal-currentClassId-helper'
-                        {...(errors.currentClassId && { helperText: errors.currentClassId.message })}
-                      >
-                        <MenuItem value=''>Select Class</MenuItem>
-                        {ClassesList?.map(item => {
-                          return (
-                            <MenuItem
-                              key={item.id}
-                              value={item.id}
-                              sx={{ textTransform: 'uppercase' }}
-                            >{`${item.name.toUpperCase()} ${item.type}`}</MenuItem>
-                          )
-                        })}
-                      </CustomTextField>
-                    )}
-                  />
-                </Grid>
+               
 
-                <Grid item xs={12} sm={12} md={4}>
+                <Grid item xs={12} sm={12} md={6}>
                   <Controller
                     name='lastSchool'
                     control={control}
@@ -543,7 +509,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={4}>
+                <Grid item xs={12} sm={12} md={6}>
                   <Controller
                     name='isStaffChild'
                     control={control}
@@ -567,7 +533,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={4}>
+                <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='boarder'
                   control={control}

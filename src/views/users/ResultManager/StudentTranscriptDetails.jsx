@@ -37,7 +37,7 @@ const StudentTranscriptDetails = ({activeStudent,profilePictureUrl, classRoom, S
               <Typography sx={{  fontWeight: 700, color: '#666' }}>Class:</Typography>
 
               <Typography sx={{ color: '#666', textTransform: 'uppercase' }}>
-              {`${classRoom?.name} ${classRoom?.type} `}
+              {`${classRoom} `}
               </Typography>
               </Box>
 

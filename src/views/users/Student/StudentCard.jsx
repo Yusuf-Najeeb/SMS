@@ -57,6 +57,8 @@ const StudentCard = ({ Student }) => {
   const [initials, setInitials] = useState('')
   const [studentClass, setStudentClass] = useState({})
   const [activeStudent, setActiveStudent] = useState({})
+
+  getStudentByIdentification(Student?.identificationNumber)
   
 
 
