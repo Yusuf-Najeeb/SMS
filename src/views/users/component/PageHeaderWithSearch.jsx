@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 
 import * as React from 'react'
 import Input from '@mui/material/Input'
+import { Typography } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControl from '@mui/material/FormControl'
 
@@ -11,6 +12,12 @@ import FormControl from '@mui/material/FormControl'
 import Icon from 'src/@core/components/icon'
 
 const PageHeaderWithSearch = ({ toggle, action, handleFilter, searchPlaceholder }) => {
+  const [isFocus, setIsFocus] = React.useState(false)
+
+  const handleFocus = () => {
+    setIsFocus(true)
+  }
+
   return (
     <Box
       sx={{
@@ -30,7 +37,11 @@ const PageHeaderWithSearch = ({ toggle, action, handleFilter, searchPlaceholder 
         <FormControl variant='standard'>
           <Input
             sx={{ padding: '2px' }}
-            onBlur={e => handleFilter(e.target.value)}
+            onBlur={e => {
+              handleFilter(e.target.value)
+              setIsFocus(false)
+            }}
+            onFocus={handleFocus}
             placeholder={searchPlaceholder}
             id='input-with-icon-adornment'
             endAdornment={
@@ -39,6 +50,7 @@ const PageHeaderWithSearch = ({ toggle, action, handleFilter, searchPlaceholder 
               </InputAdornment>
             }
           />
+          {isFocus ? <Typography variant='caption'>Search by firstname, lastname or student id</Typography> : null}
         </FormControl>
       </Box>
 
