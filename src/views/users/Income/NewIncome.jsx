@@ -153,8 +153,7 @@ const IncomeTable = () => {
         searchPlaceholder={'Search Income'}
         action='Add Income'
         toggle={toggleModal}
-
-        // handleFilter={setKey}
+        handleFilter={setKey}
       />
 
       <Fragment>
