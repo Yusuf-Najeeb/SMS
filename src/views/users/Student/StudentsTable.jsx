@@ -36,6 +36,7 @@ import { useClasses } from '../../../hooks/useClassess'
 import AssignGeneralCategory from './AssignGeneralCategory'
 import AssignHostelCategory from './AssignHostelCategory'
 import AssignSubject from './AssignSubject'
+import AssignClass from './AssignClass'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -82,12 +83,14 @@ const StudentsTable = () => {
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [openStudentCategoryDrawer, setStudentCategoryDrawer] = useState(false)
   const [openStudentSubjectDrawer, setStudentSubjectDrawer] = useState(false)
+  const [openClassDrawer, setStudentClassDrawer] = useState(false)
   const [openHostelCategoryDrawer, setHostelCategoryDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState()
   const [studentToUpdate, setStudentToUpdate] = useState(null)
   const [studentInView, setStudentInView] = useState(null)
   const [studentToAssignCategory, setStudentToAssignCategory] = useState(null)
+  const [studentToAssignClass, setStudentToAssignClass] = useState(null)
   const [studentToAssignSubject, setStudentToAssignSubject] = useState(null)
   const [studentToAssignHostelCategory, setStudentToAssignHostelCategory] = useState(null)
   const [refetch, setFetch] = useState(false)
@@ -112,6 +115,10 @@ const StudentsTable = () => {
 
   const toggleCategoryModal = () => {
     setStudentCategoryDrawer(!openStudentCategoryDrawer)
+  }
+
+  const toggleClassModal = () => {
+    setStudentClassDrawer(!openClassDrawer)
   }
 
   const toggleHostelCategoryModal = () => {
@@ -176,6 +183,12 @@ const StudentsTable = () => {
     handleRowOptionsClose(StudentData?.result?.indexOf(value))
     toggleSubjectModal()
     setStudentToAssignSubject(value)
+  }
+
+  const setStudentToAssignClassRoom = value => {
+    handleRowOptionsClose(StudentData?.result?.indexOf(value))
+    toggleClassModal()
+    setStudentToAssignClass(value)
   }
 
   const setStudentToAssignHostelCategories = value => {
@@ -254,6 +267,9 @@ const StudentsTable = () => {
                 <TableCell align='left' sx={{ minWidth: 150 }}>
                   Gender
                 </TableCell>
+                <TableCell align='left' sx={{ minWidth: 150 }}>
+                  Student Type
+                </TableCell>
                 <TableCell align='left' sx={{ minWidth: 140 }}>
                   Status
                 </TableCell>
@@ -312,6 +328,10 @@ const StudentsTable = () => {
                           </TableCell>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
                             {item?.gender || '--'}
+                          </TableCell>
+
+                          <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
+                            {item?.boarder ?  'Boarding': 'Day'}
                           </TableCell>
 
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
@@ -389,6 +409,10 @@ const StudentsTable = () => {
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
                             Assign Category
                           </MenuItem> */}
+                           <MenuItem onClick={() => setStudentToAssignClassRoom(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
+                            Change Class
+                          </MenuItem>
                           <MenuItem onClick={() => setStudentToAssignSubjects(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
                             Assign Subject
@@ -437,6 +461,7 @@ const StudentsTable = () => {
         <ViewStudent open={openViewDrawer} closeCanvas={closeViewModal} student={studentInView} />
         <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
         {studentToAssignCategory &&  <AssignGeneralCategory open={openStudentCategoryDrawer} toggle={toggleCategoryModal} Student={studentToAssignCategory} page={page}/> }
+        {studentToAssignClass &&  <AssignClass open={openClassDrawer} toggle={toggleClassModal} Student={studentToAssignClass} page={page}/> }
         {studentToAssignHostelCategory && <AssignHostelCategory open={openHostelCategoryDrawer} toggle={toggleHostelCategoryModal} Student={studentToAssignHostelCategory} page={page}/> }
         {studentToAssignSubject && <AssignSubject open={openStudentSubjectDrawer} toggle={toggleSubjectModal} Student={studentToAssignSubject} page={page}  />}
       </Fragment>

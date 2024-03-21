@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton, Menu, MenuItem } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Grid, IconButton, Menu, MenuItem } from '@mui/material'
 
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
@@ -31,6 +31,11 @@ import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import { formatDate } from '../../../@core/utils/format'
 
+// ** Custom Component Import
+import CustomTextField from 'src/@core/components/mui/text-field'
+import { useSession } from '../../../hooks/useSession'
+import { fetchSession } from '../../../store/apps/session/asyncthunk'
+
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
@@ -41,6 +46,8 @@ const IncomeTable = () => {
   const [key, setKey] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
+
+  const [sessionId, setSessionId] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
@@ -54,6 +61,8 @@ const IncomeTable = () => {
   const dispatch = useAppDispatch()
 
   const [IncomeData, loading, paging] = useIncome()
+
+  const [SessionData] = useSession()
   const [CurrentSessionData] = useCurrentSession()
 
   const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
@@ -66,6 +75,10 @@ const IncomeTable = () => {
 
   const toggleViewModal = () => {
     setOpenViewModal(!openViewModal)
+  }
+
+  const handleChangeSession = e => {
+    Number(setSessionId(e.target.value))
   }
 
   const setIncomeToView = value => {
@@ -145,8 +158,51 @@ const IncomeTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, key, refetch])
 
+  useEffect(() => {
+    dispatch(fetchSession({ page: 1, limit: 300 }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
+
+<Card>
+        <CardHeader title='Filter' />
+        <CardContent>
+          <Grid container spacing={12}>
+           
+
+            <Grid item xs={12} sm={3}>
+              <CustomTextField
+                select
+                fullWidth
+                label='Session*'
+                SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
+              >
+                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                {SessionData?.map(item => (
+                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
+                    {`${item.name} ${item.term} term`}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            {/* <Grid item xs={12} sm={6}>
+              <Button
+                onClick={displayReportCard}
+                variant='contained'
+                disabled={ !sessionId}
+                sx={{ '& svg': { mr: 2 } }}
+              >
+                <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
+                Filter
+              </Button>
+            </Grid> */}
+            
+          </Grid>
+        </CardContent>
+      </Card>
       {/* <Stats data={IncomeData} statTitle='Classes'/> */}
 
       <PageHeaderWithSearch
