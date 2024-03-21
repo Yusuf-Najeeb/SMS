@@ -26,6 +26,7 @@ import ManageRooms from './ManageRooms'
 import ManageTeacherInRoom from './ManageTeachersInRoom'
 import ManageStudentInRoom from './ManageStudentInRoom'
 import { indexof } from 'stylis'
+import ViewRoom from './ViewRoom'
 
 const RoomsTable = () => {
   const dispatch = useAppDispatch()
@@ -36,7 +37,9 @@ const RoomsTable = () => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [RoomToDelete, setRoomToDelete] = useState(null)
+  const [RoomToView, setRoomToView] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+  const [openViewModal, setOpenViewModal] = useState(false)
   const [openAssignStaffModal, setAssignStaffModal] = useState(false)
   const [openAssignStudentModal, setAssignStudentModal] = useState(false)
   const [roomToAssignToStaff, setRoomToAssignToStaff] = useState(null)
@@ -81,6 +84,10 @@ const handleRowOptionsClose = (index) => {
     }
   }
 
+  const toggleViewModal =()=> {
+    setOpenViewModal(!openViewModal)
+  }
+
   const toggleAssignStudentModal = () => {
     if (openAssignStudentModal) {
       setAssignStudentModal(false)
@@ -116,6 +123,14 @@ const handleRowOptionsClose = (index) => {
     toggleAssignStudentModal()
     handleRowOptionsClose(RoomsList?.indexOf(value))
     setRoomToAssignToStudent(value)
+  }
+
+  const setRoomInView = value => {
+    toggleViewModal()
+    handleRowOptionsClose(RoomsList?.indexOf(value))
+
+    // console.log(RoomsList?.indexOf(value), 'index')
+    setRoomToView(value)
   }
 
   const setActiveCategory = value => {
@@ -264,6 +279,10 @@ const handleRowOptionsClose = (index) => {
                               <Icon icon='tabler:edit' fontSize={20} />
                               Edit Room
                             </MenuItem>
+                            <MenuItem onClick={() => setRoomInView(item)} sx={{ '& svg': { mr: 2 } }}>
+                              <Icon icon='tabler:edit' fontSize={20} />
+                              View Students In Room
+                            </MenuItem>
                             <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                               <Icon icon='tabler:trash' fontSize={20} />
                               Delete Room
@@ -318,6 +337,7 @@ const handleRowOptionsClose = (index) => {
       />
 
       {openModal && <ManageRooms open={openModal} toggle={OpenSubjectModal} roomToEdit={selectedRoom} />}
+    <ViewRoom open={openViewModal} closeCanvas={toggleViewModal} Room={RoomToView} />
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
       <ManageTeacherInRoom
         open={openAssignStaffModal}

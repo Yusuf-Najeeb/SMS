@@ -1,6 +1,6 @@
 // ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchStudentScores, fetchStudentReportCard, fetchStudentSubjectPosition } from './asyncthunk'
+import { fetchStudentScores, fetchStudentReportCard, fetchStudentSubjectPosition, fetchStudentTranscript } from './asyncthunk'
 
 const initialState = {
   loading: false,
@@ -9,6 +9,8 @@ const initialState = {
   StudentReportCard: [],
   loadingStudentSubjectPosition: false,
   StudentSubjectPosition: [],
+  loadingStudentTranscript: false,
+  StudentsTranscript: {}
  
 }
 
@@ -59,6 +61,20 @@ export const reportCard = createSlice({
       })
       builder.addCase(fetchStudentSubjectPosition.rejected, state => {
         state.loadingStudentSubjectPosition = false
+      })
+
+      builder.addCase(fetchStudentTranscript.pending, state => {
+        state.loadingStudentTranscript = true
+      })
+      builder.addCase(fetchStudentTranscript.fulfilled, (state, action) => {
+        state.loadingStudentTranscript = false
+
+  
+        state.StudentsTranscript = action?.payload?.data?.data
+
+      })
+      builder.addCase(fetchStudentTranscript.rejected, state => {
+        state.loadingStudentTranscript = false
       })
   }
 })

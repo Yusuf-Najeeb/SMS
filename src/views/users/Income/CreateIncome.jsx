@@ -201,7 +201,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
 
     createIncome(payload).then(res => {
       if (res.data.success) {
-        notifySuccess('Income Created')
+        notifySuccess('Income Added')
         reset()
         closeModal()
         fetchData()
@@ -359,7 +359,7 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
                         <MenuItem value=''>Select Session</MenuItem>
                         {SessionData?.map(session => (
                           <MenuItem key={session?.id} value={session?.id}>
-                            {session.name}
+                            {`${session.name} ${session.term} term`}
                           </MenuItem>
                         ))}
                       </CustomTextField>

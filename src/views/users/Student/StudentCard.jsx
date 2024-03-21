@@ -65,7 +65,7 @@ const StudentCard = ({ Student }) => {
  useEffect(()=>{
   let isMounted = true;
 
-  if(ClassesList.length > 1){
+  if(ClassesList.length > 1 && Student){
 
     const classInfo =  ClassesList.find((c)=> c.id === Student.classId)
     if(isMounted){
@@ -81,7 +81,7 @@ const StudentCard = ({ Student }) => {
 };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
- },[])
+ },[ClassesList,Student])
 
 //  console.log(activeStudent, 'active student')
 

@@ -183,15 +183,17 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       })
     }
 
-    updateStudent(payload, selectedStudent.id).then(response => {
-      if (response.data.success) {
-        reset()
-        closeModal()
-        fetchData()
-        setPreviewUrl('')
-        setItemsArray([])
-      }
-    })
+    console.log(payload, 'payload')
+
+    // updateStudent(payload, selectedStudent.id).then(response => {
+    //   if (response.data.success) {
+    //     reset()
+    //     closeModal()
+    //     fetchData()
+    //     setPreviewUrl('')
+    //     setItemsArray([])
+    //   }
+    // })
   }
 
   return (

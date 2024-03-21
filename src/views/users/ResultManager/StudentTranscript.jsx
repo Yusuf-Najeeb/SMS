@@ -14,12 +14,12 @@ import Icon from 'src/@core/components/icon'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 import { useAppDispatch } from '../../../hooks'
-import { Box, Button, Card, CardContent, CardHeader, Grid, MenuItem, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, MenuItem, Typography } from '@mui/material'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { fetchStudentReportCard, fetchStudentSubjectPosition } from '../../../store/apps/reportCard/asyncthunk'
+import { fetchStudentTranscript } from '../../../store/apps/reportCard/asyncthunk'
 import EnterStudentScore from './EnterScore'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
@@ -30,65 +30,56 @@ import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import SchoolDetails from './SchoolDetails'
 import StudentReportCardDetails from './StudentReportCardDetails'
-import CustomResultTable from '../component/CustomResultTable'
-import DismissibleAlert from '../component/DismissibleAlert'
+import { useTranscript } from '../../../hooks/useTranscript'
+import { extractTranscriptData } from '../../../@core/utils/extractTranscriptData'
+import StudentTranscriptDetails from './StudentTranscriptDetails'
+import CustomTable from '../component/CustomTable'
 
-const StudentsReportCardTable = () => {
+const StudentsTranscript = () => {
   // Hooks
   const theme = useTheme()
   const dispatch = useAppDispatch()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [StudentData] = useStudent()
-  const [StudentReportCard, loading] = useStudentReportCard()
+  const [StudentReportCard] = useStudentReportCard()
+  const [StudentTranscript, loading] = useTranscript()
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
-
-  console.log(StudentReportCard, 'student report card')
 
 
   // States
 
   const [openScoreModal, setScoreModal] = useState(false)
   const [classId, setClassId] = useState('')
-  const [sessionId, setSessionId] = useState('')
   const [studentId, setStudentId] = useState('')
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [activeStudent, setActiveStudent] = useState({})
   const [classRoom, setClassroom] = useState({})
   const [showResult, setShowResult] = useState(false)
+  const [subjects, setSubjects] = useState([])
+  const [TranscriptData, setTranscriptData] = useState([])
 
-  const [noResult, setNoResult] = useState(false)
+  console.log(TranscriptData, 'transcript data')
+
+//   const [studentTranscriptDetails, setStudents] 
 
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
   }
 
-  const handleChangeSession = e => {
-    Number(setSessionId(e.target.value))
-  }
-
   const handleChangeStudent = e => {
     Number(setStudentId(e.target.value))
   }
 
-  const displayReportCard = async () => {
-    const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
-    
-    if(Object.keys(res.payload.data.data.subject).length > 0){
+  const displayTranscript = async () => {
+    const res = await dispatch(fetchStudentTranscript({ classId, studentId }))
+    if(res?.payload?.data?.success){
       setShowResult(true)
-      setNoResult(false)
-      const selectedStudent = StudentData?.result.find(student => student.id == studentId)
-
-        setActiveStudent({ ...selectedStudent })
+     const result = extractTranscriptData(res?.payload?.data?.data)
+     setTranscriptData([...result])
     }
-    else {
-      setShowResult(false)
-      setNoResult(true)
-      setActiveStudent({})
-    }
-    dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
   }
 
   const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
@@ -101,6 +92,23 @@ const StudentsReportCardTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStudent])
 
+  useEffect(() => {
+    let isMounted = true
+
+    if (studentId && StudentData?.result.length > 0) {
+      const selectedStudent = StudentData?.result.find(student => student.id == studentId)
+
+      if (isMounted) {
+        setActiveStudent({ ...selectedStudent })
+      }
+    }
+
+    // Cleanup function
+    // return () => {
+    //   isMounted = false
+    //   setActiveStudent({})
+    // }
+  }, [studentId, StudentData])
 
   useEffect(() => {
     let isMounted = true
@@ -125,7 +133,7 @@ const StudentsReportCardTable = () => {
   }, [])
 
   return (
-    <div>
+    <Fragment>
       <Card>
         <CardHeader title='Filter' />
         <CardContent>
@@ -160,31 +168,16 @@ const StudentsReportCardTable = () => {
               </CustomTextField>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
-              <CustomTextField
-                select
-                fullWidth
-                label='Session*'
-                SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
-              >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
-                {SessionData?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item.name} ${item.term} term`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <Button
-                onClick={displayReportCard}
+                onClick={displayTranscript}
                 variant='contained'
-                disabled={!studentId || !classId || !sessionId}
+                disabled={!studentId || !classId}
                 sx={{ '& svg': { mr: 2 } }}
               >
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
-                Display Student Report Card
+                Display Student Transcript
               </Button>
             </Grid>
           </Grid>
@@ -193,33 +186,44 @@ const StudentsReportCardTable = () => {
 
       {(!loading && showResult )  &&
 
-      <Box className='resultBg' sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#fff"}}>
-        <Box className="bgOverlay"></Box>
-      {(StudentReportCard.length > 0 && Object.keys(activeStudent).length > 0) && 
-      <CardContent >
+      <Box  sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#eee"}}>
 
-      <SchoolDetails />
 
-        <Box sx={{color: '#fff', backgroundColor: "#333333", height: '50px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-           <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center'}}> {`Termly Report For ${activeStudent?.firstName} ${activeStudent?.lastName}`}</Typography> 
+
+{(!loading && showResult) && TranscriptData.map((sessionData, index) => (
+        <Box key={index} className='resultBg' sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#fff" }}>
+          <Box className="bgOverlay"></Box>
+
+          <SchoolDetails />
+
+          <Box sx={{color: '#fff', backgroundColor: "#333333", height: '50px', width: '100%', mt: 10, mb: 10, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+           <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center', color: '#fff', textTransform: 'uppercase'}}> {`Student Transcript`}</Typography> 
            </Box>
-        <StudentReportCardDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} CurrentSessionData={CurrentSessionData}/>
-      </CardContent>
-      }
 
-      <CustomResultTable tableData={StudentReportCard}/>
+           <StudentTranscriptDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} SessionData={sessionData}/>
+
+
+          {/* <Divider sx={{mt: 20, mb: 20, color: '#333'}}>Academic Records</Divider> */}
+
+          <Box sx={{mt: 15, mb: 15, position:'relative'}}>
+            <Box sx={{ height: '1px', backgroundColor: '#3333334d',  width: '100%', }}>  </Box>
+            <Box className="linePosition" sx={{  backgroundColor: '#fff', color: "#333", textTransform: 'uppercase', fontWeight: 700, pl: 2, pr: 2  }}> Academic Records </Box>
+
+          </Box>
+
+          <CustomTable  tableData={sessionData.subjects} sessionData={sessionData}/>
 
 
       </Box>
-              }
+              ))}
+
+     </Box>
+      }
 
 
-   {noResult && <DismissibleAlert AlertMessage={'No Records Found'}/>}
-
-
-      {openScoreModal && <EnterStudentScore open={openScoreModal} closeModal={toggleScoreDrawer} />}
-    </div>
+   
+</Fragment>
   )
 }
 
-export default StudentsReportCardTable
+export default StudentsTranscript

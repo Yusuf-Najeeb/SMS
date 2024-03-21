@@ -354,7 +354,7 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                         <MenuItem value=''>Select Session</MenuItem>
                         {SessionData?.map(session => (
                           <MenuItem key={session?.id} value={session?.id}>
-                            {session.name}
+                            {`${session.name} ${session.term} term`}
                           </MenuItem>
                         ))}
                       </CustomTextField>

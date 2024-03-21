@@ -78,3 +78,83 @@ code[class*='language-'] {
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
+  .bgLogoOverlay{
+    position: absolute;
+    background-image: url("/images/logo.webp");
+    
+    background-size: 200px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    background-color: transparent;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #3333334d;
+  }
+
+  .linePosition{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .customTable tbody tr:nth-child(odd) {
+    background-color: transparent;
+  }
+  .customTable tbody tr:nth-child(even) {
+    background-color: rgba(51, 51, 51, 0.102);
+  }
+  .customTableHead{
+    background-color: #333;
+    color: #fff;
+    
+  }
+
+  .customTable, .customReportTable {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .customTable > thead, 
+  .customReportTable > thead{
+    border: 2px solid #333;
+    
+  }
+  
+  .customTable > thead > tr,
+  .customTable > thead > tr > th{
+    border: 1px solid #eee;
+    
+  }
+
+  .customTable > tbody > tr ,
+  .customTable > tbody > tr > td {
+    border: 1px solid rgba(51, 51, 51, 0.2);
+    
+  }
+
+  .customReportTable > thead > tr,
+  .customReportTable > thead > tr > th{
+    border: 1px solid #eee;
+    
+  }
+
+  .customReportTable > tbody > tr ,
+  .customReportTable > tbody > tr > td {
+    border: 1px solid rgba(51, 51, 51, 0.2);
+    
+  }
+
+
+  .customReportTable tbody tr:nth-child(odd) {
+    background-color: transparent;
+  }
+
+  .customReportTable tbody tr:nth-child(even) {
+    background-color: #fff;
+  }

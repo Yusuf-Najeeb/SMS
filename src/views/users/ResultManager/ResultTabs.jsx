@@ -19,6 +19,7 @@ import MuiTabList from '@mui/lab/TabList'
 import Icon from 'src/@core/components/icon'
 import StudentsScoreTable from './StudentScores'
 import StudentsReportCardTable from './StudentsReportCard'
+import StudentsTranscript from './StudentTranscript'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -76,6 +77,7 @@ const ResultsTab = ({ tab }) => {
   const tabContentList = {
     scores: <StudentsScoreTable />,
     reportCard: <StudentsReportCardTable/>,
+    transcript: <StudentsTranscript/>
 
     // deductions: <DeductionsHome />
   }
@@ -103,6 +105,15 @@ const ResultsTab = ({ tab }) => {
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='ic:twotone-minus' />
                         {!hideText && 'Report Card'}
+                      </Box>
+                    }
+                  />
+                  <Tab
+                    value='transcript'
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
+                        <Icon fontSize='1.125rem' icon='ic:twotone-minus' />
+                        {!hideText && 'Student Transcript'}
                       </Box>
                     }
                   />

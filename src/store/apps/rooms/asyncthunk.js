@@ -47,6 +47,18 @@ export const fetchRooms = createAsyncThunk('rooms', async (query) => {
     }
   }
 
+  export const fetchSingleRoom = async (id)=>{
+    try {
+      const res = await axios.get(`/rooms/${id}`)
+      
+
+      return res
+      
+    } catch (error) {
+      
+    }
+  }
+
   export const deleteRoom = async (id)=>{
     try {
       const res = await axios.delete(`/rooms/${id}`)

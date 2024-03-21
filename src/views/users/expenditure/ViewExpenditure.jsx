@@ -42,6 +42,8 @@ const Header = styled(Box)(({ theme }) => ({
 const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
   const theme = useTheme()
 
+  console.log(expenditure, 'expenditure')
+
   return (
     <Drawer
       open={open}
@@ -143,6 +145,22 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                   </Box>
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography sx={{ color: 'text.secondary' }}> Session:</Typography>
+
+                      <Typography sx={{ color: 'text.secondary' }}>
+                        {`${expenditure?.year}`}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography sx={{ color: 'text.secondary', textTransform: 'uppercase' }}> Term:</Typography>
+
+                      <Typography sx={{ color: 'text.secondary' }}>
+                        {` ${expenditure?.term} term`}
+                      </Typography>
+                    </Box>
+
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography sx={{ color: 'text.secondary' }}>Status:</Typography>
 
                     {expenditure.transactions[0].transactionStatus === 0 ? (
@@ -150,11 +168,11 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                         rounded
                         skin='light'
                         size='small'
-                        label='Paid'
-                        color='success'
+                        label='Partly Paid'
+                        color='info'
                         sx={{ textTransform: 'capitalize' }}
                       />
-                    ) : (
+                    ) : (expenditure.transactions[0].transactionStatus === -1) ? (
                       <CustomChip
                         rounded
                         skin='light'
@@ -163,43 +181,20 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                         color='error'
                         sx={{ textTransform: 'capitalize' }}
                       />
-                    )}
+                    )
+                    : (
+                    <CustomChip
+                        rounded
+                        skin='light'
+                        size='small'
+                        label='Fully Paid'
+                        color='success'
+                        sx={{ textTransform: 'capitalize' }}
+                      />)
+                    }
                   </Box>
                 </Stack>
               </CardContent>
-
-              {/*
-
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Item</TableCell>
-                        <TableCell>qty</TableCell>
-                        <TableCell>Unit Price</TableCell>
-                        <TableCell>Sub Total</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody
-                      sx={{
-                        '& .MuiTableCell-root': {
-                          py: `${theme.spacing(2.5)} !important`,
-                          fontSize: theme.typography.body1.fontSize
-                        }
-                      }}
-                    >
-                      {expenditure.items.map(item => (
-                        <TableRow key={item.id}>
-                          <TableCell>{item.name}</TableCell>
-
-                          <TableCell>{item.quantity}</TableCell>
-                          <TableCell>{formatCurrency(item.unitPrice, true)}</TableCell>
-                          <TableCell>{formatCurrency(Math.abs(item.quantity * item.unitPrice), true)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer> */}
 
               <Divider sx={{ mt: '10px', mb: '10px' }}>Transaction History</Divider>
 
@@ -240,12 +235,39 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
               <CardContent sx={{ p: [`${theme.spacing(6)} !important`, `${theme.spacing(10)} !important`] }}>
                 <Grid container>
                   <Grid item xs={12} sm={7} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
-                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                      <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Payee:</Typography>
-                      <Typography
-                        sx={{ color: 'text.secondary' }}
-                      >{`${expenditure?.staff?.firstName?.toUpperCase()} ${expenditure?.staff?.lastName?.toUpperCase()}`}</Typography>
-                    </Box>
+                  <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                        <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Source:</Typography>
+                        {expenditure.staff && <Typography sx={{ color: 'text.secondary' }}>{ `${expenditure?.staff?.firstName?.toUpperCase()} ${expenditure?.staff?.lastName?.toUpperCase()}`}</Typography>}
+                        {expenditure.parent && <Typography sx={{ color: 'text.secondary' }}>{ `${expenditure?.parent?.firstName?.toUpperCase()} ${expenditure?.parent?.lastName?.toUpperCase()}`}</Typography>}
+                        {expenditure.student && <Typography sx={{ color: 'text.secondary' }}>{ `${expenditure?.student?.firstName?.toUpperCase()} ${expenditure?.student?.lastName?.toUpperCase()}`}</Typography>}
+                      </Box>
+                      <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                        <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Source Type:</Typography>
+                        {expenditure.staff &&  <CustomChip
+                        rounded
+                        skin='light'
+                        size='small'
+                        label={'Staff'}
+                        color='info'
+                        sx={{ textTransform: 'capitalize' }}
+                      />}
+                        {expenditure.parent &&  <CustomChip
+                        rounded
+                        skin='light'
+                        size='small'
+                        label={'Parent'}
+                        color='info'
+                        sx={{ textTransform: 'capitalize' }}
+                      />}
+                        {expenditure.student &&  <CustomChip
+                        rounded
+                        skin='light'
+                        size='small'
+                        label={'Student'}
+                        color='info'
+                        sx={{ textTransform: 'capitalize' }}
+                      />}
+                      </Box>
 
                     {/* <Typography sx={{ color: 'text.secondary' }}></Typography> */}
                   </Grid>
