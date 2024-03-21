@@ -1,7 +1,5 @@
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
 import ListItem from '@mui/material/ListItem'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -97,7 +95,6 @@ const ListTeachers = ({Users, CardSnippetTitle, ClassList}) => {
 
       <ListItem key={i}>
         <ListItemAvatar>
-          {/* <Avatar src='/images/avatars/2.png' alt='Caroline Black' /> */}
 
           {renderClient(user)}
 

@@ -211,35 +211,6 @@ const StudentsTranscript = () => {
 
           </Box>
 
-          {/* <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 10 }}>
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead>
-                <TableRow>
-                  <TableCell align='left' sx={{ minWidth: 200 }}>
-                    SUBJECT
-                  </TableCell>
-                  <TableCell align='left' sx={{ minWidth: 200 }}>
-                    CLASS
-                  </TableCell>
-                  <TableCell align='left' sx={{ minWidth: 100 }}>
-                    TOTAL (100%)
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sessionData.subjects.map((subject, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                      {subject.subject}
-                    </TableCell>
-                    <TableCell align='left'>{sessionData?.class}</TableCell>
-                    <TableCell align='left'>{subject.score}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer> */}
-
           <CustomTable  tableData={sessionData.subjects} sessionData={sessionData}/>
 
 

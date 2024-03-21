@@ -2,7 +2,7 @@ import React from 'react'
 
 const CustomTable = ({tableData, sessionData}) => {
   return (
-    <table width={'100%'} style={{border: "1px solid #eeeeee", }} className='customTable'>
+    <table width={'100%'} className='customTable'>
         <thead className='customTableHead'>
             <tr style={{height: '30px'}}>
                 <th align="left" style={{paddingLeft: '2px'}} >SUBJECT</th>

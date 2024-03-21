@@ -115,6 +115,42 @@ code[class*='language-'] {
     
   }
 
+  .customTable, .customReportTable {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .customTable > thead, 
+  .customReportTable > thead{
+    border: 2px solid #333;
+    
+  }
+  
+  .customTable > thead > tr,
+  .customTable > thead > tr > th{
+    border: 1px solid #eee;
+    
+  }
+
+  .customTable > tbody > tr ,
+  .customTable > tbody > tr > td {
+    border: 1px solid rgba(51, 51, 51, 0.2);
+    
+  }
+
+  .customReportTable > thead > tr,
+  .customReportTable > thead > tr > th{
+    border: 1px solid #eee;
+    
+  }
+
+  .customReportTable > tbody > tr ,
+  .customReportTable > tbody > tr > td {
+    border: 1px solid rgba(51, 51, 51, 0.2);
+    
+  }
+
+
   .customReportTable tbody tr:nth-child(odd) {
     background-color: transparent;
   }
