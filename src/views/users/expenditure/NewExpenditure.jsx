@@ -147,7 +147,7 @@ const ExpenditureTable = () => {
       {/* <Stats data={ExpenditureData} statTitle='Classes'/> */}
 
       <PageHeaderWithSearch
-        searchPlaceholder={'Search'}
+        searchPlaceholder={'Search Expenditure'}
         action='Create Expenditure'
         toggle={toggleModal}
 
@@ -195,7 +195,7 @@ const ExpenditureTable = () => {
                     return (
                       <TableRow hover role='checkbox' key={item.id}>
                         <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                          {`${item.id}` || '--'}
+                          {i + 1}
                         </TableCell>
                         <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                           {`₦${item?.amount || '--'}`}

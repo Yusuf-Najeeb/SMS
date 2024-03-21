@@ -13,14 +13,14 @@ import { IconButton } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
-
 import CustomSpinner from 'src/@core/components/custom-spinner'
 
 import { deleteCategory, fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import ManageCategories from '../classes/ManageCategories'
+import ManageCategories from './ManageCategories'
 import PageHeader from '../component/PageHeader'
 import { useCategories } from '../../../hooks/useCategories'
-import CreateCategory from '../component/CreateCategory'
+
+// import CreateCategory from '../component/CreateCategory'
 import { formatDate } from '@fullcalendar/core'
 
 const NewIncomeCategories = () => {

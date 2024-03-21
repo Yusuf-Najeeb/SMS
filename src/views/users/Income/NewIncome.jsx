@@ -31,7 +31,6 @@ import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import { formatDate } from '../../../@core/utils/format'
 
-
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
@@ -58,7 +57,6 @@ const IncomeTable = () => {
   const [CurrentSessionData] = useCurrentSession()
 
   const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
-
 
   //Functions from ALl Income component
   // ** Hooks
@@ -94,7 +92,6 @@ const IncomeTable = () => {
 
   const closeModal = () => setEditDrawer(!openEditDrawer)
 
-
   //  functions from classes
   const handleRowOptionsClick = (event, index) => {
     const newAnchorEl = [...anchorEl]
@@ -116,7 +113,6 @@ const IncomeTable = () => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
-
 
   const closeViewModal = () => {
     setViewDrawer(!openViewDrawer)
@@ -160,7 +156,6 @@ const IncomeTable = () => {
 
         // handleFilter={setKey}
       />
-      
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
@@ -200,94 +195,94 @@ const IncomeTable = () => {
               ) : (
                 <Fragment>
                   {IncomeData?.map((item, i) => {
-                      return (
-                        <TableRow hover role='checkbox' key={item.id}>
-                          <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                            {`${item.id}` || '--'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {`₦${item?.amount || '--'}`}
-                          </TableCell>
-                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                    return (
+                      <TableRow hover role='checkbox' key={item.id}>
+                        <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
+                          {i + 1}
+                        </TableCell>
+                        <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                          {`₦${item?.amount || '--'}`}
+                        </TableCell>
+                        <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                           {item.amount == item.amountPaid ? (
-                              <CustomChip
-                                rounded
-                                skin='light'
-                                size='small'
-                                label={`₦${item?.amountPaid || '--'}`}
-                                color='success'
-                                sx={{ textTransform: 'uppercase' }}
-                              />
-                            ) : (
-                              <CustomChip
-                                rounded
-                                skin='light'
-                                size='small'
-                                label={`₦${item?.amountPaid || '--'}`}
-                                color='error'
-                                sx={{ textTransform: 'uppercase' }}
-                              />
-                            )}
-                          </TableCell>
-                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.category?.name || '--'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {item?.year || '--'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                            {`${formatDate(item?.createdAt)}` || '--'}
-                          </TableCell>
-                          <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                            <>
-                              <IconButton size='small' onClick={event => handleRowOptionsClick(event, i)}>
-                                <Icon icon='tabler:dots-vertical' />
-                              </IconButton>
-                              <Menu
-                                keepMounted
-                                anchorEl={anchorEl[i]}
-                                open={Boolean(anchorEl[i])}
-                                onClose={() => handleRowOptionsClose(i)}
-                                anchorOrigin={{
-                                  vertical: 'bottom',
-                                  horizontal: 'right'
+                            <CustomChip
+                              rounded
+                              skin='light'
+                              size='small'
+                              label={`₦${item?.amountPaid || '--'}`}
+                              color='success'
+                              sx={{ textTransform: 'uppercase' }}
+                            />
+                          ) : (
+                            <CustomChip
+                              rounded
+                              skin='light'
+                              size='small'
+                              label={`₦${item?.amountPaid || '--'}`}
+                              color='error'
+                              sx={{ textTransform: 'uppercase' }}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                          {item?.category?.name || '--'}
+                        </TableCell>
+                        <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                          {item?.year || '--'}
+                        </TableCell>
+                        <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                          {`${formatDate(item?.createdAt)}` || '--'}
+                        </TableCell>
+                        <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                          <>
+                            <IconButton size='small' onClick={event => handleRowOptionsClick(event, i)}>
+                              <Icon icon='tabler:dots-vertical' />
+                            </IconButton>
+                            <Menu
+                              keepMounted
+                              anchorEl={anchorEl[i]}
+                              open={Boolean(anchorEl[i])}
+                              onClose={() => handleRowOptionsClose(i)}
+                              anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right'
+                              }}
+                              transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right'
+                              }}
+                              PaperProps={{ style: { minWidth: '8rem' } }}
+                            >
+                              <MenuItem
+                                onClick={() => {
+                                  setIncomeToEdit(item)
                                 }}
-                                transformOrigin={{
-                                  vertical: 'top',
-                                  horizontal: 'right'
-                                }}
-                                PaperProps={{ style: { minWidth: '8rem' } }}
+                                sx={{ '& svg': { mr: 2 } }}
                               >
-                                <MenuItem
-                                  onClick={() => {
-                                    setIncomeToEdit(item)
-                                  }}
-                                  sx={{ '& svg': { mr: 2 } }}
-                                >
-                                  <Icon icon='tabler:edit' fontSize={20} />
-                                  Edit Amount
-                                </MenuItem>
+                                <Icon icon='tabler:edit' fontSize={20} />
+                                Edit Amount
+                              </MenuItem>
 
-                                <MenuItem onClick={() => setIncomeToView(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='tabler:eye' fontSize={20} />
-                                  View Income
-                                </MenuItem>
+                              <MenuItem onClick={() => setIncomeToView(item)} sx={{ '& svg': { mr: 2 } }}>
+                                <Icon icon='tabler:eye' fontSize={20} />
+                                View Income
+                              </MenuItem>
 
-                                <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='tabler:trash' fontSize={20} />
-                                  Delete Income
+                              <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                                <Icon icon='tabler:trash' fontSize={20} />
+                                Delete Income
+                              </MenuItem>
+                              {item.amount !== item.amountPaid ? (
+                                <MenuItem onClick={() => setPayIncome(item)} sx={{ '& svg': { mr: 2 } }}>
+                                  <Icon icon='ph:hand-coins-light' fontSize={20} />
+                                  Pay Outstanding
                                 </MenuItem>
-                                {item.amount !== item.amountPaid ? (
-                                  <MenuItem onClick={() => setPayIncome(item)} sx={{ '& svg': { mr: 2 } }}>
-                                    <Icon icon='ph:hand-coins-light' fontSize={20} />
-                                    Pay Outstanding
-                                  </MenuItem>
-                                ) : null}
-                                {/* <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                              ) : null}
+                              {/* <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:trash' fontSize={20} />
                                   Delete Income
                                 </MenuItem> */}
-                                {/* {CurrentSessionData && (
+                              {/* {CurrentSessionData && (
                                   <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
                                     <Icon icon='mdi:timetable' fontSize={20} />
                                     Add Period
@@ -306,12 +301,12 @@ const IncomeTable = () => {
                                   <Icon icon='solar:notification-lines-remove-bold' fontSize={20} />
                                   Remove Subject
                                 </MenuItem>*/}
-                              </Menu>
-                            </>
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
+                            </Menu>
+                          </>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
 
                   {IncomeData?.length === 0 && (
                     <tr className='text-center'>
