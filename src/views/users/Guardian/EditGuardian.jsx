@@ -62,7 +62,6 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
   const [itemsArray, setItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
 
-  console.log(selectedGuardian, 'selected guardian')
 
   const toggleParentModal = ()=> {
     closeModal()
@@ -132,11 +131,7 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
   
       const formattedDOB = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
 
-      const existingStudentIds = selectedGuardian.students.map(item => item.parentStudents.studentId)
-  
-      const studentIds = itemsArray.map(item => item.id);
-
-      const ids = [...existingStudentIds, ...studentIds]
+ 
   
       const payload = { 
         ...(imageLinkPayload ? { profilePicture: imageLinkPayload } : {}),
@@ -151,7 +146,7 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
       ...(changedFields.hasOwnProperty('gender') && { gender: changedFields.gender }),
       ...(changedFields.hasOwnProperty('residentialAddress') && { residentialAddress: changedFields.residentialAddress }),
       ...(changedFields.hasOwnProperty('relationship') && { relationship: changedFields.relationship }),
-         studentIds: ids }
+         }
 
 
     updateGuardian(payload, selectedGuardian.email).then((response)=> {
@@ -550,10 +545,8 @@ const EditGuardian = ({ open, closeModal, fetchData, selectedGuardian }) => {
 
          
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
-          <Button type='button' variant='outlined' onClick={toggleParentModal}>
-              Select Students
-            </Button>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: '10px' }}>
+          
             <Button type='submit' variant='contained' disabled={isSubmitting}>
               {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update Guardian'}
             </Button>

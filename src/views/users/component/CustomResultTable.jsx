@@ -1,6 +1,8 @@
 import React from 'react'
 
-const CustomResultTable = ({tableData}) => {
+const CustomResultTable = ({tableData,positionArray, studentId}) => {
+
+    
   return (
     <table width={'100%'} style={{border: "1px solid #eeeeee", }} className='customReportTable'>
         <thead className='customTableHead'>
@@ -13,7 +15,10 @@ const CustomResultTable = ({tableData}) => {
                 <th align="left" style={{paddingLeft: '2px'}}>Class Exercise</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Project</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Exam</th>
+                <th align="left" style={{paddingLeft: '2px'}}>Class Highest Score</th>
+                <th align="left" style={{paddingLeft: '2px'}}>Class Lowest Score</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Total (100%)</th>
+                <th align="left" style={{paddingLeft: '2px'}}>Subject Position</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Grade</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Remark</th>
             </tr>
@@ -27,6 +32,8 @@ const CustomResultTable = ({tableData}) => {
                 const ClassExercise = data?.result?.find(res => res.category == 'class exercise')
                 const Exam = data?.result?.find(res => res.category == 'Final exam')
                 const Project = data?.result?.find(res => res.category == 'project / practical')
+                const subjectPosition = positionArray[0]?.position?.find((pos)=> pos.student == studentId)
+
 
                 return (
                     <tr key={i}>
@@ -38,7 +45,10 @@ const CustomResultTable = ({tableData}) => {
                         <td align="left"  style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{ClassExercise?.score || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{Project?.score || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{Exam?.score || '--'}</td>
+                        <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{positionArray[0]?.highestscore || '--'}</td>
+                        <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{positionArray[0]?.lowestscore || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{data?.total || '--'}</td>
+                        <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{subjectPosition?.position || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{data?.grade || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{data?.remark || '--'}</td>
                     </tr>

@@ -56,7 +56,6 @@ const GuardianCardInDasboard = ({user}) => {
     if(ClassesList && user){
         const name = ClassesList.find(c => c.id === user.classId)
 
-        console.log(name, 'class room')
         let nameOfClass = name?.name
         let typeOfClass = name?.type
 

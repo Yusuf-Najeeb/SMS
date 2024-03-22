@@ -94,7 +94,6 @@ const ManagePayment = ({ open, toggle, paymentToEdit = null }) => {
       }
 
     } catch (error) {
-      console.log(error.response.data?.message, 'err')
       notifyError(error.response.data?.message || 'error submitting form')
     }
   }
@@ -110,7 +109,6 @@ const ManagePayment = ({ open, toggle, paymentToEdit = null }) => {
 
       if (response?.data.success){
 
-        console.log(payload)
         notifySuccess('Payment method Successfully updated')
         handleClose()
         dispatch(fetchPaymentMethods({ page: 1, limit: 10 }))

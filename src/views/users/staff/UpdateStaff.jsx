@@ -151,6 +151,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
   const { direction } = settings
   const dispatch = useDispatch()
 
+
   useEffect(()=>{
 
     dispatch(fetchStates({countryId: 160}))
@@ -368,7 +369,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
       ...restOfData
     }
 
-    const payload = { personalInformation, employmentInformation, nextOfKinInformation}
+    const payload = { ...personalInformation, ...employmentInformation, ...nextOfKinInformation}
 
 
     updateStaff(personalInformation.email, payload).then(res => {
@@ -381,6 +382,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
         setPreviewUrl('')
       }
     })
+
   }
 
   const updateFetch = () => setFetch(!refetch)
@@ -616,8 +618,8 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                         aria-describedby='stepper-linear-personal-title-helper'
                         {...(personalErrors.title && { helperText: personalErrors.title.message })}
                       >
-                        <MenuItem value='Mr'>Mr</MenuItem>
-                        <MenuItem value='Mrs'>Mrs</MenuItem>
+                        <MenuItem value='MR'>Mr</MenuItem>
+                        <MenuItem value='MRS'>Mrs</MenuItem>
                         <MenuItem value='Miss'>Miss</MenuItem>
                       </CustomTextField>
                     )}

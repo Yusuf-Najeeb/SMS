@@ -27,7 +27,6 @@ export const fetchSession = createAsyncThunk('session', async (query) => {
       return res
       
     } catch (error) {
-        console.log(error, 'create session error')
       notifyError('Unable to Add Session')
       
     }

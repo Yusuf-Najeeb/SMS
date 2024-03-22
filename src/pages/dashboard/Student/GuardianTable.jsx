@@ -62,7 +62,6 @@ const GuardianTable = ({ user }) => {
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [studentInView, setStudentInView] = useState(null)
 
-  console.log(GuardianData, 'guardian data')
 
   const setStudentToView = value => {
     setViewDrawer(!openViewDrawer)

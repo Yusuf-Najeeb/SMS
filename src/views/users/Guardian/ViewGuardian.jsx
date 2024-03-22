@@ -26,7 +26,6 @@ const ViewGuardian = ({ open, closeCanvas, guardian }) => {
 
   const theme = useTheme()
 
-  console.log(guardian, 'guardian')
 
 
   return (

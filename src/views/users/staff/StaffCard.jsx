@@ -23,7 +23,7 @@ import { formatCurrency, formatFirstLetter } from '../../../@core/utils/format'
 import { formatDateToReadableFormat } from '../../../@core/utils/format'
 import StaffDetailCard from '../component/StaffDetailCard'
 import { getInitials } from 'src/@core/utils/get-initials'
-import { Stack } from '@mui/material'
+import { Alert, Stack } from '@mui/material'
 import { calculateAge } from '../../../@core/utils/calculateAge'
 
 const roleColors = {
@@ -92,7 +92,7 @@ const StaffCard = ({ Staff }) => {
                : 
                <CustomAvatar
                skin='light'
-               color='primary'
+               color='info'
                sx={{ mr: 2.5, width: 50, height: 50, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
              >
                {getInitials(initials || 'John Doe')}
@@ -108,12 +108,12 @@ const StaffCard = ({ Staff }) => {
                 skin='light'
                 size='small'
                 label={Staff?.role?.name}
-                color='primary'
+                color='info'
                 sx={{ textTransform: 'capitalize' }}
               />
             </Box>
             <Box sx={{ display: 'flex', position: 'relative' }}>
-              <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'primary.main', fontSize: '2rem !important' }}>
+              <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'white', fontSize: '2rem !important' }}>
                 {/* {grossSalary.toLocaleString()} */}
                 {formatCurrency(grossSalary, true)}
                 <Sub>/ month</Sub>
@@ -145,6 +145,20 @@ const StaffCard = ({ Staff }) => {
                 </Box> */}
             </Box>
           </CardContent>
+
+          { Staff?.rooms?.length > 0 && (
+              <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
+                <Typography variant='h5'>Rooms </Typography>
+                <Alert severity='success'>
+                  {Staff?.rooms?.map((sub, index) => (
+                    <Fragment key={sub.id}>
+                      {index > 0 && ', '}
+                      <span>{`${index + 1}. ${sub?.name}`}</span>
+                    </Fragment>
+                  ))}
+                </Alert>
+              </Grid>
+            )}
 
           <Divider sx={{ my: '0 !important', mx: 6 }} />
 

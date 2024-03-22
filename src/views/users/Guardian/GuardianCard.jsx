@@ -55,6 +55,7 @@ const GuardianCard = ({ Guardian }) => {
   const [initials, setInitials] = useState('')
 
 
+
   useEffect(() => {
     if (Guardian) {
       setInitials(`${Guardian.firstName} ${Guardian.lastName}`)
@@ -86,7 +87,7 @@ const GuardianCard = ({ Guardian }) => {
                : 
                <CustomAvatar
                skin='light'
-               color='primary'
+               color='success'
                sx={{ mr: 2.5, width: 50, height: 50, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
              >
                {getInitials(initials || 'John Doe')}
@@ -105,7 +106,7 @@ const GuardianCard = ({ Guardian }) => {
 
                 // label={Guardian?.role?.name}
                 label={'Guardian'}
-                color='primary'
+                color='success'
                 sx={{ textTransform: 'capitalize' }}
               />
             </Box>
@@ -121,7 +122,7 @@ const GuardianCard = ({ Guardian }) => {
           <CardContent sx={{ pt: theme => `${theme.spacing(2)} !important` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
-                <CustomAvatar skin='light' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
+                <CustomAvatar skin='light' variant='rounded' color='success' sx={{ mr: 2.5, width: 38, height: 38 }}>
                   <Icon fontSize='1.75rem' icon='fluent-mdl2:date-time-2' />
                 </CustomAvatar>
                 <div>

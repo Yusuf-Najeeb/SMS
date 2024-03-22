@@ -9,12 +9,15 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton, Menu, MenuItem } from '@mui/material'
+import { Card, CardContent, CardHeader, Grid, IconButton, Menu, MenuItem } from '@mui/material'
 
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
 import { styled } from '@mui/material/styles'
 import CreateExpenditure from './CreateExpenditure'
+
+// ** Custom Component Import
+import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomChip from 'src/@core/components/mui/chip'
@@ -31,6 +34,8 @@ import ViewExpenditure from './ViewExpenditure'
 
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import { formatDate } from '../../../@core/utils/format'
+import { useSession } from '../../../hooks/useSession'
+import { fetchSession } from '../../../store/apps/session/asyncthunk'
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
@@ -40,6 +45,8 @@ const ExpenditureTable = () => {
   // ** State
   const [page, setPage] = useState(0)
   const [key, setKey] = useState('')
+  const [year, setYear] = useState('')
+  const [term, setTerm] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
@@ -51,13 +58,20 @@ const ExpenditureTable = () => {
   const [expenditureInView, setExpenditureInView] = useState(null)
   const [expenditureToDelete, setExpenditureToDelete] = useState(null)
   const [openViewModal, setOpenViewModal] = useState(false)
+  const [filteredData, setFilteredData] = useState([])
+  
+  // ** Hooks
   const dispatch = useAppDispatch()
+  const [SessionData] = useSession()
   const [ExpenditureData, loading, paging] = useExpenditure()
   const [anchorEl, setAnchorEl] = useState(Array(ExpenditureData?.length)?.fill(null))
 
-  // ** Hooks
   const toggleModal = () => {
     setShowModal(!showModal)
+  }
+
+  const handleChangeSession = e => {
+    setYear(e.target.value)
   }
 
   const toggleViewModal = () => {
@@ -136,15 +150,63 @@ const ExpenditureTable = () => {
     doCancelDelete()
   }
 
+  useEffect(()=>{
+    if(SessionData?.length > 0){
+      const filteredSession = SessionData.reduce((acc, curr) => {
+        const existingItem = acc.find(item => item.name === curr.name);
+    
+        if (!existingItem) {
+            acc.push(curr);
+        }
+    
+        return acc;
+
+    }, []);
+
+    setFilteredData(filteredSession)
+    }
+
+  },[SessionData])
+
   useEffect(() => {
-    dispatch(fetchExpenditure({ page: page + 1, limit: 10, key }))
+    dispatch(fetchExpenditure({ page: page + 1, limit: 10, key, year, term }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, key, refetch])
+  }, [page, rowsPerPage, key, refetch, year])
+
+  useEffect(() => {
+    dispatch(fetchSession({ page: 1, limit: 300 }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
-      {/* <Stats data={ExpenditureData} statTitle='Classes'/> */}
+
+<Card>
+        <CardHeader title='Filter' />
+        <CardContent>
+          <Grid container spacing={12}>
+           
+
+            <Grid item xs={12} sm={3}>
+              <CustomTextField
+                select
+                fullWidth
+                label='Year'
+                SelectProps={{ value: year, onChange: e => handleChangeSession(e) }}
+              >
+                <MenuItem value=''>{year ? 'Show All' :'Select Year'}</MenuItem>
+                {filteredData?.map(item => (
+                  <MenuItem key={item?.id} value={item?.name} sx={{ textTransform: 'uppercase' }}>
+                    {`${item.name}`}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+            
+          </Grid>
+        </CardContent>
+      </Card>
 
       <PageHeaderWithSearch
         searchPlaceholder={''}
@@ -274,29 +336,7 @@ const ExpenditureTable = () => {
                                   Pay Outstanding
                                 </MenuItem>
                               ) : null}
-                              {/* <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='tabler:trash' fontSize={20} />
-                                  Delete Income
-                                </MenuItem> */}
-                              {/* {CurrentSessionData && (
-                                  <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
-                                    <Icon icon='mdi:timetable' fontSize={20} />
-                                    Add Period
-                                  </MenuItem>
-                                )}
-
-                                <MenuItem onClick={() => setClassToViewTimeTable(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='mdi:timetable' fontSize={20} />
-                                  View Timetable
-                                </MenuItem>
-                                <MenuItem onClick={() => setClassToAssignSubject(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
-                                  Assign Subject
-                                </MenuItem>
-                                <MenuItem onClick={() => setClassToRemoveSubject(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='solar:notification-lines-remove-bold' fontSize={20} />
-                                  Remove Subject
-                                </MenuItem>*/}
+                            
                             </Menu>
                           </>
                         </TableCell>

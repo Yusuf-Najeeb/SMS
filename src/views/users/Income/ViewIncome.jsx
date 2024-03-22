@@ -40,8 +40,6 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const ViewIncome = ({ open, closeCanvas, income }) => {
-  console.log(income, 'income')
-
   const theme = useTheme()
 
   return (

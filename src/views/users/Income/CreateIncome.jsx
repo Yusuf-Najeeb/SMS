@@ -206,6 +206,9 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
         closeModal()
         fetchData()
         setItemsArray([])
+        clearStaffArray()
+        clearGuardianArray()
+        clearStudentArray()
       }
     })
   }

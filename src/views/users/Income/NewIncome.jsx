@@ -16,6 +16,8 @@ import NoData from 'src/@core/components/emptydata/NoData'
 import { styled } from '@mui/material/styles'
 import CreateIncome from './CreateIncome'
 
+// ** Custom Component Import
+import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import CustomChip from 'src/@core/components/mui/chip'
 
@@ -32,7 +34,6 @@ import DeleteDialog from '../../../@core/components/delete-dialog'
 import { formatDate } from '../../../@core/utils/format'
 
 // ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 
@@ -41,9 +42,18 @@ const TableCellStyled = styled(TableCell)(({ theme }) => ({
 }))
 
 const IncomeTable = () => {
+  // ** Hooks
+  const dispatch = useAppDispatch()
+  const [IncomeData, loading, paging] = useIncome()
+
+  const [SessionData] = useSession()
+  const [CurrentSessionData] = useCurrentSession()
+
   // ** State
   const [page, setPage] = useState(0)
   const [key, setKey] = useState('')
+  const [year, setYear] = useState('')
+  const [term, setTerm] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const [sessionId, setSessionId] = useState('')
@@ -57,17 +67,9 @@ const IncomeTable = () => {
   const [incomeInView, setIncomeInView] = useState(null)
   const [incomeToDelete, setIncomeToDelete] = useState(null)
   const [openViewModal, setOpenViewModal] = useState(false)
-  const dispatch = useAppDispatch()
-
-  const [IncomeData, loading, paging] = useIncome()
-
-  const [SessionData] = useSession()
-  const [CurrentSessionData] = useCurrentSession()
-
+  const [filteredData, setFilteredData] = useState([])
   const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
 
-  //Functions from ALl Income component
-  // ** Hooks
   const toggleModal = () => {
     setShowModal(!showModal)
   }
@@ -77,7 +79,14 @@ const IncomeTable = () => {
   }
 
   const handleChangeSession = e => {
-    Number(setSessionId(e.target.value))
+    setYear(e.target.value)
+  }
+
+  const handleChangeTerm = e => {
+    // console.log(e.target.value.slice(9), 'value')
+
+    setYear(e.target.value.slice(0, 9))
+    setTerm(e.target.value.slice(9))
   }
 
   const setIncomeToView = value => {
@@ -152,10 +161,26 @@ const IncomeTable = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchIncome({ page: page + 1, limit: 10, key }))
+    if (SessionData?.length > 0) {
+      const filteredSession = SessionData.reduce((acc, curr) => {
+        const existingItem = acc.find(item => item.name === curr.name)
+
+        if (!existingItem) {
+          acc.push(curr)
+        }
+
+        return acc
+      }, [])
+
+      setFilteredData(filteredSession)
+    }
+  }, [SessionData])
+
+  useEffect(() => {
+    dispatch(fetchIncome({ page: page + 1, limit: 10, key, year, term }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, key, refetch])
+  }, [page, rowsPerPage, key, refetch, year, term])
 
   useEffect(() => {
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -164,30 +189,44 @@ const IncomeTable = () => {
 
   return (
     <>
-      {/* <Card>
+      <Card>
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-
-
             <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
                 fullWidth
-                label='Session*'
-                SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
+                label='Year'
+                SelectProps={{ value: year, onChange: e => handleChangeSession(e) }}
               >
-                {SessionData?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item.name} ${item.term} term`}
+                <MenuItem value=''>{year ? 'Show All' : 'Select Year'}</MenuItem>
+                {filteredData?.map(item => (
+                  <MenuItem key={item?.id} value={item?.name} sx={{ textTransform: 'uppercase' }}>
+                    {`${item.name}`}
                   </MenuItem>
                 ))}
               </CustomTextField>
             </Grid>
 
+            {/* <Grid item xs={12} sm={3}>
+              <CustomTextField
+                select
+                fullWidth
+                label='Term'
+                SelectProps={{ value: `${year} ${term}`, onChange: e => handleChangeTerm(e) }}
+              >
+                <MenuItem value=''>{term ? 'Show All' :'Select Term'}</MenuItem>
+                {SessionData?.map(item => (
+                  <MenuItem key={item?.id} value={`${item?.name} ${item?.term}`} sx={{ textTransform: 'uppercase' }}>
+                    {`${item.name} ${item?.term}`}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid> */}
           </Grid>
         </CardContent>
-      </Card> */}
+      </Card>
 
       <PageHeaderWithSearch searchPlaceholder={''} action='Add Income' toggle={toggleModal} handleFilter={setKey} />
 
@@ -312,29 +351,6 @@ const IncomeTable = () => {
                                   Pay Outstanding
                                 </MenuItem>
                               ) : null}
-                              {/* <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='tabler:trash' fontSize={20} />
-                                  Delete Income
-                                </MenuItem> */}
-                              {/* {CurrentSessionData && (
-                                  <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
-                                    <Icon icon='mdi:timetable' fontSize={20} />
-                                    Add Period
-                                  </MenuItem>
-                                )}
-
-                                <MenuItem onClick={() => setClassToViewTimeTable(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='mdi:timetable' fontSize={20} />
-                                  View Timetable
-                                </MenuItem>
-                                <MenuItem onClick={() => setClassToAssignSubject(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
-                                  Assign Subject
-                                </MenuItem>
-                                <MenuItem onClick={() => setClassToRemoveSubject(item)} sx={{ '& svg': { mr: 2 } }}>
-                                  <Icon icon='solar:notification-lines-remove-bold' fontSize={20} />
-                                  Remove Subject
-                                </MenuItem>*/}
                             </Menu>
                           </>
                         </TableCell>

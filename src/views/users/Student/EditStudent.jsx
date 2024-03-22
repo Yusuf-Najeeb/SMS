@@ -153,14 +153,7 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
 
     const formattedRegDate = registrationDate !== '' ? formatDateToYYYMMDDD(registrationDate) : ''
 
-    const existingParentIds = selectedStudent.parents.map(item => item.parentStudents.parentId)
-
-    const parentIds = itemsArray.map(item => item.id)
-
-    const ids = [...existingParentIds, ...parentIds]
-
     const payload = {
-      parentIds: ids,
       ...(imageLinkPayload ? { profilePicture: imageLinkPayload } : {}),
       ...(changedFields.hasOwnProperty('firstName') && { firstName: changedFields.firstName }),
       ...(changedFields.hasOwnProperty('lastName') && { lastName: changedFields.lastName }),
@@ -180,10 +173,9 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
       })
     }
 
-    console.log(payload, 'payload')
 
     updateStudent(payload, selectedStudent.id).then(response => {
-      if (response.data.success) {
+      if (response?.data?.success) {
         reset()
         closeModal()
         fetchData()
@@ -579,26 +571,17 @@ const EditStudent = ({ open, closeModal, fetchData, selectedStudent }) => {
                 </Grid>
               </Grid>
 
-              {itemsArray?.length > 0 && (
-                <Grid item sx={{ mt: 5 }} xs={12} sm={12} md={12}>
-                  <Typography variant='h5'>Selected Guardian </Typography>
-                  <Alert severity='success'>
-                    {itemsArray?.map((guardian, index) => (
-                      <Fragment key={guardian.id}>
-                        {index > 0 && ', '}
-                        <span>{`${index + 1}. ${guardian?.firstName} ${guardian?.lastName}`}</span>
-                      </Fragment>
-                    ))}
-                  </Alert>
-                </Grid>
-              )}
+          
+
             </DialogContent>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
-              <Button type='button' variant='outlined' onClick={toggleParentModal}>
+
+              {/* <Button type='button' variant='outlined' onClick={toggleParentModal}>
                 Select Guardian
-              </Button>
-              <Button type='submit' variant='contained' disabled={isSubmitting}>
+              </Button> */}
+
+              <Button type='submit' variant='contained' disabled={isSubmitting} >
                 {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update Student'}
               </Button>
             </Box>
