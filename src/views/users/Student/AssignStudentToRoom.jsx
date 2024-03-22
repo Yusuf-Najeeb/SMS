@@ -21,9 +21,9 @@ import { useForm, Controller } from 'react-hook-form'
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, MenuItem,  } from '@mui/material'
-import {  assignRoomToStudent, fetchRooms, removeStudentInRoom } from '../../../store/apps/rooms/asyncthunk'
-import { useStudent } from '../../../hooks/useStudent'
+import {  assignRoomToStudent, fetchRooms } from '../../../store/apps/rooms/asyncthunk'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
+import { useRooms } from '../../../hooks/useRooms'
 
 
 const Header = styled(Box)(({ theme }) => ({
@@ -34,23 +34,21 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  studentId: yup.string()
+  roomId: yup.string().required("Room is required")
 })
 
 const defaultValues = {
-  studentId: ''
+  roomId: ''
 }
 
-const ManageStudentInRoom = ({ open, toggle, Room, status }) => {
+const ManageStudentInRoom = ({ open, toggle, Student, page }) => {
   const dispatch = useAppDispatch()
-  const [StudentData] = useStudent()
+  const [RoomsList] = useRooms()
 
-  const [openTeacherModal, setTeacherModal] = useState(false)
-  const [itemsArray, setItemsArray] = useState([])
 
 
   useEffect(() => {
-    dispatch(fetchStudents({ page: 1, limit: 3000, key: '' }))
+    dispatch(fetchRooms({ page: 1, limit: 200, key: '' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -76,26 +74,18 @@ const ManageStudentInRoom = ({ open, toggle, Room, status }) => {
   const onSubmit = async data => {
 
     let payload = {
-         roomId:  Room.id,
-         studentId: Number(data.studentId),
+         roomId:  Number(data.roomId),
+         studentId: Student.id,
        }
 
-       if (status){
 
         assignRoomToStudent(payload).then(response => {
         if (response?.data.success) {
           handleClose()
-          dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
+          dispatch(fetchStudents({ page: page == 0 ? page + 1 : page, limit: 10, key: '' }))
         }
       })
-       }else {
-        removeStudentInRoom(payload).then(response => {
-          if (response?.data.success) {
-            handleClose()
-            dispatch(fetchRooms({ page: 1, limit: 10, key: '' }))
-          }
-        })
-       }
+     
 
 
   }
@@ -112,7 +102,7 @@ const ManageStudentInRoom = ({ open, toggle, Room, status }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 450 } } }}
     >
       <Header>
-        <Typography variant='h5'>{status ? 'Assign Student' : 'Remove Student'}</Typography>
+        <Typography variant='h5'>Assign Hostel Room</Typography>
         <IconButton
           size='small'
           onClick={handleClose}
@@ -133,26 +123,26 @@ const ManageStudentInRoom = ({ open, toggle, Room, status }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
 
            <Controller
-            name='studentId'
+            name='roomId'
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 select
                 fullWidth
-                label='Student'
+                label='Room'
                 value={value}
                 required
                 sx={{ mb: 4 }}
                 onChange={onChange}
-                error={Boolean(errors.studentId)}
-                {...(errors.studentId && { helperText: errors.studentId.message })}
+                error={Boolean(errors.roomId)}
+                {...(errors.roomId && { helperText: errors.roomId.message })}
               >
-                <MenuItem value=''>Select Student</MenuItem>
-                {StudentData?.result?.map((item, i) => {
+                <MenuItem value=''>Select Room</MenuItem>
+                {RoomsList?.map((item, i) => {
                   return (
-                    <MenuItem key={i} value={item.id}>
-                      {`${item.firstName?.toUpperCase()} ${item.lastName?.toUpperCase()}`}
+                    <MenuItem key={i} value={item.id} sx={{textTransform: 'uppercase'}}>
+                      {`${item.name}`}
                     </MenuItem>
                   )
                 })}
@@ -170,7 +160,7 @@ const ManageStudentInRoom = ({ open, toggle, Room, status }) => {
 
             <Button type='submit' variant='contained' sx={{ width: '100%' }}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} /> }
-              {status ? "Assign": "Remove"}
+              Assign
               
             </Button>
           </Box>

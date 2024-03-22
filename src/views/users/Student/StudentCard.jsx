@@ -9,7 +9,8 @@ import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
+
+import { useAppDispatch } from 'src/hooks'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -27,6 +28,8 @@ import { Stack } from '@mui/material'
 import { calculateAge } from '../../../@core/utils/calculateAge'
 import { useClasses } from '../../../hooks/useClassess'
 import { getStudentByIdentification } from '../../../store/apps/Student/asyncthunk'
+import { useRooms } from '../../../hooks/useRooms'
+import { fetchRooms } from '../../../store/apps/rooms/asyncthunk'
 
 const roleColors = {
   superadmin: 'error',
@@ -56,11 +59,27 @@ const StudentCard = ({ Student }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
   const [studentClass, setStudentClass] = useState({})
+  const [studentRoom, setStudentRoom] = useState({})
   const [activeStudent, setActiveStudent] = useState({})
   
 
 
   const [ClassesList] = useClasses()
+  const [RoomsList] = useRooms()
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(fetchRooms({ page: 1, limit: 200, key: '' }))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(()=>{
+    if(Student.roomId !== null && RoomsList?.length > 0){
+      const room = RoomsList.find((room)=> room.id == Student.roomId)
+      setStudentRoom({...room})
+    }
+  },[Student, RoomsList])
 
  useEffect(()=>{
   let isMounted = true;
@@ -156,6 +175,7 @@ const StudentCard = ({ Student }) => {
                 color='info'
                 sx={{ textTransform: 'capitalize' }}
               />
+             
             </Box>
             <Box sx={{ display: 'flex', position: 'relative' }}>
               <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'secondary.main', fontSize: '2rem !important' }}>
@@ -169,6 +189,32 @@ const StudentCard = ({ Student }) => {
 
           <CardContent sx={{ pt: theme => `${theme.spacing(2)} !important` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {Student?.roomId !== null && 
+              <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
+                <CustomAvatar skin='light' color='error' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
+                  <Icon fontSize='1.75rem' icon='guidance:hotel-room' />
+                </CustomAvatar>
+                <div>
+                  <Typography variant='body2'>Room Name</Typography>
+                  <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                    {studentRoom?.name}
+                  </Typography>
+                </div>
+              </Box>
+              }
+
+{(Student?.roomId == null && Student.boarder) && 
+              <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
+                <CustomAvatar skin='light' color='error' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
+                  <Icon fontSize='1.75rem' icon='guidance:hotel-room' />
+                </CustomAvatar>
+                <div>
+                  <Typography variant='body2'>No Room Assigned</Typography>
+                 
+                </div>
+              </Box>
+              }
+
               <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
                 <CustomAvatar skin='light' color='info' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
                   <Icon fontSize='1.75rem' icon='fluent-mdl2:date-time-2' />
@@ -180,16 +226,9 @@ const StudentCard = ({ Student }) => {
                   </Typography>
                 </div>
               </Box>
+            
 
-              {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <CustomAvatar skin='light' variant='rounded'  sx={{ mr: 2.5, width: 38, height: 38 }}>
-                    <Icon fontSize='1.75rem' icon='mdi:google-classroom' />
-                  </CustomAvatar>
-                  <div>
-                    <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>Class</Typography>
-                    <Typography variant='body2'>{`${studentClass?.name} ${studentClass?.type}`}</Typography>
-                  </div>
-                </Box> */}
+             
             </Box>
           </CardContent>
 

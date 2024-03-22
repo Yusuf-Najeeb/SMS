@@ -23,17 +23,10 @@ import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, MenuItem } from '@mui/material'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
-import { assignStudentCategory, fetchStudents } from '../../../store/apps/Student/asyncthunk'
+import { assignClass, fetchStudents } from '../../../store/apps/Student/asyncthunk'
+import { useClasses } from '../../../hooks/useClassess'
+import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 
-const showErrors = (field, valueLen, min) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
 
 const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -43,16 +36,18 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  categoryId: yup.string().required('This field is required'),
+  classId: yup.string().required('Class is required'),
 })
 
 const defaultValues = {
   categoryId: ''
 }
 
-const AssignHostelCategory = ({ open, toggle, Student, page }) => {
+const AssignClass = ({ open, toggle, Student, page }) => {
   const dispatch = useAppDispatch()
   const [CategoriesData] = useCategories()
+
+  const [ClassesList] = useClasses()
 
   const {
     reset,
@@ -74,10 +69,10 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
   const onSubmit = async data => {
     const payload = {
       studentId: Student.id,
-      categoryId: Number(data.categoryId)
+      classId: Number(data.classId)
     }
 
-    assignStudentCategory(payload).then(response => {
+    assignClass(payload).then(response => {
       if (response.data.success) {
         handleClose()
         dispatch(fetchStudents({ page: page == 0 ? page + 1 : page, key:'' }))
@@ -86,7 +81,8 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
   }
 
   useEffect(() => {
-    dispatch(fetchCategories({ page: 1, limit: 300, type: 'hostel' }))
+    dispatch(fetchCategories({ page: 1, limit: 300, type: 'student' }))
+    dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -100,7 +96,7 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>Assign Hostel Room</Typography>
+        <Typography variant='h5'>Change Class</Typography>
         <IconButton
           size='small'
           onClick={handleClose}
@@ -122,7 +118,7 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
         
 
           <Controller
-            name='categoryId'
+            name='classId'
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -131,16 +127,16 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Room Name'
+                label='Class'
                 required
                 onChange={onChange}
-                error={Boolean(errors.categoryId)}
-                {...(errors.categoryId && { helperText: errors.categoryId.message })}
+                error={Boolean(errors.classId)}
+                {...(errors.classId && { helperText: errors.classId.message })}
               >
-                <MenuItem value=''>Select Room</MenuItem>
-                {CategoriesData?.map(item => (
+                <MenuItem value=''>Select Class</MenuItem>
+                {ClassesList?.map(item => (
                   <MenuItem sx={{ textTransform: 'uppercase' }} key={item?.id} value={item.id}>
-                    {item.name}
+                    {`${item.name} ${item.type}`}
                   </MenuItem>
                 ))}
               </CustomTextField>
@@ -159,4 +155,4 @@ const AssignHostelCategory = ({ open, toggle, Student, page }) => {
   )
 }
 
-export default AssignHostelCategory
+export default AssignClass

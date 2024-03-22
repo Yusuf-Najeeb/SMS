@@ -73,6 +73,8 @@ export const getStudentByIdentification = async(id)=>{
   try {
     const response = await axios.get(`/students/identification/${id}`)
 
+    console.log(response, 'single student')
+
     return response
   } catch (error) {
     
@@ -121,5 +123,19 @@ export const assignSubjectToStudent = async (payload)=>{
     return res
   } catch (error) {
     notifyError('Unable to Assign Subject To Student')
+  }
+}
+
+export const assignClass = async (payload)=>{
+  try {
+    const res = await axios.post('/classes/student/associate', payload)
+
+    if(res.data.success){
+      notifySuccess('Student Class Changed')
+    }
+
+    return res
+  } catch (error) {
+    notifyError(`Unable to Change Student's Class`)
   }
 }

@@ -20,11 +20,12 @@ const DismissibleAlert = ({AlertMessage}) => {
     <Slide in={open} direction='left' {...(open ? { timeout: 500 } : {})}>
           <Alert
           severity='error'
-            action={
-              <IconButton size='small' color='inherit' aria-label='close' onClick={() => setOpen(false)}>
-                <Icon icon='tabler:x' />
-              </IconButton>
-            }
+          
+            // action={
+            //   <IconButton size='small' color='inherit' aria-label='close' >
+            //     <Icon icon='ri:information-fill' />
+            //   </IconButton>
+            // }
           >
             {AlertMessage}
           </Alert>

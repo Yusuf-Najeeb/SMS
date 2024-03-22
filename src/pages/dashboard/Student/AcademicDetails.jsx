@@ -37,7 +37,7 @@ const Statistics = () => {
     useEffect(() => {
         dispatch(fetchGuardian({page: 1, key: ''}))
         dispatch(fetchStaffs({page:1, limit: 10, key: ''}))
-        dispatch(fetchStudents({page: 1, key: ''}))
+        dispatch(fetchStudents({ page: 1, limit: 3000, key: '' }))
         dispatch(fetchClasses({page: 1, limit: 10, key: ''}))
     
         // eslint-disable-next-line react-hooks/exhaustive-deps

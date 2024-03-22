@@ -1,13 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
-import Paper from '@mui/material/Paper'
-import Table from '@mui/material/Table'
-import TableRow from '@mui/material/TableRow'
-import TableHead from '@mui/material/TableHead'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-
 import Icon from 'src/@core/components/icon'
 
 // ** Custom Component Import
@@ -15,52 +7,36 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 
 import { useAppDispatch } from '../../../hooks'
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, MenuItem, Typography } from '@mui/material'
-import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
-import { useClasses } from '../../../hooks/useClassess'
-import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { fetchStudentTranscript } from '../../../store/apps/reportCard/asyncthunk'
-import EnterStudentScore from './EnterScore'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
-import { useStudentReportCard } from '../../../hooks/useStudentReportCard'
-import { useStudentSubjectPosition } from '../../../hooks/useStudentsSubjectPosition'
 import { useTheme } from '@mui/material/styles'
-import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import SchoolDetails from './SchoolDetails'
-import StudentReportCardDetails from './StudentReportCardDetails'
 import { useTranscript } from '../../../hooks/useTranscript'
 import { extractTranscriptData } from '../../../@core/utils/extractTranscriptData'
 import StudentTranscriptDetails from './StudentTranscriptDetails'
 import CustomTable from '../component/CustomTable'
+import DismissibleAlert from '../component/DismissibleAlert'
 
 const StudentsTranscript = () => {
   // Hooks
   const theme = useTheme()
   const dispatch = useAppDispatch()
-  const [ClassesList] = useClasses()
-  const [SessionData] = useSession()
   const [StudentData] = useStudent()
-  const [StudentReportCard] = useStudentReportCard()
   const [StudentTranscript, loading] = useTranscript()
-  const [StudentSubjectPosition] = useStudentSubjectPosition()
-  const [CurrentSessionData] = useCurrentSession()
 
 
   // States
 
-  const [openScoreModal, setScoreModal] = useState(false)
-  const [classId, setClassId] = useState('')
   const [studentId, setStudentId] = useState('')
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [activeStudent, setActiveStudent] = useState({})
-  const [classRoom, setClassroom] = useState({})
   const [showResult, setShowResult] = useState(false)
-  const [subjects, setSubjects] = useState([])
   const [TranscriptData, setTranscriptData] = useState([])
+  const [noResult, setNoResult] = useState(false)
 
-  console.log(TranscriptData, 'transcript data')
 
 //   const [studentTranscriptDetails, setStudents] 
 
@@ -74,15 +50,19 @@ const StudentsTranscript = () => {
   }
 
   const displayTranscript = async () => {
-    const res = await dispatch(fetchStudentTranscript({ classId, studentId }))
-    if(res?.payload?.data?.success){
+    const res = await dispatch(fetchStudentTranscript({ studentId }))
+
+
+    if(Object.keys(res?.payload?.data?.data).length > 0){
       setShowResult(true)
+      setNoResult(false)
      const result = extractTranscriptData(res?.payload?.data?.data)
      setTranscriptData([...result])
+    }else {
+        setNoResult(true)
+        setShowResult(false)
     }
   }
-
-  const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
 
   useEffect(() => {
     if (activeStudent) {
@@ -110,21 +90,9 @@ const StudentsTranscript = () => {
     // }
   }, [studentId, StudentData])
 
-  useEffect(() => {
-    let isMounted = true
-
-    if (classId && ClassesList?.length > 0) {
-      const selectedClass = ClassesList?.find(classroom => classroom.id == classId)
-
-      if (isMounted) {
-        setClassroom({ ...selectedClass })
-      }
-    }
-
-  }, [classId, ClassesList])
+ 
 
   useEffect(() => {
-    dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
     dispatch(fetchSession({ page: 1, limit: 300 }))
     dispatch(fetchStudents({ page: 1, limit: 3000, key: '' }))
     dispatch(fetchCurrentSession())
@@ -138,21 +106,7 @@ const StudentsTranscript = () => {
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-            <Grid item xs={12} sm={3}>
-              <CustomTextField
-                select
-                fullWidth
-                label='Class*'
-                SelectProps={{ value: classId, onChange: e => handleChangeClass(e) }}
-              >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
-                {ClassesList?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.name} ${item.type}`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
+           
             <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
@@ -173,7 +127,7 @@ const StudentsTranscript = () => {
               <Button
                 onClick={displayTranscript}
                 variant='contained'
-                disabled={!studentId || !classId}
+                disabled={!studentId}
                 sx={{ '& svg': { mr: 2 } }}
               >
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
@@ -200,7 +154,7 @@ const StudentsTranscript = () => {
            <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center', color: '#fff', textTransform: 'uppercase'}}> {`Student Transcript`}</Typography> 
            </Box>
 
-           <StudentTranscriptDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} SessionData={sessionData}/>
+           <StudentTranscriptDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={sessionData.class} SessionData={sessionData}/>
 
 
           {/* <Divider sx={{mt: 20, mb: 20, color: '#333'}}>Academic Records</Divider> */}
@@ -219,6 +173,8 @@ const StudentsTranscript = () => {
 
      </Box>
       }
+
+{noResult && <DismissibleAlert AlertMessage={'No Records Found'}/>}
 
 
    
