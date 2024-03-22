@@ -128,7 +128,8 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray, clearS
             }
           }}
         >
-          ❌{/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
+          {/* ❌ */}
+          <Icon icon='tabler:x' fontSize='1.125rem' />
         </IconButton>
       </Header>
 
