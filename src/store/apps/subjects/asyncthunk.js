@@ -27,7 +27,7 @@ export const fetchSubjects = createAsyncThunk('subjects', async (query) => {
       return res
       
     } catch (error) {
-      notifyError('Unable to Add Subject')
+      notifyError(error?.response?.data?.message ||  'Unable to Add Subject')
       
     }
   }
@@ -35,15 +35,15 @@ export const fetchSubjects = createAsyncThunk('subjects', async (query) => {
   export const updateSubject = async (id, payload)=>{
     try {
       const res = await axios.patch(`/subjects/${id}`, payload)
-      if(res.data.success){
+      if(res?.data?.success){
         notifySuccess('Subject Updated')
       }
 
       return res
       
     } catch (error) {
-        console.log(error, 'update subject error')
-      notifyError('Unable to Update Subject')
+        
+      notifyError(error?.response?.data?.message || 'Unable to Update Subject')
       
     }
   }

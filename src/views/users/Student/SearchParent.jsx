@@ -125,7 +125,9 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
             }
           }}
         >
-          ❌{/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
+          ❌
+          
+          {/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
         </IconButton>
       </Header>
 
@@ -154,6 +156,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
               id='input-with-icon-adornment'
               endAdornment={
                 <InputAdornment position='start' sx={{ cursor: 'pointer' }}>
+
                   {/* <Icon icon='el:search-alt' /> */}
                   🔎
                 </InputAdornment>

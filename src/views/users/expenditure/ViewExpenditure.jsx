@@ -42,7 +42,6 @@ const Header = styled(Box)(({ theme }) => ({
 const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
   const theme = useTheme()
 
-  console.log(expenditure, 'expenditure')
 
   return (
     <Drawer

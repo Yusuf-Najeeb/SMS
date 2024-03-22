@@ -9,7 +9,6 @@ export const fetchStates = createAsyncThunk('states', async (query) => {
     try {
       const response = await axios.get(`/settings/states?countryId=${query.countryId}`)
 
-      console.log(response, 'states')
 
       return response
     } catch (error) {

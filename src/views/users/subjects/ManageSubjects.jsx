@@ -74,8 +74,9 @@ const MenuProps = {
 
 const schema = yup.object().shape({
   name: yup.string().required('Subject Title is required'),
-  category_name: yup.string(),
-  categoryId: yup.string()
+
+  // category_name: yup.string(),
+  // categoryId: yup.string()
 })
 
 const defaultValues = {
@@ -92,30 +93,27 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
   const [openTeacherModal, setTeacherModal] = useState(false)
   const [itemsArray, setItemsArray] = useState([])
-  const [TeacherNames, setTeacherNames] = useState([])
+
+  // const [TeacherNames, setTeacherNames] = useState([])
 
   const [showInputField, setShowInputField] = useState(false)
 
-  const toggleTeacherModal = () => {
 
-    // toggle()
-    setTeacherModal(!openTeacherModal)
-  }
 
   const handleChange = event => {
     setShowInputField(event.target.checked)
   }
 
-  const handleChangeTeachers = event => {
-    const {
-      target: { value }
-    } = event
-    setTeacherNames(
+  // const handleChangeTeachers = event => {
+  //   const {
+  //     target: { value }
+  //   } = event
+  //   setTeacherNames(
 
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    )
-  }
+  //     // On autofill we get a stringified value.
+  //     typeof value === 'string' ? value.split(',') : value
+  //   )
+  // }
 
   const {
     reset,
@@ -140,35 +138,39 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
   const onSubmit = async data => {
 
-    // const teacherIds = itemsArray.map(item => item.id);
 
     let payload = { name: data.name }
 
-    const teacherIds = TeacherNames.map(item => {
-      const matchingObject = StaffData?.result?.find(obj => obj.email === item)
+    // const teacherIds = TeacherNames.map(item => {
+    //   const matchingObject = StaffData?.result?.find(obj => obj.email === item)
 
-      return matchingObject ? matchingObject.id : null
-    })
+    //   return matchingObject ? matchingObject.id : null
+    // })
 
 
     if (data.categoryId !== '') {
       payload = {
         name: data.name,
-        categoryId: Number(data.categoryId),
-        teacherIds
+
+        // categoryId: Number(data.categoryId),
+
+        // teacherIds
       }
     } else {
       payload = {
         name: data.name,
-        category_name: data.category_name,
-        teacherIds
+
+        // category_name: data.category_name,
+
+        // teacherIds
       }
     }
 
 
     createSubject(payload).then(response => {
-      if (response.data.success) {
-        setTeacherNames([])
+      if (response?.data?.success) {
+
+        // setTeacherNames([])
         handleClose()
         dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }
@@ -186,33 +188,38 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
     const existingStaffIds = subjectToEdit.staffs.map(item => item.id)
 
-    const teacherIds = TeacherNames.map(item => {
-      const matchingObject = StaffData?.result?.find(obj => obj.email === item)
+    // const teacherIds = TeacherNames.map(item => {
+    //   const matchingObject = StaffData?.result?.find(obj => obj.email === item)
 
-      return matchingObject ? matchingObject.id : null
-    })
+    //   return matchingObject ? matchingObject.id : null
+    // })
 
-    const ids = [...existingStaffIds, ...teacherIds]
+    // const ids = [...existingStaffIds, ...teacherIds]
 
     let payload
 
     if (data.categoryId !== '') {
       payload = {
-        teacherIds: ids,
+
+        // teacherIds: ids,
         ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),
-        ...(changedFields.hasOwnProperty('categoryId') && { categoryId: Number(changedFields.categoryId) })
+
+        // ...(changedFields.hasOwnProperty('categoryId') && { categoryId: Number(changedFields.categoryId) })
       }
     } else {
       payload = {
-        teacherIds: ids,
+
+        // teacherIds: ids,
         ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),
-        ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name })
+
+        // ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name })
       }
     }
 
     updateSubject(subjectToEdit?.id, payload).then(response => {
       if (response.data.success) {
-        setTeacherNames([])
+
+        // setTeacherNames([])
         handleClose()
         dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }
@@ -222,7 +229,8 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   useEffect(() => {
     if (subjectToEdit !== null) {
       setValue('name', subjectToEdit.name)
-      setValue('categoryId', subjectToEdit.categoryId)
+
+      // setValue('categoryId', subjectToEdit.categoryId)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -291,7 +299,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                   fullWidth
                   value={value}
                   sx={{ mb: 4 }}
-                  label='Subject Title'
+                  label='Subject Name'
                   required
                   onChange={onChange}
                   placeholder='Subject Title'
@@ -301,7 +309,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
               )}
             />
 
-            <FormControl sx={{ mt: 5, mb: 5, width: '100%' }}>
+            {/* <FormControl sx={{ mt: 5, mb: 5, width: '100%' }}>
               <InputLabel id='demo-multiple-name-label'>Select Teacher</InputLabel>
               <Select
                 labelId='demo-multiple-name-label'
@@ -317,7 +325,6 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                   <MenuItem
                     key={parameter?.id}
 
-                    // value={`${parameter?.firstName} ${parameter?.lastName}`}
                     value={` ${parameter?.email}`}
                     style={{ textTransform: 'uppercase' }}
                   >
@@ -329,10 +336,9 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {/* </Box> */}
-            </FormControl>
+            </FormControl> */}
 
-            {!showInputField && (
+            {/* {!showInputField && (
               <Controller
                 name='categoryId'
                 control={control}
@@ -359,9 +365,9 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                   </CustomTextField>
                 )}
               />
-            )}
+            )} */}
 
-            <FormGroup row>
+            {/* <FormGroup row>
               <FormControlLabel
                 value='start'
                 label='display subject type input field'
@@ -388,7 +394,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
                   />
                 )}
               />
-            )}
+            )} */}
 
             <Box sx={{ mt: 5, }}>
 

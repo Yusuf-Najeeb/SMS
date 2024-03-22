@@ -64,7 +64,6 @@ const ClassAttendanceTable = () => {
   const [StudentsScoresData] = useStudentsScores()
   const [ClassAttendanceData, loading] = useAttendance()
 
-  console.log(ClassAttendanceData, "class attendance data")
 
   // States
 

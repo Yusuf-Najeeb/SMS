@@ -74,7 +74,6 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
         percentage: Number(data.percentage)
       }
 
-      console.log(payload, 'payload')
 
       createGradingParameter(payload).then((response)=>{
           if (response?.data.success){

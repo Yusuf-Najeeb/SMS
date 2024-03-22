@@ -96,7 +96,6 @@ const SessionTable = () => {
   }
 
   const toggleCurrentSessionModal = (session) => {
-    console.log(session, 'session')
     handleRowOptionsClose()
     setCurrentSessionModal(true)
     setSessionToMakeCurrent(session?.id)

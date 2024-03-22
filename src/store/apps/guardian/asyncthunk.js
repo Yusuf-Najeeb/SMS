@@ -23,7 +23,6 @@ export const fetchGuardian = createAsyncThunk('/Guardian/FetchGuardian', async (
   
       return response
     } catch (error) {
-      console.log(error, 'error')
   
     }
   })

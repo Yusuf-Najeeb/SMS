@@ -7,7 +7,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export const fetchExpenditure = createAsyncThunk('/expenditure/FetchExpenditure', async (query) => {
     try {
-      const response = await axios.get(`/accounts?page=${query.page}&limit=10&key=${query.key}&type=expenditure`)
+      const response = await axios.get(`/accounts?page=${query.page}&limit=10&key=${query.key}&type=expenditure&year=${query.year}&term=${query.term}`)
 
       return response
     } catch (error) {

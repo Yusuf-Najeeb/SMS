@@ -37,7 +37,6 @@ const StudentsReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
-  console.log(StudentReportCard, 'student report card')
 
 
   // States
@@ -70,6 +69,7 @@ const StudentsReportCardTable = () => {
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
     
     if(Object.keys(res.payload.data.data.subject).length > 0){
+      dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
       setShowResult(true)
       setNoResult(false)
       const selectedStudent = StudentData?.result.find(student => student.id == studentId)
@@ -81,7 +81,6 @@ const StudentsReportCardTable = () => {
       setNoResult(true)
       setActiveStudent({})
     }
-    dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
   }
 
   const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
@@ -200,7 +199,7 @@ const StudentsReportCardTable = () => {
       </CardContent>
       }
 
-      <CustomResultTable tableData={StudentReportCard}/>
+      <CustomResultTable tableData={StudentReportCard} positionArray={StudentSubjectPosition} studentId={studentId}/>
 
 
       </Box>
