@@ -102,7 +102,6 @@ const StudentCard = ({ Student }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
  },[ClassesList,Student])
 
-//  console.log(activeStudent, 'active student')
 
 
  useEffect(() => {

@@ -72,7 +72,6 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
   const [StaffData] = useStaff()
   const [CategoriesData] = useCategories()
 
-  console.log(classToEdit, 'class to edit')
 
   useEffect(() => {
     dispatch(fetchStaffs({page: 1, limit: 500, key: 'teacher'}))
@@ -108,7 +107,6 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
         staffId: Number(data.staffId)
       }
 
-      console.log(payload, 'payload')
 
       createClass(payload).then((res)=>{
           if (res?.data.success){

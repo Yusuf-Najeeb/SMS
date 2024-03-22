@@ -81,7 +81,6 @@ const ManageSession = ({ open, toggle, sessionToEdit = null }) => {
         name: data.name,
       }
       
-      console.log(payload, 'payload')
 
       createSession(payload).then((response)=>{
           if (response.data.success){
@@ -97,8 +96,6 @@ const ManageSession = ({ open, toggle, sessionToEdit = null }) => {
     const payload = {
         name: data.name,
       }
-      
-      console.log(payload, 'payload')
 
       updateSession(sessionToEdit?.id, payload).then((response)=>{
           if (response?.data.success){

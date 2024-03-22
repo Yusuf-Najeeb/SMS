@@ -12,7 +12,6 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async (que
 
     return response
   } catch (error) {
-    console.log(error, 'error')
 
   }
 })
@@ -106,7 +105,6 @@ export const fetchTeacherSubjects = async (email)=> {
   try {
     const response = await axios.get(`/staffs/subjects/${email}`)
 
-    console.log(response, 'teacher subjects')
 
     return response
   } catch (error) {

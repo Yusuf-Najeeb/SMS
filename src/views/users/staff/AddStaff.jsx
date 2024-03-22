@@ -530,8 +530,8 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
                       aria-describedby='stepper-linear-personal-title-helper'
                       {...(personalErrors.title && { helperText: personalErrors.title.message })}
                     >
-                      <MenuItem value='Mr'>Mr</MenuItem>
-                      <MenuItem value='Mrs'>Mrs</MenuItem>
+                      <MenuItem value='MR'>Mr</MenuItem>
+                      <MenuItem value='MRS'>Mrs</MenuItem>
                       <MenuItem value='Miss'>Miss</MenuItem>
                     </CustomTextField>
                   )}

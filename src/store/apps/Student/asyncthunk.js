@@ -23,7 +23,6 @@ export const fetchStudents = createAsyncThunk('/Students/FetchStudents', async (
 
     return response
   } catch (error) {
-    console.log(error, 'error')
 
   }
 })
@@ -73,8 +72,6 @@ export const getStudentByIdentification = async(id)=>{
   try {
     const response = await axios.get(`/students/identification/${id}`)
 
-    console.log(response, 'single student')
-
     return response
   } catch (error) {
     
@@ -87,7 +84,6 @@ export const getStudentSubjects = async(id)=>{
   try {
     const response = await axios.get(`/students/subjects/${id}`)
 
-    console.log(response, 'students subject')
 
     return response
   } catch (error) {

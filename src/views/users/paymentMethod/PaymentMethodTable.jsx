@@ -40,7 +40,6 @@ const PaymentMethodTable = ({ OpenPayment, DoSetSelectedPayment }) => {
     setPage(newPage)
   }
 
-  console.log(paging, 'paging')
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10))

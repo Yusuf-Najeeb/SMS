@@ -30,7 +30,6 @@ const DeductionsTable = () => {
   const dispatch = useAppDispatch()
   const [deductionsData, loading] = useDeductions()
 
-  console.log(deductionsData, 'deductions data')
 
   // States
 

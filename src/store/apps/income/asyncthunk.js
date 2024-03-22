@@ -7,7 +7,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export const fetchIncome = createAsyncThunk('/ncome/FetchIncome', async (query) => {
     try {
-      const response = await axios.get(`/accounts?page=${query.page}&limit=10&key=${query.key}&type=income`)
+      const response = await axios.get(`/accounts?page=${query.page}&limit=10&key=${query.key}&type=income&year=${query.year}&term=${query.term}`)
 
 
       return response

@@ -203,6 +203,9 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
         reset()
         closeModal()
         fetchData()
+        clearStaffArray()
+        clearGuardianArray()
+        clearStudentArray()
         setItemsArray([])
       }
     })

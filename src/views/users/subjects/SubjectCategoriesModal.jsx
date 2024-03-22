@@ -91,12 +91,12 @@ const AssignSubjectCategories = ({ open, toggle, Subject, page }) => {
 
       if (res.data.success) {
         toggle()
-        notifySuccess(categoryId.length > 1 ? 'Categories Assigned' : 'Category Assigned')
+        notifySuccess(categoryId.length > 1 ? 'Types Assigned' : 'Types Assigned')
         dispatch(fetchSubjects({ page: page == 0 ? page + 1 : page, limit: 10, categoryId: '' }))
       }
     } catch (error) {
       setSubmitting(false)
-      notifyError(categoryId?.length > 1 ? 'Unable to Assign Categories' : 'Unable to Assign Category')
+      notifyError(categoryId?.length > 1 ? 'Unable to Assign Type' : 'Unable to Assign Type')
     }
   }
 
@@ -115,7 +115,7 @@ const AssignSubjectCategories = ({ open, toggle, Subject, page }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>Assign Category</Typography>
+        <Typography variant='h5'>Assign Type</Typography>
         <IconButton
           size='small'
           onClick={toggle}

@@ -20,7 +20,6 @@ import { useSubjects } from '../../../hooks/useSubjects'
 import { deleteSubject, fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import ManageSubjects from './ManageSubjects'
 import PageHeader from '../component/PageHeader'
-import AssignSubjectTeacher from './ManageSubjectTeacher'
 import ManageSubjectTeacher from './ManageSubjectTeacher'
 import ManageGradingParameter from './ManageGradingParameter'
 import AssignSubjectCategories from './SubjectCategoriesModal'
@@ -290,7 +289,7 @@ const SubjectsTable = () => {
                           </MenuItem>
                           <MenuItem onClick={() => setSubjectToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                            Assign Category
+                            Assign Type
                           </MenuItem>
                         </Menu>
                       </>
