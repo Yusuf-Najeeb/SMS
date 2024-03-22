@@ -46,7 +46,6 @@ const IncomeTable = () => {
   const [key, setKey] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
-
   const [sessionId, setSessionId] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
@@ -165,12 +164,11 @@ const IncomeTable = () => {
 
   return (
     <>
-
-{/* <Card>
+      {/* <Card>
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-           
+
 
             <Grid item xs={12} sm={3}>
               <CustomTextField
@@ -186,17 +184,12 @@ const IncomeTable = () => {
                 ))}
               </CustomTextField>
             </Grid>
-            
+
           </Grid>
         </CardContent>
       </Card> */}
 
-      <PageHeaderWithSearch
-        searchPlaceholder={'Search Income'}
-        action='Add Income'
-        toggle={toggleModal}
-        handleFilter={setKey}
-      />
+      <PageHeaderWithSearch searchPlaceholder={''} action='Add Income' toggle={toggleModal} handleFilter={setKey} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
