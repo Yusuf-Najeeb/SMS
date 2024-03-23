@@ -22,7 +22,6 @@ import CustomSpinner from 'src/@core/components/custom-spinner'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
-import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useIncome } from '../../../hooks/useIncome'
 import { deleteIncome, fetchIncome } from '../../../store/apps/income/asyncthunk'
 import EditIncome from './EditIncome'
@@ -36,6 +35,7 @@ import { formatDate } from '../../../@core/utils/format'
 // ** Custom Component Import
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
+import PageHeader from '../component/PageHeader'
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
@@ -241,11 +241,9 @@ const IncomeTable = () => {
         </CardContent>
       </Card>
 
-      <PageHeaderWithSearch
-        searchPlaceholder={'Search Income'}
+      <PageHeader
         action='Add Income'
         toggle={toggleModal}
-        handleFilter={setKey}
       />
 
       <Fragment>

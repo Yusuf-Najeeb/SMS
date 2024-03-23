@@ -29,6 +29,7 @@ import { searchParent } from '../../../store/apps/guardian/asyncthunk'
 import { Dialog, DialogContent, Drawer, Icon, IconButton, Input, TableHead } from '@mui/material'
 import { Header } from '../staff/ViewStaff'
 import { searchStaff } from '../../../store/apps/staff/asyncthunk'
+import { CustomCloseIcon, CustomSearchIcon } from './CustomIcons'
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -115,9 +116,9 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
       sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 800 } } }}
     >
       <Header>
-        {/* <Typography variant='h5'> Search Parent</Typography> */}
-        <div></div>
+        <div className='iconBtnWrapper'>
         <IconButton
+        className='iconBtn'
           size='small'
           onClick={closeModal}
           sx={{
@@ -129,22 +130,14 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
             }
           }}
         >
-          ❌{/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
+
+          <CustomCloseIcon />
         </IconButton>
+        </div>
       </Header>
 
       <Card>
-        {/* <Box sx={{ mx: 4, my: 4 }}>
-        <CustomTextField
-          fullWidth
-          value={value}
-          placeholder='Search For Student'
-          onChange={(e) => {
-            setValue(e.target.value)
-            handleSearchChange(e.target.value)
-          }}
-        />
-      </Box> */}
+       
         <Box sx={{ mx: 4, my: 4 }}>
           <FormControl variant='standard' sx={{ width: '100%' }}>
             <Input
@@ -158,8 +151,7 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
               id='input-with-icon-adornment'
               endAdornment={
                 <InputAdornment position='start' sx={{ cursor: 'pointer' }}>
-                  {/* <Icon icon='el:search-alt' /> */}
-                  🔎
+                  <CustomSearchIcon />
                 </InputAdornment>
               }
             />
