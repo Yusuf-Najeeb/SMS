@@ -23,8 +23,6 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
-import { getInitials } from 'src/@core/utils/get-initials'
-import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { useExpenditure } from '../../../hooks/useExpenditure'
 import { deleteExpenditure, fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
 
@@ -36,6 +34,7 @@ import DeleteDialog from '../../../@core/components/delete-dialog'
 import { formatDate } from '../../../@core/utils/format'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
+import PageHeader from '../component/PageHeader'
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
@@ -208,11 +207,10 @@ const ExpenditureTable = () => {
         </CardContent>
       </Card>
 
-      <PageHeaderWithSearch
-        searchPlaceholder={''}
-        action='Create Expenditure'
+
+      <PageHeader
+        action='Add Expenditure'
         toggle={toggleModal}
-        handleFilter={setKey}
       />
 
       <Fragment>
