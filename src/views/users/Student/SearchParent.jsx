@@ -14,20 +14,14 @@ import TableContainer from '@mui/material/TableContainer'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControl from '@mui/material/FormControl'
 
-// ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
-
-// ** Custom Components Imports
-import CustomAvatar from 'src/@core/components/mui/avatar'
-import CustomChip from 'src/@core/components/mui/chip'
 
 import { styled } from '@mui/material/styles'
-import { Stack } from '@mui/system'
 import { useAppDispatch } from 'src/hooks'
 import SearchSpinner from 'src/@core/components/custom-spinner/SearchSpinner'
 import { searchParent } from '../../../store/apps/guardian/asyncthunk'
-import { Dialog, DialogContent, Drawer, Icon, IconButton, Input, TableHead } from '@mui/material'
+import { Drawer,  IconButton, Input, TableHead } from '@mui/material'
 import { Header } from '../staff/ViewStaff'
+import { CustomCloseIcon, CustomSearchIcon } from '../component/CustomIcons'
 
 const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -111,9 +105,9 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 800 } } }}
     >
       <Header>
-        {/* <Typography variant='h5'> Search Parent</Typography> */}
-        <div></div>
+      <div className='iconBtnWrapper'>
         <IconButton
+        className='iconBtn'
           size='small'
           onClick={closeModal}
           sx={{
@@ -125,24 +119,14 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
             }
           }}
         >
-          ❌
-          
-          {/* <Icon icon='tabler:x' fontSize='1.125rem' /> */}
+
+          <CustomCloseIcon />
         </IconButton>
+        </div>
       </Header>
 
       <Card>
-        {/* <Box sx={{ mx: 4, my: 4 }}>
-        <CustomTextField
-          fullWidth
-          value={value}
-          placeholder='Search For Student'
-          onChange={(e) => {
-            setValue(e.target.value)
-            handleSearchChange(e.target.value)
-          }}
-        />
-      </Box> */}
+       
         <Box sx={{ mx: 4, my: 4 }}>
           <FormControl variant='standard' sx={{ width: '100%' }}>
             <Input
@@ -157,8 +141,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
               endAdornment={
                 <InputAdornment position='start' sx={{ cursor: 'pointer' }}>
 
-                  {/* <Icon icon='el:search-alt' /> */}
-                  🔎
+                  <CustomSearchIcon />
                 </InputAdornment>
               }
             />

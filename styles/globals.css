@@ -158,3 +158,17 @@ code[class*='language-'] {
   .customReportTable tbody tr:nth-child(even) {
     background-color: #fff;
   }
+
+  .iconBtnWrapper{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .iconBtn{
+    position: relative !important;
+    z-index: 100 !important;
+
+  }
+  
+ 
