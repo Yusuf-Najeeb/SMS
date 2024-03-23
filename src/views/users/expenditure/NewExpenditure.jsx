@@ -207,6 +207,7 @@ const ExpenditureTable = () => {
         </CardContent>
       </Card>
 
+
       <PageHeader
         action='Add Expenditure'
         toggle={toggleModal}

@@ -112,7 +112,7 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                   <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
                     <Icon icon='healthicons:money-bag-outline' fontSize={40} />
                     <Typography variant='h5' sx={{ alignSelf: 'center' }}>
-                      {formatCurrency(expenditure.transactions[0].amount, true)}
+                      {`₦${expenditure.transactions[0].amount}`}
                     </Typography>
                   </Box>
                 </Grid>
@@ -144,20 +144,16 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                   </Box>
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ color: 'text.secondary' }}> Session:</Typography>
+                    <Typography sx={{ color: 'text.secondary' }}> Session:</Typography>
 
-                      <Typography sx={{ color: 'text.secondary' }}>
-                        {`${expenditure?.year}`}
-                      </Typography>
-                    </Box>
+                    <Typography sx={{ color: 'text.secondary' }}>{`${expenditure?.year}`}</Typography>
+                  </Box>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ color: 'text.secondary', textTransform: 'uppercase' }}> Term:</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography sx={{ color: 'text.secondary', textTransform: 'uppercase' }}> Term:</Typography>
 
-                      <Typography sx={{ color: 'text.secondary' }}>
-                        {` ${expenditure?.term} term`}
-                      </Typography>
-                    </Box>
+                    <Typography sx={{ color: 'text.secondary' }}>{` ${expenditure?.term} term`}</Typography>
+                  </Box>
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography sx={{ color: 'text.secondary' }}>Status:</Typography>
@@ -171,7 +167,7 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                         color='info'
                         sx={{ textTransform: 'capitalize' }}
                       />
-                    ) : (expenditure.transactions[0].transactionStatus === -1) ? (
+                    ) : expenditure.transactions[0].transactionStatus === -1 ? (
                       <CustomChip
                         rounded
                         skin='light'
@@ -180,17 +176,16 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                         color='error'
                         sx={{ textTransform: 'capitalize' }}
                       />
-                    )
-                    : (
-                    <CustomChip
+                    ) : (
+                      <CustomChip
                         rounded
                         skin='light'
                         size='small'
                         label='Fully Paid'
                         color='success'
                         sx={{ textTransform: 'capitalize' }}
-                      />)
-                    }
+                      />
+                    )}
                   </Box>
                 </Stack>
               </CardContent>
@@ -220,9 +215,9 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                       <TableRow key={item.id}>
                         <TableCell>{i + 1}</TableCell>
 
-                        <TableCell>{formatCurrency(item?.amount, true) || '--'}</TableCell>
+                        <TableCell>{`₦${item?.amount || '--'}`}</TableCell>
 
-                        <TableCell>{formatCurrency(item.amountPaid, true)}</TableCell>
+                        <TableCell>{`₦${item.amountPaid}`}</TableCell>
                         <TableCell>{item?.description}</TableCell>
                         <TableCell>{formatDateToReadableFormat(item.createdAt)}</TableCell>
                       </TableRow>
@@ -234,39 +229,57 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
               <CardContent sx={{ p: [`${theme.spacing(6)} !important`, `${theme.spacing(10)} !important`] }}>
                 <Grid container>
                   <Grid item xs={12} sm={7} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
-                  <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                        <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Source:</Typography>
-                        {expenditure.staff && <Typography sx={{ color: 'text.secondary' }}>{ `${expenditure?.staff?.firstName?.toUpperCase()} ${expenditure?.staff?.lastName?.toUpperCase()}`}</Typography>}
-                        {expenditure.parent && <Typography sx={{ color: 'text.secondary' }}>{ `${expenditure?.parent?.firstName?.toUpperCase()} ${expenditure?.parent?.lastName?.toUpperCase()}`}</Typography>}
-                        {expenditure.student && <Typography sx={{ color: 'text.secondary' }}>{ `${expenditure?.student?.firstName?.toUpperCase()} ${expenditure?.student?.lastName?.toUpperCase()}`}</Typography>}
-                      </Box>
-                      <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                        <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Source Type:</Typography>
-                        {expenditure.staff &&  <CustomChip
-                        rounded
-                        skin='light'
-                        size='small'
-                        label={'Staff'}
-                        color='info'
-                        sx={{ textTransform: 'capitalize' }}
-                      />}
-                        {expenditure.parent &&  <CustomChip
-                        rounded
-                        skin='light'
-                        size='small'
-                        label={'Parent'}
-                        color='info'
-                        sx={{ textTransform: 'capitalize' }}
-                      />}
-                        {expenditure.student &&  <CustomChip
-                        rounded
-                        skin='light'
-                        size='small'
-                        label={'Student'}
-                        color='info'
-                        sx={{ textTransform: 'capitalize' }}
-                      />}
-                      </Box>
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                      <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Source:</Typography>
+                      {expenditure.staff && (
+                        <Typography
+                          sx={{ color: 'text.secondary' }}
+                        >{`${expenditure?.staff?.firstName?.toUpperCase()} ${expenditure?.staff?.lastName?.toUpperCase()}`}</Typography>
+                      )}
+                      {expenditure.parent && (
+                        <Typography
+                          sx={{ color: 'text.secondary' }}
+                        >{`${expenditure?.parent?.firstName?.toUpperCase()} ${expenditure?.parent?.lastName?.toUpperCase()}`}</Typography>
+                      )}
+                      {expenditure.student && (
+                        <Typography
+                          sx={{ color: 'text.secondary' }}
+                        >{`${expenditure?.student?.firstName?.toUpperCase()} ${expenditure?.student?.lastName?.toUpperCase()}`}</Typography>
+                      )}
+                    </Box>
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                      <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Source Type:</Typography>
+                      {expenditure.staff && (
+                        <CustomChip
+                          rounded
+                          skin='light'
+                          size='small'
+                          label={'Staff'}
+                          color='info'
+                          sx={{ textTransform: 'capitalize' }}
+                        />
+                      )}
+                      {expenditure.parent && (
+                        <CustomChip
+                          rounded
+                          skin='light'
+                          size='small'
+                          label={'Parent'}
+                          color='info'
+                          sx={{ textTransform: 'capitalize' }}
+                        />
+                      )}
+                      {expenditure.student && (
+                        <CustomChip
+                          rounded
+                          skin='light'
+                          size='small'
+                          label={'Student'}
+                          color='info'
+                          sx={{ textTransform: 'capitalize' }}
+                        />
+                      )}
+                    </Box>
 
                     {/* <Typography sx={{ color: 'text.secondary' }}></Typography> */}
                   </Grid>
@@ -274,20 +287,20 @@ const ViewExpenditure = ({ open, closeCanvas, expenditure }) => {
                     <CalcWrapper>
                       <Typography sx={{ color: 'text.secondary' }}>Amount:</Typography>
                       <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                        {formatCurrency(expenditure?.amount, true)}
+                        {`₦${expenditure?.amount}`}
                       </Typography>
                     </CalcWrapper>
                     <CalcWrapper>
                       <Typography sx={{ color: 'text.secondary' }}>Amount Paid:</Typography>
                       <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                        {formatCurrency(expenditure?.amountPaid, true)}
+                        {`₦${expenditure?.amountPaid}`}
                       </Typography>
                     </CalcWrapper>
 
                     <CalcWrapper>
                       <Typography sx={{ color: 'text.secondary' }}>Outstanding Amount:</Typography>
                       <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                        {formatCurrency(Number(expenditure?.amount) - Number(expenditure?.amountPaid), true)}
+                        {`₦${Number(expenditure?.amount) - Number(expenditure?.amountPaid)}`}
                       </Typography>
                     </CalcWrapper>
                     {/* <CalcWrapper sx={{ mb: '0 !important' }}>

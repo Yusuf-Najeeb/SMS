@@ -42,14 +42,12 @@ const TableCellStyled = styled(TableCell)(({ theme }) => ({
 }))
 
 const IncomeTable = () => {
+  // ** Hooks
+  const dispatch = useAppDispatch()
+  const [IncomeData, loading, paging] = useIncome()
 
-    // ** Hooks
-    const dispatch = useAppDispatch()
-    const [IncomeData, loading, paging] = useIncome()
-  
-    const [SessionData] = useSession()
-    const [CurrentSessionData] = useCurrentSession()
-
+  const [SessionData] = useSession()
+  const [CurrentSessionData] = useCurrentSession()
 
   // ** State
   const [page, setPage] = useState(0)
@@ -57,7 +55,6 @@ const IncomeTable = () => {
   const [year, setYear] = useState('')
   const [term, setTerm] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
-
 
   const [sessionId, setSessionId] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -72,9 +69,6 @@ const IncomeTable = () => {
   const [openViewModal, setOpenViewModal] = useState(false)
   const [filteredData, setFilteredData] = useState([])
   const [anchorEl, setAnchorEl] = useState(Array(IncomeData?.length)?.fill(null))
-  
-  
-
 
   const toggleModal = () => {
     setShowModal(!showModal)
@@ -90,7 +84,6 @@ const IncomeTable = () => {
 
   const handleChangeTerm = e => {
     // console.log(e.target.value.slice(9), 'value')
-
 
     setYear(e.target.value.slice(0, 9))
     setTerm(e.target.value.slice(9))
@@ -167,23 +160,21 @@ const IncomeTable = () => {
     doCancelDelete()
   }
 
-  useEffect(()=>{
-    if(SessionData?.length > 0){
+  useEffect(() => {
+    if (SessionData?.length > 0) {
       const filteredSession = SessionData.reduce((acc, curr) => {
-        const existingItem = acc.find(item => item.name === curr.name);
-    
+        const existingItem = acc.find(item => item.name === curr.name)
+
         if (!existingItem) {
-            acc.push(curr);
+          acc.push(curr)
         }
-    
-        return acc;
 
-    }, []);
+        return acc
+      }, [])
 
-    setFilteredData(filteredSession)
+      setFilteredData(filteredSession)
     }
-
-  },[SessionData])
+  }, [SessionData])
 
   useEffect(() => {
     dispatch(fetchIncome({ page: page + 1, limit: 10, key, year, term }))
@@ -198,13 +189,10 @@ const IncomeTable = () => {
 
   return (
     <>
-
-<Card>
+      <Card>
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-           
-
             <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
@@ -212,7 +200,7 @@ const IncomeTable = () => {
                 label='Year'
                 SelectProps={{ value: year, onChange: e => handleChangeSession(e) }}
               >
-                <MenuItem value=''>{year ? 'Show All' :'Select Year'}</MenuItem>
+                <MenuItem value=''>{year ? 'Show All' : 'Select Year'}</MenuItem>
                 {filteredData?.map(item => (
                   <MenuItem key={item?.id} value={item?.name} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name}`}
@@ -236,7 +224,6 @@ const IncomeTable = () => {
                 ))}
               </CustomTextField>
             </Grid> */}
-            
           </Grid>
         </CardContent>
       </Card>
@@ -245,6 +232,7 @@ const IncomeTable = () => {
         action='Add Income'
         toggle={toggleModal}
       />
+
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
@@ -367,7 +355,6 @@ const IncomeTable = () => {
                                   Pay Outstanding
                                 </MenuItem>
                               ) : null}
-                           
                             </Menu>
                           </>
                         </TableCell>
