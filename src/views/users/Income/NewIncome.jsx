@@ -80,13 +80,15 @@ const IncomeTable = () => {
 
   const handleChangeSession = e => {
     setYear(e.target.value)
+    setTerm('')
   }
 
   const handleChangeTerm = e => {
     // console.log(e.target.value.slice(9), 'value')
+    // setYear(e.target.value.slice(0, 9))
 
-    setYear(e.target.value.slice(0, 9))
-    setTerm(e.target.value.slice(9))
+    setTerm(e.target.value.slice(10))
+    setYear('')
   }
 
   const setIncomeToView = value => {
@@ -164,14 +166,12 @@ const IncomeTable = () => {
     if (SessionData?.length > 0) {
       const filteredSession = SessionData.reduce((acc, curr) => {
         const existingItem = acc.find(item => item.name === curr.name)
-
         if (!existingItem) {
           acc.push(curr)
         }
 
         return acc
       }, [])
-
       setFilteredData(filteredSession)
     }
   }, [SessionData])
@@ -209,30 +209,26 @@ const IncomeTable = () => {
               </CustomTextField>
             </Grid>
 
-            {/* <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
                 fullWidth
                 label='Term'
                 SelectProps={{ value: `${year} ${term}`, onChange: e => handleChangeTerm(e) }}
               >
-                <MenuItem value=''>{term ? 'Show All' :'Select Term'}</MenuItem>
+                <MenuItem value=''>{term ? 'Show All' : 'Select Term'}</MenuItem>
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={`${item?.name} ${item?.term}`} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name} ${item?.term}`}
                   </MenuItem>
                 ))}
               </CustomTextField>
-            </Grid> */}
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
 
-      <PageHeader
-        action='Add Income'
-        toggle={toggleModal}
-      />
-
+      <PageHeader action='Add Income' toggle={toggleModal} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
