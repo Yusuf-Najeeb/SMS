@@ -792,6 +792,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   label='Basic Salary'
                   error={workInfoErrors['basicSalary']}
                   errorMessage={workInfoErrors.basicSalary?.message}
+                  moneyInputField={true}
                 />
               </Grid>
 
@@ -804,6 +805,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   required={true}
                   error={workInfoErrors['mealAllowance']}
                   errorMessage={workInfoErrors.mealAllowance?.message}
+                  moneyInputField={true}
                 />
               </Grid>
 
@@ -816,6 +818,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   label='Transport Allowance'
                   error={workInfoErrors['transportAllowance']}
                   errorMessage={workInfoErrors?.transportAllowance?.message}
+                  moneyInputField={true}
                 />
               </Grid>
 
@@ -828,6 +831,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   label='Domestic Allowance'
                   error={workInfoErrors['domesticAllowance']}
                   errorMessage={workInfoErrors?.domesticAllowance?.message}
+                  moneyInputField={true}
                 />
               </Grid>
 
@@ -840,6 +844,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   label='Furniture Allowance'
                   error={workInfoErrors['furnitureAllowance']}
                   errorMessage={workInfoErrors?.furnitureAllowance?.message}
+                  moneyInputField={true}
                 />
               </Grid>
 
@@ -852,6 +857,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   label='Salary Arrears'
                   error={workInfoErrors['SalaryArrears']}
                   errorMessage={workInfoErrors?.SalaryArrears?.message}
+                  moneyInputField={true}
                 />
               </Grid>
 
@@ -864,6 +870,7 @@ const UpdateStaff = ({ open, closeModal, refetchStaffs, selectedStaff }) => {
                   label='Rent Allowance'
                   error={workInfoErrors['rentAllowance']}
                   errorMessage={workInfoErrors?.rentAllowance?.message}
+                  moneyInputField={true}
                 />
               </Grid>
 

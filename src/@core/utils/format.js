@@ -301,10 +301,16 @@ export const getFirstId = arrayOfObjects => {
 export const formatCurrency = (amount, abs) => {
   
   if (!amount) {
-    return `#0.0`
+    return `₦0.0`
   } else if (amount) {
     const formattedAmount = Number(amount)
 
-    return `#${(abs ? Math.abs(formattedAmount) : formattedAmount).toLocaleString()}`
+    return `₦${(abs ? Math.abs(formattedAmount) : formattedAmount).toLocaleString()}`
   }
+}
+
+export const getCurrency = () => {
+
+
+  return  { symbol: '₦' }
 }
