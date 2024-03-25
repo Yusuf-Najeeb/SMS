@@ -30,7 +30,7 @@ import PayIncomeBalance from './PayIncome'
 
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import DeleteDialog from '../../../@core/components/delete-dialog'
-import { formatDate } from '../../../@core/utils/format'
+import { formatCurrency, formatDate } from '../../../@core/utils/format'
 
 // ** Custom Component Import
 import { useSession } from '../../../hooks/useSession'
@@ -93,7 +93,7 @@ const IncomeTable = () => {
 
 
     setYear(e.target.value.slice(0, 9))
-    setTerm(e.target.value.slice(9))
+    setTerm(e.target.value.slice(10))
   }
 
   const setIncomeToView = value => {
@@ -221,7 +221,7 @@ const IncomeTable = () => {
               </CustomTextField>
             </Grid>
 
-            {/* <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
                 fullWidth
@@ -235,7 +235,7 @@ const IncomeTable = () => {
                   </MenuItem>
                 ))}
               </CustomTextField>
-            </Grid> */}
+            </Grid>
             
           </Grid>
         </CardContent>
@@ -290,7 +290,7 @@ const IncomeTable = () => {
                           {i + 1}
                         </TableCell>
                         <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                          {`₦${item?.amount || '--'}`}
+                          {formatCurrency(item?.amount, true)}
                         </TableCell>
                         <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                           {item.amount == item.amountPaid ? (
@@ -298,7 +298,7 @@ const IncomeTable = () => {
                               rounded
                               skin='light'
                               size='small'
-                              label={`₦${item?.amountPaid || '--'}`}
+                              label={formatCurrency(item?.amountPaid, true)}
                               color='success'
                               sx={{ textTransform: 'uppercase' }}
                             />
@@ -307,7 +307,7 @@ const IncomeTable = () => {
                               rounded
                               skin='light'
                               size='small'
-                              label={`₦${item?.amountPaid || '--'}`}
+                              label={formatCurrency(item?.amountPaid, true)}
                               color='error'
                               sx={{ textTransform: 'uppercase' }}
                             />

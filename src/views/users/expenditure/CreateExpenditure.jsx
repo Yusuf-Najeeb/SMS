@@ -12,7 +12,7 @@ import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 
-import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
+import { Alert, CircularProgress, InputAdornment, MenuItem, Typography } from '@mui/material'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -37,6 +37,7 @@ import { fetchPaymentMethods } from '../../../store/apps/settings/asyncthunk'
 import { usePaymentMethods } from '../../../hooks/usePaymentMethods'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
+import { getCurrency } from '../../../@core/utils/format'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -84,6 +85,8 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
   const [ExpenditureCategoryData] = useExpenditureCategory()
   const [PaymentMethodsList] = usePaymentMethods()
   const [SessionData] = useSession()
+
+  const currency = getCurrency()
 
   const validatePayment = amountPaid => {
     if (amountPaid > Number(getValues('amount'))) {
@@ -300,16 +303,34 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                  <FormController
+                  <Controller
                     name='amount'
                     control={control}
-                    required={true}
-                    requireBoolean={true}
-                    label='Amount'
-                    error={errors['amount']}
-                    errorMessage={errors?.amount?.message}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        required
+                        value={value}
+                        label='Amount'
+                        onChange={e => {
+                          onChange(e)
+                        }}
+                        error={Boolean(errors.amount)}
+                        aria-describedby={`stepper-linear-amount`}
+                        {...(errors.amount && { helperText: errors.amount.message })}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <p>{currency.symbol}</p>
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
                   />
                 </Grid>
+
 
                 <Grid item xs={12} sm={4}>
                   <Controller
@@ -329,6 +350,13 @@ const CreateExpenditure = ({ open, closeModal, fetchData }) => {
                         error={Boolean(errors.amountPaid)}
                         aria-describedby={`stepper-linear-amountPaid`}
                         {...(errors.amountPaid && { helperText: errors.amountPaid.message })}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <p>{currency.symbol}</p>
+                            </InputAdornment>
+                          )
+                        }}
                       />
                     )}
                   />
