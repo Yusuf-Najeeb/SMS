@@ -274,6 +274,8 @@ export const parseCalendarEvents = (result, teachers) => {
             // start: schedule.start,
             // end: schedule.end,
 
+            value: {...schedule},
+
             className: parseClass(schedule.day)
           }
         ]
