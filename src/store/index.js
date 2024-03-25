@@ -31,6 +31,8 @@ import deductions from 'src/store/apps/deductions'
 import reportCard from 'src/store/apps/reportCard'
 import singleTeacherSubjects from 'src/store/apps/singleTeacherSubjects'
 import attendance from 'src/store/apps/attendance'
+import applicants from 'src/store/apps/applicants'
+
 
 export const store = configureStore({
   reducer: {
@@ -62,7 +64,8 @@ export const store = configureStore({
     deductions,
     reportCard,
     singleTeacherSubjects,
-    attendance
+    attendance,
+    applicants
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
