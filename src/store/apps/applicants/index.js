@@ -38,7 +38,7 @@ export const ApplicantsSlice = createSlice({
       })
       builder.addCase(fetchApplicantsForGuardian.fulfilled, (state, action) => {
         state.loadingGuardianApplicants = false
-        state.GuardianApplicantsData = action?.payload?.data?.data
+        state.GuardianApplicantsData = action?.payload?.data?.data.applicants
   
       //   state.paging = action?.payload?.data?.paging
       })
