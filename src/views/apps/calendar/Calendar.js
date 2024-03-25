@@ -12,6 +12,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 // ** Third Party Style Import
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import { parseCalendarEvents } from '../../../@core/utils/format'
+import { useAppDispatch } from '../../../hooks'
 
 const blankEvent = {
   title: '',
@@ -36,9 +37,11 @@ const Calendar = props => {
     teachersData,
     calendarsColor,
     direction,
-
-    // setCalendarApi,
+    handleSelectEvent,
+    handleEditEventSidebarToggle
   } = props
+
+  const dispatch = useAppDispatch()
 
 
   const [calendarEvents, setCalendarEvents] = useState([])
@@ -51,7 +54,7 @@ const Calendar = props => {
   
 useEffect(()=>{
   if(store){
-    const parsedEvents = parseCalendarEvents(store,teachersData )
+    const parsedEvents = parseCalendarEvents(store, teachersData)
 
     setCalendarEvents([...parsedEvents])
   }
@@ -65,7 +68,8 @@ useEffect(()=>{
       
       events: calendarEvents,
   
-     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
+    //  plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
+     plugins: [interactionPlugin, dayGridPlugin, bootstrap5Plugin],
      initialView: 'dayGridMonth',
      headerToolbar: {
        start: 'sidebarToggle, prev, next, title',
@@ -101,6 +105,17 @@ useEffect(()=>{
              ? Docs: https://fullcalendar.io/docs/dayMaxEvents
            */
      dayMaxEvents: 10,
+
+     eventClick({ event: clickedEvent }) {
+      dispatch(handleSelectEvent(clickedEvent))
+      handleEditEventSidebarToggle()
+
+      // * Only grab required field otherwise it goes in infinity loop
+      // ! Always grab all fields rendered by form (even if it get `undefined`) otherwise due to Vue3/Composition API you might get: "object is not extensible"
+      // event.value = grabEventDataFromEventApi(clickedEvent)
+
+      // isAddNewEventSidebarActive.value = true
+    },
   
      /*
              Determines if day names and week names are clickable

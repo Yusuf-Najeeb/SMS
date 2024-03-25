@@ -5,6 +5,7 @@ import { fetchClassTimetable } from './asyncthunk'
 const initialState = {
   loading: false,
   TimetableData: [],
+  selectedPeriod: null,
 
 //   paging: {
 //     currentPage: 1,
@@ -17,7 +18,12 @@ const initialState = {
 export const timetableSlice = createSlice({
   name: 'timetable',
   initialState,
-  reducers: {},
+  reducers: {
+    handleSelectPeriod: (state, action) => {
+      state.selectedPeriod = action?.payload?._def?.extendedProps?.value
+      
+    },
+  },
   extraReducers(builder) {
     builder.addCase(fetchClassTimetable.pending, state => {
       state.loading = true
@@ -26,12 +32,13 @@ export const timetableSlice = createSlice({
       state.loading = false
       state.TimetableData = action?.payload?.data.data
       
-    //   state.paging = action?.payload?.data?.paging
     })
     builder.addCase(fetchClassTimetable.rejected, state => {
       state.loading = false
     })
   }
 })
+
+export const {  handleSelectPeriod } = timetableSlice.actions
 
 export default timetableSlice.reducer
