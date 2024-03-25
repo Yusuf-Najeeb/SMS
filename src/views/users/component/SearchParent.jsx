@@ -130,7 +130,9 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray, clearS
           }}
         >
 
+
           <CustomCloseIcon />
+
         </IconButton>
         </div>
       </Header>
