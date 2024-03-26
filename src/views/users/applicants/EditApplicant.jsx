@@ -25,10 +25,10 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { createApplicantSchema } from 'src/@core/Formschema'
+import { updateApplicantSchema } from 'src/@core/Formschema'
 
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
-import { createApplicant } from '../../../store/apps/applicants/asyncthunk'
+import { updateApplicant } from '../../../store/apps/applicants/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -54,39 +54,65 @@ const defaultValues = {
     lastName: '',
     middleName: '',
     email: '',
-    password: '',
     title: '',
     phone: '',
     dateOfBirth: '',
     identificationNumber: '',
     residentialAddress: '',
     gender: '',
-    branch: '',
+
+    // branch: '',
     className: '',
   }
 
-const AddApplicant = ({ open, closeModal, refetchData, }) => {
-  const [showPassword, setShowPassword] = useState(false)
-
-
+const EditApplicant = ({ open, closeModal, refetchData, apllicantToEdit }) => {
 
   const {
     control,
     setValue,
     reset,
+    watch,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createApplicantSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(updateApplicantSchema) })
+
+  // Watch all input fields and track changes
+  const watchedFields = watch()
 
   const onSubmit = async values => {
-    const { dateOfBirth, ...restOfData } = values
-    const formattedDate = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
+
+    // Monitor changed input fields so that only changed fields are submitted
+    const changedFields = Object.entries(values).reduce((acc, [key, value]) => {
+        if (value !== apllicantToEdit[key]) {
+          acc[key] = value
+        }
+  
+        return acc
+      }, {})
+
+    const { dateOfBirth } = changedFields
+    const formattedDOB = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
 
 
-    const payload = { dateOfBirth: formattedDate, status: false, ...restOfData,  }
+    const payload = {
+        ...(changedFields.hasOwnProperty('firstName') && { firstName: changedFields.firstName }),
+        ...(changedFields.hasOwnProperty('lastName') && { lastName: changedFields.lastName }),
+        ...(changedFields.hasOwnProperty('middleName') && { middleName: changedFields.middleName }),
+        ...(changedFields.hasOwnProperty('email') && { email: changedFields.email }),
+        ...(changedFields.hasOwnProperty('phone') && { phone: changedFields.phone }),
+
+        // ...(changedFields.hasOwnProperty('branch') && { branch: changedFields.branch }),
+        ...(changedFields.hasOwnProperty('title') && { title: changedFields.title }),
+        ...(changedFields.hasOwnProperty('className') && { className: changedFields.className }),
+        ...(changedFields.hasOwnProperty('identificationNumber') && { identificationNumber: changedFields.identificationNumber }),
+        ...(changedFields.hasOwnProperty('dateOfBirth') && { dateOfBirth: formattedDOB }),
+        ...(changedFields.hasOwnProperty('gender') && { gender: changedFields.gender }),
+        ...(changedFields.hasOwnProperty('residentialAddress') && { residentialAddress: changedFields.residentialAddress }),
+    }
+
     
 
-    createApplicant(payload).then((response)=> {
+    updateApplicant(payload, apllicantToEdit.email).then((response)=> {
             if (response?.data.success) {
                 reset()
                 closeModal()
@@ -96,7 +122,25 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
 
   }
 
+  useEffect(() => {
+    if (apllicantToEdit !== null) {
+      setValue('firstName', apllicantToEdit.firstName)
+      setValue('lastName', apllicantToEdit.lastName)
+      apllicantToEdit.middleName !== null ? setValue('middleName', apllicantToEdit.middleName) : setValue('middleName', '')
+      setValue('email', apllicantToEdit.email)
+      apllicantToEdit.title !== null ? setValue('title', apllicantToEdit.title) : setValue('title', '')
+      setValue('phone', apllicantToEdit.phone)
 
+    //   setValue('branch', apllicantToEdit.branch)
+      setValue('identificationNumber', apllicantToEdit.identificationNumber)
+      setValue('residentialAddress', apllicantToEdit.residentialAddress)
+      setValue('className', apllicantToEdit.className)
+      setValue('gender', apllicantToEdit.gender)
+      setValue('dateOfBirth', new Date(apllicantToEdit.dateOfBirth))
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apllicantToEdit])
 
   return (
 
@@ -199,42 +243,6 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={4}>
-                <Controller
-                  name='password'
-                  type='password'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange, onBlur } }) => (
-                    <CustomTextField
-                      fullWidth
-                      value={value}
-                      onBlur={onBlur}
-                      label='Password'
-                      onChange={onChange}
-                      required
-                      id='auth-login-v2-password'
-                      placeholder='Enter Password'
-                      error={Boolean(errors.password)}
-                      {...(errors.password && { helperText: errors.password.message })}
-                      type={showPassword ? 'text' : 'password'}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton
-                              edge='end'
-                              onMouseDown={e => e.preventDefault()}
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                            </IconButton>
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
 
               <Grid item xs={12} sm={12} md={4}>
                 <Controller
@@ -245,7 +253,6 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
                     <CustomTextField
                       fullWidth
                       label='Phone Number'
-                      placeholder='Enter Phone Number'
                       value={value}
                       required
                       onChange={onChange}
@@ -283,7 +290,7 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
 
              
 
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='identificationNumber' 
                   control={control}
@@ -305,7 +312,7 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
               
 
 
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='dateOfBirth'
                   control={control}
@@ -332,7 +339,7 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
               </Grid>
 
 
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='title'
                   control={control}
@@ -356,7 +363,7 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='className'
                   control={control}
@@ -376,7 +383,7 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={4}>
+              {/* <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='branch'
                   control={control}
@@ -394,7 +401,7 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
                     />
                   )}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
@@ -429,7 +436,7 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
           
             <Button type='submit' variant='contained' disabled={isSubmitting}>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Submit'}
+              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update'}
             </Button>
           </Box>
         </form>
@@ -439,4 +446,4 @@ const AddApplicant = ({ open, closeModal, refetchData, }) => {
   )
 }
 
-export default AddApplicant
+export default EditApplicant
