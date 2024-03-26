@@ -67,9 +67,6 @@ const defaultValues = {
 
 const EditApplicant = ({ open, closeModal, refetchData, apllicantToEdit }) => {
 
-
-
-
   const {
     control,
     setValue,
@@ -113,7 +110,6 @@ const EditApplicant = ({ open, closeModal, refetchData, apllicantToEdit }) => {
         ...(changedFields.hasOwnProperty('residentialAddress') && { residentialAddress: changedFields.residentialAddress }),
     }
 
-    console.log(payload, 'payload')
     
 
     updateApplicant(payload, apllicantToEdit.email).then((response)=> {
