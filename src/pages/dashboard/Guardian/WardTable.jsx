@@ -26,7 +26,9 @@ import { useAppDispatch } from 'src/hooks'
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
 import { formatDate } from '../../../@core/utils/format'
-import ViewStudent from '../../../views/users/Student/ViewStudent'
+import ViewStudent from './ViewStudent'
+
+// import ViewStudent from '../../../views/users/Student/ViewStudent'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -45,7 +47,7 @@ const renderClient = row => {
         skin='light'
 
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
-        color='primary'
+        color='error'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
       >
         {getInitials(initials || 'John Doe')}
@@ -146,7 +148,7 @@ const WardTable = ({ user }) => {
                 <Fragment>
                   {wardData?.length &&
                     wardData.map(item => {
-                      const className = ClassesList.find(c => c.id === item.classId)
+                      const className = ClassesList?.find(c => c.id === item.classId)
 
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
@@ -163,7 +165,7 @@ const WardTable = ({ user }) => {
                           </TableCell>
 
                           <TableCell align='left' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
-                            {`${className.name} ${className.type}` || '--'}
+                            {`${className?.name} ${className?.type}` || '--'}
                           </TableCell>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
                             {formatDate(item.registrationDate) || '--'}

@@ -59,7 +59,7 @@ const ViewStudent = ({ open, closeCanvas, student }) => {
           <Fragment>
             {student !== null && student !== undefined ? (
                 <Grid container spacing={6}>
-              <Grid item xs={12} md={12} lg={12} sx={{border: '1px solid red', width: '100%'}}>
+              <Grid item xs={12} md={12} lg={12} sx={{ width: '100%'}}>
                 <StudentCard Student={student}  />
               </Grid>
               </Grid>
