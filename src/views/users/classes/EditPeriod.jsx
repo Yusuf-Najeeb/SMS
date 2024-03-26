@@ -71,15 +71,10 @@ const defaultValues = {
 //   sessionId: ''
 }
 
-const EditPeriod = ({ open, toggle }) => {
+const EditPeriod = ({ open, toggle, fetchData }) => {
 
     const selectedPeriod = useAppSelector(store => store.timetable.selectedPeriod)
 
-    // console.log(selectedPeriod, 'selected period')
-
-    useEffect(()=>{
-        console.log('is mounted')
-    },[])
 
   const dispatch = useAppDispatch()
   const [StaffData] = useStaff()
@@ -103,6 +98,7 @@ const EditPeriod = ({ open, toggle }) => {
     deleteTimetablePeriod(selectedPeriod?.id).then((res)=> {
         if(res.data.success){
             toggle()
+            fetchData()
         }
     })
   }
@@ -140,6 +136,7 @@ const EditPeriod = ({ open, toggle }) => {
     updateTimetablePeriod(payload, selectedPeriod.id).then((response)=>{
         if (response?.data.success){
           handleClose()
+          fetchData()
         }
     })
 

@@ -42,17 +42,22 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
   const { settings } = useSettings()
   const dispatch = useAppDispatch()
   const { skin, direction } = settings
+  const [TimetableData] = useClassTimetable()
+  const [CurrentSessionData] = useCurrentSession()
+  const [StaffData] = useStaff()
 
   const [editPeriodSidebarOpen, setEditPeriodSidebarOpen] = useState(false)
+  const [refetch, setFetch] = useState(false)
+
+
+  const updateFetch = ()=> setFetch(!refetch)
 
   const handleEditEventSidebarToggle = () => {
     // handleClose()
     setEditPeriodSidebarOpen(!editPeriodSidebarOpen)
   }
 
-  const [TimetableData] = useClassTimetable()
-  const [CurrentSessionData] = useCurrentSession()
-  const [StaffData] = useStaff()
+  
 
   useEffect(()=>{
     dispatch(fetchCurrentSession())
@@ -70,7 +75,7 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ClassRoom, CurrentSessionData])
+  }, [ClassRoom, CurrentSessionData, refetch])
 
 
   return (
@@ -118,7 +123,7 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
 
       </Dialog>
         :
-           <EditPeriod open={editPeriodSidebarOpen} toggle={handleEditEventSidebarToggle} /> 
+           <EditPeriod open={editPeriodSidebarOpen} toggle={handleEditEventSidebarToggle} fetchData={updateFetch} /> 
           }
     </Fragment>
   );
