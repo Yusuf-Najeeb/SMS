@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useAppDispatch } from 'src/hooks'
 
 import Paper from '@mui/material/Paper'
-import {  Menu, MenuItem, Tooltip } from '@mui/material'
+import {  Tooltip } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
@@ -10,7 +10,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { Box, FormControlLabel, FormGroup, IconButton, Switch, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
@@ -24,17 +24,12 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
-import {  fetchStudents } from '../../../store/apps/Student/asyncthunk'
-import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
-
-import { useClasses } from '../../../hooks/useClassess'
-import AddStudent from '../Student/AddStudent'
-import { deleteApplicant, fetchApplicants, fetchApplicantsForGuardian, updateApplicant } from '../../../store/apps/applicants/asyncthunk'
-import { useApplicants } from '../../../hooks/useApplicants'
+import {  fetchApplicantsForGuardian, updateApplicant } from '../../../store/apps/applicants/asyncthunk'
 import PageHeader from '../component/PageHeader'
 import GetUserData from '../../../@core/utils/getUserData'
 import { useGuardianApplicants } from '../../../hooks/useGuardianApplicants'
 import AddApplicant from './AddApplicant'
+import EditApplicant from './EditApplicant'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -77,74 +72,28 @@ const ApplicantsTableForParents = () => {
   const [ApplicantsData, loading] = useGuardianApplicants()
 
   const [showModal, setShowModal] = useState(false)
-  const [deleteModal, setDeleteModal] = useState(false)
-  const [selectedApplicant, setSelectedApplicant] = useState("")
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedApplicant, setSelectedApplicant] = useState(null)
   const [refetch, setFetch] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(Array(ApplicantsData?.length)?.fill(null))
 
-  const handleRowOptionsClick = (event, index) => {
-    const newAnchorEl = [...anchorEl]
-    newAnchorEl[index] = event.currentTarget
-    setAnchorEl(newAnchorEl)
+  const setActiveApplicant = (value)=> {
+    setShowEditModal(true)
+    setSelectedApplicant(value)
+
   }
 
-  const handleRowOptionsClose = index => {
-    const newAnchorEl = [...anchorEl]
-    newAnchorEl[index] = null
-    setAnchorEl(newAnchorEl)
+  const toggleEditModal = ()=> {
+    setShowEditModal(!showEditModal)
   }
+
 
   const toggleModal = () => {
     setShowModal(!showModal)
   }
 
 
-  const handleChangeRowsPerPage = event => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
-  const handleToggle = (value) => {
-
-    let payload
-    if(value.status){
-      payload = {
-        status: false
-      }
-    }
-    else {
-      payload = {
-        status: true
-      }
-    }
-
-    updateApplicant(payload, value?.email).then(res => {
-      if (res.data.success) {
-        dispatch(fetchApplicants())
-      }
-    })
-  }
 
   const updateFetch = () => setFetch(!refetch)
-
-  const doDelete = value => {
-    setDeleteModal(true)
-    setSelectedApplicant(value.email)
-  }
-
-  const doCancelDelete = () => {
-    setDeleteModal(false)
-    setSelectedApplicant('')
-  }
-
-  const ondeleteClick = async () => {
-    deleteApplicant(selectedApplicant).then(res => {
-      if (res?.data?.success) {
-        dispatch(fetchApplicants())
-        doCancelDelete()
-      }
-    })
-  }
 
 
   useEffect(() => {
@@ -188,9 +137,9 @@ const ApplicantsTableForParents = () => {
                 ID NUMBER
                 </TableCell>
 
-                {/* <TableCell align='left' sx={{ minWidth: 140, paddingLeft: '30px' }}>
+                <TableCell align='left' sx={{ minWidth: 140, paddingLeft: '30px' }}>
                   Actions
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -275,49 +224,16 @@ const ApplicantsTableForParents = () => {
                             {item?.identificationNumber || '--'}
                           </TableCell>
 
-                          {/* <TableCell
+                          <TableCell
                             align='left'
-                            sx={{ display: 'flex', justifyContent: 'center', gap: '10px' , }}
+                            sx={{ display: 'flex', justifyContent: 'center', gap: '10px', transform: 'translateY(25.5%)' }}
                           >
-                            <Tooltip title= {item?.status ? 'Reject Applicant' : 'Accept Applicant'}>
-                            <FormGroup row sx={{ transform: 'translateX(-4%)' }}>
-                              <FormControlLabel
-                                value='start'
-                                label=''
-                                labelPlacement='start'
-                                control={<Switch checked={item.status} onChange={() => handleToggle(item)} />}
-                              />
-                            </FormGroup>
-                            </Tooltip>
-
-                            <>
-                        <IconButton size='small' onClick={event => handleRowOptionsClick(event, i)}>
-                          <Icon icon='tabler:dots-vertical' />
-                        </IconButton>
-                        <Menu
-                          keepMounted
-                          anchorEl={anchorEl[i]}
-                          open={Boolean(anchorEl[i])}
-                          onClose={() => handleRowOptionsClose(i)}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right'
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                          }}
-                          PaperProps={{ style: { minWidth: '8rem' } }}
-                        >
-                         
-                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='tabler:trash' fontSize={20} />
-                            Delete Applicant
-                          </MenuItem>
-                            
-                          </Menu>
-                          </>
-                          </TableCell> */}
+                          <Tooltip title='Edit Applicant Information'>
+                          <IconButton size='small' onClick={() => setActiveApplicant(item)}>
+                        <Icon icon='tabler:edit' />
+                      </IconButton>
+                      </Tooltip>
+                          </TableCell>
                         </TableRow>
                       )
                     })}
@@ -346,8 +262,10 @@ const ApplicantsTableForParents = () => {
         /> */}
 
         <AddApplicant open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
+
+       {showEditModal &&  <EditApplicant open={showEditModal} refetchData={updateFetch} apllicantToEdit={selectedApplicant} closeModal={toggleEditModal} /> }
        
-        <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+        {/* <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> */}
       </Fragment>
     </>
   )

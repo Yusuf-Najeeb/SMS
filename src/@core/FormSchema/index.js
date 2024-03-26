@@ -226,6 +226,22 @@ export const createApplicantSchema = yup.object().shape({
   title: yup.string(),
 })
 
+export const updateApplicantSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string(),
+  email: yup.string().required('Email is required'),
+  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string().required('Residential Address is required'),
+  gender: yup.string().required('Gender is required'),
+  
+  // branch: yup.string().required('Branch is required'),
+  identificationNumber: yup.string().required('Student ID is required'),
+  title: yup.string(),
+})
+
 export const createStudentSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
