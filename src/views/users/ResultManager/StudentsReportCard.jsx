@@ -143,6 +143,7 @@ const StudentsReportCardTable = () => {
                 label='Student*'
                 SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
               >
+                <MenuItem>{classStudents.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
                 {classStudents.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item?.firstName} ${item?.lastName}`}
