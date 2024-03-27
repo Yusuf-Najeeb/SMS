@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
-
 import Icon from 'src/@core/components/icon'
 
 // ** Custom Component Import
@@ -8,7 +7,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 
 import { useAppDispatch } from '../../../hooks'
 import { Box, Button, Card, CardContent, CardHeader, Grid, MenuItem, Typography } from '@mui/material'
-import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
@@ -37,8 +36,6 @@ const StudentsReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
-
-
   // States
 
   const [openScoreModal, setScoreModal] = useState(false)
@@ -49,12 +46,17 @@ const StudentsReportCardTable = () => {
   const [activeStudent, setActiveStudent] = useState({})
   const [classRoom, setClassroom] = useState({})
   const [showResult, setShowResult] = useState(false)
+  const [classStudents, setClassStudents] = useState([])
 
   const [noResult, setNoResult] = useState(false)
 
-
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
+    fetchStudentsInClass(e.target.value).then(res => {
+      if (res.status) {
+        setClassStudents(res.data.data)
+      }
+    })
   }
 
   const handleChangeSession = e => {
@@ -67,16 +69,15 @@ const StudentsReportCardTable = () => {
 
   const displayReportCard = async () => {
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
-    
-    if(Object.keys(res.payload.data.data.subject).length > 0){
+
+    if (Object.keys(res.payload.data.data.subject).length > 0) {
       dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
       setShowResult(true)
       setNoResult(false)
       const selectedStudent = StudentData?.result.find(student => student.id == studentId)
 
-        setActiveStudent({ ...selectedStudent })
-    }
-    else {
+      setActiveStudent({ ...selectedStudent })
+    } else {
       setShowResult(false)
       setNoResult(true)
       setActiveStudent({})
@@ -93,7 +94,6 @@ const StudentsReportCardTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStudent])
 
-
   useEffect(() => {
     let isMounted = true
 
@@ -104,7 +104,6 @@ const StudentsReportCardTable = () => {
         setClassroom({ ...selectedClass })
       }
     }
-
   }, [classId, ClassesList])
 
   useEffect(() => {
@@ -144,7 +143,7 @@ const StudentsReportCardTable = () => {
                 label='Student*'
                 SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
               >
-                {StudentData?.result?.map(item => (
+                {classStudents.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item?.firstName} ${item?.lastName}`}
                   </MenuItem>
@@ -183,31 +182,52 @@ const StudentsReportCardTable = () => {
         </CardContent>
       </Card>
 
-      {(!loading && showResult )  &&
+      {!loading && showResult && (
+        <Box
+          className='resultBg'
+          sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#fff' }}
+        >
+          <Box className='bgOverlay'></Box>
+          {StudentReportCard.length > 0 && Object.keys(activeStudent).length > 0 && (
+            <CardContent>
+              <SchoolDetails />
 
-      <Box className='resultBg' sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#fff"}}>
-        <Box className="bgOverlay"></Box>
-      {(StudentReportCard.length > 0 && Object.keys(activeStudent).length > 0) && 
-      <CardContent >
+              <Box
+                sx={{
+                  color: '#fff',
+                  backgroundColor: '#333333',
+                  height: '50px',
+                  width: '100%',
+                  mt: 3,
+                  mb: 5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Typography sx={{ fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center' }}>
+                  {' '}
+                  {`Termly Report For ${activeStudent?.firstName} ${activeStudent?.lastName}`}
+                </Typography>
+              </Box>
+              <StudentReportCardDetails
+                activeStudent={activeStudent}
+                profilePictureUrl={profilePictureUrl}
+                classRoom={classRoom}
+                CurrentSessionData={CurrentSessionData}
+              />
+            </CardContent>
+          )}
 
-      <SchoolDetails />
+          <CustomResultTable
+            tableData={StudentReportCard}
+            positionArray={StudentSubjectPosition}
+            studentId={studentId}
+          />
+        </Box>
+      )}
 
-        <Box sx={{color: '#fff', backgroundColor: "#333333", height: '50px', width: '100%', mt: 3, mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-           <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center'}}> {`Termly Report For ${activeStudent?.firstName} ${activeStudent?.lastName}`}</Typography> 
-           </Box>
-        <StudentReportCardDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={classRoom} CurrentSessionData={CurrentSessionData}/>
-      </CardContent>
-      }
-
-      <CustomResultTable tableData={StudentReportCard} positionArray={StudentSubjectPosition} studentId={studentId}/>
-
-
-      </Box>
-              }
-
-
-   {noResult && <DismissibleAlert AlertMessage={'No Records Found'}/>}
-
+      {noResult && <DismissibleAlert AlertMessage={'No Records Found'} />}
 
       {openScoreModal && <EnterStudentScore open={openScoreModal} closeModal={toggleScoreDrawer} />}
     </div>
