@@ -177,9 +177,7 @@ const StudentCard = ({ Student }) => {
              
             </Box>
             <Box sx={{ display: 'flex', position: 'relative' }}>
-              <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'secondary.main', fontSize: '2rem !important' }}>
-                {/* {grossSalary.toLocaleString()} */}
-                {/* {formatCurrency(grossSalary, true)} */}
+              <Typography variant='h5' sx={{ mt: -1, mb: -1.2,  fontSize: '2rem !important' }}>
                 {`${studentClass?.name} ${studentClass?.type}`}
                 <Sub>/ Class</Sub>
               </Typography>

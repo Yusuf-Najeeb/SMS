@@ -274,7 +274,7 @@ const IncomeTable = () => {
                           {i + 1}
                         </TableCell>
                         <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                          {`${formatCurrency(item?.amount, true) || '--'}`}
+                          {formatCurrency(item?.amount, true)}
                         </TableCell>
                         <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                           {item.amount == item.amountPaid ? (

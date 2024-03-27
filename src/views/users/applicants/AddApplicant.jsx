@@ -25,13 +25,10 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { createActorSchema } from 'src/@core/Formschema'
+import { createApplicantSchema } from 'src/@core/Formschema'
 
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
-import { createGuardian } from '../../../store/apps/guardian/asyncthunk'
-import SearchStudent from './SearchStudent'
-import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
-import { handleInputImageChange } from '../../../@core/utils/uploadImage'
+import { createApplicant } from '../../../store/apps/applicants/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -48,41 +45,30 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
-const defaultValues = {
-  firstName: '',
-  lastName: '',
-  middleName: '',
-  email: '',
-  password: '',
-
-  // maritalStatus: '',
-  phone: '',
-  dateOfBirth: '',
-  residentialAddress: '',
-  gender: '',
-  religion: '',
-  ethnicity: '',
-  relationship: ''
-}
-
 export const CustomInput = forwardRef(({ ...props }, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
 })
 
-const AddGuardian = ({ open, closeModal, refetchData }) => {
-  const [showPassword, setShowPassword] = useState(false)
-  const [itemsArray, setItemsArray] = useState([])
-  const [openParentModal, setParentModal] = useState(false)
-  const [selectedImage, setSelectedImage] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState(``)
-  const [imageLinkPayload, setImageLinkPayload] = useState('')
-
-  const toggleParentModal = ()=> {
-    closeModal()
-    setParentModal(!openParentModal)
+const defaultValues = {
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    email: '',
+    password: '',
+    title: '',
+    phone: '',
+    dateOfBirth: '',
+    identificationNumber: '',
+    residentialAddress: '',
+    gender: '',
+    branch: '',
+    className: '',
   }
 
- 
+const AddApplicant = ({ open, closeModal, refetchData, }) => {
+  const [showPassword, setShowPassword] = useState(false)
+
+
 
   const {
     control,
@@ -90,28 +76,27 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
     reset,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createActorSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(createApplicantSchema) })
 
   const onSubmit = async values => {
     const { dateOfBirth, ...restOfData } = values
     const formattedDate = (dateOfBirth !== '') ? formatDateToYYYMMDDD(dateOfBirth) : ''
 
-    const studentIds = itemsArray.map(item => item.id);
 
+    const payload = { dateOfBirth: formattedDate, status: false, ...restOfData,  }
+    
 
-    const personalInformation = { dateOfBirth: formattedDate, profilePicture: imageLinkPayload, ...restOfData, studentIds }
-    const payload = {personalInformation}
-
-    createGuardian(payload).then((response)=> {
+    createApplicant(payload).then((response)=> {
             if (response?.data.success) {
                 reset()
                 closeModal()
                 refetchData()
-                setItemsArray([])
               }
          })
 
   }
+
+
 
   return (
 
@@ -135,55 +120,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
           <Icon icon='tabler:x' fontSize='1.25rem' />
         </CustomCloseButton>
 
-        <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
-              <Grid item xs={12} sm={6}>
-                <Box
-                  sx={{
-                    border: '3px dotted black',
-                    borderRadius: 3,
-                    p: 3,
-                    display: 'flex',
-                    textAlign: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column'
-                  }}
-                >
-                  <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                    <input
-                      hidden
-                      type='file'
-                      accept='image/png, image/jpeg'
-                      onChange={e => handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
-                      id='account-settings-upload-image'
-                    />
-
-                    <Icon icon='tabler:upload' fontSize='1.45rem' />
-                  </ButtonStyled>
-                  <Typography variant='body2' sx={{ mt: 2 }}>
-                    Upload Guardian Image
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  textAlign: 'center',
-                  alignItems: 'center',
-                  alignSelf: 'center'
-                }}
-              >
-                {selectedImage &&
-                <img
-                  src={`${previewUrl}`}
-                  width={120}
-                  height={100}
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                  alt='guardian image'
-                /> }
-              </Box>
-            </Grid>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent
@@ -202,7 +138,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       fullWidth
                       label='First Name'
                       required
-                      placeholder='Enter First Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.firstName)}
@@ -220,7 +155,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                     <CustomTextField
                       fullWidth
                       label='Last Name'
-                      placeholder='Enter Last Name'
                       required
                       value={value}
                       onChange={onChange}
@@ -239,7 +173,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                     <CustomTextField
                       fullWidth
                       label='Middle Name'
-                      placeholder='Enter Middle Name'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.middleName)}
@@ -258,7 +191,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       fullWidth
                       label='Email'
                       required
-                      placeholder='Enter Email'
                       value={value}
                       onChange={onChange}
                       error={Boolean(errors.email)}
@@ -267,7 +199,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='password'
                   type='password'
@@ -280,6 +212,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       onBlur={onBlur}
                       label='Password'
                       onChange={onChange}
+                      required
                       id='auth-login-v2-password'
                       placeholder='Enter Password'
                       error={Boolean(errors.password)}
@@ -303,7 +236,27 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={12} md={4}>
+                <Controller
+                  name='phone'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Phone Number'
+                      placeholder='Enter Phone Number'
+                      value={value}
+                      required
+                      onChange={onChange}
+                      error={Boolean(errors.phone)}
+                      {...(errors.phone && { helperText: errors.phone.message })}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='gender'
                   control={control}
@@ -328,51 +281,28 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                 />
               </Grid>
 
-
-              {/* <Grid item xs={12} sm={4}>
-                <Controller
-                  name='maritalStatus'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      select
-                      fullWidth
-                      value={value}
-                      label='Marital Status'
-                      onChange={onChange}
-                      id='stepper-linear-maritalStatus'
-                      error={Boolean(errors.maritalStatus)}
-                      aria-describedby='stepper-linear-maritalStatus-helper'
-                      {...(errors.maritalStatus && { helperText: errors.maritalStatus.message})}
-                    >
-                      <MenuItem value='Single'>Single</MenuItem>
-                      <MenuItem value='Married'>Married</MenuItem>
-                      <MenuItem value='Divorced'>Divorced</MenuItem>
-                    </CustomTextField>
-                  )}
-                />
-              </Grid> */}
+             
 
               <Grid item xs={12} sm={12} md={4}>
                 <Controller
-                  name='phone'
+                  name='identificationNumber' 
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label='Phone Number'
-                      placeholder='Enter Phone Number'
+                      label='Applicant Identification Number'
                       value={value}
                       required
                       onChange={onChange}
-                      error={Boolean(errors.phone)}
-                      {...(errors.phone && { helperText: errors.phone.message })}
+                      error={Boolean(errors.identificationNumber)}
+                      {...(errors.identificationNumber && { helperText: errors.identificationNumber.message })}
                     />
                   )}
                 />
               </Grid>
+
+              
 
 
               <Grid item xs={12} sm={12} md={4}>
@@ -387,14 +317,13 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       showYearDropdown
                       showMonthDropdown
                       onChange={e => onChange(e)}
-                      placeholderText='Enter Date of Birth'
                       customInput={
                         <CustomInput
                           value={value}
                           onChange={onChange}
-                          label='Date of Birth'
+                          label='Date of Birth *'
                           error={Boolean(errors.dateOfBirth)}
-                          {...(errors.dateOfBirth && { helperText: 'Date of Birth is required' })}
+                          {...(errors.dateOfBirth && { helperText: errors.dateOfBirth.message })}
                         />
                       }
                     />
@@ -403,9 +332,9 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
               </Grid>
 
 
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
-                  name='religion'
+                  name='title'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -413,54 +342,55 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
                       select
                       fullWidth
                       value={value}
-                      label='Religion'
+                      label='Title'
                       onChange={onChange}
-                      id='stepper-linear-religion'
-                      error={Boolean(errors.religion)}
-                      aria-describedby='stepper-linear-religion-helper'
-                      {...(errors.religion && { helperText: errors.religion.message})}
+                      id='stepper-linear-title'
+                      error={Boolean(errors.title)}
+                      aria-describedby='stepper-linear-title-helper'
+                      {...(errors.title && { helperText: errors.title.message})}
                     >
-                      <MenuItem value='Christianity'>Christianity</MenuItem>
-                      <MenuItem value='Islam'>Islam</MenuItem>
-                      <MenuItem value='Others'>Others</MenuItem>
+                      <MenuItem value='MR'>Mr</MenuItem>
+                      <MenuItem value='Miss'>Miss</MenuItem>
                     </CustomTextField>
                   )}
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
-                  name='ethnicity'
+                  name='className'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label='Tribe'
-                      placeholder='Enter Tribe'
+                      label='Class'
+                      placeholder='SS 1'
                       value={value}
+                      required
                       onChange={onChange}
-                      error={Boolean(errors.ethnicity)}
-                      {...(errors.ethnicity && { helperText: errors.ethnicity.message })}
+                      error={Boolean(errors.className)}
+                      {...(errors.className && { helperText: errors.className.message })}
                     />
                   )}
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <Controller
-                  name='relationship'
+                  name='branch'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <CustomTextField
                       fullWidth
-                      label='Relationship'
-                      placeholder='Mother'
+                      label='School Branch'
+                      placeholder='Lagos'
                       value={value}
+                      required
                       onChange={onChange}
-                      error={Boolean(errors.relationship)}
-                      {...(errors.relationship && { helperText: errors.relationship.message })}
+                      error={Boolean(errors.branch)}
+                      {...(errors.branch && { helperText: errors.branch.message })}
                     />
                   )}
                 />
@@ -490,19 +420,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
               
             </Grid>
 
-            {itemsArray?.length > 0 && 
-            <Grid item sx={{mt: 5}} xs={12} sm={12} md={12}>
-              <Typography variant='h5'>Selected Students </Typography>
-          <Alert severity='success'>  
-          {itemsArray?.map((student, index) => (
-                            <Fragment key={student.id}>
-                              {index > 0 && ', '}
-                              <span>{`${index + 1}. ${student?.firstName} ${student?.lastName}`}</span>
-                            </Fragment>
-                          ))}
-           </Alert>
-          </Grid>
-          }
 
           </DialogContent>
 
@@ -510,19 +427,16 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
          
 
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px', mt: '10px' }}>
-          <Button type='button' variant='outlined' onClick={toggleParentModal}>
-              Select Students
-            </Button>
+          
             <Button type='submit' variant='contained' disabled={isSubmitting}>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Add Guardian'}
+              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Submit'}
             </Button>
           </Box>
         </form>
       </DialogContent>
     </Dialog>
-    <SearchStudent itemsArray={itemsArray} setItemsArray={setItemsArray} openModal={openParentModal} closeModal={toggleParentModal} />
     </Fragment>
   )
 }
 
-export default AddGuardian
+export default AddApplicant

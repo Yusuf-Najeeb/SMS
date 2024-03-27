@@ -31,61 +31,32 @@ export const fetchClassTimetable = createAsyncThunk('timetable', async (query) =
     }
   }
 
-  export const updateSubject = async (id, payload)=>{
+  export const deleteTimetablePeriod = async (id)=>{
     try {
-      const res = await axios.patch(`/subjects/${id}`, payload)
+      const res = await axios.delete(`/timetable/${id}`)
       if(res.data.success){
-        notifySuccess('Subject Updated')
+        notifySuccess('Period Deleted')
       }
 
       return res
       
     } catch (error) {
-        console.log(error, 'update subject error')
-      notifyError('Unable to Update Subject')
-      
-    }
-  }
-
-  export const deleteSubject = async (id)=>{
-    try {
-      const res = await axios.delete(`/subjects/${id}`)
-      if(res.data.success){
-        notifySuccess('Subject Deleted')
-      }
-
-      return res
-      
-    } catch (error) {
-      notifyError('Unable to Delete Subject')
+      notifyError(error?.response?.data?.message || 'Unable to Delete Period')
       
     }
   }
 
-  export const assignTeacher = async (payload)=>{
+  export const updateTimetablePeriod = async (payload, id)=>{
     try {
-      const res = await axios.post('/subjects/associate', payload)
-
+      const res = await axios.patch(`/timetable/${id}`, payload)
       if(res.data.success){
-        notifySuccess('Teacher Assigned')
+        notifySuccess('Period Updated')
       }
 
       return res
+      
     } catch (error) {
-      notifyError('Unable to Assign Subject To Teacher')
-    }
-  }
-
-  export const removeTeacher = async (payload)=>{
-    try {
-      const res = await axios.post('/subjects/dissociate', payload)
-
-      if(res.data.success){
-        notifySuccess('Teacher Removed')
-      }
-
-      return res
-    } catch (error) {
-      notifyError('Unable to Remove Subject From Teacher')
+      notifyError(error?.response?.data?.message || 'Unable to Update Period')
+      
     }
   }

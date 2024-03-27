@@ -263,6 +263,8 @@ export const parseCalendarEvents = (result, teachers) => {
           // start: schedule.start,
           // end: schedule.end,
 
+          value: { ...schedule },
+
           className: parseClass(schedule.day)
         }
       ]
@@ -293,4 +295,8 @@ export const formatCurrency = (amount, abs) => {
 
     return `₦${(abs ? Math.abs(formattedAmount) : formattedAmount).toLocaleString()}`
   }
+}
+
+export const getCurrency = () => {
+  return { symbol: '₦' }
 }

@@ -9,7 +9,6 @@ import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -19,21 +18,17 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
-import { formatCurrency, formatFirstLetter } from 'src/@core/utils/format'
+import { formatFirstLetter } from 'src/@core/utils/format'
 import { formatDateToReadableFormat } from 'src/@core/utils/format'
 import { getInitials } from 'src/@core/utils/get-initials'
 import { calculateAge } from 'src/@core/utils/calculateAge'
 import { useClasses } from 'src/hooks/useClassess'
 import { getStudentByIdentification } from 'src/store/apps/Student/asyncthunk'
 import StaffDetailCard from 'src/views/users/component/StaffDetailCard'
+import { fetchRooms } from '../../../store/apps/rooms/asyncthunk'
+import { useRooms } from '../../../hooks/useRooms'
+import { useAppDispatch } from '../../../hooks'
 
-const roleColors = {
-  superadmin: 'error',
-  Student: 'info',
-
-  maintainer: 'success',
-  subscriber: 'primary'
-}
 
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({
@@ -55,8 +50,24 @@ const StudentCard = ({ Student }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [initials, setInitials] = useState('')
   const [studentClass, setStudentClass] = useState()
+  const [studentRoom, setStudentRoom] = useState({})
 
   const [ClassesList] = useClasses()
+  const [RoomsList] = useRooms()
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(fetchRooms({ page: 1, limit: 200, key: '' }))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(()=>{
+    if(Student.roomId !== null && RoomsList?.length > 0){
+      const room = RoomsList.find((room)=> room.id == Student.roomId)
+      setStudentRoom({...room})
+    }
+  },[Student, RoomsList])
 
  useEffect(()=>{
 
@@ -101,7 +112,7 @@ const StudentCard = ({ Student }) => {
               ) : (
                 <CustomAvatar
                   skin='light'
-                  color='primary'
+                  color='info'
                   sx={{
                     mr: 2.5,
                     width: 50,
@@ -114,24 +125,17 @@ const StudentCard = ({ Student }) => {
                 </CustomAvatar>
               )}
 
-              {/* 
-              <Typography variant='h5' sx={{ mb: 3 }}>
-                {formatFirstLetter(Student?.firstName) || '--'}
-              </Typography> */}
-
-              <CustomChip
+<CustomChip
                 rounded
                 skin='light'
                 size='small'
-                label={Student?.role?.name}
-                color='primary'
+                label={Student?.boarder ? `Boarding Student` : 'Day Student'}
+                color='info'
                 sx={{ textTransform: 'capitalize' }}
               />
             </Box>
             <Box sx={{ display: 'flex', position: 'relative' }}>
-              <Typography variant='h5' sx={{ mt: -1, mb: -1.2, color: 'primary.main', fontSize: '2rem !important' }}>
-                {/* {grossSalary.toLocaleString()} */}
-                {/* {formatCurrency(grossSalary, true)} */}
+              <Typography variant='h5' sx={{ mt: -1, mb: -1.2,  fontSize: '2rem !important' }}>
                 {`${studentClass?.name} ${studentClass?.type}`}
                 <Sub>/ Class</Sub>
               </Typography>
@@ -139,9 +143,37 @@ const StudentCard = ({ Student }) => {
           </CardContent>
 
           <CardContent sx={{ pt: theme => `${theme.spacing(2)} !important` }}>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {Student?.roomId !== null && 
+              <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
+                <CustomAvatar skin='light' color='error' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
+                  <Icon fontSize='1.75rem' icon='guidance:hotel-room' />
+                </CustomAvatar>
+                <div>
+                  <Typography variant='body2'>Room Name</Typography>
+                  <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                    {studentRoom?.name}
+                  </Typography>
+                </div>
+              </Box>
+              }
+
+{(Student?.roomId == null && Student.boarder) && 
+              <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
+                <CustomAvatar skin='light' color='error' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
+                  <Icon fontSize='1.75rem' icon='guidance:hotel-room' />
+                </CustomAvatar>
+                <div>
+                  <Typography variant='body2'>No Room Assigned</Typography>
+                 
+                </div>
+              </Box>
+              }
+
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
-                <CustomAvatar skin='light' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
+                <CustomAvatar skin='light' color="info" variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
                   <Icon fontSize='1.75rem' icon='fluent-mdl2:date-time-2' />
                 </CustomAvatar>
                 <div>
@@ -150,6 +182,7 @@ const StudentCard = ({ Student }) => {
                     {formatDateToReadableFormat(Student?.registrationDate) || 'No available date'}
                   </Typography>
                 </div>
+              </Box>
               </Box>
 
               {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -232,7 +265,7 @@ const StudentCard = ({ Student }) => {
             </Box>
           </CardContent>
 
-          <Divider sx={{ my: '0 !important', mx: 6 }} />
+          {/* <Divider sx={{ my: '0 !important', mx: 6 }} />
 
           <CardContent sx={{ pb: 4 }}>
             {Student?.parents?.length > 0 ? (
@@ -297,7 +330,9 @@ const StudentCard = ({ Student }) => {
                 No Student Available
               </Typography>
             )}
-          </CardContent>
+          </CardContent> */}
+
+
         </Fragment>
       </Grid>
     </Grid>

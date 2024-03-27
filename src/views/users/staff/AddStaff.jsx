@@ -671,31 +671,31 @@ const AddStaff = ({open, closeModal, refetchStaffs}) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='basicSalary' control={workInfoControl} requireBoolean={true} label="Basic Salary" error={workInfoErrors['basicSalary']} errorMessage={workInfoErrors.basicSalary?.message} />
+              <FormController name='basicSalary' control={workInfoControl} requireBoolean={true} label="Basic Salary" error={workInfoErrors['basicSalary']} errorMessage={workInfoErrors.basicSalary?.message} moneyInputField={true} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='mealAllowance' control={workInfoControl} requireBoolean={true} label="Meal Allowance" error={workInfoErrors['mealAllowance']} errorMessage={workInfoErrors.mealAllowance?.message} />
+              <FormController name='mealAllowance' control={workInfoControl} requireBoolean={true} label="Meal Allowance" error={workInfoErrors['mealAllowance']} errorMessage={workInfoErrors.mealAllowance?.message} moneyInputField={true} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-              <FormController name='transportAllowance' control={workInfoControl} requireBoolean={true} label="Transport Allowance" error={workInfoErrors['transportAllowance']} errorMessage={workInfoErrors?.transportAllowance?.message} />
+              <FormController name='transportAllowance' control={workInfoControl} requireBoolean={true} label="Transport Allowance" error={workInfoErrors['transportAllowance']} errorMessage={workInfoErrors?.transportAllowance?.message} moneyInputField={true} />
             </Grid>
 
             <Grid item xs={12} sm={4}>
-              <FormController name='domesticAllowance' control={workInfoControl} requireBoolean={true} label="Domestic Allowance" error={workInfoErrors['domesticAllowance']} errorMessage={workInfoErrors?.domesticAllowance?.message} />
+              <FormController name='domesticAllowance' control={workInfoControl} requireBoolean={true} label="Domestic Allowance" error={workInfoErrors['domesticAllowance']} errorMessage={workInfoErrors?.domesticAllowance?.message} moneyInputField={true} />
             </Grid>
 
             <Grid item xs={12} sm={4}>
-                <FormController name='furnitureAllowance' control={workInfoControl} requireBoolean={true} label="Furniture Allowance" error={workInfoErrors['furnitureAllowance']} errorMessage={workInfoErrors?.furnitureAllowance?.message} />
+                <FormController name='furnitureAllowance' control={workInfoControl} requireBoolean={true} label="Furniture Allowance" error={workInfoErrors['furnitureAllowance']} errorMessage={workInfoErrors?.furnitureAllowance?.message} moneyInputField={true} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='SalaryArrears' control={workInfoControl} requireBoolean={true} label="Salary Arrears" error={workInfoErrors['SalaryArrears']} errorMessage={workInfoErrors?.SalaryArrears?.message} />
+                <FormController name='SalaryArrears' control={workInfoControl} requireBoolean={true} label="Salary Arrears" error={workInfoErrors['SalaryArrears']} errorMessage={workInfoErrors?.SalaryArrears?.message} moneyInputField={true} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormController name='rentAllowance' control={workInfoControl} requireBoolean={true} label="Rent Allowance" error={workInfoErrors['rentAllowance']} errorMessage={workInfoErrors?.rentAllowance?.message} />
+                <FormController name='rentAllowance' control={workInfoControl} requireBoolean={true} label="Rent Allowance" error={workInfoErrors['rentAllowance']} errorMessage={workInfoErrors?.rentAllowance?.message} moneyInputField={true} />
               </Grid>
 
               <Grid item xs={12} sm={4}>
