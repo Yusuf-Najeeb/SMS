@@ -170,5 +170,21 @@ code[class*='language-'] {
     z-index: 100 !important;
 
   }
+
+  .saveQuestionSuccess {
+    position: absolute;
+    /* background-color: #a3889b; */
+    font-size: '13px';
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0.8rem;
+    /* color: '#fff'; */
+    border-radius: 50px;
+  }
   
  
+  /*  */
+  /* .css-2a9k90-MuiTablePagination-selectLabel{
+    display: none !important;
+  } */

@@ -155,7 +155,7 @@ const ViewSubject = ({ open, closeCanvas, Subject }) => {
               <Divider /> */}
 
 {Subject?.staffs?.length > 0 ? 
-            <ListTeachers Users={Subject?.staffs} CardSnippetTitle={'Subject Teachers'} />
+            <ListTeachers Users={Subject?.staffs}  />
 
             : 
             <Grid container spacing={6}>

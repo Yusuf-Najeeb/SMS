@@ -241,10 +241,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
 
     let payload
 
-
-    // if(guardianData.length > 1) {
-    // }
-
     payload = {personalInformation, guardianData: guardianData}
 
 

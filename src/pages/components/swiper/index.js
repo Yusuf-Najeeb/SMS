@@ -61,15 +61,15 @@ const Swiper = () => {
           }
         />
         <Grid item xs={12}>
-          <CardSnippet
+          {/* <CardSnippet
             title='Default'
             code={{
               tsx: null,
               jsx: source.SwiperDefaultJSXCode
             }}
           >
+          </CardSnippet> */}
             <SwiperDefault direction={direction} />
-          </CardSnippet>
         </Grid>
         <Grid item xs={12}>
           <CardSnippet

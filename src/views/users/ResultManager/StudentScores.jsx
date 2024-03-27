@@ -206,7 +206,7 @@ const displayScores = async ()=>{
             </Grid>
 
             <Grid item xs={12} sm={3}>
-            <Button onClick={toggleScoreDrawer} variant='contained'  sx={{ '& svg': { mr: 2 }, backgroundColor: 'green' }}>
+            <Button onClick={toggleScoreDrawer} variant='contained'  sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}>
           <Icon fontSize='1.125rem' icon='tabler:plus' />
           Input Student Score
         </Button>
