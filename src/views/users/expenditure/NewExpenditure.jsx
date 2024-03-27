@@ -45,6 +45,7 @@ const ExpenditureTable = () => {
   const [page, setPage] = useState(0)
   const [key, setKey] = useState('')
   const [year, setYear] = useState('')
+  const [termYear, setTermYear] = useState('')
   const [term, setTerm] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [showModal, setShowModal] = useState(false)
@@ -58,7 +59,7 @@ const ExpenditureTable = () => {
   const [expenditureToDelete, setExpenditureToDelete] = useState(null)
   const [openViewModal, setOpenViewModal] = useState(false)
   const [filteredData, setFilteredData] = useState([])
-  
+
   // ** Hooks
   const dispatch = useAppDispatch()
   const [SessionData] = useSession()
@@ -71,6 +72,13 @@ const ExpenditureTable = () => {
 
   const handleChangeSession = e => {
     setYear(e.target.value)
+    setTerm('')
+    setTermYear('')
+  }
+
+  const handleChangeTerm = e => {
+    setTerm(e.target.value.slice(10))
+    setTermYear(e.target.value.slice(0, 9))
   }
 
   const toggleViewModal = () => {
@@ -149,29 +157,27 @@ const ExpenditureTable = () => {
     doCancelDelete()
   }
 
-  useEffect(()=>{
-    if(SessionData?.length > 0){
+  useEffect(() => {
+    if (SessionData?.length > 0) {
       const filteredSession = SessionData.reduce((acc, curr) => {
-        const existingItem = acc.find(item => item.name === curr.name);
-    
+        const existingItem = acc.find(item => item.name === curr.name)
+
         if (!existingItem) {
-            acc.push(curr);
+          acc.push(curr)
         }
-    
-        return acc;
 
-    }, []);
+        return acc
+      }, [])
 
-    setFilteredData(filteredSession)
+      setFilteredData(filteredSession)
     }
-
-  },[SessionData])
+  }, [SessionData])
 
   useEffect(() => {
-    dispatch(fetchExpenditure({ page: page + 1, limit: 10, key, year, term }))
+    dispatch(fetchExpenditure({ page: page + 1, limit: 10, year: termYear.length > 0 ? termYear : year, term }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, key, refetch, year])
+  }, [page, rowsPerPage, refetch, year, termYear])
 
   useEffect(() => {
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -180,13 +186,10 @@ const ExpenditureTable = () => {
 
   return (
     <>
-
-<Card>
+      <Card>
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-           
-
             <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
@@ -194,7 +197,7 @@ const ExpenditureTable = () => {
                 label='Year'
                 SelectProps={{ value: year, onChange: e => handleChangeSession(e) }}
               >
-                <MenuItem value=''>{year ? 'Show All' :'Select Year'}</MenuItem>
+                <MenuItem value=''>{year ? 'Show All' : 'Select Year'}</MenuItem>
                 {filteredData?.map(item => (
                   <MenuItem key={item?.id} value={item?.name} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name}`}
@@ -202,16 +205,26 @@ const ExpenditureTable = () => {
                 ))}
               </CustomTextField>
             </Grid>
-            
+            <Grid item xs={12} sm={3}>
+              <CustomTextField
+                select
+                fullWidth
+                label='Term'
+                SelectProps={{ value: `${termYear} ${term}`, onChange: e => handleChangeTerm(e) }}
+              >
+                <MenuItem value=''>{term ? 'Show All' : 'Select Term'}</MenuItem>
+                {SessionData?.map(item => (
+                  <MenuItem key={item?.id} value={`${item?.name} ${item?.term}`} sx={{ textTransform: 'uppercase' }}>
+                    {`${item.name} ${item?.term}`}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
 
-
-      <PageHeader
-        action='Add Expenditure'
-        toggle={toggleModal}
-      />
+      <PageHeader action='Add Expenditure' toggle={toggleModal} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
@@ -334,7 +347,6 @@ const ExpenditureTable = () => {
                                   Pay Outstanding
                                 </MenuItem>
                               ) : null}
-                            
                             </Menu>
                           </>
                         </TableCell>
