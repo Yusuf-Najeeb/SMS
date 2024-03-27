@@ -186,6 +186,10 @@ const navigation = () => {
     // },
 
     {
+      sectionTitle: 'Assessment & Results'
+    },
+
+    {
       title: 'Result Manager',
       icon: 'healthicons:i-exam-qualification',
       path: '/apps/result-manager'
@@ -196,11 +200,12 @@ const navigation = () => {
     //   icon: 'arcticons:classroom',
     //   path: '/apps/library/list'
     // },
-    // {
-    //   title: 'Exam',
-    //   icon: 'healthicons:i-exam-multiple-choice',
-    //   path: '/apps/exam/list'
-    // },
+
+    {
+      title: 'CBT',
+      icon: 'healthicons:i-exam-multiple-choice',
+      path: '/apps/cbt'
+    },
 
     {
       sectionTitle: 'Hostel'
@@ -274,7 +279,7 @@ const navigation = () => {
   ]
 }
 
-else {
+
   return [
     {
       sectionTitle: 'Dashboard'
@@ -382,9 +387,19 @@ else {
     // },
 
     {
+      sectionTitle: 'Assessment & Results'
+    },
+
+    {
       title: 'Result Manager',
       icon: 'healthicons:i-exam-qualification',
       path: '/apps/result-manager'
+    },
+
+    {
+      title: 'CBT',
+      icon: 'healthicons:i-exam-multiple-choice',
+      path: '/apps/cbt'
     },
 
     // {
@@ -392,11 +407,7 @@ else {
     //   icon: 'arcticons:classroom',
     //   path: '/apps/library/list'
     // },
-    // {
-    //   title: 'Exam',
-    //   icon: 'healthicons:i-exam-multiple-choice',
-    //   path: '/apps/exam/list'
-    // },
+    
 
     {
       sectionTitle: 'Hostel'
@@ -468,7 +479,7 @@ else {
 
   
   ]
-}
+
 
 
 }

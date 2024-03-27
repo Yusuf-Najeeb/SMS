@@ -32,6 +32,7 @@ import reportCard from 'src/store/apps/reportCard'
 import singleTeacherSubjects from 'src/store/apps/singleTeacherSubjects'
 import attendance from 'src/store/apps/attendance'
 import applicants from 'src/store/apps/applicants'
+import cbt from 'src/store/apps/cbt'
 
 
 export const store = configureStore({
@@ -65,7 +66,8 @@ export const store = configureStore({
     reportCard,
     singleTeacherSubjects,
     attendance,
-    applicants
+    applicants,
+    cbt
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

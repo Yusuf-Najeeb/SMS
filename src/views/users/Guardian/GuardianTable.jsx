@@ -97,13 +97,14 @@ const GuardianTable = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
-
-  const updateFetch = () => setFetch(!refetch)
-
+  
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
+
+  const updateFetch = () => setFetch(!refetch)
+
 
   const handleToggle = (value) => {
 
@@ -219,7 +220,7 @@ const GuardianTable = () => {
                 
 
                 <Fragment>
-                  {GuardianData?.result?.length &&
+                  {GuardianData?.result?.length > 0 &&
                     GuardianData?.result.map(item => (
                       <TableRow hover role='checkbox' key={item.id}>
                         <TableCell align='left' sx={{ display: 'flex', gap: '8px' }}>
