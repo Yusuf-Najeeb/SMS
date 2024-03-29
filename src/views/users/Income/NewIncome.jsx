@@ -46,6 +46,7 @@ const IncomeTable = () => {
   const dispatch = useAppDispatch()
   const [IncomeData, loading, paging] = useIncome()
 
+  // const [data, setData] = useState([])
   const [SessionData] = useSession()
   const [CurrentSessionData] = useCurrentSession()
 
@@ -53,6 +54,7 @@ const IncomeTable = () => {
   const [page, setPage] = useState(0)
   const [key, setKey] = useState('')
   const [year, setYear] = useState('')
+  const [termYear, setTermYear] = useState('')
   const [term, setTerm] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -80,13 +82,13 @@ const IncomeTable = () => {
 
   const handleChangeSession = e => {
     setYear(e.target.value)
+    setTerm('')
+    setTermYear('')
   }
 
   const handleChangeTerm = e => {
-    // console.log(e.target.value.slice(9), 'value')
-
-    setYear(e.target.value.slice(0, 9))
     setTerm(e.target.value.slice(10))
+    setTermYear(e.target.value.slice(0, 9))
   }
 
   const setIncomeToView = value => {
@@ -164,23 +166,21 @@ const IncomeTable = () => {
     if (SessionData?.length > 0) {
       const filteredSession = SessionData.reduce((acc, curr) => {
         const existingItem = acc.find(item => item.name === curr.name)
-
         if (!existingItem) {
           acc.push(curr)
         }
 
         return acc
       }, [])
-
       setFilteredData(filteredSession)
     }
   }, [SessionData])
 
   useEffect(() => {
-    dispatch(fetchIncome({ page: page + 1, limit: 10, key, year, term }))
+    dispatch(fetchIncome({ page: page + 1, limit: 10, year: termYear.length > 0 ? termYear : year, term }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, key, refetch, year, term])
+  }, [page, rowsPerPage, refetch, year, term, termYear])
 
   useEffect(() => {
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -214,25 +214,21 @@ const IncomeTable = () => {
                 select
                 fullWidth
                 label='Term'
-                SelectProps={{ value: `${year} ${term}`, onChange: e => handleChangeTerm(e) }}
+                SelectProps={{ value: `${termYear} ${term}`, onChange: e => handleChangeTerm(e) }}
               >
-                <MenuItem value=''>{term ? 'Show All' :'Select Term'}</MenuItem>
+                <MenuItem value=''>{term ? 'Show All' : 'Select Term'}</MenuItem>
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={`${item?.name} ${item?.term}`} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name} ${item?.term}`}
                   </MenuItem>
                 ))}
               </CustomTextField>
-            </Grid> 
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
 
-      <PageHeader
-        action='Add Income'
-        toggle={toggleModal}
-      />
-
+      <PageHeader action='Add Income' toggle={toggleModal} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
@@ -286,7 +282,7 @@ const IncomeTable = () => {
                               rounded
                               skin='light'
                               size='small'
-                              label={formatCurrency(item?.amountPaid, true)}
+                              label={`${formatCurrency(item?.amountPaid, true) || '--'}`}
                               color='success'
                               sx={{ textTransform: 'uppercase' }}
                             />
@@ -295,7 +291,7 @@ const IncomeTable = () => {
                               rounded
                               skin='light'
                               size='small'
-                              label={formatCurrency(item?.amountPaid, true)}
+                              label={`${formatCurrency(item?.amount, true) || '--'}`}
                               color='error'
                               sx={{ textTransform: 'uppercase' }}
                             />

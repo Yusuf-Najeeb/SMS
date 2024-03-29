@@ -111,7 +111,7 @@ const ViewIncome = ({ open, closeCanvas, income }) => {
                   <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
                     <Icon icon='healthicons:money-bag-outline' fontSize={40} />
                     <Typography variant='h5' sx={{ alignSelf: 'center' }}>
-                      {`₦${income.transactions[0].amount}`}
+                      {`${formatCurrency(income.transactions[0].amount, true)}`}
                     </Typography>
                   </Box>
                 </Grid>
@@ -214,9 +214,9 @@ const ViewIncome = ({ open, closeCanvas, income }) => {
                       <TableRow key={item.id}>
                         <TableCell>{i + 1}</TableCell>
 
-                        <TableCell>{`₦${item?.amount || '--'}`}</TableCell>
+                        <TableCell>{`${formatCurrency(item?.amount, true) || '--'}`}</TableCell>
 
-                        <TableCell>{`₦${item.amountPaid}`}</TableCell>
+                        <TableCell>{`${formatCurrency(item?.amountPaid, true)}`}</TableCell>
                         <TableCell>{item?.description}</TableCell>
                         <TableCell>{formatDateToReadableFormat(item.createdAt)}</TableCell>
                       </TableRow>
@@ -285,19 +285,22 @@ const ViewIncome = ({ open, closeCanvas, income }) => {
                   <Grid item xs={12} sm={5} lg={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
                     <CalcWrapper>
                       <Typography sx={{ color: 'text.secondary' }}>Amount:</Typography>
-                      <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>{`₦${income?.amount}`}</Typography>
+                      <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>{`${formatCurrency(
+                        income?.amount,
+                        true
+                      )}`}</Typography>
                     </CalcWrapper>
                     <CalcWrapper>
                       <Typography sx={{ color: 'text.secondary' }}>Amount Paid:</Typography>
                       <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                        {`₦${income?.amountPaid}`}
+                        {`${formatCurrency(income?.amountPaid, true)}`}
                       </Typography>
                     </CalcWrapper>
 
                     <CalcWrapper>
                       <Typography sx={{ color: 'text.secondary' }}>Outstanding Amount:</Typography>
                       <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                        {`₦${Number(income?.amount) - Number(income?.amountPaid)}`}
+                        {`${formatCurrency(Number(income?.amount) - Number(income?.amountPaid, true))}`}
                       </Typography>
                     </CalcWrapper>
                     {/* <CalcWrapper sx={{ mb: '0 !important' }}>
