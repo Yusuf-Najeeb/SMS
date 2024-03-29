@@ -40,7 +40,6 @@ import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { useCategories } from '../../../hooks/useCategories'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
-import { useStudent } from '../../../hooks/useStudent'
 import Questions from './Questions'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { submitQuestions } from '../../../store/apps/cbt/asyncthunk'
@@ -85,8 +84,6 @@ const AddQuestion = ({ open, closeModal }) => {
   const [showQuestions, setShowQuestions] = useState(false)
   const [questions, setQuestions] = useState([])
 
-  // console.log(questions, 'new questions')
-
   // ** Hooks
   const dispatch = useDispatch()
   const [StaffData] = useStaff()
@@ -94,7 +91,6 @@ const AddQuestion = ({ open, closeModal }) => {
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
-  const [StudentData] = useStudent()
 
   const handleChangeNumberfQuestions = e => {
     Number(setNumberOfQuestions(e.target.value))
@@ -152,6 +148,8 @@ const AddQuestion = ({ open, closeModal }) => {
       if (res?.data?.success) {
         reset()
         closeModal()
+        setNumberOfQuestions(0)
+        setShowQuestions(false)
       }
     })
   }
