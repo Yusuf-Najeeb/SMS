@@ -307,7 +307,7 @@ const MarkAttendance = ({ open, closeModal }) => {
                         <MenuItem value=''>Select Session</MenuItem>
                         {SessionData?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
-                            {item.name}
+                            {`${item.name} ${item.term}`}
                           </MenuItem>
                         ))}
                       </CustomTextField>

@@ -17,20 +17,27 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import clsx from 'clsx'
 import { useKeenSlider } from 'keen-slider/react'
 import { Button, CircularProgress, FormControlLabel, FormGroup, Grid, Switch, Typography } from '@mui/material'
+import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
+import { notifyWarn } from '../../../@core/components/toasts/notifyWarn'
+import axios from 'axios'
+import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { notifyError } from '../../../@core/components/toasts/notifyError'
 
 const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions }) => {
 
-   
-
      // ** States
   const [loaded, setLoaded] = useState(false)
+  const [fileName, setFileName] = useState(Array.from({ length: numberOfQuestions }, () => ('')));
+  const [fileUploadRes, setFileUploadRes] = useState(Array.from({ length: numberOfQuestions }, () => ('')));
   const [saved, setSaved] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [showObjectives, setShowObjectives] = useState([])
+  const [submittingQuestionResource, setSubmittingQuestionResource] = useState([])
   const [formData, setFormData] = useState(Array.from({ length: numberOfQuestions }, () => ({})));
 
+
   const handleAddQuestions = () => {
-    const newQuestions = formData.map(data => ({
+    const newQuestions = formData.map((data, i) => ({
       question: data.question || '',
       ...(data.optionA) && {optionA : data.optionA},
       ...(data.optionB) && {optionB : data.optionB},
@@ -38,7 +45,8 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
       ...(data.optionD) && {optionD : data.optionD},
       ...(data.answer) && {answer : data.answer},
       value: Number(data.value) || '',
-      type: data.optionA ? 'objective' :'essay'
+      type: data.optionA ? 'objective' :'essay',
+      ...(fileUploadRes[i].length > 0) && {resource: fileUploadRes[i]}
     }));
 
     
@@ -49,14 +57,8 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
     setTimeout(()=>{setSaved(false)},1500)
   };
 
-  const handleInputChange = (index, field, value) => {
-    setFormData(prevState => {
-      const newData = [...prevState];
-      newData[index] = { ...newData[index], [field]: value };
 
-      return newData;
-    });
-  };
+
 
 
   // ** Hook
@@ -70,6 +72,13 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
     }
   })
 
+  useEffect(()=>{
+
+    setSubmittingQuestionResource(new Array(numberOfQuestions).fill(false))
+
+
+  },[numberOfQuestions])
+
   useEffect(() => {
     setShowObjectives(new Array(numberOfQuestions).fill(false));
   }, [numberOfQuestions]);
@@ -80,6 +89,152 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
       updatedState[index] = !prevState[index];
 
       return updatedState;
+    });
+  };
+
+  const handleFileChange = async ( e, index) => {
+    const fileInput = e.target
+
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0]
+
+    setFileName(prevState => {
+        const newData = [...prevState];
+        newData[index] = file.name;
+  
+        return newData;
+      });
+
+  
+
+    // setSelectedFile(prevState => {
+    //     const newData = [...prevState];
+    //     newData[index] = {...newData[index], file};
+  
+    //     return newData;
+    //   });
+
+      const fileSize = file.size / 1024 / 1024 // in MB
+
+      if (fileSize > 10) {
+        notifyWarn('FILE ERROR', 'File size should not exceed 10MB.');
+        setSelectedFile(prevState => {
+            const newData = [...prevState];
+            newData[index] = null
+      
+            return newData;
+      })
+      } else{
+
+      try {
+        const formData = new FormData()
+    formData.append('file', file)
+    setSubmittingQuestionResource(prevState => {
+        const updatedState = [...prevState];
+        updatedState[index] = true;
+  
+        return updatedState;
+      });
+
+        const response = await axios.post('upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data;'
+          }
+        })
+
+        console.log(response, 'response')
+  
+        if (response.data.success) {
+          notifySuccess('Question File Upload successful')
+          setFileUploadRes(prevState => {
+            const newData = [...prevState];
+            newData[index] = response?.data?.data?.url;
+      
+            return newData;
+          });
+
+           setSubmittingQuestionResource(prevState => {
+        const updatedState = [...prevState];
+        updatedState[index] = false;
+  
+        return updatedState;
+      });
+        }
+        else {
+          notifyError('Question File Upload Failed')
+        }
+      } catch (error) {
+        notifyError(error?.response ? error?.response.data.message :'Question File upload failed, try again')
+         setSubmittingQuestionResource(prevState => {
+        const updatedState = [...prevState];
+        updatedState[index] = false;
+  
+        return updatedState;
+      })
+    }
+  }
+
+    } else {
+      notifyWarn('FILE ERROR', 'No file selected.')
+      setSelectedFile(prevState => {
+        const updatedState = [...prevState]
+        updatedState[index] = null
+
+        return updatedState
+      })
+    }
+  }
+
+  const handleSubmitFile = async (e, index )=>{
+    e.preventDefault()
+    const formData = new FormData()
+    formData.append('file', selectedFile[index])
+    setSubmittingQuestionResource(prevState => {
+        const updatedState = [...prevState];
+        updatedState[index] = true;
+  
+        return updatedState;
+      });
+
+      try {
+        const response = await axios.post('upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data;'
+          }
+        })
+  
+        if (response.data.success) {
+          notifySuccess('Question File Upload successful')
+           setSubmittingQuestionResource(prevState => {
+        const updatedState = [...prevState];
+        updatedState[index] = false;
+  
+        return updatedState;
+      });
+        }
+        else {
+          notifyError('Question File Upload Failed')
+        }
+      } catch (error) {
+        notifyError(error?.response ? error?.response.data.message :'Question File upload failed, try again')
+         setSubmittingQuestionResource(prevState => {
+        const updatedState = [...prevState];
+        updatedState[index] = false;
+  
+        return updatedState;
+      });
+      }
+
+    
+  }
+  
+
+  const handleInputChange = (index, field, value) => {
+    setFormData(prevState => {
+      const newData = [...prevState];
+      newData[index] = { ...newData[index], [field]: value };
+
+      return newData;
     });
   };
 
@@ -99,6 +254,59 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
               control={<Switch checked={showObjectives[index]} onChange={() => handleSwitchChange(index)}  />}
             />
           </FormGroup>
+
+          <Grid
+          item
+          xs={12}
+          sm={6}
+          sx={{ mb: 6, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+        >
+
+      <Grid item xs={12} sm={6}>
+            <Box
+              sx={{
+                border: '3px dotted black',
+                borderRadius: 3,
+                p: 3,
+                display: 'flex',
+                textAlign: 'center',
+                alignItems: 'center',
+                flexDirection: 'column'
+              }}
+            >
+              <ButtonStyled component='label' variant='contained' htmlFor={`upload-file-${index}`}>
+                <input
+                  hidden
+                  type='file'
+                  accept='application/pdf'
+                  onChange={(e)=> handleFileChange(e, index)}
+                  id={`upload-file-${index}`}
+                />
+
+                <Icon icon={submittingQuestionResource[index] ? 'line-md:uploading-loop' : 'tabler:upload'} fontSize='1.75rem' />
+              </ButtonStyled>
+              <Typography variant='body2' sx={{ mt: 2 }}>
+                Upload Question Resource (Pdf)
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              alignItems: 'center',
+              alignSelf: 'center'
+            }}
+          >
+            <Typography variant='body2'>{fileName[index]}</Typography>
+          </Box>
+
+      </Grid>
+
+         
+      
        
         <Grid item xs={12} sm={12}>
         <Controller
@@ -295,11 +503,10 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
                     )}
                   />
       </Grid>
-      </Grid>
 
-      {/* {saved && <Typography className="saveQuestionSuccess" sx={{color: 'text.primary', backgroundColor: 'error.light'}}>
-            Questions Saved
-        </Typography>} */}
+</Grid>
+      
+
 
       {index === (numberOfQuestions -1) && 
 
@@ -323,6 +530,8 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
             </Box>
  }
     </Box>
+
+    
   ));
 
   return (
