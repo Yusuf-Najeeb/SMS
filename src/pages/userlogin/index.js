@@ -32,7 +32,7 @@ import { loginUser } from '../../store/apps/auth/asyncthunk'
 import { notifyError } from '../../@core/components/toasts/notifyError'
 
 // ** Hooks
-//import { useAuth } from 'src/hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
@@ -100,7 +100,7 @@ const UserLoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
-  //const auth = useAuth()
+  const auth = useAuth()
   const theme = useTheme()
   const router = useRouter()
   const bgColors = useBgColor()
@@ -123,16 +123,7 @@ const UserLoginPage = () => {
 
   const onSubmit = async data => {
 
-    const resp = loginUser(data)
-
-      .then(res => {
-        if (res.data.success) {
-          router.replace('/dashboard')
-        }
-      })
-      .catch(error => {
-        //notifyError('A network Error occured, please try again')
-      })
+    auth.userLogin(data)
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 

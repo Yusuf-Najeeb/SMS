@@ -15,7 +15,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
@@ -27,7 +33,8 @@
     "src/views/users/settings/Designations/DesignationTable.jsx",
     "src/views/users/settings/Paymentmethod/ManagePayment.jsx",
     "src/views/users/settings/Paymentmethod/PaymentHeader.jsx",
-    "src/views/users/settings/Paymentmethod/PaymentTable.jsx"
+    "src/views/users/settings/Paymentmethod/PaymentTable.jsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

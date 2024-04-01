@@ -32,7 +32,7 @@ import { loginStaff } from '../../store/apps/auth/asyncthunk'
 import { notifyError } from '../../@core/components/toasts/notifyError'
 
 // ** Hooks
-//import { useAuth } from 'src/hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
@@ -45,6 +45,11 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
+
+// Next Auth Imports
+import { getProviders, signIn } from "next-auth/react"
+import { getServerSession } from 'next-auth'
+import { getCsrfToken } from "next-auth/react"
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -95,12 +100,12 @@ const defaultValues = {
   userId: 'super.admin@email.com'
 }
 
-const LoginPage = () => {
+const LoginPage = ({getCsrfToken, getProviders}) => {
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
-  //const auth = useAuth()
+  const auth = useAuth()
   const theme = useTheme()
   const router = useRouter()
   const bgColors = useBgColor()
@@ -124,16 +129,8 @@ const LoginPage = () => {
   const onSubmit = async data => {
     const { userId, password } = data
 
-    const resp = loginStaff(data)
+   auth.staffLogin(data)
 
-      .then(res => {
-        if (res.data.success) {
-          router.replace('/dashboard')
-        }
-      })
-      .catch(error => {
-        //notifyError('A network Error occured, please try again')
-      })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 

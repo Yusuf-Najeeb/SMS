@@ -25,8 +25,10 @@ import { Toaster } from 'react-hot-toast'
 
 // ** Component Imports
 import UserLayout from 'src/layouts/UserLayout'
-
 import ThemeComponent from 'src/@core/theme/ThemeComponent'
+
+// ** Spinner Import
+import Spinner from 'src/@core/components/spinner'
 
 import axiosConfig from '../configs/axiosConfig'
 
@@ -34,6 +36,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 
 // ** Contexts
+import { AuthProvider } from 'src/context/AuthContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
 
 // ** Styled Components
@@ -59,6 +62,9 @@ import { useAppDispatch } from '../hooks'
 import { fetchClasses } from '../store/apps/classes/asyncthunk'
 import { fetchCategories } from '../store/apps/categories/asyncthunk'
 
+import { SessionProvider } from 'next-auth/react'
+import NextAuthProvider from './NextAuthProvider'
+
 const clientSideEmotionCache = createEmotionCache()
 
 // ** Pace Loader
@@ -75,6 +81,8 @@ if (themeConfig.routingLoader) {
 }
 
 
+
+
 // ** Configure JSS & ClassName
 const App = props => {
 
@@ -86,24 +94,6 @@ const App = props => {
   const getLayout =
     Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
   const setConfig = Component.setConfig ?? undefined
-
-
-  // const initData = () => {
-  //   store.dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
-  //   store.dispatch(fetchCategories({ page: 1, limit: 300, type: 'subject' }))
-  // }
-  
-  let accessToken = null
-  
-  if (typeof window !== 'undefined') {
-    accessToken = window.localStorage.getItem('authToken')
-
-    // window.localStorage.removeItem('settings')
-  }
-  
-  // if (accessToken) {
-  //   initData()
-  // }
 
   return (
     <Provider store={store}>
@@ -118,12 +108,15 @@ const App = props => {
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 
+        <AuthProvider>
         <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
           <SettingsConsumer>
             {({ settings }) => {
               return (
                 <ThemeComponent settings={settings}>
+
                   {getLayout(<Component {...pageProps} />)}
+
 
                   <ReactHotToast>
                     <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
@@ -133,6 +126,7 @@ const App = props => {
             }}
           </SettingsConsumer>
         </SettingsProvider>
+        </AuthProvider>
       </CacheProvider>
     </Provider>
   )

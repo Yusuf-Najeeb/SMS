@@ -18,10 +18,23 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { useEffect, useState } from 'react'
 
 const UserLayout = ({ children, contentHeightFixed }) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
+  const [userRole, setUserRole] = useState(null)
+
+  useEffect(() => {
+    // Fetch user data from local storage or API
+    const userData = localStorage.getItem('authUser')
+    const parsedUserData = JSON.parse(userData)
+    setUserRole(parsedUserData?.role?.name)
+  }, [])
+
+  // if (!userRole) {
+  //   return null // Render nothing until user role is fetched
+  // }
 
   // ** Vars for server side navigation
   // const { menuItems: verticalMenuItems } = ServerSideVerticalNavItems()
@@ -47,7 +60,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
       contentHeightFixed={contentHeightFixed}
       verticalLayoutProps={{
         navMenu: {
-          navItems: VerticalNavItems()
+          navItems: !userRole ? null :  VerticalNavItems()
 
           // Uncomment the below line when using server-side menu in vertical layout and comment the above line
           // navItems: verticalMenuItems
