@@ -11,6 +11,10 @@ import Grid from '@mui/material/Grid'
 import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
 
+// ** Component Import
+import NotAuthorized from 'src/pages/401'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+
 import { styled, Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiTabList from '@mui/lab/TabList'
@@ -19,6 +23,7 @@ import MuiTabList from '@mui/lab/TabList'
 import Icon from 'src/@core/components/icon'
 import NewIncome from './NewIncome'
 import NewIncomeCategories from './NewIncomeCategory'
+import GetUserData from '../../../@core/utils/getUserData'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -49,6 +54,8 @@ const TabList = styled(MuiTabList)(({ theme }) => ({
   }
 }))
 
+const userData = GetUserData()
+
 const IncomeTab = ({ tab }) => {
   // ** State
   const [activeTab, setActiveTab] = useState(tab)
@@ -74,6 +81,7 @@ const IncomeTab = ({ tab }) => {
     categories: <NewIncomeCategories />
   }
 
+  if(userData?.role?.name == 'super-admin' || userData?.role?.name == 'admin' || userData?.role?.name == 'accountant' ) {
   return (
     <Grid container spacing={6}>
       {activeTab === undefined ? null : (
@@ -113,6 +121,15 @@ const IncomeTab = ({ tab }) => {
       )}
     </Grid>
   )
+
+  } else {
+
+return (
+  <BlankLayout>
+  <NotAuthorized />
+</BlankLayout>
+)}
+
 }
 
 export default IncomeTab
