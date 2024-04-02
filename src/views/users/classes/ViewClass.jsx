@@ -56,7 +56,6 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
   const [CurrentSessionData] = useCurrentSession()
   const [ClassesList] = useClasses()
   const [classTeacher, setClassTeacher] = useState('')
-  console.log(ClassesList)
 
   useEffect(() => {
     dispatch(fetchCurrentSession())
@@ -184,7 +183,6 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                         sx={{ textTransform: 'capitalize' }}
                       />
                     )}
-                    {/* <Typography sx={{ color: 'text.secondary' }}>{classTeacher}</Typography> */}
                   </Box>
                 </Stack>
               </CardContent>
