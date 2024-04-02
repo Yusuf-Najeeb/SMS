@@ -27,8 +27,6 @@ import { Toaster } from 'react-hot-toast'
 import UserLayout from 'src/layouts/UserLayout'
 import ThemeComponent from 'src/@core/theme/ThemeComponent'
 
-// ** Spinner Import
-import Spinner from 'src/@core/components/spinner'
 
 import axiosConfig from '../configs/axiosConfig'
 
@@ -57,13 +55,6 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
-import { useEffect } from 'react'
-import { useAppDispatch } from '../hooks'
-import { fetchClasses } from '../store/apps/classes/asyncthunk'
-import { fetchCategories } from '../store/apps/categories/asyncthunk'
-
-import { SessionProvider } from 'next-auth/react'
-import NextAuthProvider from './NextAuthProvider'
 
 const clientSideEmotionCache = createEmotionCache()
 

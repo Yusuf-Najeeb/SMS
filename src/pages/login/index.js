@@ -6,9 +6,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 // ** MUI Components
-import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -28,8 +26,6 @@ import Icon from 'src/@core/components/icon'
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { loginStaff } from '../../store/apps/auth/asyncthunk'
-import { notifyError } from '../../@core/components/toasts/notifyError'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -46,10 +42,6 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
 
-// Next Auth Imports
-import { getProviders, signIn } from "next-auth/react"
-import { getServerSession } from 'next-auth'
-import { getCsrfToken } from "next-auth/react"
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -127,7 +119,6 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
   })
 
   const onSubmit = async data => {
-    const { userId, password } = data
 
    auth.staffLogin(data)
 
