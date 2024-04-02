@@ -75,19 +75,22 @@ const StyledList = styled(List)(({ theme }) => ({
   }
 }))
 
-const ListStudents = ({Users, CardSnippetTitle, ClassList}) => {
+const ListStudents = ({Users, ClassList}) => {
   return (
 
     <Grid container spacing={6}>
     <Grid item xs={12} md={12}>
-    <CardSnippet
+
+    <Typography sx={{mt: 3, mb: 3, fontWeight: 700}}>Students</Typography>
+
+    {/* <CardSnippet
       title={CardSnippetTitle}
       code={{
         tsx: null,
         jsx: source.ListUsersJSXCode
       }}
     >
-        </CardSnippet>
+        </CardSnippet> */}
     <StyledList disablePadding>
         {Users.map((user, i)=>{
             

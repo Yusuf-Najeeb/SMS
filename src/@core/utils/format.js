@@ -22,12 +22,11 @@ export const formatDate = (value, formatting = { month: 'short', day: 'numeric',
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
 
-export const formatDateToReadableFormat = (inputDate) => {
+export const formatDateToReadableFormat = inputDate => {
+  const options = { month: 'short', day: 'numeric', year: 'numeric' }
+  const formattedDate = new Date(inputDate).toLocaleDateString('en-US', options)
 
-  const options = { month: 'short', day: 'numeric', year: 'numeric' };
-  const formattedDate = new Date(inputDate).toLocaleDateString('en-US', options);
-
-  return inputDate !== null ? formattedDate : '--';
+  return inputDate !== null ? formattedDate : '--'
 }
 
 // ** Returns short month of passed date
@@ -98,11 +97,10 @@ export const formatCVC = (value, cardNumber, Payment) => {
 }
 
 export const formatFirstLetter = letter => {
-  if (letter){
+  if (letter) {
+    const formattedString = letter[0].toUpperCase() + letter.slice(1)
 
-  const formattedString = letter[0].toUpperCase() + letter.slice(1)
-
-  return formattedString
+    return formattedString
   } else {
     return ''
   }
@@ -130,9 +128,6 @@ export const formatDateToYYYMMDDD = date => {
   return `${year}-${month}-${day}`
 }
 
-
-
-
 export const formatMonthYear = date => {
   // Check if date is a valid Date object
   if (!(date instanceof Date) || isNaN(date.getTime())) {
@@ -154,14 +149,11 @@ export const formatMonthYear = date => {
   return formattedDate
 }
 
-export const formatDateToYYYYMM = (dateString)=> {
-  
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-  const formattedDate = `${year}${month}`;
-  
-
+export const formatDateToYYYYMM = dateString => {
+  const date = new Date(dateString)
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0') // Months are zero-based
+  const formattedDate = `${year}${month}`
 
   return formattedDate
 }
@@ -182,12 +174,9 @@ export const formatMonthYearr = date => {
     console.log(formattedDate, 'formatteddate')
 
     // return newDate.toLocaleDateString('en-US', options)
-  }
-  else {
+  } else {
     console.log('false')
-
   }
-
 
   // const options = { month: 'long', year: 'numeric' }
 
@@ -196,10 +185,8 @@ export const formatMonthYearr = date => {
   // return formattedDate
 }
 
-
-
 export const parseClass = item => {
-  if ( !item || item === '') {
+  if (!item || item === '') {
     return 'bg-info'
   } else if (item === 'Monday') {
     return 'bg-primary'
@@ -211,74 +198,78 @@ export const parseClass = item => {
 }
 
 const getDatesForDayInMonth = (dayOfWeek, month, year) => {
-  const dates = [];
-  const date = new Date(year, month, 1);
+  const dates = []
+  const date = new Date(year, month, 1)
 
   // Find the first occurrence of the dayOfWeek in the month
   while (date.getDay() !== dayOfWeek) {
-    date.setDate(date.getDate() + 1);
+    date.setDate(date.getDate() + 1)
   }
 
   // Add all occurrences of the dayOfWeek in the month to the array
   while (date.getMonth() === month) {
-    dates.push(new Date(date));
-    date.setDate(date.getDate() + 7);
+    dates.push(new Date(date))
+    date.setDate(date.getDate() + 7)
   }
 
-  return dates;
+  return dates
 }
 
 export const parseCalendarEvents = (result, teachers) => {
   const dateValue = new Date()
   const year = dateValue.getFullYear()
-  const month = (dateValue.getMonth() + 1) 
+  const month = dateValue.getMonth() + 1
   let rosters = []
 
   // result.forEach(item => {
   //   const parsedSchedule = item.schedule ? JSON.parse(item.schedule) : []
 
   result.forEach(schedule => {
-      if (schedule.day !== '') {
-        let teacher = teachers?.find((teacher)=> teacher.id == schedule.staffId)
-        let day;
-        switch (schedule.day) {
-          case 'Monday':
-            day = 1;
-            break;
-          case 'Tuesday':
-            day = 2;
-            break;
-          case 'Wednesday':
-            day = 3;
-            break;
-            case 'Thursday':
-            day = 4;
-            break;
-            case 'Friday':
-            day = 5;
-            break;
-          default:
-            day = 0;
-        }
-
-        const dates = getDatesForDayInMonth(day, month - 1, year);
-       const datee = (dates[0].getDate().toString().padStart(2, '0'))
-        rosters = [
-          ...rosters,
-          {
-            title: ` ${schedule?.subject?.name?.toUpperCase()} ⏱️ ${schedule.start?.slice(0, 5) || '--'} - ${schedule.end?.slice(0, 5) || '--'} `,
-
-            // title: ` subject Teacher Name `,
-            date: `${year}-${month.toString().padStart( 2, '0')}-${datee}`,
-
-            // start: schedule.start,
-            // end: schedule.end,
-
-            className: parseClass(schedule.day)
-          }
-        ]
+    if (schedule.day !== '') {
+      let teacher = teachers?.find(teacher => teacher.id == schedule.staffId)
+      let day
+      switch (schedule.day) {
+        case 'Monday':
+          day = 1
+          break
+        case 'Tuesday':
+          day = 2
+          break
+        case 'Wednesday':
+          day = 3
+          break
+        case 'Thursday':
+          day = 4
+          break
+        case 'Friday':
+          day = 5
+          break
+        default:
+          day = 0
       }
-    })
+
+      const dates = getDatesForDayInMonth(day, month - 1, year)
+      const datee = dates[0].getDate().toString().padStart(2, '0')
+      rosters = [
+        ...rosters,
+        {
+          title: ` ${schedule?.subject?.name?.toUpperCase()} ⏱️ ${schedule.start?.slice(0, 5) || '--'} - ${
+            schedule.end?.slice(0, 5) || '--'
+          } `,
+
+          // title: ` subject Teacher Name `,
+          date: `${year}-${month.toString().padStart(2, '0')}-${datee}`,
+
+          // start: schedule.start,
+          // end: schedule.end,
+
+          value: { ...schedule },
+
+          className: parseClass(schedule.day)
+        }
+      ]
+    }
+  })
 
   // })
 
@@ -296,15 +287,16 @@ export const getFirstId = arrayOfObjects => {
   return null
 }
 
-
-
 export const formatCurrency = (amount, abs) => {
-  
   if (!amount) {
-    return `#0.0`
+    return `₦0.0`
   } else if (amount) {
     const formattedAmount = Number(amount)
 
-    return `#${(abs ? Math.abs(formattedAmount) : formattedAmount).toLocaleString()}`
+    return `₦${(abs ? Math.abs(formattedAmount) : formattedAmount).toLocaleString()}`
   }
+}
+
+export const getCurrency = () => {
+  return { symbol: '₦' }
 }

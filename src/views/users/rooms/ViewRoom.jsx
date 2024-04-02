@@ -168,7 +168,7 @@ const ViewRoom = ({ open, closeCanvas, Room }) => {
 
 
             {roomData?.students?.length > 0 ? 
-            <ListStudents Users={roomData?.students} CardSnippetTitle={'Students In Room'} ClassList={ClassesList}/>
+            <ListStudents Users={roomData?.students}  ClassList={ClassesList}/>
 
             : 
             <Grid container spacing={6}>

@@ -12,7 +12,6 @@ const router = useRouter()
         root: ({ theme }) => ({
           boxShadow: theme.shadows[0],
           borderTopColor: theme.palette.divider,
-          backgroundColor: router?.pathname == "/apps/result-manager" && '#fff',
           borderSpacing: 1
         })
       }
@@ -36,11 +35,9 @@ const router = useRouter()
           '& .MuiTableCell-body': {
             letterSpacing: '0.25px',
             color: theme.palette.text.secondary,
-            color: router?.pathname == "/apps/result-manager" && '#666',
             '&:not(.MuiTableCell-sizeSmall):not(.MuiTableCell-paddingCheckbox):not(.MuiTableCell-paddingNone)': {
-              paddingTop: router?.pathname == "/apps/result-manager" ? theme.spacing(2.5) : theme.spacing(3.5),
-              paddingBottom: router?.pathname == "/apps/result-manager" ? theme.spacing(2.5) : theme.spacing(3.5),
-              color: router?.pathname == "/apps/result-manager" && '#666',
+              paddingTop: theme.spacing(3.5),
+              paddingBottom: theme.spacing(3.5),
               borderSpacing: 1
             }
           }
@@ -70,16 +67,18 @@ const router = useRouter()
     MuiTableCell: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderBottom: router?.pathname == "/apps/result-manager" ? '1px solid #eee' : `1px solid ${theme.palette.divider}`,
-          borderSpacing: router?.pathname == "/apps/result-manager" && 1,
-          borderCollapse: router?.pathname == "/apps/result-manager" && 'collapse',
+          borderBottom:  `1px solid ${theme.palette.divider}`,
+
+          // borderSpacing: router?.pathname == "/apps/result-manager" && 1,
+          borderCollapse:  'collapse',
+          minHeight: router?.pathname == "/apps/cbt" && '120px',
         }),
         paddingCheckbox: ({ theme }) => ({
           paddingLeft: theme.spacing(3.25)
         }),
         stickyHeader: ({ theme }) => ({
-          backgroundColor: router?.pathname == "/apps/result-manager" ? '#333333' : theme.palette.customColors.tableHeaderBg,
-          color: router?.pathname == "/apps/result-manager" && '#fff'
+          backgroundColor: theme.palette.customColors.tableHeaderBg,
+          color: '#fff'
         })
       }
     }

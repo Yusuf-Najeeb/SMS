@@ -2,10 +2,8 @@
 import { useEffect, useState } from 'react'
 
 // ** MUI Imports
-import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
@@ -19,7 +17,7 @@ import { useForm, Controller } from 'react-hook-form'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import { useAppDispatch, useAppSelector } from 'src/hooks'
+import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, Dialog, DialogContent, DialogTitle, Grid, MenuItem } from '@mui/material'
 import { CustomCloseButton } from '../Guardian/AddGuardian'
 import { useStaff } from '../../../hooks/useStaff'
@@ -286,7 +284,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
 
        
 
-          <Grid item xs={12} sm={4} md={6}>
+          <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='staffId'
                   control={control}

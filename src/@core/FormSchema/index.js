@@ -210,6 +210,38 @@ export const createActorSchema = yup.object().shape({
   ethnicity: yup.string(),
 })
 
+export const createApplicantSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string(),
+  email: yup.string().required('Email is required'),
+  password: yup.string().required('Applicant Password is required'),
+  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string().required('Residential Address is required'),
+  gender: yup.string().required('Gender is required'),
+  branch: yup.string().required('Branch is required'),
+  identificationNumber: yup.string().required('Student ID is required'),
+  title: yup.string(),
+})
+
+export const updateApplicantSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string(),
+  email: yup.string().required('Email is required'),
+  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
+  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  dateOfBirth: yup.string().required('Date of Birth is required'),
+  residentialAddress: yup.string().required('Residential Address is required'),
+  gender: yup.string().required('Gender is required'),
+
+  // branch: yup.string().required('Branch is required'),
+  identificationNumber: yup.string().required('Student ID is required'),
+  title: yup.string(),
+})
+
 export const createStudentSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
@@ -336,6 +368,35 @@ export const inputScoreSchema = yup.object().shape({
   maxScore: yup.string().required('Maximum Score is required'),
   classId: yup.string().required('Class is required'),
   sessionId: yup.string().required('Session is required'),
+})
+
+export const inputQuestionsSchema = yup.object().shape({
+  categoryId: yup.string().required('Assessment Category is required'),
+  staffId: yup.string().required('Teacher is required'),
+  dueDate: yup.string().required('Due Date is required'),
+  dueTime: yup.string().required('Due Time is required'),
+  subjectId: yup.string().required('Subject is required'),
+  classId: yup.string().required('Class is required'),
+  sessionId: yup.string().required('Session is required'),
+  numberOfQuestions: yup.string().required('Number of Questions is required'),
+})
+
+export const updateQuestionsSchema = yup.object().shape({
+  categoryId: yup.string().required('Assessment Category is required'),
+  staffId: yup.string().required('Teacher is required'),
+  dueDate: yup.string().required('Due Date is required'),
+  dueTime: yup.string().required('Due Time is required'),
+  subjectId: yup.string().required('Subject is required'),
+  classId: yup.string().required('Class is required'),
+  sessionId: yup.string().required('Session is required'),
+  
+  // question: yup.string().required('Question is required'),
+  // optionA: yup.string(),
+  // optionB: yup.string(),
+  // optionC: yup.string(),
+  // optionD: yup.string(),
+  // answer: yup.string(),
+  // value: yup.string(),
 })
 
 export const singleStudentAttendanceSchema = yup.object().shape({

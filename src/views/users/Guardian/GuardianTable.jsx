@@ -215,7 +215,7 @@ const GuardianTable = () => {
                 </TableRow>
               ) : (
                 <Fragment>
-                  {GuardianData?.result?.length &&
+                  {GuardianData?.result?.length > 0 &&
                     GuardianData?.result.map(item => (
                       <TableRow hover role='checkbox' key={item.id}>
                         <TableCell align='left' sx={{ display: 'flex', gap: '8px' }}>

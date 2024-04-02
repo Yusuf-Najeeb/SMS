@@ -32,8 +32,6 @@ const UsersDashboard = () => {
     const userData = GetUserData() 
   
 
-  console.log(userData, 'userData')
-
   if(userData?.role?.name == 'student') {
     return  (
       <ApexChartWrapper>

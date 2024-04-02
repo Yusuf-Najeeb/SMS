@@ -90,9 +90,6 @@ const ClassesTable = () => {
   const [assignSubject, setAssignSubject] = useState(false)
   const [anchorEl, setAnchorEl] = useState(Array(ClassesList?.length)?.fill(null))
 
-  // const dateValue = new Date()
-  // console.log(dateValue.getDay(), 'day')
-  // console.log(dateValue.getDate().toString(), 'date to string')
 
   const handleRowOptionsClick = (event, index) => {
     const newAnchorEl = [...anchorEl]
@@ -164,7 +161,7 @@ const ClassesTable = () => {
   }
 
   const closeTimeTableModal = () => {
-    setOpenTimeTable(false)
+    setOpenTimeTable(!openTimetableModal)
     setClassRoomToViewTimeTable(null)
   }
 

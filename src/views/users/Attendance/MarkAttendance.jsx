@@ -309,7 +309,7 @@ const MarkAttendance = ({ open, closeModal }) => {
                         <MenuItem value=''>Select Session</MenuItem>
                         {SessionData?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
-                            {item.name}
+                            {`${item.name} ${item.term}`}
                           </MenuItem>
                         ))}
                       </CustomTextField>
@@ -317,7 +317,7 @@ const MarkAttendance = ({ open, closeModal }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={4}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name='date'
                     control={control}

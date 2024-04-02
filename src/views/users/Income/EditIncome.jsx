@@ -12,17 +12,20 @@ import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 
-import {  CircularProgress,  } from '@mui/material'
+// ** Custom Component Import
+import CustomTextField from 'src/@core/components/mui/text-field'
+
+import {  CircularProgress, InputAdornment,  } from '@mui/material'
 
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { updateIncomeSchema } from 'src/@core/Formschema'
 
 import { updateIncome } from '../../../store/apps/income/asyncthunk'
-import FormController from '../component/FormController'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
+import { getCurrency } from '../../../@core/utils/format'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -38,6 +41,8 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
     transform: 'translate(7px, -5px)'
   }
 }))
+
+const currency = getCurrency()
 
 const defaultValues = {
   amount: Number(''),
@@ -89,7 +94,7 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
         //eslint_disable-next-line
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
-        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 450 } }}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '65%', maxWidth: 400 } }}
       >
         <DialogContent
           sx={{
@@ -106,17 +111,32 @@ const EditIncome = ({ open, closeModal, fetchData, selectedIncome }) => {
               <Grid container spacing={6}>
                
 
-                <Grid item xs={12} sm={12}>
-                  <FormController
+              <Grid item xs={12} sm={12}>
+                <Controller
                     name='amount'
                     control={control}
-                    required={true}
-                    requireBoolean={true}
-                    label='Amount'
-
-                    // error={errors['amount']}
-                    error={Boolean(errors.amount)}
-                    errorMessage={errors?.amount?.message}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        required
+                        value={value}
+                        label='Amount'
+                        onChange={e => {
+                          onChange(e)
+                        }}
+                        error={Boolean(errors.amount)}
+                        aria-describedby={`stepper-linear-amount`}
+                        {...(errors.amount && { helperText: errors.amount.message })}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <p>{currency.symbol}</p>
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
                   />
                 </Grid>
 

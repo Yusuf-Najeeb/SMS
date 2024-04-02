@@ -1,8 +1,12 @@
 import React from 'react'
 import { Controller } from 'react-hook-form'
 import CustomTextField from 'src/@core/components/mui/text-field'
+import { getCurrency } from '../../../@core/utils/format'
+import { InputAdornment } from '@mui/material'
 
-const FormController = ({ name, control, requireBoolean, label, error, errorMessage, required }) => {
+const currency = getCurrency()
+
+const FormController = ({ name, control, requireBoolean, label, error, errorMessage, required, moneyInputField }) => {
   return (
     <Controller
       name={name}
@@ -18,6 +22,13 @@ const FormController = ({ name, control, requireBoolean, label, error, errorMess
           error={Boolean(error)}
           aria-describedby={`stepper-linear-${name}`}
           {...(error && { helperText: errorMessage })}
+         InputProps={ moneyInputField && {  
+            startAdornment: (
+              <InputAdornment position='start'>
+                <p>{currency.symbol}</p>
+              </InputAdornment>
+            )
+          }}
         />
       )}
     />

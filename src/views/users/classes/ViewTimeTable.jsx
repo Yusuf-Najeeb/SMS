@@ -1,4 +1,4 @@
-import {useState,Fragment, forwardRef, useRef, useEffect} from 'react';
+import {Fragment, forwardRef, useState, useEffect} from 'react';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,17 +18,14 @@ import { useClassTimetable } from '../../../hooks/useClassTimeTable';
 import { useCurrentSession } from '../../../hooks/useCurrentSession';
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk';
 import { useStaff } from '../../../hooks/useStaff';
-import { Box } from '@mui/system';
+
+import { handleSelectPeriod } from '../../../store/apps/timetable';
+import EditPeriod from './EditPeriod';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const events = [
-    { title: 'Meeting', start: new Date() }
-  ]
-
- 
 
   const calendarsColor = {
     Personal: 'error',
@@ -45,10 +42,22 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
   const { settings } = useSettings()
   const dispatch = useAppDispatch()
   const { skin, direction } = settings
-
   const [TimetableData] = useClassTimetable()
   const [CurrentSessionData] = useCurrentSession()
   const [StaffData] = useStaff()
+
+  const [editPeriodSidebarOpen, setEditPeriodSidebarOpen] = useState(false)
+  const [refetch, setFetch] = useState(false)
+
+
+  const updateFetch = ()=> setFetch(!refetch)
+
+  const handleEditEventSidebarToggle = () => {
+    // handleClose()
+    setEditPeriodSidebarOpen(!editPeriodSidebarOpen)
+  }
+
+  
 
   useEffect(()=>{
     dispatch(fetchCurrentSession())
@@ -66,10 +75,13 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ClassRoom, CurrentSessionData])
+  }, [ClassRoom, CurrentSessionData, refetch])
+
 
   return (
     <Fragment>
+
+      {!editPeriodSidebarOpen ? 
       <Dialog
         fullScreen
         open={open}
@@ -97,17 +109,22 @@ export default function ViewTimeTable({open, handleClose, ClassRoom}) {
           </Toolbar>
         </AppBar>
 
-        {/* <Box sx={{ height: '100%', border: '1px solid red' }} > */}
 
 <Calendar
             store={TimetableData}
             direction={direction}
             teachersData={StaffData?.result}
             calendarsColor={calendarsColor}
+            handleEditEventSidebarToggle={handleEditEventSidebarToggle}
+            handleSelectEvent={handleSelectPeriod}
+            
           />
 
-{/* </Box> */}
+
       </Dialog>
+        :
+           <EditPeriod open={editPeriodSidebarOpen} toggle={handleEditEventSidebarToggle} fetchData={updateFetch} /> 
+          }
     </Fragment>
   );
 }

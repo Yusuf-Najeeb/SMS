@@ -48,6 +48,23 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   }
 }))
 
+const defaultValues = {
+  firstName: '',
+  lastName: '',
+  middleName: '',
+  email: '',
+  password: '',
+
+  // maritalStatus: '',
+  phone: '',
+  dateOfBirth: '',
+  residentialAddress: '',
+  gender: '',
+  religion: '',
+  ethnicity: '',
+  relationship: ''
+}
+
 export const CustomInput = forwardRef(({ ...props }, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
 })
@@ -65,22 +82,7 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
     setParentModal(!openParentModal)
   }
 
-  const defaultValues = {
-    firstName: '',
-    lastName: '',
-    middleName: '',
-    email: '',
-    password: '',
-
-    // maritalStatus: '',
-    phone: '',
-    dateOfBirth: '',
-    residentialAddress: '',
-    gender: '',
-    religion: '',
-    ethnicity: '',
-    relationship: ''
-  }
+ 
 
   const {
     control,

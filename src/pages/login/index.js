@@ -6,9 +6,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 // ** MUI Components
-import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -28,11 +26,9 @@ import Icon from 'src/@core/components/icon'
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { loginStaff } from '../../store/apps/auth/asyncthunk'
-import { notifyError } from '../../@core/components/toasts/notifyError'
 
 // ** Hooks
-//import { useAuth } from 'src/hooks/useAuth'
+import { useAuth } from 'src/hooks/useAuth'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
@@ -45,6 +41,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
+
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -75,7 +72,8 @@ const RightWrapper = styled(Box)(({ theme }) => ({
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
-  color: `${theme.palette.primary.main} !important`
+
+  // color: `${theme.palette.primary.main} !important`
 }))
 
 const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
@@ -94,12 +92,12 @@ const defaultValues = {
   userId: 'super.admin@email.com'
 }
 
-const LoginPage = () => {
+const LoginPage = ({getCsrfToken, getProviders}) => {
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
-  //const auth = useAuth()
+  const auth = useAuth()
   const theme = useTheme()
   const router = useRouter()
   const bgColors = useBgColor()
@@ -121,18 +119,9 @@ const LoginPage = () => {
   })
 
   const onSubmit = async data => {
-    const { userId, password } = data
 
-    const resp = loginStaff(data)
+   auth.staffLogin(data)
 
-      .then(res => {
-        if (res.data.success) {
-          router.replace('/dashboard')
-        }
-      })
-      .catch(error => {
-        //notifyError('A network Error occured, please try again')
-      })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 
@@ -282,48 +271,21 @@ const LoginPage = () => {
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
-                <Typography component={LinkStyled} href='/forgot-password'>
+                <Typography component={LinkStyled} sx={{color: 'text.secondary'}} href='/forgot-password'>
                   Forgot Password?
                 </Typography>
               </Box>
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }} disabled={isSubmitting}>
+              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, backgroundColor: 'success.main' }} disabled={isSubmitting}>
                 {isSubmitting ? <SubmitSpinnerMessage message={'Logging In'} /> : 'Login'}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Not a Staff?</Typography>
-                <Typography href='/userlogin' component={LinkStyled}>
+                <Typography sx={{ mr: 2 }}>Not a Staff?</Typography>
+                <Typography href='/userlogin' sx={{color: 'success.light'}} component={LinkStyled}>
                   Login as Student/Guardian
                 </Typography>
               </Box>
-              <Divider
-                sx={{
-                  color: 'text.disabled',
-                  '& .MuiDivider-wrapper': { px: 6 },
-                  fontSize: theme.typography.body2.fontSize,
-                  my: theme => `${theme.spacing(6)} !important`
-                }}
-              >
-                or
-              </Divider>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>
-                  <Icon icon='mdi:facebook' />
-                </IconButton>
-                <IconButton href='/' component={Link} sx={{ color: '#1da1f2' }} onClick={e => e.preventDefault()}>
-                  <Icon icon='mdi:twitter' />
-                </IconButton>
-                <IconButton
-                  href='/'
-                  component={Link}
-                  onClick={e => e.preventDefault()}
-                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
-                >
-                  <Icon icon='mdi:github' />
-                </IconButton>
-                <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
-                  <Icon icon='mdi:google' />
-                </IconButton>
-              </Box>
+              
+              
             </form>
           </Box>
         </Box>

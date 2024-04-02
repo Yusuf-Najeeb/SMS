@@ -204,7 +204,7 @@ const SessionTable = () => {
 
                         <Tooltip title='Make Current Session'>
                         <IconButton size='small' onClick={() => toggleCurrentSessionModal(item)}>
-                          <Icon icon='fluent:stack-add-20-filled' />
+                          <Icon icon='material-symbols:assignment-turned-in-sharp' />
                         </IconButton>
                         </Tooltip>
 
