@@ -286,7 +286,7 @@ const ManageClass = ({ open, toggle, classToEdit = null }) => {
 
        
 
-          <Grid item xs={12} sm={4} md={6}>
+          <Grid item xs={12} sm={12} md={6}>
                 <Controller
                   name='staffId'
                   control={control}

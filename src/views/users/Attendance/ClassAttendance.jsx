@@ -7,7 +7,6 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
-import IconButton from '@mui/material/IconButton'
 
 import Icon from 'src/@core/components/icon'
 
@@ -15,7 +14,6 @@ import Icon from 'src/@core/components/icon'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomChip from 'src/@core/components/mui/chip'
 
-import TablePagination from '@mui/material/TablePagination'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -147,7 +145,7 @@ const {
                 {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{textTransform: 'uppercase'}}>
-                    {`${item?.name}` }
+                    {`${item?.name} ${item.term}` }
                   </MenuItem>
                 ))}
               </CustomTextField>
@@ -262,7 +260,7 @@ const {
 
                         
                         </TableCell>
-                      <TableCell align='center' sx={{textTransform: 'uppercase'}}>{`${item?.reasonForAbsence ??  '--'}` }</TableCell>
+                      <TableCell align='left' sx={{textTransform: 'uppercase'}}>{`${item?.reasonForAbsence ? item?.reasonForAbsence :  '--'}` }</TableCell>
 
                       
                     </TableRow>
