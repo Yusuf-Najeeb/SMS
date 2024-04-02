@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment , forwardRef} from 'react'
+import { useEffect, useState, Fragment, forwardRef } from 'react'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -14,7 +14,7 @@ import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 
-import { Alert, CircularProgress, MenuItem } from '@mui/material'
+import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -61,15 +61,15 @@ export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
 }))
 
 export const CustomInput = forwardRef(({ ...props }, ref) => {
-    return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
-  })
+  return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+})
 
 const defaultValues = {
   staffId: '',
   studentId: '',
   classId: '',
   sessionId: '',
-  date: new (Date),
+  date: new Date(),
   checkInTime: '',
   attendanceStatus: '',
   reasonForAbsence: ''
@@ -77,35 +77,33 @@ const defaultValues = {
 
 const MarkAttendance = ({ open, closeModal }) => {
   const [ClassRoomId, setClassRoomId] = useState()
-  const [StudentData] = useStudent()
-
   const [studentsInClass, setStudentsInClass] = useState([])
   const [attendanceState, setAttendanceState] = useState(false)
+  const [itemsArray, setItemsArray] = useState('')
 
-  const handleAttendanceState = (e)=>{
-    if(e.target.value == false){
-        setAttendanceState(true)
-    }
-    else {
-        setAttendanceState(false)
+  const handleAttendanceState = e => {
+    if (e.target.value == false) {
+      setAttendanceState(true)
+    } else {
+      setAttendanceState(false)
     }
   }
 
   // ** Hooks
   const dispatch = useDispatch()
   const [StaffData] = useStaff()
+  const [StudentData] = useStudent()
   const [CategoriesData] = useCategories()
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
 
-//   const handleChangeClass = (e)=> setClassRoomId(Number(e.target.value))
-
+  //   const handleChangeClass = (e)=> setClassRoomId(Number(e.target.value))
 
   useEffect(() => {
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
-    dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
+    dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
     dispatch(fetchSession({ page: 1, limit: 300 }))
     dispatch(fetchCategories({ page: 1, limit: 300, type: 'assessment' }))
     dispatch(fetchStudents({ page: 1, limit: 3000, key: '' }))
@@ -120,7 +118,6 @@ const MarkAttendance = ({ open, closeModal }) => {
           setStudentsInClass(res?.data?.data)
         }
       })
-
     }
   }, [ClassRoomId])
 
@@ -130,25 +127,22 @@ const MarkAttendance = ({ open, closeModal }) => {
     getValues,
     reset,
     handleSubmit,
-    formState: { errors, isSubmitting,  }
+    formState: { errors, isSubmitting }
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(singleStudentAttendanceSchema) })
 
   const onSubmit = async data => {
-
-
     let payload = {
       staffId: Number(data.staffId),
       studentId: Number(data.studentId),
       sessionId: Number(data.sessionId),
       classId: Number(data.classId),
       date: formatDateToYYYMMDDD(data.date),
-      checkInTime: data.checkInTime, 
+      checkInTime: data.checkInTime,
       attendanceStatus: data.attendanceStatus,
       reasonForAbsence: data.reasonForAbsence
     }
 
     console.log(payload, 'payload')
-
 
     saveStudentAttendance(payload).then(res => {
       if (res?.data?.success) {
@@ -158,6 +152,13 @@ const MarkAttendance = ({ open, closeModal }) => {
     })
   }
 
+  const handleChange = e => {
+    const selectedStudent = StudentData.result.filter(c => c.id === e.target.value)
+    const { id, firstName, lastName } = selectedStudent?.[0]
+
+    setItemsArray(`${id}. ${firstName} ${lastName}`)
+  }
+
   return (
     <Fragment>
       <Dialog
@@ -165,7 +166,7 @@ const MarkAttendance = ({ open, closeModal }) => {
         open={open}
         maxWidth='md'
         scroll='body'
-
+        //eslint_disable-next-line
         //   TransitionComponent={Transition}
         //   sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 450 } }}
         sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '95%', maxWidth: 680 } }}
@@ -187,8 +188,6 @@ const MarkAttendance = ({ open, closeModal }) => {
               }}
             >
               <Grid container spacing={6}>
-               
-
                 <Grid item xs={12} sm={6}>
                   <Controller
                     name='classId'
@@ -204,7 +203,7 @@ const MarkAttendance = ({ open, closeModal }) => {
                         onChange={e => {
                           onChange(e)
 
-                        //   handleChangeClass(e)
+                          //   handleChangeClass(e)
                         }}
                         id='stepper-linear-personal-paymentMode'
                         error={Boolean(errors.classId)}
@@ -267,6 +266,9 @@ const MarkAttendance = ({ open, closeModal }) => {
                         label='Student'
                         onChange={e => {
                           onChange(e)
+
+                          //
+                          handleChange(e)
                         }}
                         id='stepper-linear-personal-paymentMode'
                         error={Boolean(errors.studentId)}
@@ -316,120 +318,122 @@ const MarkAttendance = ({ open, closeModal }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={4}>
-                <Controller
-                  name='date'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <DatePicker
-                      selected={value}
-                      popperPlacement='bottom-end'
-                      showYearDropdown
-                      showMonthDropdown
-                      onChange={e => onChange(e)}
-                      placeholderText='2022-05-07'
-                      customInput={
-                        <CustomInput
-                          value={value}
-                          onChange={onChange}
-                          label='Date'
-                          error={Boolean(errors.date)}
-                          {...(errors.date && { helperText: errors.date.message })}
-                        />
-                      }
-                    />
-                  )}
-                />
-              </Grid>
-
-                <Grid item xs={12} sm={4}>
-                <Controller
-            name='checkInTime'
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <CustomTextField
-                fullWidth
-                type='time'
-                value={value}
-                sx={{ mb: 4 }}
-                label='Check In Time'
-                required
-                onChange={onChange}
-                placeholder='10:30'
-                error={Boolean(errors.checkInTime)}
-                {...(errors.checkInTime && { helperText: errors.checkInTime.message })}
-              />
-            )}
-          />
+                  <Controller
+                    name='date'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <DatePicker
+                        selected={value}
+                        popperPlacement='bottom-end'
+                        showYearDropdown
+                        showMonthDropdown
+                        onChange={e => onChange(e)}
+                        placeholderText='2022-05-07'
+                        customInput={
+                          <CustomInput
+                            value={value}
+                            onChange={onChange}
+                            label='Date'
+                            error={Boolean(errors.date)}
+                            {...(errors.date && { helperText: errors.date.message })}
+                          />
+                        }
+                      />
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                <Controller
-            name='attendanceStatus'
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <CustomTextField
-                fullWidth
-                select
-                value={value}
-                sx={{ mb: 4 }}
-                label='Attendance Status'
-                required
-                onChange={e => {
-                    onChange(e)
-                    
-                    handleAttendanceState(e)
-                }}
-                error={Boolean(errors.attendanceStatus)}
-                {...(errors.attendanceStatus && { helperText: errors.attendanceStatus.message })}
-              >
-                <MenuItem value={true}>Present</MenuItem>
-                <MenuItem value={false}>Absent</MenuItem>
-                </CustomTextField>
-            )}
-          />
+                  <Controller
+                    name='checkInTime'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        type='time'
+                        value={value}
+                        sx={{ mb: 4 }}
+                        label='Check In Time'
+                        required
+                        onChange={onChange}
+                        placeholder='10:30'
+                        error={Boolean(errors.checkInTime)}
+                        {...(errors.checkInTime && { helperText: errors.checkInTime.message })}
+                      />
+                    )}
+                  />
                 </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='attendanceStatus'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        select
+                        value={value}
+                        sx={{ mb: 4 }}
+                        label='Attendance Status'
+                        required
+                        onChange={e => {
+                          onChange(e)
+
+                          handleAttendanceState(e)
+                        }}
+                        error={Boolean(errors.attendanceStatus)}
+                        {...(errors.attendanceStatus && { helperText: errors.attendanceStatus.message })}
+                      >
+                        <MenuItem value={true}>Present</MenuItem>
+                        <MenuItem value={false}>Absent</MenuItem>
+                      </CustomTextField>
+                    )}
+                  />
+                </Grid>
+                {itemsArray && (
+                  <Grid item sx={{ mt: 5 }} xs={12} sm={12} md={12}>
+                    <Typography variant='h5'>Student Name</Typography>
+                    <Alert severity='success'>
+                      <Typography>{itemsArray}</Typography>
+                    </Alert>
+                  </Grid>
+                )}
 
                 <Grid item xs={12} sm={12}>
-                <Controller
-            name='reasonForAbsence'
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <CustomTextField
-                fullWidth
-                multiline
-                rows={2}
-                value={value}
-                sx={{ mb: 4 }}
-                label='Reason For Absence'
-                disabled={!attendanceState}
-                onChange={onChange}
-                error={Boolean(errors.reasonForAbsence)}
-                {...(errors.reasonForAbsence && { helperText: errors.reasonForAbsence.message })}
-              />
-            )}
-          />
+                  <Controller
+                    name='reasonForAbsence'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <CustomTextField
+                        fullWidth
+                        multiline
+                        rows={2}
+                        value={value}
+                        sx={{ mb: 4 }}
+                        label='Reason For Absence'
+                        disabled={!attendanceState}
+                        onChange={onChange}
+                        error={Boolean(errors.reasonForAbsence)}
+                        {...(errors.reasonForAbsence && { helperText: errors.reasonForAbsence.message })}
+                      />
+                    )}
+                  />
                 </Grid>
-
               </Grid>
             </DialogContent>
 
-            <Box sx={{  mt: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Button
-                type='submit'
-                variant='contained'
-                disabled={isSubmitting}
-              >
+            <Box sx={{ mt: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button type='submit' variant='contained' disabled={isSubmitting}>
                 {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Record'}
               </Button>
             </Box>
           </form>
         </DialogContent>
       </Dialog>
-   
     </Fragment>
   )
 }
