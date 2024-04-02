@@ -98,7 +98,7 @@ const MarkAttendance = ({ open, closeModal }) => {
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
 
-  //   const handleChangeClass = (e)=> setClassRoomId(Number(e.target.value))
+  const handleChangeClass = e => setClassRoomId(Number(e.target.value))
 
   useEffect(() => {
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
@@ -154,9 +154,12 @@ const MarkAttendance = ({ open, closeModal }) => {
 
   const handleChange = e => {
     const selectedStudent = StudentData.result.filter(c => c.id === e.target.value)
-    const { id, firstName, lastName } = selectedStudent?.[0]
-
-    setItemsArray(`${id}. ${firstName} ${lastName}`)
+    if (selectedStudent.length > 0) {
+      const { id, firstName, lastName } = selectedStudent?.[0]
+      setItemsArray(`${id}. ${firstName} ${lastName}`)
+    } else {
+      setItemsArray('')
+    }
   }
 
   return (
@@ -203,7 +206,7 @@ const MarkAttendance = ({ open, closeModal }) => {
                         onChange={e => {
                           onChange(e)
 
-                          //   handleChangeClass(e)
+                          handleChangeClass(e)
                         }}
                         id='stepper-linear-personal-paymentMode'
                         error={Boolean(errors.classId)}
@@ -275,8 +278,8 @@ const MarkAttendance = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-studentId-helper'
                         {...(errors.studentId && { helperText: errors.studentId.message })}
                       >
-                        <MenuItem value=''>Select Student</MenuItem>
-                        {StudentData?.result?.map(item => (
+                        <MenuItem>{studentsInClass.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
+                        {studentsInClass?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item.firstName} ${item.lastName}`}
                           </MenuItem>
