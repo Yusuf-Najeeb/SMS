@@ -86,10 +86,8 @@ const WardTable = ({ user }) => {
           if (res?.data.success) {
             setLoading(false)
             setWard(res?.data.data)
-            console.log('success loading data', res?.data.data)
           } else {
             setLoading(false)
-            console.log('Could not load data', res)
           }
         })
         .catch(() => {
@@ -127,7 +125,7 @@ const WardTable = ({ user }) => {
                 <TableCell align='left' sx={{ minWidth: 150 }}>
                   Class
                 </TableCell>
-                <TableCell align='left' sx={{ minWidth: 250 }}>
+                <TableCell align='left' sx={{ minWidth: 200 }}>
                   Registration Date
                 </TableCell>
                 {/* <TableCell align='left' sx={{ minWidth: 150 }}>
