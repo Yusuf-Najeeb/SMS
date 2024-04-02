@@ -18,7 +18,7 @@ import { styled } from '@mui/material/styles'
 import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
 
 // ** Store & Actions Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import DatePicker from 'react-datepicker'
 
@@ -28,11 +28,10 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { inputQuestionsSchema } from 'src/@core/Formschema'
 
-import FormController from '../component/FormController'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
-import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
+import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { useStaff } from '../../../hooks/useStaff'
 import { useSubjects } from '../../../hooks/useSubjects'
@@ -80,7 +79,6 @@ const defaultValues = {
 const AddQuestion = ({ open, closeModal }) => {
   const [ClassRoomId, setClassRoomId] = useState()
   const [numberOfQuestions, setNumberOfQuestions] = useState(0)
-  const [studentsInClass, setStudentsInClass] = useState([])
   const [showQuestions, setShowQuestions] = useState(false)
   const [questions, setQuestions] = useState([])
 
@@ -109,15 +107,6 @@ const AddQuestion = ({ open, closeModal }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (ClassRoomId) {
-      fetchStudentsInClass(ClassRoomId).then(res => {
-        if (res?.data?.success) {
-          setStudentsInClass(res?.data?.data)
-        }
-      })
-    }
-  }, [ClassRoomId])
 
   const {
     control,

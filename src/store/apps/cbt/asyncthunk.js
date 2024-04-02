@@ -30,3 +30,34 @@ export const submitQuestions = async (payload)=> {
         
     }
 }
+
+
+export const updateQuestion = async (id, payload)=> {
+    try {
+        const res = await axios.patch(`/cbt/update/${id}`, payload)
+
+        if(res?.data?.success){
+            notifySuccess('Question Updated')
+        }
+
+        return res
+    } catch (error) {
+        notifyError(error?.response?.data?.message || 'Unable to Update Question')
+        
+    }
+}
+
+export const deleteQuestion = async (id)=> {
+    try {
+        const res = await axios.delete(`/cbt/delete/${id}`)
+
+        if(res?.data?.success){
+            notifySuccess('Question Deleted')
+        }
+
+        return res
+    } catch (error) {
+        notifyError(error?.response?.data?.message || 'Unable to Delete Question')
+        
+    }
+}
