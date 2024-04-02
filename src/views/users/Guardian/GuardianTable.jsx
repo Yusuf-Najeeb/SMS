@@ -48,6 +48,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
+        //eslint_disable-next-line
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='info'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}

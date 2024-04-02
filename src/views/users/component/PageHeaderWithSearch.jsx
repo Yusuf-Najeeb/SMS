@@ -50,7 +50,7 @@ const PageHeaderWithSearch = ({ toggle, action, handleFilter, searchPlaceholder 
               </InputAdornment>
             }
           />
-          {isFocus ? <Typography variant='caption'>Search by First name, Last name or Student ID</Typography> : null}
+          {isFocus ? <Typography variant='caption'>Search by First name, Last name or ID</Typography> : null}
         </FormControl>
       </Box>
 
