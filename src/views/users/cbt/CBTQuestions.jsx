@@ -19,12 +19,14 @@ import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { fetchCBTQuestions } from '../../../store/apps/cbt/asyncthunk'
+import { deleteQuestion, fetchCBTQuestions } from '../../../store/apps/cbt/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCBTQuestions } from '../../../hooks/useCBTQuestions'
 import AddQuestion from './AddQuestion'
 import PageHeader from '../component/PageHeader'
+import EditQuestion from './EditQuestion'
+import DeleteDialog from '../../../@core/components/delete-dialog'
 
 const CBTQuestions = () => {
      // Hooks
@@ -46,7 +48,21 @@ const CBTQuestions = () => {
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
   const [questions, setQuestions] = useState([])
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [activeQuestion, setActiveQuestion] = useState(null)
+  const [questionToDelete, setQuestionToDelete] = useState(null)
+  const [deleteModal, setDeleteModal] = useState(false)
   const [paging, setPaging] = useState({ currentPage: 1, totalItems: 0, itemsPerPage: 0, totalPages: 0})
+
+  const toggleEditModal = ()=> {
+    setShowEditModal(!showEditModal)
+    setActiveQuestion(null)
+}
+
+  const setQuestionToUpdate = (value)=> {
+    setShowEditModal(true)
+    setActiveQuestion(value)
+  }
 
   const toggleAddQuestionsModal = ()=> setModal(!openModal)
 
@@ -77,6 +93,26 @@ const CBTQuestions = () => {
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
+  }
+
+  const doDelete = value => {
+    setDeleteModal(true)
+    setQuestionToDelete(value.id)
+  }
+
+  const doCancelDelete = () => {
+    setDeleteModal(false)
+    setQuestionToDelete(null)
+  }
+
+  const ondeleteClick = async () => {
+    deleteQuestion(questionToDelete).then(res => {
+
+      if (res.data.success) {
+        fetchQuestions()
+        doCancelDelete()
+      }
+    })
   }
 
   const fetchQuestions = async ()=>{
@@ -255,8 +291,7 @@ const CBTQuestions = () => {
             {loading ? (
               <TableRow className='text-center'>
                 <TableCell colSpan={6}>
-                  {/* Assume CustomSpinner is a valid component */}
-                  {/* <CustomSpinner /> */}
+                  <CustomSpinner />
                 </TableCell>
               </TableRow>
             ) : (
@@ -301,11 +336,12 @@ const CBTQuestions = () => {
                       {`${item?.value} marks` || '--'}
                     </TableCell>
                     <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <IconButton size='small' onClick={() => console.log(item)}>
+                      <IconButton size='small' onClick={() => setQuestionToUpdate(item)}>
                         <Icon icon='tabler:edit' />
                       </IconButton>
-                      <IconButton size='small' onClick={() => console.log(item)}>
-                        <Icon icon='tabler:eye' />
+
+                      <IconButton size='small' onClick={() => doDelete(item)}>
+                        <Icon icon='tabler:trash' />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -334,6 +370,8 @@ const CBTQuestions = () => {
     </Fragment>
 
     <AddQuestion open={openModal} closeModal={toggleAddQuestionsModal}/>
+    {deleteModal && <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} /> }
+    {showEditModal && <EditQuestion open={showEditModal} closeModal={toggleEditModal} questionToEdit={activeQuestion} fetchQuestions={fetchQuestions}/> }
     </div>
   )
 }

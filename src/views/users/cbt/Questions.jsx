@@ -105,25 +105,18 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
         return newData;
       });
 
-  
-
-    // setSelectedFile(prevState => {
-    //     const newData = [...prevState];
-    //     newData[index] = {...newData[index], file};
-  
-    //     return newData;
-    //   });
-
       const fileSize = file.size / 1024 / 1024 // in MB
 
       if (fileSize > 10) {
         notifyWarn('FILE ERROR', 'File size should not exceed 10MB.');
-        setSelectedFile(prevState => {
-            const newData = [...prevState];
-            newData[index] = null
+
+    //     setSelectedFile(prevState => {
+    //         const newData = [...prevState];
+    //         newData[index] = null
       
-            return newData;
-      })
+    //         return newData;
+    //   })
+    
       } else{
 
       try {
@@ -142,7 +135,6 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
           }
         })
 
-        console.log(response, 'response')
   
         if (response.data.success) {
           notifySuccess('Question File Upload successful')
@@ -176,58 +168,16 @@ const Questions = ({ direction, numberOfQuestions, errors, control, setQuestions
 
     } else {
       notifyWarn('FILE ERROR', 'No file selected.')
-      setSelectedFile(prevState => {
-        const updatedState = [...prevState]
-        updatedState[index] = null
 
-        return updatedState
-      })
+    //   setSelectedFile(prevState => {
+    //     const updatedState = [...prevState]
+    //     updatedState[index] = null
+
+    //     return updatedState
+    //   })
     }
   }
 
-  const handleSubmitFile = async (e, index )=>{
-    e.preventDefault()
-    const formData = new FormData()
-    formData.append('file', selectedFile[index])
-    setSubmittingQuestionResource(prevState => {
-        const updatedState = [...prevState];
-        updatedState[index] = true;
-  
-        return updatedState;
-      });
-
-      try {
-        const response = await axios.post('upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data;'
-          }
-        })
-  
-        if (response.data.success) {
-          notifySuccess('Question File Upload successful')
-           setSubmittingQuestionResource(prevState => {
-        const updatedState = [...prevState];
-        updatedState[index] = false;
-  
-        return updatedState;
-      });
-        }
-        else {
-          notifyError('Question File Upload Failed')
-        }
-      } catch (error) {
-        notifyError(error?.response ? error?.response.data.message :'Question File upload failed, try again')
-         setSubmittingQuestionResource(prevState => {
-        const updatedState = [...prevState];
-        updatedState[index] = false;
-  
-        return updatedState;
-      });
-      }
-
-    
-  }
-  
 
   const handleInputChange = (index, field, value) => {
     setFormData(prevState => {

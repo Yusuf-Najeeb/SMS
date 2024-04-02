@@ -159,7 +159,7 @@ const StudentCard = ({ Student }) => {
               </Box>
               }
 
-{(Student?.roomId == null && Student.boarder) && 
+{(Student?.roomId == null && Student?.boarder) && 
               <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
                 <CustomAvatar skin='light' color='error' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
                   <Icon fontSize='1.75rem' icon='guidance:hotel-room' />

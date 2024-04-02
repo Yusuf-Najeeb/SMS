@@ -381,6 +381,24 @@ export const inputQuestionsSchema = yup.object().shape({
   numberOfQuestions: yup.string().required('Number of Questions is required'),
 })
 
+export const updateQuestionsSchema = yup.object().shape({
+  categoryId: yup.string().required('Assessment Category is required'),
+  staffId: yup.string().required('Teacher is required'),
+  dueDate: yup.string().required('Due Date is required'),
+  dueTime: yup.string().required('Due Time is required'),
+  subjectId: yup.string().required('Subject is required'),
+  classId: yup.string().required('Class is required'),
+  sessionId: yup.string().required('Session is required'),
+  
+  // question: yup.string().required('Question is required'),
+  // optionA: yup.string(),
+  // optionB: yup.string(),
+  // optionC: yup.string(),
+  // optionD: yup.string(),
+  // answer: yup.string(),
+  // value: yup.string(),
+})
+
 export const singleStudentAttendanceSchema = yup.object().shape({
   staffId: yup.string().required('Class Teacher is required'),
   studentId: yup.string().required('Student is required'),
