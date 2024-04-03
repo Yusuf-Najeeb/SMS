@@ -50,25 +50,29 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-const TypographyStyled = styled(Typography)(({theme})=> ({
-    // fontSize: `${theme.typography.smallText.fontSize}`,
-    fontSize: `8px`,
-    color: `${theme.palette.primary.main} !important` 
+const TypographyStyled = styled(Typography)(({ theme }) => ({
+  // fontSize: `${theme.typography.smallText.fontSize}`,
+  fontSize: `8px`,
+  color: `${theme.palette.primary.main} !important`
 }))
-
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 // ** renders client column
 const renderClient = row => {
-    const initials = `${row.firstName} ${row.lastName}`
+  const initials = `${row.firstName} ${row.lastName}`
   if (row.profilePicture?.length) {
-    return <CustomAvatar src={`${backendURL?.replace('api', '')}/${row.profilePicture}`} sx={{ mr: 2.5, width: 38, height: 38 }} />
+    return (
+      <CustomAvatar
+        src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
+        sx={{ mr: 2.5, width: 38, height: 38 }}
+      />
+    )
   } else {
     return (
       <CustomAvatar
         skin='light'
-
+        //eslint_disable-next-line
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='primary'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
@@ -80,16 +84,13 @@ const renderClient = row => {
 }
 
 const defaultColumns = [
-
-
-
   {
     flex: 0.25,
     field: 'name',
     minWidth: 280,
     headerName: 'Guardian',
     renderCell: ({ row }) => {
-      const { firstName, lastName, email, } = row
+      const { firstName, lastName, email } = row
 
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -111,7 +112,11 @@ const defaultColumns = [
     minWidth: 150,
     field: 'religion',
     headerName: 'Religion',
-    renderCell: ({ row }) => <Typography variant='body2'  sx={{ color: 'text.secondary' }}>{row.religion || '--'}</Typography>
+    renderCell: ({ row }) => (
+      <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+        {row.religion || '--'}
+      </Typography>
+    )
   },
   {
     flex: 0.15,
@@ -135,7 +140,6 @@ const defaultColumns = [
     renderCell: ({ row }) => <Typography sx={{ color: 'text.secondary' }}>{row.gender}</Typography>
   },
 
-
   {
     flex: 0.1,
     field: 'id',
@@ -143,59 +147,59 @@ const defaultColumns = [
     headerName: 'User ID',
 
     renderCell: ({ row }) => (
-      <Typography component={TypographyStyled} sx={{fontSize: '13px'}} >{`${row.identificationNumber}`}</Typography>
+      <Typography component={TypographyStyled} sx={{ fontSize: '13px' }}>{`${row.identificationNumber}`}</Typography>
     )
-  },
+  }
 
-//   {
-//     flex: 0.1,
-//     minWidth: 100,
-//     field: 'balance',
-//     headerName: 'Balance',
-//     renderCell: ({ row }) => {
-//       return row.balance !== 0 ? (
-//         <Typography sx={{ color: 'text.secondary' }}>{row.balance}</Typography>
-//       ) : (
-//         <CustomChip rounded size='small' skin='light' color='success' label='Paid' />
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.1,
-//     minWidth: 80,
-//     field: 'invoiceStatus',
-//     renderHeader: () => <Icon icon='tabler:trending-up' />,
-//     renderCell: ({ row }) => {
-//       const { dueDate, balance, invoiceStatus } = row
-//       const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
+  //   {
+  //     flex: 0.1,
+  //     minWidth: 100,
+  //     field: 'balance',
+  //     headerName: 'Balance',
+  //     renderCell: ({ row }) => {
+  //       return row.balance !== 0 ? (
+  //         <Typography sx={{ color: 'text.secondary' }}>{row.balance}</Typography>
+  //       ) : (
+  //         <CustomChip rounded size='small' skin='light' color='success' label='Paid' />
+  //       )
+  //     }
+  //   },
+  //   {
+  //     flex: 0.1,
+  //     minWidth: 80,
+  //     field: 'invoiceStatus',
+  //     renderHeader: () => <Icon icon='tabler:trending-up' />,
+  //     renderCell: ({ row }) => {
+  //       const { dueDate, balance, invoiceStatus } = row
+  //       const color = invoiceStatusObj[invoiceStatus] ? invoiceStatusObj[invoiceStatus].color : 'primary'
 
-//       return (
-//         <Tooltip
-//           title={
-//             <div>
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 {invoiceStatus}
-//               </Typography>
-//               <br />
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 Balance:
-//               </Typography>{' '}
-//               {balance}
-//               <br />
-//               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
-//                 Due Date:
-//               </Typography>{' '}
-//               {dueDate}
-//             </div>
-//           }
-//         >
-//           <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
-//             <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
-//           </CustomAvatar>
-//         </Tooltip>
-//       )
-//     }
-//   }
+  //       return (
+  //         <Tooltip
+  //           title={
+  //             <div>
+  //               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //                 {invoiceStatus}
+  //               </Typography>
+  //               <br />
+  //               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //                 Balance:
+  //               </Typography>{' '}
+  //               {balance}
+  //               <br />
+  //               <Typography variant='caption' sx={{ color: 'common.white', fontWeight: 600 }}>
+  //                 Due Date:
+  //               </Typography>{' '}
+  //               {dueDate}
+  //             </div>
+  //           }
+  //         >
+  //           <CustomAvatar skin='light' color={color} sx={{ width: '1.875rem', height: '1.875rem' }}>
+  //             <Icon icon={invoiceStatusObj[invoiceStatus].icon} />
+  //           </CustomAvatar>
+  //         </Tooltip>
+  //       )
+  //     }
+  //   }
 ]
 /* eslint-disable */
 const CustomInput = forwardRef((props, ref) => {
@@ -229,9 +233,7 @@ const AllGuardian = () => {
   const [guardianInView, setGuardianInView] = useState(null)
   const [key, setKey] = useState('')
   const [anchorEl, setAnchorEl] = useState(null)
-  const rowOptionsOpen = (anchorEl)
-
-  
+  const rowOptionsOpen = anchorEl
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -246,12 +248,11 @@ const AllGuardian = () => {
     setAnchorEl(null)
   }
 
-
-  const toggleModal = ()=>{
+  const toggleModal = () => {
     setShowModal(!showModal)
   }
 
-  const updateFetch = ()=> setFetch(!refetch)
+  const updateFetch = () => setFetch(!refetch)
 
   const doDelete = value => {
     setDeleteModal(true)
@@ -264,38 +265,35 @@ const AllGuardian = () => {
   }
 
   const ondeleteClick = async () => {
-    deleteGuardian(selectedGuardian).then((res)=>{
-
-        if (res.status) {
-            dispatch(fetchGuardian({page: 1, key}))
-          doCancelDelete()
-        }
+    deleteGuardian(selectedGuardian).then(res => {
+      if (res.status) {
+        dispatch(fetchGuardian({ page: 1, key }))
+        doCancelDelete()
+      }
     })
-   
   }
 
-  const setGuardianToEdit = (value) => {
+  const setGuardianToEdit = value => {
     setEditDrawer(!openEditDrawer)
     setGuardianToUpdate(value)
     handleRowOptionsClose()
   }
 
-  const setGuardianToView = (value) => {
+  const setGuardianToView = value => {
     setViewDrawer(!openViewDrawer)
     setGuardianInView(value)
     handleRowOptionsClose()
   }
 
-  const closeEditModal = ()=> {
+  const closeEditModal = () => {
     setEditDrawer(!openEditDrawer)
     setGuardianToUpdate(null)
-}
+  }
 
-  const closeViewModal = ()=> {
+  const closeViewModal = () => {
     setViewDrawer(!openViewDrawer)
     setGuardianInView(null)
-}
-
+  }
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -306,12 +304,11 @@ const AllGuardian = () => {
     setEndDateRange(end)
   }
 
-
-  useEffect(()=>{
-    dispatch(fetchGuardian({page: page +1, key}))
+  useEffect(() => {
+    dispatch(fetchGuardian({ page: page + 1, key }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[refetch, page, key])
+  }, [refetch, page, key])
 
   const columns = [
     ...defaultColumns,
@@ -323,63 +320,69 @@ const AllGuardian = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Tooltip title='Edit Guardian'>
-         <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
-        <Icon icon='tabler:edit' />
-        </IconButton>
-        </Tooltip>
+          <Tooltip title='Edit Guardian'>
+            <IconButton size='small' onClick={() => setGuardianToEdit(row)}>
+              <Icon icon='tabler:edit' />
+            </IconButton>
+          </Tooltip>
 
-      <Tooltip title='View Guardian'>
-        <IconButton size='small' onClick={() => setGuardianToView(row)}>
-          <Icon icon='tabler:eye' />
-        </IconButton>
-      </Tooltip>
+          <Tooltip title='View Guardian'>
+            <IconButton size='small' onClick={() => setGuardianToView(row)}>
+              <Icon icon='tabler:eye' />
+            </IconButton>
+          </Tooltip>
 
-      <Tooltip title='Delete Guardian'>
-       <IconButton size='small' onClick={() => doDelete(row)}>
-                      <Icon icon='tabler:trash' />
-                    </IconButton>
-      </Tooltip>
-      
-
-    </Box>
-
+          <Tooltip title='Delete Guardian'>
+            <IconButton size='small' onClick={() => doDelete(row)}>
+              <Icon icon='tabler:trash' />
+            </IconButton>
+          </Tooltip>
+        </Box>
       )
     }
   ]
 
   return (
     <Fragment>
-    <DatePickerWrapper>
-        <Stats data={GuardianData} statTitle='Guardian'/>
+      <DatePickerWrapper>
+        <Stats data={GuardianData} statTitle='Guardian' />
 
-        <PageHeaderWithSearch searchPlaceholder={'Search Guardian'} action="Add Guardian" toggle={toggleModal} handleFilter={setKey}/>
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Card>
-            <DataGrid
-              autoHeight
-              pagination
-              rowHeight={62}
-              rows={GuardianData?.result?.length ? GuardianData?.result : []}
-              columns={columns}
-              pageSizeOptions={[10, 25, 50]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              disableRowSelectionOnClick
+        <PageHeaderWithSearch
+          searchPlaceholder={'Search Guardian'}
+          action='Add Guardian'
+          toggle={toggleModal}
+          handleFilter={setKey}
+        />
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Card>
+              <DataGrid
+                autoHeight
+                pagination
+                rowHeight={62}
+                rows={GuardianData?.result?.length ? GuardianData?.result : []}
+                columns={columns}
+                pageSizeOptions={[10, 25, 50]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                disableRowSelectionOnClick
 
-            //   getRowId={(row, index) => String(index)}
-            />
-          </Card>
+                //   getRowId={(row, index) => String(index)}
+              />
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      </DatePickerWrapper>
 
-    </DatePickerWrapper>
-
-    <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
-    <AddGuardian open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
-     <EditGuardian open={openEditDrawer} selectedGuardian={guardianToUpdate} fetchData={updateFetch} closeModal={closeEditModal}/>
-     <ViewGuardian open={openViewDrawer} guardian={guardianInView} closeCanvas={closeViewModal}/>
+      <DeleteDialog open={openDeleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+      <AddGuardian open={showModal} closeModal={toggleModal} refetchData={updateFetch} />
+      <EditGuardian
+        open={openEditDrawer}
+        selectedGuardian={guardianToUpdate}
+        fetchData={updateFetch}
+        closeModal={closeEditModal}
+      />
+      <ViewGuardian open={openViewDrawer} guardian={guardianInView} closeCanvas={closeViewModal} />
     </Fragment>
   )
 }
