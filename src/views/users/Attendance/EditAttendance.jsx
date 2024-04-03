@@ -181,7 +181,9 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
 
     updateAttendance(payload, selectedRecord.id).then(response => {
       if (response?.data?.success) {
-        reset(), closeModal(), fetch()
+        reset()
+        closeModal()
+        fetchData()
       }
     })
   }

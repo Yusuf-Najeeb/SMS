@@ -77,6 +77,10 @@ const ClassAttendanceTable = () => {
     Number(setClassId(e.target.value))
   }
 
+  const toggleModal = () => {
+    closeEditModal()
+  }
+
   const closeEditModal = () => {
     setEditDrawer(!openEditDrawer)
     setAttendanceToUpdate(null)
@@ -312,7 +316,7 @@ const ClassAttendanceTable = () => {
       {openAttendanceModal && <MarkAttendance open={openAttendanceModal} closeModal={toggleMarkAttendanceDrawer} />}
       <EditAttendance
         open={openEditDrawer}
-        closeModal={closeEditModal}
+        closeModal={toggleModal}
         selectedRecord={attendanceToUpdate}
         fetchData={updateFetch}
       />
