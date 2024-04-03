@@ -29,7 +29,7 @@ export const saveStudentAttendance = async payload => {
 
 export const updateAttendance = async (payload, id) => {
   try {
-    const response = await axios.patch(`/attendance/updateattendance/id/${id}`, payload)
+    const response = await axios.patch(`/attendance/updateattendance/${id}`, payload)
 
     if (response.data.success) {
       notifySuccess('Student Attendance Updated')

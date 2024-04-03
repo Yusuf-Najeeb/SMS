@@ -71,7 +71,8 @@ const ClassAttendanceTable = () => {
   const [date, setDate] = useState('')
   const [openEditDrawer, setEditDrawer] = useState(false)
   const [attendanceToUpdate, setAttendanceToUpdate] = useState(null)
-  const [refetch, setRefetch] = useState(false)
+
+  // const [refetch, setRefetch] = useState(false)
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
@@ -93,15 +94,18 @@ const ClassAttendanceTable = () => {
     // handleRowOptionsClose()
   }
 
-  const updateFetch = () => setRefetch(!refetch)
-
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
   }
 
   const displayAttendance = async data => {
     const date = formatDateToYYYMMDDD(data.date)
+    setDate(date)
     dispatch(fetchClassAttendance({ classId, sessionId, date }))
+  }
+
+  const updateFetch = () => {
+    displayAttendance({ classId, sessionId, date })
   }
 
   const {
@@ -314,6 +318,7 @@ const ClassAttendanceTable = () => {
       /> */}
 
       {openAttendanceModal && <MarkAttendance open={openAttendanceModal} closeModal={toggleMarkAttendanceDrawer} />}
+      {}
       <EditAttendance
         open={openEditDrawer}
         closeModal={toggleModal}

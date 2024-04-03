@@ -85,8 +85,9 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
   const dispatch = useDispatch()
   const [StaffData] = useStaff()
   const [StudentData] = useStudent()
-  const [CategoriesData] = useCategories()
-  const [SubjectsList] = useSubjects()
+
+  // const [CategoriesData] = useCategories()
+  // const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
 
