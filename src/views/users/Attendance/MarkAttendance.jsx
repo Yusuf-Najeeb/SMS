@@ -142,8 +142,6 @@ const MarkAttendance = ({ open, closeModal }) => {
       reasonForAbsence: data.reasonForAbsence
     }
 
-    console.log(payload, 'payload')
-
     saveStudentAttendance(payload).then(res => {
       if (res?.data?.success) {
         reset()

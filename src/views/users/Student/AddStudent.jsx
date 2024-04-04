@@ -57,12 +57,14 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { createStudent } from '../../../store/apps/Student/asyncthunk'
 import SearchParent from './SearchParent'
+import SearchStaff from '../component/SearchStaff'
 import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
 import { handleInputImageChange } from '../../../@core/utils/uploadImage'
 import { studentSteps } from '../../../@core/FormSchema/utils'
 import FormController from '../component/FormController'
 import SelectedGuardianTable from './SelectedGuardianTable'
 import { useClasses } from '../../../hooks/useClassess'
+import { useStudent } from '../../../hooks/useStudent'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useAppDispatch } from '../../../hooks'
 import SearchedGuardianTable from './SearchedGuardianTable'
@@ -90,7 +92,12 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [activeStep, setActiveStep] = useState(0)
   const [showPassword, setShowPassword] = useState(false)
   const [itemsArray, setItemsArray] = useState([])
+
+  const [staffItemsArray, setStaffItemsArray] = useState([])
+  const [guardianItemsArray, setGuardianItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
+  const [openStaffModal, setStaffModal] = useState(false)
+
   const [selectedImage, setSelectedImage] = useState(null)
   const [previewUrl, setPreviewUrl] = useState(``)
   const [imageLinkPayload, setImageLinkPayload] = useState('')
@@ -99,18 +106,14 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
 
-  const handleChange = event => {
-    if (event.target.checked == true) {
-      toggleParentModal()
-      setShowSearchModal(event.target.checked)
-    } else {
-      setShowSearchModal(event.target.checked)
-    }
-  }
-
   const toggleParentModal = () => {
     closeModal()
     setParentModal(!openParentModal)
+  }
+
+  const toggleStaffModal = () => {
+    closeModal()
+    setStaffModal(!openStaffModal)
   }
 
   const defaultValues = {
@@ -147,6 +150,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const smallScreen = useMediaQuery(theme => theme.breakpoints.down('md'))
   const { direction } = settings
   const [ClassesList] = useClasses()
+  const [StudentData] = useStudent()
 
   useEffect(() => {
     dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
@@ -273,6 +277,20 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
         setShowAlert(false)
       }
     })
+  }
+  const StudentValue = getPersonalInfoValues()
+
+  const handleChange = event => {
+    if (event.target.checked == true) {
+      if (StudentValue.isStaffChild) {
+        toggleStaffModal()
+      } else {
+        toggleParentModal()
+      }
+      setShowSearchModal(event.target.checked)
+    } else {
+      setShowSearchModal(event.target.checked)
+    }
   }
 
   const getStepContent = step => {
@@ -736,13 +754,12 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                 </Button>
               </Grid>
             </form>
-
-            <SearchParent
+            {/* <SearchParent
               itemsArray={itemsArray}
               setItemsArray={setItemsArray}
               openModal={openParentModal}
               closeModal={toggleParentModal}
-            />
+            /> */}
           </Box>
         )
 
@@ -896,7 +913,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
               <FormGroup row>
                 <FormControlLabel
                   value='start'
-                  label={'Search Guardian'}
+                  label={`${StudentValue.isStaffChild ? 'Search Staff' : 'Search Guardian'}`}
                   labelPlacement='start'
                   sx={{ mr: 4 }}
                   control={<Switch checked={showSearchModal} onChange={handleChange} />}
@@ -1024,10 +1041,16 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
       </Dialog>
 
       <SearchParent
-        itemsArray={itemsArray}
-        setItemsArray={setItemsArray}
+        itemsArray={guardianItemsArray}
+        setItemsArray={setGuardianItemsArray}
         openModal={openParentModal}
         closeModal={toggleParentModal}
+      />
+      <SearchStaff
+        itemsArray={staffItemsArray}
+        setItemsArray={setStaffItemsArray}
+        openModal={openStaffModal}
+        closeModal={toggleStaffModal}
       />
     </Fragment>
   )

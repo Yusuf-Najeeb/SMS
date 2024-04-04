@@ -133,7 +133,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                 setIsFocus(false)
               }}
               onFocus={handleFocus}
-              placeholder='Search Parent'
+              placeholder='Search Guardian'
               id='input-with-icon-adornment'
               endAdornment={
                 <InputAdornment position='start' sx={{ cursor: 'pointer' }}>

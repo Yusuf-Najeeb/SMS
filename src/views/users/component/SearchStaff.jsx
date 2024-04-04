@@ -93,8 +93,8 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
       setItemsArray(prevItems => [...prevItems, newItem])
     }
 
-    clearGuardianArray()
-    clearStudentArray()
+    // clearGuardianArray()
+    // clearStudentArray()
   }
 
   const removeitem = parentId => {
@@ -117,27 +117,25 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
     >
       <Header>
         <div className='iconBtnWrapper'>
-        <IconButton
-        className='iconBtn'
-          size='small'
-          onClick={closeModal}
-          sx={{
-            borderRadius: 1,
-            color: 'text.primary',
-            backgroundColor: 'action.selected',
-            '&:hover': {
-              backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.16)`
-            }
-          }}
-        >
-
-          <CustomCloseIcon />
-        </IconButton>
+          <IconButton
+            className='iconBtn'
+            size='small'
+            onClick={closeModal}
+            sx={{
+              borderRadius: 1,
+              color: 'text.primary',
+              backgroundColor: 'action.selected',
+              '&:hover': {
+                backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.16)`
+              }
+            }}
+          >
+            <CustomCloseIcon />
+          </IconButton>
         </div>
       </Header>
 
       <Card>
-       
         <Box sx={{ mx: 4, my: 4 }}>
           <FormControl variant='standard' sx={{ width: '100%' }}>
             <Input
