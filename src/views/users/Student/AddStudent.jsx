@@ -92,7 +92,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [activeStep, setActiveStep] = useState(0)
   const [showPassword, setShowPassword] = useState(false)
   const [itemsArray, setItemsArray] = useState([])
-
+  console.log(itemsArray)
   const [staffItemsArray, setStaffItemsArray] = useState([])
   const [guardianItemsArray, setGuardianItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
@@ -115,6 +115,17 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     closeModal()
     setStaffModal(!openStaffModal)
   }
+
+  useEffect(() => {
+    if (guardianItemsArray.length > 0) {
+      setItemsArray(guardianItemsArray)
+      setStaffItemsArray([])
+    }
+    if (staffItemsArray.length > 0) {
+      setItemsArray(staffItemsArray)
+      setGuardianItemsArray([])
+    }
+  }, [staffItemsArray, guardianItemsArray])
 
   const defaultValues = {
     firstName: '',
