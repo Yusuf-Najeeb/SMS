@@ -87,13 +87,10 @@ const UserDropdown = props => {
     setUser(userType)
   }, [])
 
-  const { role, profilePicture, firstName, lastName } = userType
   const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
-  const userProfilePicture = `${backEndURL?.replace('api', '')}/${profilePicture}`
 
-  console.log('User', userType)
-  console.log(profilePicture)
-  console.log(userProfilePicture)
+  const { role, profilePicture, firstName, lastName } = userType
+  const userProfilePicture = `${backEndURL?.replace('api', '')}/${profilePicture}`
 
   return (
     <Fragment>
