@@ -23,6 +23,9 @@ import NoData from 'src/@core/components/emptydata/NoData'
 import Icon from 'src/@core/components/icon'
 import { Alert, Stack } from '@mui/material'
 import { fetchStudentsInClass, getSingleClass } from '../../../store/apps/classes/asyncthunk'
+
+import { useClasses } from '../../../hooks/useClassess'
+
 import { TableCellStyled } from '../Guardian/GuardianTable'
 import { fetchClassTimetable } from '../../../store/apps/timetable/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
@@ -48,21 +51,21 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
   const [studentsInClass, setStudentsInClass] = useState([])
   const [classSubjects, setClassSubjects] = useState([])
 
-
   const theme = useTheme()
   const dispatch = useAppDispatch()
   const [CurrentSessionData] = useCurrentSession()
+  const [ClassesList] = useClasses()
+  const [classTeacher, setClassTeacher] = useState('')
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(fetchCurrentSession())
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  }, [])
 
   useEffect(() => {
     if (classRoom && CurrentSessionData) {
-     
-      dispatch(fetchClassTimetable({classId: classRoom?.id, sessionId: CurrentSessionData?.id }))
+      dispatch(fetchClassTimetable({ classId: classRoom?.id, sessionId: CurrentSessionData?.id }))
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,11 +79,15 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
         }
       })
 
-      getSingleClass(classRoom?.id).then((res)=>{
-        if(res?.data?.success){
-            setClassSubjects(res?.data?.data?.subjects)
+      getSingleClass(classRoom?.id).then(res => {
+        if (res?.data?.success) {
+          setClassSubjects(res?.data?.data?.subjects)
         }
       })
+      if (ClassesList[0]?.staff) {
+        const { title, firstName, lastName } = ClassesList[0]?.staff
+        setClassTeacher(`${title}. ${firstName} ${lastName}`)
+      }
     }
   }, [classRoom])
 
@@ -155,6 +162,28 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
 
                     <Typography sx={{ color: 'text.secondary' }}>{classRoom.capacity}</Typography>
                   </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography sx={{ color: 'text.secondary' }}>Class Teacher:</Typography>
+                    {classTeacher ? (
+                      <CustomChip
+                        rounded
+                        skin='light'
+                        size='small'
+                        label={classTeacher}
+                        color='success'
+                        sx={{ textTransform: 'capitalize' }}
+                      />
+                    ) : (
+                      <CustomChip
+                        rounded
+                        skin='light'
+                        size='small'
+                        label={'No Class Teacher'}
+                        color='error'
+                        sx={{ textTransform: 'capitalize' }}
+                      />
+                    )}
+                  </Box>
                 </Stack>
               </CardContent>
 
@@ -165,19 +194,16 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                     {classSubjects?.map((subject, index) => (
                       <Fragment key={subject.id}>
                         {index > 0 && ', '}
-                        <span style={{textTransform: 'uppercase'}} >{`${index + 1}. ${subject?.name}`}</span>
+                        <span style={{ textTransform: 'uppercase' }}>{`${index + 1}. ${subject?.name}`}</span>
                       </Fragment>
                     ))}
                   </Alert>
                 </Grid>
-              )
-              : 
-              <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
-              <Alert severity='error'>No Registered Subjects For Class</Alert>
-              </Grid>
-              }
-
-
+              ) : (
+                <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
+                  <Alert severity='error'>No Registered Subjects For Class</Alert>
+                </Grid>
+              )}
 
               <Divider sx={{ mt: '10px', mb: '10px' }}>Students In Class</Divider>
 

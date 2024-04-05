@@ -45,7 +45,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
-
+        //eslint_disable-next-line
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='error'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
@@ -60,8 +60,7 @@ const WardTable = ({ user }) => {
   const dispatch = useAppDispatch()
 
   const [ClassesList] = useClasses()
-
-  const [wardData, setWard] = useState(0)
+  const [wardData, setWard] = useState([])
   const [loading, setLoading] = useState(false)
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [studentInView, setStudentInView] = useState(null)
@@ -89,6 +88,8 @@ const WardTable = ({ user }) => {
           if (res?.data.success) {
             setLoading(false)
             setWard(res?.data.data)
+          } else {
+            setLoading(false)
           }
         })
         .catch(() => {
@@ -103,7 +104,7 @@ const WardTable = ({ user }) => {
         <CardHeader
           title='Student'
           titleTypographyProps={{ sx: { mb: [2, 0] } }}
-
+          // eslint-disable-next-line
           //   action={<CustomTextField value={value} placeholder='Search' onChange={e => handleFilter(e.target.value)} />}
           sx={{
             py: 4,
@@ -123,10 +124,10 @@ const WardTable = ({ user }) => {
                 {/* <TableCell align='center' sx={{ minWidth: 150 }}>
                 Religion
               </TableCell> */}
-                <TableCell align='left' sx={{ minWidth: 160 }}>
+                <TableCell align='left' sx={{ minWidth: 150 }}>
                   Class
                 </TableCell>
-                <TableCell align='left' sx={{ minWidth: 150 }}>
+                <TableCell align='left' sx={{ minWidth: 200 }}>
                   Registration Date
                 </TableCell>
                 {/* <TableCell align='left' sx={{ minWidth: 150 }}>
