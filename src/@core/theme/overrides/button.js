@@ -109,7 +109,7 @@ const Button = () => {
           style: ({ theme }) => ({
             color: theme.palette.primary.main,
             backgroundColor: hexToRGBA(theme.palette.primary.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.primary.main, 0.24) }
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.primary.main, 0.08) }
           })
         },
         {
@@ -117,7 +117,7 @@ const Button = () => {
           style: ({ theme }) => ({
             color: theme.palette.secondary.main,
             backgroundColor: hexToRGBA(theme.palette.secondary.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.secondary.main, 0.24) }
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.secondary.main, 0.08) }
           })
         },
         {
@@ -125,7 +125,7 @@ const Button = () => {
           style: ({ theme }) => ({
             color: theme.palette.error.main,
             backgroundColor: hexToRGBA(theme.palette.error.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.error.main, 0.24) }
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.error.main, 0.08) }
           })
         },
         {
@@ -133,7 +133,7 @@ const Button = () => {
           style: ({ theme }) => ({
             color: theme.palette.warning.main,
             backgroundColor: hexToRGBA(theme.palette.warning.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.warning.main, 0.24) }
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.warning.main, 0.08) }
           })
         },
         {
@@ -141,7 +141,7 @@ const Button = () => {
           style: ({ theme }) => ({
             color: theme.palette.info.main,
             backgroundColor: hexToRGBA(theme.palette.info.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.info.main, 0.24) }
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.info.main, 0.08) }
           })
         },
         {
@@ -149,7 +149,7 @@ const Button = () => {
           style: ({ theme }) => ({
             color: theme.palette.success.main,
             backgroundColor: hexToRGBA(theme.palette.success.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.success.main, 0.24) }
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.success.main, 0.08) }
           })
         }
       ],

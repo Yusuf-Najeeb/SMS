@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -41,6 +41,7 @@ const UserDropdown = props => {
 
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
+  const [userType, setUser] = useState({})
 
   // ** Hooks
   const router = useRouter()
@@ -81,6 +82,13 @@ const UserDropdown = props => {
     handleDropdownClose('/login')
   }
 
+  useEffect(() => {
+    const userType = JSON.parse(window.localStorage.getItem('authUser'))
+    setUser(userType)
+  }, [])
+
+  const { role, profilePicture, firstName, lastName } = userType
+
   return (
     <Fragment>
       <Badge
@@ -94,8 +102,8 @@ const UserDropdown = props => {
         }}
       >
         <Avatar
-          alt='John Doe'
-          src='/images/avatars/1.png'
+          alt={`${userType.firstName ? 'firstName' : 'User'} ${userType.lastName ? 'lastName' : ''}`}
+          src={`${profilePicture ? profilePicture : '/images/avatars/1.png'}`}
           onClick={handleDropdownOpen}
           sx={{ width: 38, height: 38 }}
         />
@@ -118,11 +126,15 @@ const UserDropdown = props => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar
+                alt={`${firstName ? 'firstName' : 'User'} ${lastName ? 'lastName' : ''}`}
+                src={profilePicture ? userType?.profilePicture : '/images/avatars/1.png'}
+                sx={{ width: '2.5rem', height: '2.5rem' }}
+              />
             </Badge>
             <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 500 }}>John Doe</Typography>
-              <Typography variant='body2'>Admin</Typography>
+              <Typography sx={{ fontWeight: 500 }}>{`${firstName} ${lastName}`}</Typography>
+              <Typography variant='body2'>{role?.name}</Typography>
             </Box>
           </Box>
         </Box>
