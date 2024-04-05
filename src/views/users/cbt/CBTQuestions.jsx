@@ -41,6 +41,7 @@ const CBTQuestions = () => {
   //   States
   const [openModal, setModal] = useState(false)
   const [page, setPage] = useState(0)
+  const [limit, setLimit] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [staffId, setStaffId] = useState('')
   const [categoryId, setCategoryId] = useState('')
@@ -116,7 +117,7 @@ const CBTQuestions = () => {
   }
 
   const fetchQuestions = async ()=>{
-    const res = await  dispatch(fetchCBTQuestions({ page: page + 1, staffId, classId, subjectId, categoryId, sessionId }))
+    const res = await  dispatch(fetchCBTQuestions({ page: page + 1, limit, staffId, classId, subjectId, categoryId, sessionId }))
 
       if(res.payload.data.data.length > 0){
         const {currentPage, totalItems, itemsPerPage, totalPages} = res.payload.data.paging
@@ -142,11 +143,6 @@ const CBTQuestions = () => {
   }, [])
 
 
-//   useEffect(()=>{
-//     dispatch(fetchCBTQuestions({ page: page + 1, staffId, classId, subjectId, categoryId, sessionId }))
-
-//     // eslint-disable-next-line
-//   },[page, staffId, categoryId, subjectId, classId, sessionId])
 
   return (
     <div>
