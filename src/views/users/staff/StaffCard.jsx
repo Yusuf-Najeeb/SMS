@@ -51,10 +51,9 @@ const Sub = styled('sub')(({ theme }) => ({
 
 const StaffCard = ({ Staff }) => {
   // ** States
-  const [profilePictureUrl, setProfilePictureUrl] = useState()
+  const [profilePictureUrl, setProfilePictureUrl] = useState(Staff?.profilePicture)
   const [grossSalary, setGrossSalary] = useState(0)
   const [initials, setInitials] = useState('')
-
 
   useEffect(() => {
     if (Staff) {
@@ -71,7 +70,8 @@ const StaffCard = ({ Staff }) => {
   }, [Staff])
 
   useEffect(() => {
-    setProfilePictureUrl(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${Staff?.profilePicture}`)
+    const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
+    setProfilePictureUrl(`${backEndURL?.replace('api', '')}/${Staff?.profilePicture}`)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profilePictureUrl])
@@ -82,23 +82,28 @@ const StaffCard = ({ Staff }) => {
         <Fragment>
           <CardContent sx={{ pb: 1, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
             <Box sx={{ pt: 1.5, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                {Staff?.profilePicture  ? 
-                 <CustomAvatar
-                 src={profilePictureUrl}
-                 variant='rounded'
-                 alt={`${formatFirstLetter(Staff?.firstname)} ${formatFirstLetter(Staff?.lastname)}`}
-                 sx={{ width: 150, height: 150, mb: 4 }}
-               /> 
-               : 
-               <CustomAvatar
-               skin='light'
-               color='info'
-               sx={{ mr: 2.5, width: 50, height: 50, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
-             >
-               {getInitials(initials || 'John Doe')}
-             </CustomAvatar>
-            }
-             
+              {Staff?.profilePicture ? (
+                <CustomAvatar
+                  src={profilePictureUrl}
+                  variant='image'
+                  alt={`${formatFirstLetter(Staff?.firstName)} ${formatFirstLetter(Staff?.lastName)}`}
+                  sx={{ width: 150, height: 150, mb: 4 }}
+                />
+              ) : (
+                <CustomAvatar
+                  skin='light'
+                  color='info'
+                  sx={{
+                    mr: 2.5,
+                    width: 50,
+                    height: 50,
+                    fontWeight: 500,
+                    fontSize: theme => theme.typography.body1.fontSize
+                  }}
+                >
+                  {getInitials(initials || 'John Doe')}
+                </CustomAvatar>
+              )}
 
               <Typography variant='h5' sx={{ mb: 3 }}>
                 {formatFirstLetter(Staff?.firstName) || '--'}
@@ -146,19 +151,19 @@ const StaffCard = ({ Staff }) => {
             </Box>
           </CardContent>
 
-          { Staff?.rooms?.length > 0 && (
-              <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
-                <Typography variant='h5'>Rooms </Typography>
-                <Alert severity='success'>
-                  {Staff?.rooms?.map((sub, index) => (
-                    <Fragment key={sub.id}>
-                      {index > 0 && ', '}
-                      <span>{`${index + 1}. ${sub?.name}`}</span>
-                    </Fragment>
-                  ))}
-                </Alert>
-              </Grid>
-            )}
+          {Staff?.rooms?.length > 0 && (
+            <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
+              <Typography variant='h5'>Rooms </Typography>
+              <Alert severity='success'>
+                {Staff?.rooms?.map((sub, index) => (
+                  <Fragment key={sub.id}>
+                    {index > 0 && ', '}
+                    <span>{`${index + 1}. ${sub?.name}`}</span>
+                  </Fragment>
+                ))}
+              </Alert>
+            </Grid>
+          )}
 
           <Divider sx={{ my: '0 !important', mx: 6 }} />
 
@@ -166,77 +171,77 @@ const StaffCard = ({ Staff }) => {
             <Typography variant='body2' sx={{ color: 'text.disabled', textTransform: 'uppercase' }}>
               Personal Information
             </Typography>
-            
+
             <Box sx={{ pt: 4 }}>
-            <Grid container spacing={5}>
-            <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='solar:user-broken'
-                cardTitle='Name'
-                value={`${formatFirstLetter(Staff?.firstName)} ${formatFirstLetter(Staff?.lastName)}` || '--'}
-              />
-              </Grid>
+              <Grid container spacing={5}>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='solar:user-broken'
+                    cardTitle='Name'
+                    value={`${formatFirstLetter(Staff?.firstName)} ${formatFirstLetter(Staff?.lastName)}` || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard iconName='fluent-mdl2:date-time-2' cardTitle='Date of Birth' value={formatDateToReadableFormat(Staff?.dateOfBirth) || '--'} />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='fluent-mdl2:date-time-2'
+                    cardTitle='Date of Birth'
+                    value={formatDateToReadableFormat(Staff?.dateOfBirth) || '--'}
+                  />
+                </Grid>
 
-               <Grid item xs={6}>
-              <StaffDetailCard iconName='fontisto:email' cardTitle='Email' value={Staff?.email || '--'} />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard iconName='fontisto:email' cardTitle='Email' value={Staff?.email || '--'} />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard iconName='bi:phone' cardTitle='Phone Number' value={Staff?.phone || '--'} />
-              </Grid>
-              
-              <Grid item xs={6}>
-              <StaffDetailCard iconName='icons8:gender' cardTitle='Gender' value={Staff?.gender || '--'} />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard iconName='bi:phone' cardTitle='Phone Number' value={Staff?.phone || '--'} />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard iconName='f7:status' cardTitle='Marital Status' value={Staff?.maritalStatus || '--'} />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard iconName='icons8:gender' cardTitle='Gender' value={Staff?.gender || '--'} />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard iconName='ion:image-sharp' cardTitle='Age' value={calculateAge(Staff?.dateOfBirth) || '--'} />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='f7:status'
+                    cardTitle='Marital Status'
+                    value={Staff?.maritalStatus || '--'}
+                  />
+                </Grid>
 
-              {/* <StaffDetailCard
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='ion:image-sharp'
+                    cardTitle='Age'
+                    value={calculateAge(Staff?.dateOfBirth) || '--'}
+                  />
+                </Grid>
+
+                {/* <StaffDetailCard
                 iconName='fluent-emoji-high-contrast:department-store'
                 cardTitle='Department'
                 value={Staff?.department?.name || '--'}
               /> */}
 
-            <Grid item xs={6}>
-               <StaffDetailCard
-                iconName='tabler:user-pin'
-                cardTitle='City'
-                value={Staff?.city || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard iconName='tabler:user-pin' cardTitle='City' value={Staff?.city || '--'} />
+                </Grid>
 
-              <Grid item xs={6}>
-               <StaffDetailCard
-                iconName='tabler:user-pin'
-                cardTitle='Local Government'
-                value={Staff?.lga || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard iconName='tabler:user-pin' cardTitle='Local Government' value={Staff?.lga || '--'} />
+                </Grid>
 
-              <Grid item xs={6}>
-               <StaffDetailCard
-                iconName='tabler:user-pin'
-                cardTitle='State'
-                value={Staff?.state || '--'}
-              />
-              </Grid>
-              <Grid item xs={12}>
-              <StaffDetailCard
-                iconName='tabler:user-pin'
-                cardTitle='Address'
-                value={Staff?.residentialAddress || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard iconName='tabler:user-pin' cardTitle='State' value={Staff?.state || '--'} />
+                </Grid>
+                <Grid item xs={12}>
+                  <StaffDetailCard
+                    iconName='tabler:user-pin'
+                    cardTitle='Address'
+                    value={Staff?.residentialAddress || '--'}
+                  />
+                </Grid>
               </Grid>
             </Box>
           </CardContent>
@@ -248,32 +253,32 @@ const StaffCard = ({ Staff }) => {
               Employment Information
             </Typography>
             <Box sx={{ pt: 4 }}>
-            <Grid container spacing={5}>
-            <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='carbon:user-role'
-                cardTitle='Staff Description'
-                value={Staff?.staffdescription || '--'}
-              />
-              </Grid>
+              <Grid container spacing={5}>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='carbon:user-role'
+                    cardTitle='Staff Description'
+                    value={Staff?.staffdescription || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='mingcute:department-fill'
-                cardTitle='Department'
-                value={Staff?.department_section || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='mingcute:department-fill'
+                    cardTitle='Department'
+                    value={Staff?.department_section || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='arcticons:oldschool-editor'
-                cardTitle='Specialization'
-                value={Staff?.specialization || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='arcticons:oldschool-editor'
+                    cardTitle='Specialization'
+                    value={Staff?.specialization || '--'}
+                  />
+                </Grid>
 
-              {/* <Grid item xs={6}>
+                {/* <Grid item xs={6}>
               <StaffDetailCard
                 iconName='material-symbols-light:topic'
                 cardTitle='Subjects'
@@ -281,95 +286,94 @@ const StaffCard = ({ Staff }) => {
               />
               </Grid> */}
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='bxs:school'
-                cardTitle='Institution Attended'
-                value={Staff?.institutionAttended || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='bxs:school'
+                    cardTitle='Institution Attended'
+                    value={Staff?.institutionAttended || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='ic:round-school'
-                cardTitle='Qualification'
-                value={Staff?.qualification || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='ic:round-school'
+                    cardTitle='Qualification'
+                    value={Staff?.qualification || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='eos-icons:workload'
-                cardTitle='Previous Work Experience'
-                value={Staff?.previousWorkExperience || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='eos-icons:workload'
+                    cardTitle='Previous Work Experience'
+                    value={Staff?.previousWorkExperience || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='healthicons:referral-negative'
-                cardTitle='Name of 1st Referee'
-                value={Staff?.nameOfRefereeOne || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='healthicons:referral-negative'
+                    cardTitle='Name of 1st Referee'
+                    value={Staff?.nameOfRefereeOne || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='healthicons:referral-negative'
-                cardTitle='Name of 2nd Referee'
-                value={Staff?.nameOfRefereeTwo || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='healthicons:referral-negative'
+                    cardTitle='Name of 2nd Referee'
+                    value={Staff?.nameOfRefereeTwo || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='bi:phone'
-                cardTitle='Phone No. of 1st Referee'
-                value={Staff?.phoneOfRefereeOne || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='bi:phone'
+                    cardTitle='Phone No. of 1st Referee'
+                    value={Staff?.phoneOfRefereeOne || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='bi:phone'
-                cardTitle='Phone No. of 2nd Referee'
-                value={Staff?.phoneOfRefereeTwo || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='bi:phone'
+                    cardTitle='Phone No. of 2nd Referee'
+                    value={Staff?.phoneOfRefereeTwo || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='fontisto:email'
-                cardTitle='Email of 1st Referee'
-                value={Staff?.emailOfRefereeOne || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='fontisto:email'
+                    cardTitle='Email of 1st Referee'
+                    value={Staff?.emailOfRefereeOne || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='fontisto:email'
-                cardTitle='Email of 2nd Referee'
-                value={Staff?.emailOfRefereeTwo|| '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='fontisto:email'
+                    cardTitle='Email of 2nd Referee'
+                    value={Staff?.emailOfRefereeTwo || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='tabler:user-pin'
-                cardTitle='Address of 1st Referee'
-                value={Staff?.addressOfRefereeOne || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='tabler:user-pin'
+                    cardTitle='Address of 1st Referee'
+                    value={Staff?.addressOfRefereeOne || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='tabler:user-pin'
-                cardTitle='Address of 2nd Referee'
-                value={Staff?.addressOfRefereeTwo|| '--'}
-              />
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='tabler:user-pin'
+                    cardTitle='Address of 2nd Referee'
+                    value={Staff?.addressOfRefereeTwo || '--'}
+                  />
+                </Grid>
               </Grid>
-
-            </Grid>
             </Box>
           </CardContent>
 
@@ -380,75 +384,73 @@ const StaffCard = ({ Staff }) => {
               Account/Payslip Information
             </Typography>
             <Box sx={{ pt: 4 }}>
-            <Grid container spacing={5}>
-            <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='healthicons:money-bag'
-                cardTitle='Basic Salary'
-                value={formatCurrency(Staff.basicSalary, true)}
-              />
-              </Grid>
+              <Grid container spacing={5}>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='healthicons:money-bag'
+                    cardTitle='Basic Salary'
+                    value={formatCurrency(Staff.basicSalary, true)}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='emojione-monotone:money-bag'
-                cardTitle='Furniture Allowance'
-                value={formatCurrency(Staff.furnitureAllowance, true)}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='emojione-monotone:money-bag'
+                    cardTitle='Furniture Allowance'
+                    value={formatCurrency(Staff.furnitureAllowance, true)}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='emojione-monotone:money-bag'
-                cardTitle='Rent Allowance'
-                value={formatCurrency(Staff.rentAllowance, true)}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='emojione-monotone:money-bag'
+                    cardTitle='Rent Allowance'
+                    value={formatCurrency(Staff.rentAllowance, true)}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='emojione-monotone:money-bag'
-                cardTitle='Transport Allowance'
-                value={formatCurrency(Staff.transportAllowance, true)}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='emojione-monotone:money-bag'
+                    cardTitle='Transport Allowance'
+                    value={formatCurrency(Staff.transportAllowance, true)}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='emojione-monotone:money-bag'
-                cardTitle='Meal Allowance'
-                value={formatCurrency(Staff.mealAllowance, true)}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='emojione-monotone:money-bag'
+                    cardTitle='Meal Allowance'
+                    value={formatCurrency(Staff.mealAllowance, true)}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='emojione-monotone:money-bag'
-                cardTitle='Salary Arrears'
-                value={formatCurrency(Staff.salaryArrears, true)}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='emojione-monotone:money-bag'
+                    cardTitle='Salary Arrears'
+                    value={formatCurrency(Staff.salaryArrears, true)}
+                  />
+                </Grid>
 
-              
-            <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='solar:wallet-money-bold'
-                cardTitle='Account Number'
-                value={Staff?.accountNumber || '--'}
-              />
-              </Grid>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='solar:wallet-money-bold'
+                    cardTitle='Account Number'
+                    value={Staff?.accountNumber || '--'}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='fluent-emoji-high-contrast:bank'
-                cardTitle='Bank Name'
-                value={Staff?.bankName || '--'}
-              />
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='fluent-emoji-high-contrast:bank'
+                    cardTitle='Bank Name'
+                    value={Staff?.bankName || '--'}
+                  />
+                </Grid>
+                {/* <StaffDetailCard iconName="solar:wallet-money-bold" cardTitle='RSA Number' value={Staff?.rsaNumber || '--'} />  */}
+                {/* <StaffDetailCard iconName="ri:home-office-fill" cardTitle='RSA Company' value={Staff?.rsaCompany || '--'} />  */}
               </Grid>
-              {/* <StaffDetailCard iconName="solar:wallet-money-bold" cardTitle='RSA Number' value={Staff?.rsaNumber || '--'} />  */}
-              {/* <StaffDetailCard iconName="ri:home-office-fill" cardTitle='RSA Company' value={Staff?.rsaCompany || '--'} />  */}
-            
-            </Grid>
             </Box>
           </CardContent>
 
@@ -459,58 +461,55 @@ const StaffCard = ({ Staff }) => {
               Medical Information
             </Typography>
             <Box sx={{ pt: 4 }}>
-            <Grid container spacing={5}>
-            <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='healthicons:health-outline'
-                cardTitle='Genotype'
-                value={Staff.genotype || '--'}
-              />
+              <Grid container spacing={5}>
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='healthicons:health-outline'
+                    cardTitle='Genotype'
+                    value={Staff.genotype || '--'}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='material-symbols-light:health-metrics-sharp'
+                    cardTitle='Blood Group'
+                    value={Staff.bloodGroup || '--'}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='mdi:food-off'
+                    cardTitle='Food Allergies'
+                    value={Staff.foodAllergies || '--'}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='mdi:drug-off'
+                    cardTitle='Drug Allergies'
+                    value={Staff.drugAllergies || '--'}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='medical-icon:surgery'
+                    cardTitle='Previous Surgery'
+                    value={Staff.previousSurgery || '--'}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <StaffDetailCard
+                    iconName='streamline:emergency-exit-solid'
+                    cardTitle='Emergency Phone Number'
+                    value={Staff.emergencyPhone || '--'}
+                  />
+                </Grid>
               </Grid>
-
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='material-symbols-light:health-metrics-sharp'
-                cardTitle='Blood Group'
-                value={Staff.bloodGroup || '--'}
-              />
-              </Grid>
-
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='mdi:food-off'
-                cardTitle='Food Allergies'
-                value={Staff.foodAllergies || '--'}
-              />
-              </Grid>
-
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='mdi:drug-off'
-                cardTitle='Drug Allergies'
-                value={Staff.drugAllergies || '--'}
-              />
-              </Grid>
-
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='medical-icon:surgery'
-                cardTitle='Previous Surgery'
-                value={Staff.previousSurgery || '--'}
-              />
-              </Grid>
-
-              <Grid item xs={6}>
-              <StaffDetailCard
-                iconName='streamline:emergency-exit-solid'
-                cardTitle='Emergency Phone Number'
-                value={Staff.emergencyPhone || '--'}
-              />
-              </Grid>
-
-              
-
-            </Grid>
             </Box>
           </CardContent>
         </Fragment>

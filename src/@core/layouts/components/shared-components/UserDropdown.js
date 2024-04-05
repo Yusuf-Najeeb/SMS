@@ -88,6 +88,12 @@ const UserDropdown = props => {
   }, [])
 
   const { role, profilePicture, firstName, lastName } = userType
+  const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
+  const userProfilePicture = `${backEndURL?.replace('api', '')}/${profilePicture}`
+
+  console.log('User', userType)
+  console.log(profilePicture)
+  console.log(userProfilePicture)
 
   return (
     <Fragment>
@@ -103,7 +109,7 @@ const UserDropdown = props => {
       >
         <Avatar
           alt={`${userType.firstName ? 'firstName' : 'User'} ${userType.lastName ? 'lastName' : ''}`}
-          src={`${profilePicture ? profilePicture : '/images/avatars/1.png'}`}
+          src={`${userProfilePicture ? userProfilePicture : '/images/avatars/1.png'}`}
           onClick={handleDropdownOpen}
           sx={{ width: 38, height: 38 }}
         />
@@ -128,7 +134,7 @@ const UserDropdown = props => {
             >
               <Avatar
                 alt={`${firstName ? 'firstName' : 'User'} ${lastName ? 'lastName' : ''}`}
-                src={profilePicture ? userType?.profilePicture : '/images/avatars/1.png'}
+                src={userProfilePicture ? userProfilePicture : '/images/avatars/1.png'}
                 sx={{ width: '2.5rem', height: '2.5rem' }}
               />
             </Badge>
