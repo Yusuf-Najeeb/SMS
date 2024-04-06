@@ -1,9 +1,21 @@
 
-import CBTQuestions from "../../../views/users/cbt/CBTQuestions"
+// import CbtHome from "../../../views/users/cbt/CbtHome"
 
 
-const CBTHomepage = () => {
-  return <CBTQuestions />
+// const CBTHomepage = () => {
+//   return <CbtHome />
+// }
+
+// export default CBTHomepage
+
+import CbtTab from '../../../views/users/cbt/CbtTabs'
+
+
+
+const TeachersCBTHome = () => {
+
+
+  return <CbtTab tab='questions' />
 }
 
-export default CBTHomepage
+export default TeachersCBTHome

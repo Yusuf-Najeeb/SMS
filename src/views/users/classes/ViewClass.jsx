@@ -89,7 +89,7 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
         setClassTeacher(`${title}. ${firstName} ${lastName}`)
       }
     }
-  }, [classRoom])
+  }, [classRoom, ClassesList])
 
   return (
     <Drawer

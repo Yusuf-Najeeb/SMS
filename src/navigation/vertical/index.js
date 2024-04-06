@@ -37,7 +37,16 @@ const navigation = () => {
         title: 'Dashboard',
         icon: 'tabler:smart-home',
         path: '/dashboard'
-      }
+      },
+      {
+        sectionTitle: 'Assessment & Results'
+      },
+  
+      {
+        title: 'CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/cbt'
+      },
     ]
   }
 

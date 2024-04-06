@@ -83,11 +83,7 @@ const StudentsTranscript = () => {
       }
     }
 
-    // Cleanup function
-    // return () => {
-    //   isMounted = false
-    //   setActiveStudent({})
-    // }
+ 
   }, [studentId, StudentData])
 
  
