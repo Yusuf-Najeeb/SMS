@@ -48,7 +48,7 @@ const renderClient = row => {
     return (
       <CustomAvatar
         skin='light'
-
+        //eslint_disable-next-line
         // color={row?.title.length > 2 ? 'primary' : 'secondary'}
         color='info'
         sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
@@ -97,24 +97,21 @@ const GuardianTable = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
-  
+
+  const updateFetch = () => setFetch(!refetch)
+
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  const updateFetch = () => setFetch(!refetch)
-
-
-  const handleToggle = (value) => {
-
+  const handleToggle = value => {
     let payload
-    if(value.status){
+    if (value.status) {
       payload = {
         status: false
       }
-    }
-    else {
+    } else {
       payload = {
         status: true
       }
@@ -168,7 +165,7 @@ const GuardianTable = () => {
     dispatch(fetchGuardian({ page: page + 1, key }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage, refetch])
+  }, [page, rowsPerPage, refetch, key])
 
   return (
     <>
@@ -217,8 +214,6 @@ const GuardianTable = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                
-
                 <Fragment>
                   {GuardianData?.result?.length > 0 &&
                     GuardianData?.result.map(item => (
@@ -275,19 +270,21 @@ const GuardianTable = () => {
 
                         <TableCell
                           align='left'
-                          
-                          sx={ item?.profilePicture !== null && item?.profilePicture?.length > 5 ? {
-                            display: 'flex',
-                            justifyContent: 'center',
-                            gap: '10px',
-                           transform: 'translateY(0px)'
+                          sx={
+                            item?.profilePicture !== null && item?.profilePicture?.length > 5
+                              ? {
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  gap: '10px',
+                                  transform: 'translateY(0px)'
+                                }
+                              : {
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  gap: '10px',
+                                  transform: 'translateY(7.4px)'
+                                }
                           }
-                         : {display: 'flex',
-                         justifyContent: 'center',
-                         gap: '10px',
-                        transform: 'translateY(7.4px)'
-                       }
-                        }
                         >
                           <IconButton size='small' onClick={() => setGuardianToEdit(item)}>
                             <Icon icon='tabler:edit' />
@@ -301,7 +298,7 @@ const GuardianTable = () => {
                           <Icon icon='tabler:trash' />
                         </IconButton> */}
 
-                          <FormGroup row sx={{transform: 'translateX(-40%)'}}>
+                          <FormGroup row sx={{ transform: 'translateX(-40%)' }}>
                             <FormControlLabel
                               value='start'
                               label=''

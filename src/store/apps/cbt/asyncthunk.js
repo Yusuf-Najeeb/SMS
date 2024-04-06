@@ -16,6 +16,16 @@ export const fetchCBTQuestions = createAsyncThunk('/CBT/FetchCBTQuestions', asyn
   }
 })
 
+export const fetchCBTAnswers = createAsyncThunk('/CBT/FetchCBTAnwers', async (query) => {
+    try {
+      const response = await axios.get(`/cbt/getanswers?page=${query.page}&limit=300&staffId=${query.staffId}&classId=${query.classId}&subjectId=${query.subjectId}&categoryId=${query.categoryId}&sessionId=${query.sessionId}&studentId=${query.studentId}`)
+  
+      return response
+    } catch (error) {
+  
+    }
+  })
+
 export const submitQuestions = async (payload)=> {
     try {
         const res = await axios.post(`/cbt/questions`, payload)
@@ -73,6 +83,21 @@ export const submitAnswers = async (payload)=> {
         return res
     } catch (error) {
         notifyError(error?.response?.data?.message || 'Unable to Submit Answer')
+        
+    }
+}
+
+export const gradeEssayAnswer = async (id, payload)=> {
+    try {
+        const res = await axios.put(`/cbt/addessayscore/${id}`, payload)
+
+        if(res?.data?.success){
+            notifySuccess('Anwer Graded')
+        }
+
+        return res
+    } catch (error) {
+        notifyError(error?.response?.data?.message || 'Unable to Grade Answer')
         
     }
 }

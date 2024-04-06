@@ -41,7 +41,7 @@ const CBTQuestions = () => {
   //   States
   const [openModal, setModal] = useState(false)
   const [page, setPage] = useState(0)
-  const [limit, setLimit] = useState(1)
+  const [limit, setLimit] = useState(300)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [staffId, setStaffId] = useState('')
   const [categoryId, setCategoryId] = useState('')
@@ -234,7 +234,9 @@ const CBTQuestions = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={3} sx={{mt: 5}}>
-            <Button onClick={fetchQuestions} variant='contained'  sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}>
+            <Button onClick={fetchQuestions} 
+              disabled= { !subjectId || !classId || !sessionId || !staffId || !categoryId}
+            variant='contained'  sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}>
           <Icon fontSize='1.125rem' icon='ic:baseline-cloud-download' />
           Fetch Questions
         </Button>

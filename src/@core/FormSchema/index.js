@@ -34,7 +34,7 @@ export const personalInfoSchema = yup.object().shape({
   city: yup.string(),
   state: yup.string(),
   lga: yup.string().required('Local Government is required'),
-  religion: yup.string(),
+  religion: yup.string()
 
   // staffDescription: yup.string().required('Description is required'),
 
@@ -59,7 +59,7 @@ export const updateStaffPersonalInfoSchema = yup.object().shape({
   state: yup.string(),
   lga: yup.string().required('Local Government of Origin is required'),
   religion: yup.string(),
-  staffDescription: yup.string().required('Description is required'),
+  staffDescription: yup.string().required('Description is required')
 
   // additionalInfo: yup.string()
 })
@@ -112,7 +112,7 @@ export const medicalSchema = yup.object().shape({
   genotype: yup.string().required('Genotype is required'),
   bloodGroup: yup.string().required('Blood Group is required'),
   previousSurgery: yup.string(),
-  healthStatus: yup.string().required('Health Status is required'),
+  healthStatus: yup.string().required('Health Status is required')
 })
 
 export const nextOfKinSchema = yup.object().shape({
@@ -126,10 +126,9 @@ export const nextOfKinSchema = yup.object().shape({
   phoneOfRefereeTwo: yup.string(),
   nextOfKinName: yup.string().required("Next of Kin's name is required"),
   nextOfKinAddress: yup.string(),
-  emergencyPhone: yup.string().required("Emergency phone number is required"),
-  relationShip: yup.string(),
+  emergencyPhone: yup.string().required('Emergency phone number is required'),
+  relationShip: yup.string()
 })
-
 
 export const requireName = yup.object().shape({
   name: yup.string().required('Department Name is required')
@@ -168,8 +167,10 @@ export const signUpSchema = yup.object().shape({
   gender: yup.string().required('Gender is required'),
 
   // status: yup.string().required('Status is required'),
-  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  phone: yup
+    .string()
+    .typeError('Phone Number must be at least 11 Characters')
+    .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfEmployment: yup.string().required('Date of Employment is required'),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('residentialAddress is required'),
@@ -184,8 +185,10 @@ export const studentSignUpSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
   title: yup.string().required('Title is required'),
   status: yup.string().required('status is required'),
-  phone: yup.string().typeError('Phone Number is required')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  phone: yup
+    .string()
+    .typeError('Phone Number is required')
+    .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
 
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('residentialAddress is required'),
@@ -200,14 +203,17 @@ export const createActorSchema = yup.object().shape({
   password: yup.string(),
 
   // maritalStatus: yup.string(),
-  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  phone: yup
+    .string()
+    .required()
+    .typeError('Phone Number must be at least 11 Characters')
+    .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string(),
   residentialAddress: yup.string().required('Residential Address is required'),
   gender: yup.string().required('Gender is required'),
   relationship: yup.string(),
   religion: yup.string(),
-  ethnicity: yup.string(),
+  ethnicity: yup.string()
 })
 
 export const createApplicantSchema = yup.object().shape({
@@ -216,14 +222,17 @@ export const createApplicantSchema = yup.object().shape({
   middleName: yup.string(),
   email: yup.string().required('Email is required'),
   password: yup.string().required('Applicant Password is required'),
-  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  phone: yup
+    .string()
+    .required()
+    .typeError('Phone Number must be at least 11 Characters')
+    .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('Residential Address is required'),
   gender: yup.string().required('Gender is required'),
   branch: yup.string().required('Branch is required'),
   identificationNumber: yup.string().required('Student ID is required'),
-  title: yup.string(),
+  title: yup.string()
 })
 
 export const updateApplicantSchema = yup.object().shape({
@@ -231,15 +240,18 @@ export const updateApplicantSchema = yup.object().shape({
   lastName: yup.string().required('Last Name is required'),
   middleName: yup.string(),
   email: yup.string().required('Email is required'),
-  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  phone: yup
+    .string()
+    .required()
+    .typeError('Phone Number must be at least 11 Characters')
+    .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('Residential Address is required'),
   gender: yup.string().required('Gender is required'),
 
   // branch: yup.string().required('Branch is required'),
   identificationNumber: yup.string().required('Student ID is required'),
-  title: yup.string(),
+  title: yup.string()
 })
 
 export const createStudentSchema = yup.object().shape({
@@ -258,7 +270,7 @@ export const createStudentSchema = yup.object().shape({
   registrationDate: yup.string(),
   lastSchool: yup.string(),
   isStaffChild: yup.boolean().required('This field is required'),
-  boarder: yup.boolean().required('Student Type is required'),
+  boarder: yup.boolean().required('Student Type is required')
 })
 
 export const updateStudentSchema = yup.object().shape({
@@ -274,8 +286,8 @@ export const updateStudentSchema = yup.object().shape({
   ethnicity: yup.string(),
   registrationDate: yup.string(),
   lastSchool: yup.string(),
-  isStaffChild: yup.boolean().required("This field is required"),
-  boarder: yup.boolean().required('Student Category is required'),
+  isStaffChild: yup.boolean().required('This field is required'),
+  boarder: yup.boolean().required('Student Category is required')
 })
 
 export const updateGuardianSchema = yup.object().shape({
@@ -283,16 +295,18 @@ export const updateGuardianSchema = yup.object().shape({
   lastName: yup.string().required('Last Name is required'),
   middleName: yup.string(),
   email: yup.string(),
-  phone: yup.string().required().typeError('Phone Number must be at least 11 Characters')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  phone: yup
+    .string()
+    .required()
+    .typeError('Phone Number must be at least 11 Characters')
+    .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string(),
   residentialAddress: yup.string(),
   gender: yup.string().required('Gender is required'),
   religion: yup.string(),
   ethnicity: yup.string(),
-  relationship: yup.string(),
+  relationship: yup.string()
 })
-
 
 export const editStaffSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
@@ -300,9 +314,11 @@ export const editStaffSchema = yup.object().shape({
   middleName: yup.string().required('Middle Name is required'),
   email: yup.string().required('Email is required'),
   title: yup.string().required('Title is required'),
-  status: yup.string().required("Status is required"),
-  phone: yup.string().typeError('Phone Number must be at least 11 Characters')
-  .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
+  status: yup.string().required('Status is required'),
+  phone: yup
+    .string()
+    .typeError('Phone Number must be at least 11 Characters')
+    .min(11, obj => showErrors('Phone number', obj.value.length, obj.min)),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   residentialAddress: yup.string().required('residentialAddress is required'),
   branch: yup.string().required('branch is required')
@@ -315,14 +331,11 @@ export const createIncomeSchema = yup.object().shape({
   categoryId: yup.string().required('Category is required'),
   incomeOwner: yup.string().required('This field is required'),
   paymentMode: yup.string().required('Payment Method is required'),
-  sessionId: yup.string().required('Session is required'),
-  
+  sessionId: yup.string().required('Session is required')
 })
 
 export const updateIncomeSchema = yup.object().shape({
-  amount: yup.number().typeError('Amount must be a number'),
-
-  
+  amount: yup.number().typeError('Amount must be a number')
 })
 
 export const createExpenditureSchema = yup.object().shape({
@@ -332,17 +345,16 @@ export const createExpenditureSchema = yup.object().shape({
   categoryId: yup.string().required('Category is required'),
   sessionId: yup.string().required('Session is required'),
   expenditureOwner: yup.string().required('This field is required'),
-  paymentMode: yup.string().required('Payment Method is required'),
+  paymentMode: yup.string().required('Payment Method is required')
 })
 
 export const categorySchema = yup.object().shape({
-  name: yup.string().required('Category Name is required'),
- 
+  name: yup.string().required('Category Name is required')
 })
 
 export const subjectSchema = yup.object().shape({
   name: yup.string().required('Subject Title is required'),
-  category_name: yup.string().required('Category Name is required'),
+  category_name: yup.string().required('Category Name is required')
 })
 
 export const guardianInfoSchema = yup.object().shape({
@@ -350,13 +362,13 @@ export const guardianInfoSchema = yup.object().shape({
   lastName: yup.string(),
   email: yup.string(),
   phone: yup.string(),
-  gender: yup.string(),
+  gender: yup.string()
 })
 
 export const roomSchema = yup.object().shape({
   name: yup.string().required('Room Name is required'),
   capacity: yup.string().required('Room Capacity is required'),
-  category_name: yup.string().required('Category Name is required'),
+  category_name: yup.string().required('Category Name is required')
 })
 
 export const inputScoreSchema = yup.object().shape({
@@ -367,7 +379,7 @@ export const inputScoreSchema = yup.object().shape({
   score: yup.string().required('Score is required'),
   maxScore: yup.string().required('Maximum Score is required'),
   classId: yup.string().required('Class is required'),
-  sessionId: yup.string().required('Session is required'),
+  sessionId: yup.string().required('Session is required')
 })
 
 export const inputQuestionsSchema = yup.object().shape({
@@ -378,7 +390,7 @@ export const inputQuestionsSchema = yup.object().shape({
   subjectId: yup.string().required('Subject is required'),
   classId: yup.string().required('Class is required'),
   sessionId: yup.string().required('Session is required'),
-  numberOfQuestions: yup.string().required('Number of Questions is required'),
+  numberOfQuestions: yup.string().required('Number of Questions is required')
 })
 
 export const updateQuestionsSchema = yup.object().shape({
@@ -388,8 +400,8 @@ export const updateQuestionsSchema = yup.object().shape({
   dueTime: yup.string().required('Due Time is required'),
   subjectId: yup.string().required('Subject is required'),
   classId: yup.string().required('Class is required'),
-  sessionId: yup.string().required('Session is required'),
-  
+  sessionId: yup.string().required('Session is required')
+
   // question: yup.string().required('Question is required'),
   // optionA: yup.string(),
   // optionB: yup.string(),
@@ -407,7 +419,16 @@ export const singleStudentAttendanceSchema = yup.object().shape({
   date: yup.string().required('Date is required'),
   checkInTime: yup.string().required('Check In Time is required'),
   attendanceStatus: yup.boolean().required('Attendance Status is required'),
-  reasonForAbsence: yup.string(),
+  reasonForAbsence: yup.string()
+})
 
-
+export const updateAttendanceSchema = yup.object().shape({
+  staffId: yup.string().required('Class Teacher is required'),
+  studentId: yup.string().required('Student is required'),
+  classId: yup.string().required('Class is required'),
+  sessionId: yup.string().required('Session is required'),
+  date: yup.string().required('Date is required'),
+  checkInTime: yup.string().required('Check In Time is required'),
+  attendanceStatus: yup.boolean().required('Attendance Status is required'),
+  reasonForAbsence: yup.string()
 })

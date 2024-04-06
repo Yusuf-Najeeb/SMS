@@ -23,7 +23,7 @@ import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { singleStudentAttendanceSchema } from 'src/@core/Formschema'
+import { updateAttendanceSchema } from 'src/@core/Formschema'
 
 import DatePicker from 'react-datepicker'
 
@@ -43,7 +43,7 @@ import { useCategories } from '../../../hooks/useCategories'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
-import { saveStudentAttendance } from '../../../store/apps/attendance/asyncthunk'
+import { updateAttendance } from '../../../store/apps/attendance/asyncthunk'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -75,11 +75,23 @@ const defaultValues = {
   reasonForAbsence: ''
 }
 
-const MarkAttendance = ({ open, closeModal }) => {
+const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
   const [ClassRoomId, setClassRoomId] = useState()
   const [studentsInClass, setStudentsInClass] = useState([])
   const [attendanceState, setAttendanceState] = useState(false)
   const [itemsArray, setItemsArray] = useState('')
+
+  // ** Hooks
+  const dispatch = useDispatch()
+  const [StaffData] = useStaff()
+  const [StudentData] = useStudent()
+
+  // const [CategoriesData] = useCategories()
+  // const [SubjectsList] = useSubjects()
+  const [ClassesList] = useClasses()
+  const [SessionData] = useSession()
+
+  const handleChangeClass = e => setClassRoomId(Number(e.target.value))
 
   const handleAttendanceState = e => {
     if (e.target.value == false) {
@@ -88,17 +100,6 @@ const MarkAttendance = ({ open, closeModal }) => {
       setAttendanceState(false)
     }
   }
-
-  // ** Hooks
-  const dispatch = useDispatch()
-  const [StaffData] = useStaff()
-  const [StudentData] = useStudent()
-  const [CategoriesData] = useCategories()
-  const [SubjectsList] = useSubjects()
-  const [ClassesList] = useClasses()
-  const [SessionData] = useSession()
-
-  const handleChangeClass = e => setClassRoomId(Number(e.target.value))
 
   useEffect(() => {
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
@@ -124,28 +125,66 @@ const MarkAttendance = ({ open, closeModal }) => {
   const {
     control,
     setValue,
-    getValues,
     reset,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(singleStudentAttendanceSchema) })
+  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(updateAttendanceSchema) })
 
-  const onSubmit = async data => {
-    let payload = {
-      staffId: Number(data.staffId),
-      studentId: Number(data.studentId),
-      sessionId: Number(data.sessionId),
-      classId: Number(data.classId),
-      date: formatDateToYYYMMDDD(data.date),
-      checkInTime: data.checkInTime,
-      attendanceStatus: data.attendanceStatus,
-      reasonForAbsence: data.reasonForAbsence
+  useEffect(() => {
+    if (selectedRecord) {
+      selectedRecord.studentId !== null ? setValue('studentId', selectedRecord.studentId) : setValue('studentId', '')
+      selectedRecord.staffId !== null ? setValue('staffId', selectedRecord.staffId) : setValue('staffId', '')
+      selectedRecord.sessionId !== null ? setValue('sessionId', selectedRecord.sessionId) : setValue('sessionId', '')
+
+      selectedRecord.date !== null ? setValue('date', new Date(selectedRecord.date)) : setValue('date', '')
+      selectedRecord.checkInTime !== null
+        ? setValue('checkInTime', selectedRecord.checkInTime)
+        : setValue('checkInTime', '')
+      selectedRecord.attendanceStatus !== null
+        ? setValue('attendanceStatus', selectedRecord.attendanceStatus)
+        : setValue('attendanceStatus', '')
+      selectedRecord.reasonForAbsence !== null
+        ? setValue('reasonForAbsence', selectedRecord.reasonForAbsence)
+        : setValue('reasonForAbsence', '')
     }
 
-    saveStudentAttendance(payload).then(res => {
-      if (res?.data?.success) {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRecord])
+
+  // Watch all input fields and track changes
+  const watchedFields = watch()
+
+  const onSubmit = async values => {
+    // Monitor changed input fields so that only changed fields are submitted
+    const changedFields = Object.entries(values).reduce((acc, [key, value]) => {
+      if (value !== selectedRecord[key]) {
+        acc[key] = value
+      }
+
+      return acc
+    }, {})
+
+    const { date, ...restOfData } = changedFields
+
+    const formattedDate = formatDateToYYYMMDDD(date)
+
+    const payload = {
+      ...(changedFields.hasOwnProperty('studentId') && { studentId: changedFields.studentId }),
+      ...(changedFields.hasOwnProperty('staffId') && { staffId: changedFields.staffId }),
+      ...(changedFields.hasOwnProperty('sessionId') && { sessionId: changedFields.sessionId }),
+      ...(changedFields.hasOwnProperty('classId') && { classId: changedFields.classId }),
+      ...(changedFields.hasOwnProperty('date') && { date: formattedDate }),
+      ...(changedFields.hasOwnProperty('checkInTime') && { checkInTime: changedFields.checkInTime }),
+      ...(changedFields.hasOwnProperty('attendanceStatus') && { attendanceStatus: changedFields.attendanceStatus }),
+      ...(changedFields.hasOwnProperty('reasonForAbsence') && { reasonForAbsence: changedFields.reasonForAbsence })
+    }
+
+    updateAttendance(payload, selectedRecord.id).then(response => {
+      if (response?.data?.success) {
         reset()
         closeModal()
+        fetchData()
       }
     })
   }
@@ -429,7 +468,7 @@ const MarkAttendance = ({ open, closeModal }) => {
 
             <Box sx={{ mt: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Button type='submit' variant='contained' disabled={isSubmitting}>
-                {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Record'}
+                {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Update Record'}
               </Button>
             </Box>
           </form>
@@ -439,4 +478,4 @@ const MarkAttendance = ({ open, closeModal }) => {
   )
 }
 
-export default MarkAttendance
+export default EditAttendance

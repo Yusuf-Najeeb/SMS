@@ -14,12 +14,11 @@ import TableContainer from '@mui/material/TableContainer'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControl from '@mui/material/FormControl'
 
-
 import { styled } from '@mui/material/styles'
 import { useAppDispatch } from 'src/hooks'
 import SearchSpinner from 'src/@core/components/custom-spinner/SearchSpinner'
 import { searchParent } from '../../../store/apps/guardian/asyncthunk'
-import { Drawer,  IconButton, Input, TableHead } from '@mui/material'
+import { Drawer, IconButton, Input, TableHead } from '@mui/material'
 import { Header } from '../staff/ViewStaff'
 import { CustomCloseIcon, CustomSearchIcon } from '../component/CustomIcons'
 
@@ -105,28 +104,26 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 800 } } }}
     >
       <Header>
-      <div className='iconBtnWrapper'>
-        <IconButton
-        className='iconBtn'
-          size='small'
-          onClick={closeModal}
-          sx={{
-            borderRadius: 1,
-            color: 'text.primary',
-            backgroundColor: 'action.selected',
-            '&:hover': {
-              backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.16)`
-            }
-          }}
-        >
-
-          <CustomCloseIcon />
-        </IconButton>
+        <div className='iconBtnWrapper'>
+          <IconButton
+            className='iconBtn'
+            size='small'
+            onClick={closeModal}
+            sx={{
+              borderRadius: 1,
+              color: 'text.primary',
+              backgroundColor: 'action.selected',
+              '&:hover': {
+                backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.16)`
+              }
+            }}
+          >
+            <CustomCloseIcon />
+          </IconButton>
         </div>
       </Header>
 
       <Card>
-       
         <Box sx={{ mx: 4, my: 4 }}>
           <FormControl variant='standard' sx={{ width: '100%' }}>
             <Input
@@ -140,12 +137,11 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
               id='input-with-icon-adornment'
               endAdornment={
                 <InputAdornment position='start' sx={{ cursor: 'pointer' }}>
-
                   <CustomSearchIcon />
                 </InputAdornment>
               }
             />
-            {isFocus ? <Typography variant='caption'>Search by First name, Last name or Student ID</Typography> : null}
+            {isFocus ? <Typography variant='caption'>Search by First name, Last name Guardian ID</Typography> : null}
           </FormControl>
         </Box>
 
@@ -202,7 +198,7 @@ const SearchParent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
                             justifyContent: 'center'
                           }}
                         >
-                          Oops! 😖 No Available Guardian.
+                          Oops! 😖 No Guardian Available.
                         </Typography>
                       </td>
                     </tr>
