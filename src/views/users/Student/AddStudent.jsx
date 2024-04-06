@@ -1,4 +1,4 @@
-import { Fragment, forwardRef, useEffect, useState } from 'react'
+import { Fragment, forwardRef, useEffect, useState, useRef } from 'react'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -92,7 +92,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [activeStep, setActiveStep] = useState(0)
   const [showPassword, setShowPassword] = useState(false)
   const [itemsArray, setItemsArray] = useState([])
-  console.log(itemsArray)
   const [staffItemsArray, setStaffItemsArray] = useState([])
   const [guardianItemsArray, setGuardianItemsArray] = useState([])
   const [openParentModal, setParentModal] = useState(false)
@@ -106,6 +105,8 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
 
+  console.log('items array', itemsArray)
+
   const toggleParentModal = () => {
     closeModal()
     setParentModal(!openParentModal)
@@ -116,16 +117,22 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
     setStaffModal(!openStaffModal)
   }
 
+  const prevItemsArray = useRef(itemsArray)
+
   useEffect(() => {
-    if (guardianItemsArray.length > 0) {
+    if (guardianItemsArray.length > 0 && itemsArray !== guardianItemsArray) {
       setItemsArray(guardianItemsArray)
       setStaffItemsArray([])
-    }
-    if (staffItemsArray.length > 0) {
+    } else if (staffItemsArray.length > 0 && itemsArray !== staffItemsArray) {
       setItemsArray(staffItemsArray)
       setGuardianItemsArray([])
     }
-  }, [staffItemsArray, guardianItemsArray])
+    //eslint_disable-next-line react-hooks/exhaustive-deps
+  }, [guardianItemsArray, staffItemsArray])
+
+  useEffect(() => {
+    prevItemsArray.current = itemsArray
+  }, [itemsArray])
 
   const defaultValues = {
     firstName: '',
