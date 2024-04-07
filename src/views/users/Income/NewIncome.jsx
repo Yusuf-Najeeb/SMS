@@ -23,7 +23,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
 import { useIncome } from '../../../hooks/useIncome'
-import { deleteIncome, fetchIncome } from '../../../store/apps/income/asyncthunk'
+import { deleteIncome, exportIncome, fetchIncome } from '../../../store/apps/income/asyncthunk'
 import EditIncome from './EditIncome'
 import ViewIncome from './ViewIncome'
 import PayIncomeBalance from './PayIncome'
@@ -35,7 +35,7 @@ import { formatCurrency, formatDate } from '../../../@core/utils/format'
 // ** Custom Component Import
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import PageHeader from '../component/PageHeader'
+import PageHeader from './IncomePageHeader'
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
@@ -58,7 +58,6 @@ const IncomeTable = () => {
   const [term, setTerm] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
-  const [sessionId, setSessionId] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [refetch, setFetch] = useState(false)
   const [openEditDrawer, setEditDrawer] = useState(false)
@@ -228,7 +227,7 @@ const IncomeTable = () => {
         </CardContent>
       </Card>
 
-      <PageHeader action='Add Income' toggle={toggleModal} />
+      <PageHeader action1='Add Income' toggle1={toggleModal} action2={'Export Income'} toggle2={exportIncome} disabled={IncomeData?.length == 0} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
