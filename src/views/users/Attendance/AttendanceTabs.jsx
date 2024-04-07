@@ -18,6 +18,7 @@ import MuiTabList from '@mui/lab/TabList'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import ClassAttendanceTable from './ClassAttendance'
+import SessionAttendanceTable from './SessionAttendance'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -74,6 +75,7 @@ const AttendanceTabs = ({ tab }) => {
 
   const tabContentList = {
     classAttendance: <ClassAttendanceTable />,
+    sessionAttendance: <SessionAttendanceTable />
 
     // reportCard: <StudentsReportCardTable/>,
 
@@ -97,7 +99,15 @@ const AttendanceTabs = ({ tab }) => {
                       </Box>
                     }
                   />
-
+                  <Tab
+                    value='sessionAttendance'
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
+                        <Icon fontSize='1.125rem' icon='carbon:prompt-session' />
+                        {!hideText && 'Session Attendance'}
+                      </Box>
+                    }
+                  />
                   {/* <Tab
                     value='reportCard'
                     label={
@@ -107,7 +117,6 @@ const AttendanceTabs = ({ tab }) => {
                       </Box>
                     }
                   /> */}
-                  
                 </TabList>
               </Grid>
               <Grid item xs={12}>

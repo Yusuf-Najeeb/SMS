@@ -36,43 +36,33 @@ import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { useStudentsScores } from '../../../hooks/useStudentsScores'
-import PageHeader from '../component/PageHeader'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
-import MarkAttendance, { CustomInput } from './MarkAttendance'
-import { fetchClassAttendance } from '../../../store/apps/attendance/asyncthunk'
+import { studentAttendanceBySession } from '../../../store/apps/attendance/asyncthunk'
 import { useAttendance } from '../../../hooks/useAttendance'
-import EditAttendance from './EditAttendance'
 
-const defaultValues = {
-  date: ''
-}
-
-const schema = yup.object().shape({
-  date: yup.string().required('Date is required')
-})
-
-const ClassAttendanceTable = () => {
+const SessionAttendanceTable = () => {
   // Hooks
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
-  const [SubjectsList] = useSubjects()
+
+  // const [StaffData] = useStaff()
+  // const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [StudentData] = useStudent()
-  const [StudentsScoresData] = useStudentsScores()
+
+  // const [StudentsScoresData] = useStudentsScores()
   const [ClassAttendanceData, loading] = useAttendance()
 
   // States
-
-  const [openAttendanceModal, setAttendanceModal] = useState(false)
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
-  const [date, setDate] = useState('')
-  const [openEditDrawer, setEditDrawer] = useState(false)
-  const [attendanceToUpdate, setAttendanceToUpdate] = useState(null)
+  const [studentId, setStudentId] = useState('')
 
-  // const [refetch, setRefetch] = useState(false)
+  // const [date, setDate] = useState('')
+  const [openEditDrawer, setEditDrawer] = useState(false)
+  const [studentAttendance, setStudentAttendance] = useState([])
+  const [attendanceToUpdate, setAttendanceToUpdate] = useState(null)
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
@@ -87,36 +77,29 @@ const ClassAttendanceTable = () => {
     setAttendanceToUpdate(null)
   }
 
-  const setAttendanceToEdit = value => {
-    setEditDrawer(!openEditDrawer)
-    setAttendanceToUpdate(value)
+  // const setAttendanceToEdit = value => {
+  //   setEditDrawer(!openEditDrawer)
+  //   setAttendanceToUpdate(value)
 
-    // handleRowOptionsClose()
-  }
+  //   // handleRowOptionsClose()
+  // }
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
   }
 
-  const displayAttendance = async data => {
-    const date = formatDateToYYYMMDDD(data.date)
-    setDate(date)
-    dispatch(fetchClassAttendance({ classId, sessionId, date }))
+  const handleChangeStudent = e => {
+    Number(setStudentId(e.target.value))
   }
 
-  const updateFetch = () => {
-    displayAttendance({ classId, sessionId, date })
+  const handleStudentAttendance = event => {
+    event?.preventDefault()
+
+    studentAttendanceBySession({ classId, sessionId, studentId }).then(res => {
+      console.log(res?.data?.data)
+      setStudentAttendance(res?.data?.data)
+    })
   }
-
-  const {
-    control,
-    setValue,
-    reset,
-    handleSubmit,
-    formState: { errors, isSubmitting }
-  } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(schema) })
-
-  const toggleMarkAttendanceDrawer = () => setAttendanceModal(!openAttendanceModal)
 
   useEffect(() => {
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
@@ -131,9 +114,9 @@ const ClassAttendanceTable = () => {
   return (
     <div>
       <Card>
-        <CardHeader title='Filter' />
+        <CardHeader title='Filter Session' />
         <CardContent>
-          <form onSubmit={handleSubmit(displayAttendance)}>
+          <form onSubmit={event => handleStudentAttendance(event)}>
             <Grid container spacing={12}>
               <Grid item xs={12} sm={3}>
                 <CustomTextField
@@ -155,6 +138,28 @@ const ClassAttendanceTable = () => {
                 <CustomTextField
                   select
                   fullWidth
+                  label='Student*'
+                  SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
+                >
+                  <MenuItem value=''>
+                    {StudentData?.result?.filter(student => student.classId === classId).length > 0
+                      ? `Select Student`
+                      : `No student`}
+                  </MenuItem>
+                  {StudentData?.result
+                    ?.filter(student => student.classId === classId)
+                    .map(item => (
+                      <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
+                        {`${item?.firstName} ${item.lastName}`}
+                      </MenuItem>
+                    ))}
+                </CustomTextField>
+              </Grid>
+
+              <Grid item xs={12} sm={3}>
+                <CustomTextField
+                  select
+                  fullWidth
                   label='Session*'
                   SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
                 >
@@ -167,46 +172,15 @@ const ClassAttendanceTable = () => {
                 </CustomTextField>
               </Grid>
 
-              <Grid item xs={12} sm={3}>
-                <Controller
-                  name='date'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <DatePicker
-                      selected={value}
-                      showYearDropdown
-                      showMonthDropdown
-                      popperPlacement='bottom-end'
-                      maxDate={new Date()}
-                      onChange={e => {
-                        onChange(e)
-                      }}
-                      placeholderText='MM/YYYY'
-                      customInput={
-                        <CustomInput
-                          value={value}
-                          onChange={onChange}
-                          autoComplete='off'
-                          label='Date'
-                          error={Boolean(errors.date)}
-                          {...(errors.date && { helperText: errors.date.message })}
-                        />
-                      }
-                    />
-                  )}
-                />
-              </Grid>
-
               <Grid item xs={12} sm={12}>
                 <Button
                   type='submit'
                   variant='contained'
-                  disabled={isSubmitting || !classId || !sessionId}
+                  disabled={!classId || !sessionId || !studentId}
                   sx={{ '& svg': { mr: 2 } }}
                 >
                   <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
-                  Display Attendance
+                  Display Student Attendance
                 </Button>
               </Grid>
             </Grid>
@@ -214,8 +188,7 @@ const ClassAttendanceTable = () => {
         </CardContent>
       </Card>
 
-      <PageHeader action={'Take Attendance'} icon={'mdi:timetable'} toggle={toggleMarkAttendanceDrawer} />
-      <TableContainer component={Paper} sx={{ maxHeight: 840 }}>
+      <TableContainer component={Paper} sx={{ maxHeight: 840, mt: 10 }}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
@@ -223,7 +196,7 @@ const ClassAttendanceTable = () => {
                 S/N
               </TableCell>
               <TableCell align='left' sx={{ minWidth: 100 }}>
-                STUDENT
+                DATE
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 CHECK IN TIME
@@ -234,9 +207,9 @@ const ClassAttendanceTable = () => {
               <TableCell align='center' sx={{ minWidth: 200 }}>
                 REASON FOR ABSENCE
               </TableCell>
-              <TableCell align='left' sx={{ minWidth: 50 }}>
+              {/* <TableCell align='left' sx={{ minWidth: 50 }}>
                 ACTIONS
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -248,16 +221,13 @@ const ClassAttendanceTable = () => {
               </TableRow>
             ) : (
               <Fragment>
-                {ClassAttendanceData?.map((item, i) => {
-                  const Student = StudentData?.result?.find(student => student.id == item.studentId)
-
+                {studentAttendance?.map((item, i) => {
                   return (
                     <TableRow hover role='checkbox' key={item?.id}>
                       <TableCell align='left'>{i + 1}</TableCell>
-                      <TableCell
-                        align='left'
-                        sx={{ textTransform: 'uppercase' }}
-                      >{`${Student.firstName} ${Student.lastName}`}</TableCell>
+                      <TableCell align='left' sx={{ textTransform: 'uppercase' }}>{`${new Date(
+                        item?.createdAt
+                      ).toDateString()}`}</TableCell>
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                         {item.checkInTime?.slice(0, 5)}
                       </TableCell>
@@ -285,16 +255,16 @@ const ClassAttendanceTable = () => {
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>{`${
                         item?.reasonForAbsence ? item?.reasonForAbsence : '--'
                       }`}</TableCell>
-                      <TableCell title='Edit Guardian'>
+                      {/* <TableCell title='Edit Guardian'>
                         <IconButton size='small' onClick={() => setAttendanceToEdit(item)}>
                           <Icon icon='tabler:edit' />
                         </IconButton>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   )
                 })}
 
-                {ClassAttendanceData?.length === 0 && (
+                {studentAttendance?.length === 0 && (
                   <tr className='text-center'>
                     <td colSpan={6}>
                       <NoData />
@@ -317,16 +287,16 @@ const ClassAttendanceTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       /> */}
 
-      {openAttendanceModal && <MarkAttendance open={openAttendanceModal} closeModal={toggleMarkAttendanceDrawer} />}
-      {}
-      <EditAttendance
+      {/* {openAttendanceModal && <MarkAttendance open={openAttendanceModal} closeModal={toggleMarkAttendanceDrawer} />} */}
+
+      {/* <EditAttendance
         open={openEditDrawer}
         closeModal={toggleModal}
         selectedRecord={attendanceToUpdate}
         fetchData={updateFetch}
-      />
+      /> */}
     </div>
   )
 }
 
-export default ClassAttendanceTable
+export default SessionAttendanceTable
