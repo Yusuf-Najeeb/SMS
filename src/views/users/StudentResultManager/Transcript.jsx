@@ -14,11 +14,9 @@ import { useStudent } from '../../../hooks/useStudent'
 import { useTheme } from '@mui/material/styles'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 
-// import SchoolDetails from './SchoolDetails'
 import { useTranscript } from '../../../hooks/useTranscript'
 import { extractTranscriptData } from '../../../@core/utils/extractTranscriptData'
 
-// import StudentTranscriptDetails from './StudentTranscriptDetails'
 import CustomTable from '../component/CustomTable'
 import DismissibleAlert from '../component/DismissibleAlert'
 
@@ -38,15 +36,18 @@ const StudentsTranscript = () => {
   const [TranscriptData, setTranscriptData] = useState([])
   const [noResult, setNoResult] = useState(false)
 
-  //   const [studentTranscriptDetails, setStudents]
+  // const handleChangeClass = e => {
+  //   Number(setClassId(e.target.value))
+  // }
 
-  const handleChangeClass = e => {
-    Number(setClassId(e.target.value))
-  }
+  // const handleChangeStudent = e => {
+  //   Number(setStudentId(e.target.value))
+  // }
 
-  const handleChangeStudent = e => {
-    Number(setStudentId(e.target.value))
-  }
+  useEffect(() => {
+    const user = JSON.parse(window.localStorage.getItem('authUser'))
+    setStudentId(user?.id)
+  }, [])
 
   const displayTranscript = async () => {
     const res = await dispatch(fetchStudentTranscript({ studentId }))
@@ -93,10 +94,10 @@ const StudentsTranscript = () => {
   return (
     <Fragment>
       <Card>
-        <CardHeader title='Filter' />
+        <CardHeader title='Student Transcript' />
         <CardContent>
           <Grid container spacing={12}>
-            <Grid item xs={12} sm={3}>
+            {/* <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
                 fullWidth
@@ -109,12 +110,12 @@ const StudentsTranscript = () => {
                   </MenuItem>
                 ))}
               </CustomTextField>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={12}>
               <Button onClick={displayTranscript} variant='contained' disabled={!studentId} sx={{ '& svg': { mr: 2 } }}>
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
-                Display Student Transcript
+                Display Transcript
               </Button>
             </Grid>
           </Grid>

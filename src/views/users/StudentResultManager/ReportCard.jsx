@@ -13,7 +13,6 @@ import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { fetchStudentReportCard, fetchStudentSubjectPosition } from '../../../store/apps/reportCard/asyncthunk'
 
-// import EnterStudentScore from './EnterScore'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import { useStudentReportCard } from '../../../hooks/useStudentReportCard'
@@ -22,8 +21,6 @@ import { useTheme } from '@mui/material/styles'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 
-// import SchoolDetails from './SchoolDetails'
-// import StudentReportCardDetails from './StudentReportCardDetails'
 import CustomResultTable from '../component/CustomResultTable'
 import DismissibleAlert from '../component/DismissibleAlert'
 
@@ -39,8 +36,6 @@ const ReportCardTable = () => {
   const [CurrentSessionData] = useCurrentSession()
 
   // States
-
-  const [openScoreModal, setScoreModal] = useState(false)
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
   const [studentId, setStudentId] = useState('')
@@ -65,9 +60,10 @@ const ReportCardTable = () => {
     Number(setSessionId(e.target.value))
   }
 
-  const handleChangeStudent = e => {
-    Number(setStudentId(e.target.value))
-  }
+  useEffect(() => {
+    const user = JSON.parse(window.localStorage.getItem('authUser'))
+    setStudentId(user?.id)
+  }, [])
 
   const displayReportCard = async () => {
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
@@ -86,7 +82,7 @@ const ReportCardTable = () => {
     }
   }
 
-  const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
+  // const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
 
   useEffect(() => {
     if (activeStudent) {
@@ -138,21 +134,6 @@ const ReportCardTable = () => {
                 ))}
               </CustomTextField>
             </Grid>
-            <Grid item xs={12} sm={3}>
-              <CustomTextField
-                select
-                fullWidth
-                label='Student*'
-                SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
-              >
-                <MenuItem>{classStudents.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
-                {classStudents.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.firstName} ${item?.lastName}`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
 
             <Grid item xs={12} sm={3}>
               <CustomTextField
@@ -170,7 +151,7 @@ const ReportCardTable = () => {
               </CustomTextField>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <Button
                 onClick={displayReportCard}
                 variant='contained'
@@ -178,7 +159,7 @@ const ReportCardTable = () => {
                 sx={{ '& svg': { mr: 2 } }}
               >
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
-                Display Student Report Card
+                Display Report Card
               </Button>
             </Grid>
           </Grid>

@@ -10,7 +10,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
-import { Typography } from '@mui/material'
 
 import { styled, Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -54,7 +53,6 @@ const TabList = styled(MuiTabList)(({ theme }) => ({
 const StudentsResultTab = ({ tab }) => {
   // ** State
   const [studentTab, setStudentTab] = useState(tab)
-  console.log(tab, 'the tab')
 
   // ** Hooks
   const router = useRouter()
@@ -62,10 +60,6 @@ const StudentsResultTab = ({ tab }) => {
 
   const handleChange = (e, value) => {
     setStudentTab(value)
-
-    // router.push({
-    //   pathname: `/users/products/finishedProducts/${value.toLowerCase()}`
-    // })
   }
 
   useEffect(() => {
@@ -89,15 +83,6 @@ const StudentsResultTab = ({ tab }) => {
             <Grid container spacing={6}>
               <Grid item xs={12}>
                 <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='result tabs'>
-                  {/* <Tab
-                    value='scores'
-                    label={
-                      <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
-                        <Icon fontSize='1.125rem' icon='fluent:payment-16-regular' />
-                        {!hideText && 'Scores'}
-                      </Box>
-                    }
-                  /> */}
                   <Tab
                     value='reportCard'
                     label={
