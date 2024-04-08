@@ -46,9 +46,7 @@ const IncomeTable = () => {
   const dispatch = useAppDispatch()
   const [IncomeData, loading, paging] = useIncome()
 
-  // const [data, setData] = useState([])
   const [SessionData] = useSession()
-  const [CurrentSessionData] = useCurrentSession()
 
   // ** State
   const [page, setPage] = useState(0)
@@ -161,6 +159,16 @@ const IncomeTable = () => {
     doCancelDelete()
   }
 
+  console.log(IncomeData, 'income data')
+
+  const exportIncomeToExcel = ()=>{
+
+    const payload = {data: IncomeData}
+
+    exportIncome(payload)
+
+  }
+
   useEffect(() => {
     if (SessionData?.length > 0) {
       const filteredSession = SessionData.reduce((acc, curr) => {
@@ -227,7 +235,7 @@ const IncomeTable = () => {
         </CardContent>
       </Card>
 
-      <PageHeader action1='Add Income' toggle1={toggleModal} action2={'Export Income'} toggle2={exportIncome} disabled={IncomeData?.length == 0} />
+      <PageHeader action1='Add Income' toggle1={toggleModal} action2={'Export Income'} toggle2={exportIncomeToExcel} disabled={IncomeData?.length == 0} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>

@@ -1,4 +1,4 @@
-import React, {  Fragment, } from 'react'
+import React, { Fragment } from 'react'
 import Drawer from '@mui/material/Drawer'
 
 import IconButton from '@mui/material/IconButton'
@@ -14,7 +14,6 @@ import { Alert } from '@mui/material'
 import StaffCard from './StaffCard'
 import { formatFirstLetter } from '../../../@core/utils/format'
 
-
 export const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -23,11 +22,7 @@ export const Header = styled(Box)(({ theme }) => ({
 }))
 
 const ViewStaff = ({ open, closeCanvas, staffUser }) => {
-
   const theme = useTheme()
-
-  console.log(staffUser, 'staff')
-
 
   return (
     <Drawer
@@ -38,7 +33,10 @@ const ViewStaff = ({ open, closeCanvas, staffUser }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 850 } } }}
     >
       <Header>
-        <Typography variant='h5'>Viewing {`${formatFirstLetter(staffUser?.firstName)} ${formatFirstLetter(staffUser?.lastName)}` || '--'}'s Profile</Typography>
+        <Typography variant='h5'>
+          Viewing {`${formatFirstLetter(staffUser?.firstName)} ${formatFirstLetter(staffUser?.lastName)}` || '--'}'s
+          Profile
+        </Typography>
         <IconButton
           size='small'
           onClick={closeCanvas}
@@ -56,20 +54,19 @@ const ViewStaff = ({ open, closeCanvas, staffUser }) => {
       </Header>
 
       <Box sx={{ p: theme => theme.spacing(0, 3, 3) }}>
-     
-          <Fragment>
-            {staffUser !== null && staffUser !== undefined ? (
-              <Grid item xs={12} md={5} lg={4}>
-                <StaffCard Staff={staffUser}  />
+        <Fragment>
+          {staffUser !== null && staffUser !== undefined ? (
+            <Grid item xs={12} md={5} lg={4}>
+              <StaffCard Staff={staffUser} />
+            </Grid>
+          ) : (
+            <Grid container spacing={6}>
+              <Grid item xs={12}>
+                <Alert severity='error'>Staff does not exist. Please check the list of Staffs: </Alert>
               </Grid>
-            ) : (
-              <Grid container spacing={6}>
-                <Grid item xs={12}>
-                  <Alert severity='error'>Staff does not exist. Please check the list of Staffs: </Alert>
-                </Grid>
-              </Grid>
-            )}
-          </Fragment>
+            </Grid>
+          )}
+        </Fragment>
       </Box>
     </Drawer>
   )

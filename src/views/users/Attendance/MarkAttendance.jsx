@@ -309,8 +309,8 @@ const MarkAttendance = ({ open, closeModal }) => {
                       >
                         <MenuItem value=''>Select Session</MenuItem>
                         {SessionData?.map(item => (
-                          <MenuItem key={item?.id} value={item?.id}>
-                            {`${item.name} ${item.term}`}
+                          <MenuItem key={item?.id} value={item?.id} sx={{textTransform: 'uppercase'}}>
+                            {`${item.name} ${item.term} term`}
                           </MenuItem>
                         ))}
                       </CustomTextField>
@@ -345,7 +345,7 @@ const MarkAttendance = ({ open, closeModal }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name='checkInTime'
                     control={control}
@@ -367,7 +367,7 @@ const MarkAttendance = ({ open, closeModal }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={12}>
                   <Controller
                     name='attendanceStatus'
                     control={control}
@@ -394,6 +394,8 @@ const MarkAttendance = ({ open, closeModal }) => {
                     )}
                   />
                 </Grid>
+
+                {/* Remove this */}
                 {itemsArray && (
                   <Grid item sx={{ mt: 5 }} xs={12} sm={12} md={12}>
                     <Typography variant='h5'>Student Name</Typography>

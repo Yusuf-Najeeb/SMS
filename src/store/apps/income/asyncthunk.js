@@ -77,9 +77,9 @@ export const deleteIncome = async id => {
   }
 }
 
-export const exportIncome = async () => {
+export const exportIncome = async (payload) => {
   try {
-    const res = await axios.get(`/accounts/sheet`)
+    const res = await axios.post(`/accounts/sheet`, payload)
     console.log(res, 'export income res')
 
     if (res?.data?.success) {

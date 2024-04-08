@@ -40,3 +40,15 @@ export const updateAttendance = async (payload, id) => {
     notifyError("Unable to update student's Attendance")
   }
 }
+
+export const studentAttendanceBySession = async query => {
+  try {
+    const response = await axios.get(
+      `/attendance/studentattendance/${query.classId}/${query.sessionId}/${query.studentId}`
+    )
+
+    return response
+  } catch (error) {
+    console.log('error', error)
+  }
+}
