@@ -47,6 +47,14 @@ const navigation = () => {
         icon: 'healthicons:i-exam-multiple-choice',
         path: '/apps/cbt'
       },
+      {
+        sectionTitle: 'Academics '
+      },
+      {
+        title: 'Time Table',
+        icon: 'mdi:timetable',
+        path: '/apps/timetable'
+      },
     ]
   }
 

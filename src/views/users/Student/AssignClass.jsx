@@ -146,7 +146,7 @@ const AssignClass = ({ open, toggle, Student, page }) => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button type='submit' variant='contained' sx={{ width: '100%' }}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} />}
-              Assign
+              Update
             </Button>
           </Box>
         </form>

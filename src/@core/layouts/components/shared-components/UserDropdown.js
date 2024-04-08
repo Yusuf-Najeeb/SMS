@@ -87,6 +87,8 @@ const UserDropdown = props => {
     setUser(userType)
   }, [])
 
+  console.log(userType, 'user type')
+
   const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
   const { role, profilePicture, firstName, lastName } = userType
