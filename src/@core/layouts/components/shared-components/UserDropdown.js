@@ -13,6 +13,8 @@ import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
+import { getInitials } from 'src/@core/utils/get-initials'
+import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -90,7 +92,28 @@ const UserDropdown = props => {
   const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
   const { role, profilePicture, firstName, lastName } = userType
-  const userProfilePicture = `${backEndURL?.replace('api', '')}/${profilePicture}`
+
+  const renderClient = row => {
+    const initials = `${row.firstName} ${row.lastName}`
+    if (row?.profilePicture !== null && row?.profilePicture?.length) {
+      return (
+        <CustomAvatar
+          src={`${backEndURL?.replace('api', '')}/${row?.profilePicture}`}
+          sx={{ mr: 2.5, width: 32, height: 32 }}
+        />
+      )
+    } else {
+      return (
+        <CustomAvatar
+          skin='light'
+          color='info'
+          sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
+        >
+          {getInitials(initials || 'John Doe')}
+        </CustomAvatar>
+      )
+    }
+  }
 
   return (
     <Fragment>
@@ -104,12 +127,7 @@ const UserDropdown = props => {
           horizontal: 'right'
         }}
       >
-        <Avatar
-          alt={`${userType.firstName ? 'firstName' : 'User'} ${userType.lastName ? 'lastName' : ''}`}
-          src={`${userProfilePicture ? userProfilePicture : '/images/avatars/1.png'}`}
-          onClick={handleDropdownOpen}
-          sx={{ width: 38, height: 38 }}
-        />
+        {renderClient(userType)}
       </Badge>
       <Menu
         anchorEl={anchorEl}
@@ -129,11 +147,7 @@ const UserDropdown = props => {
                 horizontal: 'right'
               }}
             >
-              <Avatar
-                alt={`${firstName ? 'firstName' : 'User'} ${lastName ? 'lastName' : ''}`}
-                src={userProfilePicture ? userProfilePicture : '/images/avatars/1.png'}
-                sx={{ width: '2.5rem', height: '2.5rem' }}
-              />
+              {renderClient(userType)}
             </Badge>
             <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 500 }}>{`${firstName} ${lastName}`}</Typography>
