@@ -95,7 +95,7 @@ const StudentsTranscript = () => {
   return (
     <Fragment>
       <Card>
-        <CardHeader title='Student Transcript' />
+        <CardHeader title='Transcript' />
         <CardContent>
           <Grid container spacing={12}>
             {/* <Grid item xs={12} sm={3}>

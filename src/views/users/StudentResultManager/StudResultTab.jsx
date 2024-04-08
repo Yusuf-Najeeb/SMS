@@ -88,7 +88,7 @@ const StudentsResultTab = ({ tab }) => {
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='ic:twotone-minus' />
-                        {!hideText && 'Report Card'}
+                        {!hideText && 'My Report Card'}
                       </Box>
                     }
                   />
@@ -97,7 +97,7 @@ const StudentsResultTab = ({ tab }) => {
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='ic:twotone-minus' />
-                        {!hideText && 'Student Transcript'}
+                        {!hideText && 'My Transcript'}
                       </Box>
                     }
                   />
