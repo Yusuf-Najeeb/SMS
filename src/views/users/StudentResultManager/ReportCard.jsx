@@ -20,7 +20,8 @@ import { useStudentSubjectPosition } from '../../../hooks/useStudentsSubjectPosi
 import { useTheme } from '@mui/material/styles'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
-
+import StudentReportCardDetails from './ReportCardDetails'
+import SchoolDetails from '../ResultManager/SchoolDetails'
 import CustomResultTable from '../component/CustomResultTable'
 import DismissibleAlert from '../component/DismissibleAlert'
 
@@ -174,7 +175,7 @@ const ReportCardTable = () => {
           <Box className='bgOverlay'></Box>
           {StudentReportCard.length > 0 && Object.keys(activeStudent).length > 0 && (
             <CardContent>
-              {/* <SchoolDetails /> */}
+              <SchoolDetails />
 
               <Box
                 sx={{
@@ -194,12 +195,12 @@ const ReportCardTable = () => {
                   {`Termly Report For ${activeStudent?.firstName} ${activeStudent?.lastName}`}
                 </Typography>
               </Box>
-              {/* <StudentReportCardDetails
+              <StudentReportCardDetails
                 activeStudent={activeStudent}
                 profilePictureUrl={profilePictureUrl}
                 classRoom={classRoom}
                 CurrentSessionData={CurrentSessionData}
-              /> */}
+              />
             </CardContent>
           )}
 

@@ -16,7 +16,8 @@ import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthu
 
 import { useTranscript } from '../../../hooks/useTranscript'
 import { extractTranscriptData } from '../../../@core/utils/extractTranscriptData'
-
+import SchoolDetails from '../ResultManager/SchoolDetails'
+import StudentTranscriptDetails from './TranscriptDetails'
 import CustomTable from '../component/CustomTable'
 import DismissibleAlert from '../component/DismissibleAlert'
 
@@ -134,7 +135,7 @@ const StudentsTranscript = () => {
               >
                 <Box className='bgOverlay'></Box>
 
-                {/* <SchoolDetails /> */}
+                <SchoolDetails />
 
                 <Box
                   sx={{
@@ -164,12 +165,12 @@ const StudentsTranscript = () => {
                   </Typography>
                 </Box>
 
-                {/* <StudentTranscriptDetails
+                <StudentTranscriptDetails
                   activeStudent={activeStudent}
                   profilePictureUrl={profilePictureUrl}
                   classRoom={sessionData.class}
                   SessionData={sessionData}
-                /> */}
+                />
 
                 {/* <Divider sx={{mt: 20, mb: 20, color: '#333'}}>Academic Records</Divider> */}
 
