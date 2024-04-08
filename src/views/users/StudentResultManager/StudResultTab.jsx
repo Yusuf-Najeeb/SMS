@@ -10,6 +10,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
+import { Typography } from '@mui/material'
 
 import { styled, Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -17,9 +18,9 @@ import MuiTabList from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import StudentsScoreTable from './StudentScores'
-import StudentsReportCardTable from './StudentsReportCard'
-import StudentsTranscript from './StudentTranscript'
+
+import ReportCardTable from './ReportCard'
+import StudentsTranscript from './Transcript'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -50,18 +51,17 @@ const TabList = styled(MuiTabList)(({ theme }) => ({
   }
 }))
 
-const ResultsTab = ({ tab }) => {
-  console.log(tab)
-
+const StudentsResultTab = ({ tab }) => {
   // ** State
-  const [activeTab, setActiveTab] = useState(tab)
+  const [studentTab, setStudentTab] = useState(tab)
+  console.log(tab, 'the tab')
 
   // ** Hooks
   const router = useRouter()
   const hideText = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
   const handleChange = (e, value) => {
-    setActiveTab(value)
+    setStudentTab(value)
 
     // router.push({
     //   pathname: `/users/products/finishedProducts/${value.toLowerCase()}`
@@ -69,30 +69,27 @@ const ResultsTab = ({ tab }) => {
   }
 
   useEffect(() => {
-    if (tab && tab !== activeTab) {
-      setActiveTab(tab)
+    if (tab && tab !== studentTab) {
+      setStudentTab(tab)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab])
 
   const tabContentList = {
-    scores: <StudentsScoreTable />,
-    reportCard: <StudentsReportCardTable />,
+    reportCard: <ReportCardTable />,
     transcript: <StudentsTranscript />
-
-    // deductions: <DeductionsHome />
   }
 
   return (
     <Grid container spacing={6}>
-      {activeTab === undefined ? null : (
+      {studentTab === undefined ? null : (
         <Grid item xs={12}>
-          <TabContext value={activeTab}>
+          <TabContext value={studentTab}>
             <Grid container spacing={6}>
               <Grid item xs={12}>
                 <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='result tabs'>
-                  <Tab
+                  {/* <Tab
                     value='scores'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
@@ -100,7 +97,7 @@ const ResultsTab = ({ tab }) => {
                         {!hideText && 'Scores'}
                       </Box>
                     }
-                  />
+                  /> */}
                   <Tab
                     value='reportCard'
                     label={
@@ -122,8 +119,8 @@ const ResultsTab = ({ tab }) => {
                 </TabList>
               </Grid>
               <Grid item xs={12}>
-                <TabPanel sx={{ p: 0 }} value={activeTab}>
-                  {tabContentList[activeTab]}
+                <TabPanel sx={{ p: 0 }} value={studentTab}>
+                  {tabContentList[studentTab]}
                 </TabPanel>
               </Grid>
             </Grid>
@@ -134,4 +131,4 @@ const ResultsTab = ({ tab }) => {
   )
 }
 
-export default ResultsTab
+export default StudentsResultTab
