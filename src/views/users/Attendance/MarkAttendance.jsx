@@ -395,15 +395,6 @@ const MarkAttendance = ({ open, closeModal }) => {
                   />
                 </Grid>
 
-                {/* Remove this */}
-                {itemsArray && (
-                  <Grid item sx={{ mt: 5 }} xs={12} sm={12} md={12}>
-                    <Typography variant='h5'>Student Name</Typography>
-                    <Alert severity='success'>
-                      <Typography>{itemsArray}</Typography>
-                    </Alert>
-                  </Grid>
-                )}
 
                 <Grid item xs={12} sm={12}>
                   <Controller
