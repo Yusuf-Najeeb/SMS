@@ -50,6 +50,9 @@ const Sub = styled('sub')(({ theme }) => ({
 }))
 
 const StaffCard = ({ Staff }) => {
+
+  console.log(Staff, 'staff in view')
+  
   // ** States
   const [profilePictureUrl, setProfilePictureUrl] = useState(Staff?.profilePicture)
   const [grossSalary, setGrossSalary] = useState(0)

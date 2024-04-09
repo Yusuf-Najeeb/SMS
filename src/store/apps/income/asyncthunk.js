@@ -76,3 +76,18 @@ export const deleteIncome = async id => {
     notifyError('Failed to delete income')
   }
 }
+
+export const exportIncome = async (payload) => {
+  try {
+    const res = await axios.post(`/accounts/sheet`, payload)
+    console.log(res, 'export income res')
+
+    if (res?.data?.success) {
+      notifySuccess('Income Exported')
+    }
+
+    return res
+  } catch (error) {
+    notifyError('Failed to export income')
+  }
+}

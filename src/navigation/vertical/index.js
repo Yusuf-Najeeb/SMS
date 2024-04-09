@@ -49,6 +49,13 @@ const navigation = () => {
         icon: 'healthicons:i-exam-qualification',
         path: '/apps/student-result-manager'
       }
+        sectionTitle: 'Academics '
+      },
+      {
+        title: 'Time Table',
+        icon: 'mdi:timetable',
+        path: '/apps/timetable'
+      },
     ]
   }
 

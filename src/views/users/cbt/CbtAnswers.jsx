@@ -38,7 +38,6 @@ import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { deleteQuestion, fetchCBTAnswers } from '../../../store/apps/cbt/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import EditQuestion from './EditQuestion'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
@@ -54,10 +53,9 @@ const CBTAnswers = () => {
   const [CategoriesData] = useCategories()
 
   const [StudentData] = useStudent()
-  const [loading, setLoading] = useState(false)
-
+  
   //   States
-  const [openModal, setModal] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(0)
   const [limit, setLimit] = useState(300)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -73,6 +71,8 @@ const CBTAnswers = () => {
   const [questionToDelete, setQuestionToDelete] = useState(null)
   const [deleteModal, setDeleteModal] = useState(false)
   const [paging, setPaging] = useState({ currentPage: 1, totalItems: 0, itemsPerPage: 0, totalPages: 0 })
+
+  console.log(answers, 'answers')
   
 
   const toggleGradeModal = () => {
