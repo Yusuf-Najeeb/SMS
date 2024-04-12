@@ -101,7 +101,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
-  // const auth = useAuth()
+  const auth = useAuth()
   const theme = useTheme()
   const router = useRouter()
   const bgColors = useBgColor()

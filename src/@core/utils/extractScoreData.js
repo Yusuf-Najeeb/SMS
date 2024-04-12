@@ -19,6 +19,8 @@ export const extractScoresData = (data) => {
         return acc;
     }, {});
 
+    console.log(combinedData, 'combined data')
+
     // Convert the object back to an array
 const result = Object.values(combinedData);
 
