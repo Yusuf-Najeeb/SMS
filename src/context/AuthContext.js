@@ -12,6 +12,8 @@ import authConfig from 'src/configs/auth'
 import { notifyError } from '../@core/components/toasts/notifyError'
 import { notifySuccess } from '../@core/components/toasts/notifySuccess'
 
+// import { storeToken } from '../../lib'
+
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
 // ** Defaults
@@ -113,6 +115,7 @@ const AuthProvider = ({ children }) => {
           localStorage.setItem(authConfig.storageTokenKeyName, data?.data?.token)
           localStorage.setItem(authConfig.storageUserKeyName, userObject)
           notifySuccess('Login successful')
+
 
               const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
               router.replace(redirectURL)

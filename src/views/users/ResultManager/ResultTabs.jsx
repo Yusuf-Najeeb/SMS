@@ -20,6 +20,7 @@ import Icon from 'src/@core/components/icon'
 import StudentsScoreTable from './StudentScores'
 import StudentsReportCardTable from './StudentsReportCard'
 import StudentsTranscript from './StudentTranscript'
+import StudentsAssessmentsScoreTable from './AssessmentScores'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -77,7 +78,7 @@ const ResultsTab = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    scores: <StudentsScoreTable />,
+    scores: <StudentsAssessmentsScoreTable />,
     reportCard: <StudentsReportCardTable />,
     transcript: <StudentsTranscript />
 
@@ -97,7 +98,7 @@ const ResultsTab = ({ tab }) => {
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='fluent:payment-16-regular' />
-                        {!hideText && 'Scores'}
+                        {!hideText && 'Overall Scores'}
                       </Box>
                     }
                   />

@@ -1,3 +1,5 @@
+'use server'
+
 // ** React Imports
 import { useState } from 'react'
 import { useRouter } from 'next/router'
@@ -33,6 +35,7 @@ import { notifyError } from '../../@core/components/toasts/notifyError'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
@@ -45,6 +48,8 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
+
+// import {handleUserLogin} from 'src/app/action'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -124,6 +129,15 @@ const UserLoginPage = () => {
   const onSubmit = async data => {
 
     auth.userLogin(data)
+
+    
+    // handleUserLogin(data).then((data)=>{
+    //   if(data.success){
+    //     const returnUrl = router.query.returnUrl
+    //     const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
+    //     router.replace(redirectURL)
+    //   }
+    //  })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 
@@ -207,7 +221,7 @@ const UserLoginPage = () => {
                 Client: <strong>client@vuexy.com</strong> / Pass: <strong>client</strong>
               </Typography>
             </Alert> */}
-            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
               <Box sx={{ mb: 4 }}>
                 <Controller
                   name='userId'

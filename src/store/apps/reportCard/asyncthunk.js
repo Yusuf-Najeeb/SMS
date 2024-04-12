@@ -60,6 +60,20 @@ export const fetchStudentReportCard = createAsyncThunk('report-card/fetch ', asy
     }
   })
 
+ export const updateStudentScore = async (scoreId, payload)=>{
+    try {
+      const response = await axios.patch(`/gradebook/${scoreId}`, payload)
+
+      if(response.data.success){
+        notifySuccess('Score Updated')
+      }
+  
+      return response
+    } catch (error) {
+        notifyError(error?.response?.data?.message || 'Unable to update score' )
+    }
+  }
+
   
 
 

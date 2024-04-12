@@ -1,3 +1,5 @@
+// 'use server'
+
 // ** React Imports
 import { useState } from 'react'
 import { useRouter } from 'next/router'
@@ -41,6 +43,8 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
+
+// import {handleStaffLogin} from 'src/app/action'
 
 
 // ** Styled Components
@@ -110,6 +114,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
   const {
     control,
     setError,
+    getValues,
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm({
@@ -121,6 +126,15 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
   const onSubmit = async data => {
 
    auth.staffLogin(data)
+
+  
+  //  handleStaffLogin(data).then((data)=>{
+  //   if(data.success){
+  //     const returnUrl = router.query.returnUrl
+  //     const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
+  //     router.replace(redirectURL)
+  //   }
+  //  })
 
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
@@ -204,7 +218,16 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
                 Client: <strong>client@vuexy.com</strong> / Pass: <strong>client</strong>
               </Typography>
             </Alert> */}
-            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
+
+            {/* <form noValidate autoComplete='off' action={ handleStaffLogin({userId: getValues('userId'), password: getValues('password')}).then((data)=>{
+    if(data?.success){
+      const returnUrl = router.query.returnUrl
+      const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
+      router.replace(redirectURL)
+    }
+   })}> */}
+
               <Box sx={{ mb: 4 }}>
                 <Controller
                   name='userId'
