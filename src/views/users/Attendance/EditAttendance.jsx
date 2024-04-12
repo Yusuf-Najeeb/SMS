@@ -133,13 +133,14 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
 
   useEffect(() => {
     if (selectedRecord) {
+      selectedRecord.classId !== null ? setValue('classId', selectedRecord.classId) : setValue('classId', '')
       selectedRecord.studentId !== null ? setValue('studentId', selectedRecord.studentId) : setValue('studentId', '')
       selectedRecord.staffId !== null ? setValue('staffId', selectedRecord.staffId) : setValue('staffId', '')
       selectedRecord.sessionId !== null ? setValue('sessionId', selectedRecord.sessionId) : setValue('sessionId', '')
 
       selectedRecord.date !== null ? setValue('date', new Date(selectedRecord.date)) : setValue('date', '')
       selectedRecord.checkInTime !== null
-        ? setValue('checkInTime', selectedRecord.checkInTime)
+        ? setValue('checkInTime', selectedRecord.checkInTime.slice(0, 5))
         : setValue('checkInTime', '')
       selectedRecord.attendanceStatus !== null
         ? setValue('attendanceStatus', selectedRecord.attendanceStatus)
@@ -175,11 +176,10 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
       ...(changedFields.hasOwnProperty('sessionId') && { sessionId: changedFields.sessionId }),
       ...(changedFields.hasOwnProperty('classId') && { classId: changedFields.classId }),
       ...(changedFields.hasOwnProperty('date') && { date: formattedDate }),
-      ...(changedFields.hasOwnProperty('checkInTime') && { checkInTime: changedFields.checkInTime }),
+      ...(changedFields.hasOwnProperty('checkInTime') && { checkInTime: changedFields.checkInTime.slice(0, 5) }),
       ...(changedFields.hasOwnProperty('attendanceStatus') && { attendanceStatus: changedFields.attendanceStatus }),
       ...(changedFields.hasOwnProperty('reasonForAbsence') && { reasonForAbsence: changedFields.reasonForAbsence })
     }
-
     updateAttendance(payload, selectedRecord.id).then(response => {
       if (response?.data?.success) {
         reset()
