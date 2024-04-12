@@ -100,6 +100,7 @@ const App = props => {
         </Head>
 
         <AuthProvider>
+
         <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
           <SettingsConsumer>
             {({ settings }) => {
@@ -117,7 +118,9 @@ const App = props => {
             }}
           </SettingsConsumer>
         </SettingsProvider>
+
         </AuthProvider>
+
       </CacheProvider>
     </Provider>
   )

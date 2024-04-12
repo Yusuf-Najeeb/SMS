@@ -27,6 +27,7 @@ import PageHeader from './PayslipPageHeader'
 import { Card, CardContent, CardHeader, CircularProgress, Grid, MenuItem, Tooltip } from '@mui/material'
 import SendPayslip from './SendPayslipToEmail'
 import { useStaff } from '../../../hooks/useStaff'
+import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 
 const PayslipTable = () => {
   // Hooks
@@ -36,7 +37,7 @@ const PayslipTable = () => {
 
   // States
 
-  const [payslip, setpayslip] = useState(null)
+  const [key, setKey] = useState('')
   const [generateModalOpen, setPayslipOpen] = useState(false)
   const [sendModalOpen, setSendModalOpen] = useState(false)
   const [refetch, setFetch] = useState(false)
@@ -77,8 +78,16 @@ const PayslipTable = () => {
   useEffect(() => {
     dispatch(fetchPayslips({ period: defaultPeriod, staffId: staffId ? staffId : defaultStaffId }))
 
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch, staffId, defaultStaffId])
+
+  useEffect(() => {
+
+      dispatch(fetchStaffs({ page: 1, limit: 300, key }))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refetch, staffId, defaultStaffId, key])
 
   useEffect(()=>{
     if ( isPayslipDownloadLinkAvailable) {
@@ -100,10 +109,11 @@ const PayslipTable = () => {
                 select
                 fullWidth
                 label='Staff'
-                placeholderText='he'
 
                 SelectProps={{ value: staffId, onChange: e => handleChangeStaff(e) }}
               >
+                {/* <CustomTextField fullWidth placeholder='Search Staff' onChange={(e)=>setKey(e.target.value)} /> */}
+
                 <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem>
                 {StaffData?.result?.map(staff => (
                   <MenuItem key={staff?.id} value={staff?.id} sx={{textTransform: 'uppercase'}}>

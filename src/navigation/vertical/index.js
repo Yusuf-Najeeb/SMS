@@ -58,6 +58,43 @@ const navigation = () => {
     ]
   }
 
+  if (userData?.role?.name == 'accountant') {
+    return [
+      {
+        sectionTitle: 'Dashboard'
+      },
+      {
+        title: 'Dashboard',
+        icon: 'tabler:smart-home',
+        path: '/dashboard'
+      },
+      
+    {
+      sectionTitle: 'Accounts '
+    },
+    {
+      title: 'Income',
+      icon: 'emojione-monotone:money-bag',
+      path: '/apps/income'
+    },
+    {
+      title: 'Expenditure',
+      icon: 'game-icons:pay-money',
+      path: '/apps/expenditure'
+    },
+    {
+      title: 'Payment Methods',
+      icon: 'fxemoji:creditcard',
+      path: '/apps/payment-methods'
+    },
+    {
+      title: 'Payroll',
+      icon: 'fluent:payment-16-regular',
+      path: '/apps/payroll'
+    },
+    ]
+  }
+
   if (userData?.role?.name == 'teacher') {
     return [
       {
@@ -75,6 +112,17 @@ const navigation = () => {
         title: 'Subjects',
         icon: 'mdi:learn-outline',
         path: '/apps/subjects'
+      },
+     
+      
+      {
+        sectionTitle: 'Assessment & Results'
+      },
+  
+      {
+        title: 'CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/cbt'
       },
       {
         title: 'Grading Parameters',

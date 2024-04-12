@@ -8,13 +8,13 @@ import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 
 const PayrollHome = () => {
 
-    const dispatch = useAppDispatch()
+    // const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        dispatch(fetchStaffs({ page: 1, limit: 300, key: '' }))
+    // useEffect(() => {
+    //     dispatch(fetchStaffs({ page: 1, limit: 300, key: '' }))
     
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    //   // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
 
   return <PayrollTab tab='payroll' />
 }

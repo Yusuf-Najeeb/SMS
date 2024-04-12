@@ -127,8 +127,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
       setItemsArray(staffItemsArray)
       setGuardianItemsArray([])
     }
+
     //eslint_disable-next-line react-hooks/exhaustive-deps
-  }, [guardianItemsArray, staffItemsArray])
+  }, [guardianItemsArray, staffItemsArray, itemsArray])
 
   useEffect(() => {
     prevItemsArray.current = itemsArray
