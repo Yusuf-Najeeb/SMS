@@ -19,6 +19,7 @@ import MuiTabList from '@mui/lab/TabList'
 import Icon from 'src/@core/components/icon'
 import ClassAttendanceTable from './ClassAttendance'
 import SessionAttendanceTable from './SessionAttendance'
+import ClassAttendance from './MarkClassAttendanceTable'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -74,7 +75,8 @@ const AttendanceTabs = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    classAttendance: <ClassAttendanceTable />,
+    classAttendance: <ClassAttendance />,
+    editClassAttendance: <ClassAttendanceTable />,
     sessionAttendance: <SessionAttendanceTable />
 
     // reportCard: <StudentsReportCardTable/>,
@@ -95,10 +97,21 @@ const AttendanceTabs = ({ tab }) => {
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='fluent:payment-16-regular' />
-                        {!hideText && 'Class Attendance'}
+                        {!hideText && 'Mark Class Attendance'}
                       </Box>
                     }
                   />
+
+                    <Tab
+                    value='editClassAttendance'
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
+                        <Icon fontSize='1.125rem' icon='tabler:edit' />
+                        {!hideText && 'Edit Class Attendance'}
+                      </Box>
+                    }
+                  />
+
                   <Tab
                     value='sessionAttendance'
                     label={
