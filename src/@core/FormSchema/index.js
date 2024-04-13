@@ -424,7 +424,6 @@ export const singleStudentAttendanceSchema = yup.object().shape({
 
 export const updateAttendanceSchema = yup.object().shape({
   staffId: yup.string().required('Class Teacher is required'),
-  studentId: yup.string().required('Student is required'),
   classId: yup.string().required('Class is required'),
   sessionId: yup.string().required('Session is required'),
   date: yup.string().required('Date is required'),

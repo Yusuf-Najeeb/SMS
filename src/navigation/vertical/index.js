@@ -107,6 +107,15 @@ const navigation = () => {
         icon: 'tabler:smart-home',
         path: '/dashboard'
       },
+
+      {
+        sectionTitle: 'Student Management'
+      },
+      {
+        title: 'Attendance',
+        icon: 'mdi:timetable',
+        path: '/apps/attendance'
+      },
       {
         sectionTitle: 'Academics '
       },
@@ -174,12 +183,17 @@ const navigation = () => {
       },
 
       {
-        sectionTitle: 'Students'
+        sectionTitle: 'Student Management'
       },
       {
         title: ' Students',
         icon: 'fa6-solid:people-line',
         path: '/apps/students'
+      },
+      {
+        title: 'Attendance',
+        icon: 'mdi:timetable',
+        path: '/apps/attendance'
       },
 
       // {
@@ -234,11 +248,7 @@ const navigation = () => {
         path: '/apps/session'
       },
 
-      {
-        title: 'Attendance',
-        icon: 'mdi:timetable',
-        path: '/apps/attendance'
-      },
+
 
       // {
       //   title: 'Time Table',
@@ -367,12 +377,17 @@ const navigation = () => {
     // },
 
     {
-      sectionTitle: 'Students'
+      sectionTitle: 'Student Management'
     },
     {
       title: ' Students',
       icon: 'fa6-solid:people-line',
       path: '/apps/students'
+    },
+    {
+      title: 'Attendance',
+      icon: 'mdi:timetable',
+      path: '/apps/attendance'
     },
 
     // {
@@ -427,11 +442,7 @@ const navigation = () => {
       path: '/apps/session'
     },
 
-    {
-      title: 'Attendance',
-      icon: 'mdi:timetable',
-      path: '/apps/attendance'
-    },
+
 
     // {
     //   title: 'Time Table',
