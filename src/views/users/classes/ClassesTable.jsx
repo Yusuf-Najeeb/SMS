@@ -334,6 +334,13 @@ const ClassesTable = () => {
                                   </MenuItem>
                                 )}
 
+                                {CurrentSessionData && (
+                                  <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
+                                    <Icon icon='mdi:timetable' fontSize={20} />
+                                    Upoad Timetable
+                                  </MenuItem>
+                                )}
+
                                 <MenuItem onClick={() => setClassToViewTimeTable(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='mdi:timetable' fontSize={20} />
                                   View Timetable

@@ -1,4 +1,4 @@
-// 'use server'
+
 
 // ** React Imports
 import { useState } from 'react'
@@ -294,8 +294,8 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
-                <Typography component={LinkStyled} sx={{color: 'text.secondary'}} href='/forgot-password'>
-                  Forgot Password?
+                <Typography component={LinkStyled} sx={{color: 'text.secondary'}} href='/reset-password'>
+                  Reset Password
                 </Typography>
               </Box>
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, backgroundColor: 'success.main' }} disabled={isSubmitting}>

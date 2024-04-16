@@ -8,7 +8,6 @@ import { useRouter } from 'next/router'
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import Badge from '@mui/material/Badge'
-import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -64,6 +63,12 @@ const UserDropdown = props => {
     setAnchorEl(null)
   }
 
+  const handleResetPassword = () => {
+    
+      router.push('/reset-password')
+    
+  }
+
   const styles = {
     px: 4,
     py: 1.75,
@@ -88,8 +93,6 @@ const UserDropdown = props => {
     const userType = JSON.parse(window.localStorage.getItem('authUser'))
     setUser(userType)
   }, [])
-
-  console.log(userType, 'user type')
 
   const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -163,6 +166,13 @@ const UserDropdown = props => {
           <Box sx={styles}>
             <Icon icon='tabler:logout' />
             Sign Out
+          </Box>
+       
+        </MenuItemStyled>
+        <MenuItemStyled sx={{ p: 0 }} onClick={handleResetPassword}>
+          <Box sx={styles}>
+            <Icon icon='mdi:key-change' />
+            Reset Password
           </Box>
         </MenuItemStyled>
       </Menu>
