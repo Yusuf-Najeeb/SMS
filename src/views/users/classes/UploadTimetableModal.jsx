@@ -19,7 +19,10 @@ import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
 import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
-import { handleInputImageChange } from '../../../@core/utils/uploadImage'
+import { notifyWarn } from '../../../@core/components/toasts/notifyWarn'
+import { uploadImage } from '../../../store/apps/upload'
+import { notifyError } from '../../../@core/components/toasts/notifyError'
+import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -41,16 +44,64 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
 })
 
-const UploadTimetable = ({ open, closeModal, refetchData }) => {
+const UploadTimetable = ({ open, toggle, selectedClass }) => {
   const [selectedImage, setSelectedImage] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState(``)
+  const [previewUrl, setPreviewUrl] = useState('')
 
- 
+  const className = `${selectedClass.name}${selectedClass.type}`
 
-  const onSubmit = async values => {
-   
+//   const [className, setClassName] = useState('')
 
+  console.log(selectedClass, 'selected class')
+  console.log(className, 'class name')
+
+
+
+
+ const handleInputImageChange = async (e) => {
+    const fileInput = e.target
+
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0]
+
+      const fileSize = file.size / 1024 / 1024 // in MB
+
+      if (fileSize > 5) {
+        notifyWarn('FILE ERROR', 'file size cannot exceed 5Mb')
+
+        return
+      }
+
+      if (file.type.startsWith('image/')) {
+        const fileUrl = URL.createObjectURL(file)
+
+        const formData = new FormData();
+        formData.append("picture", file);
+        formData.append("className", className);
+
+
+        uploadImage(formData).then((res)=>{
+          if (res) {
+            setPreviewUrl(fileUrl)
+            setSelectedImage(file)
+            notifySuccess("Upload successful")
+            setTimeout(()=>{toggle()}, 1000)
+            
+          } 
+        }).catch((error)=>{
+            notifyError(error?.response?.data?.message || "Unable to upload image")
+        })
+      } else {
+        notifyWarn('FILE ERROR', 'Selected file is not an image.')
+        setPreviewUrl(null)
+      }
+    } else {
+      notifyWarn('FILE ERROR', 'No file selected.')
+      setSelectedImage(null)
+      setPreviewUrl(null)
+    }
   }
+
 
   return (
 
@@ -62,7 +113,7 @@ const UploadTimetable = ({ open, closeModal, refetchData }) => {
       scroll='body'
 
       //   TransitionComponent={Transition}
-      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 990 } }}
+      sx={{ '& .MuiDialog-paper': { overflow: 'visible', width: '100%', maxWidth: 550 } }}
     >
       <DialogContent
         sx={{
@@ -70,12 +121,12 @@ const UploadTimetable = ({ open, closeModal, refetchData }) => {
           pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
         }}
       >
-        <CustomCloseButton onClick={closeModal}>
+        <CustomCloseButton onClick={toggle}>
           <Icon icon='tabler:x' fontSize='1.25rem' />
         </CustomCloseButton>
 
-        <Grid item xs={12} sm={6} sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', gap: '2rem' }}>
-              <Grid item xs={12} sm={6}>
+        <Box sx={{ mb: 6, ml: 6, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
+              
                 <Box
                   sx={{
                     border: '3px dotted black',
@@ -92,17 +143,16 @@ const UploadTimetable = ({ open, closeModal, refetchData }) => {
                       hidden
                       type='file'
                       accept='image/png, image/jpeg'
-                      onChange={e => handleInputImageChange(e, setPreviewUrl, setSelectedImage, setImageLinkPayload)}
+                      onChange={e => handleInputImageChange(e)}
                       id='account-settings-upload-image'
                     />
 
                     <Icon icon='tabler:upload' fontSize='1.45rem' />
                   </ButtonStyled>
                   <Typography variant='body2' sx={{ mt: 2 }}>
-                    Upload Guardian Image
+                    Upload Timetable Image
                   </Typography>
                 </Box>
-              </Grid>
 
               <Box
                 sx={{
@@ -119,22 +169,11 @@ const UploadTimetable = ({ open, closeModal, refetchData }) => {
                   width={120}
                   height={100}
                   style={{ objectFit: 'cover', objectPosition: 'center' }}
-                  alt='guardian image'
+                  alt='timetable'
                 /> }
               </Box>
-            </Grid>
 
-        {/* <form onSubmit={handleSubmit(onSubmit)}>
-         
-         
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '10px' }}>
-         
-            <Button type='submit' variant='contained' disabled={isSubmitting}>
-              {isSubmitting ? <CircularProgress size={20} color='secondary' sx={{ ml: 3 }} /> : 'Submit Timetable'}
-            </Button>
-          </Box>
-        </form> */}
+            </Box>
 
 
       </DialogContent>

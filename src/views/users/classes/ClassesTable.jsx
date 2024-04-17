@@ -26,10 +26,11 @@ import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthun
 import ManageClass from './ManageClass'
 import ViewClass from './ViewClass'
 import ManageClassSubject from './ManageClassSubject'
-import AddPeriod from './AddPeriod'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import ViewTimeTable from './ViewTimeTable'
+import UploadTimetable from './UploadTimetableModal'
+import ViewClassTimeTable from './ViewClassTimetable'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -79,10 +80,9 @@ const ClassesTable = () => {
   const [selectedClass, setSelectedClass] = useState()
   const [ClassToUpdate, setClassToUpdate] = useState(null)
   const [ClassInView, setClassInView] = useState(null)
-  const [refetch, setFetch] = useState(false)
   const [key, setKey] = useState('')
   const [openAssignModal, setAssignModal] = useState(false)
-  const [openPeriodModal, setPeriodModal] = useState(false)
+  const [openUploadTimetableModal, setTimetableModal] = useState(false)
   const [openTimetableModal, setOpenTimeTable] = useState(false)
   const [ClassToAssign, setClassToAssign] = useState(null)
   const [ClassToViewTimeTable, setClassRoomToViewTimeTable] = useState(null)
@@ -142,14 +142,14 @@ const ClassesTable = () => {
   }
 
   const setClassToAddPeriod = value => {
-    setPeriodModal(true)
+    setTimetableModal(true)
 
     handleRowOptionsClose(ClassesList?.indexOf(value))
     setClassRoomToAddPeriod(value)
   }
 
   const closePeriodModal = () => {
-    setPeriodModal(false)
+    setTimetableModal(false)
     setClassRoomToAddPeriod(null)
   }
 
@@ -327,12 +327,12 @@ const ClassesTable = () => {
                                   Delete Class
                                 </MenuItem>
 
-                                {CurrentSessionData && (
+                                {/* {CurrentSessionData && (
                                   <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
                                     <Icon icon='mdi:timetable' fontSize={20} />
                                     Add Period
                                   </MenuItem>
-                                )}
+                                )} */}
 
                                 {CurrentSessionData && (
                                   <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
@@ -396,10 +396,10 @@ const ClassesTable = () => {
         />
 
         {openTimetableModal && (
-          <ViewTimeTable open={openTimetableModal} handleClose={closeTimeTableModal} ClassRoom={ClassToViewTimeTable} />
+          <ViewClassTimeTable open={openTimetableModal} handleClose={closeTimeTableModal} selectedClass={ClassToViewTimeTable} />
         )}
 
-        {openPeriodModal && <AddPeriod open={openPeriodModal} classRoom={ClassToAddPeriod} toggle={closePeriodModal} />}
+        {openUploadTimetableModal && <UploadTimetable open={openUploadTimetableModal} selectedClass={ClassToAddPeriod} toggle={closePeriodModal} />}
       </Fragment>
     </>
   )
