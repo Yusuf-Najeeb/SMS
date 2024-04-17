@@ -124,6 +124,11 @@ const navigation = () => {
         icon: 'mdi:learn-outline',
         path: '/apps/subjects'
       },
+      {
+        title: 'Classes',
+        icon: 'mdi:google-classroom',
+        path: '/apps/classes'
+      },
      
       
       {

@@ -19,6 +19,9 @@ import MuiTabList from '@mui/lab/TabList'
 import Icon from 'src/@core/components/icon'
 import ClassesTable from './ClassesTable'
 import CategoriesTable from './Categories'
+import GetUserData from '../../../@core/utils/getUserData'
+
+const userInfo = GetUserData()
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -92,6 +95,8 @@ const ClassTab = ({ tab }) => {
                       </Box>
                     }
                   />
+
+                  {userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin' &&
                   <Tab
                     value='categories'
                     label={
@@ -101,6 +106,7 @@ const ClassTab = ({ tab }) => {
                       </Box>
                     }
                   />
+                }
                 </TabList>
               </Grid>
               <Grid item xs={12}>

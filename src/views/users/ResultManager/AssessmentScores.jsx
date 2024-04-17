@@ -52,9 +52,6 @@ const StudentsAssessmentsScoreTable = () => {
   const [scoreToEdit, setScoreToEdit] = useState(null)
   const [scoreId, setScoreId] = useState(null)
   const [assessmentToUpdateName, setAssessmentName] = useState('')
-
-//   const [anchorEl, setAnchorEl] = useState(Array(StudentsScores?.length)?.fill(null))
-
   const [anchorEl, setAnchorEl] = useState([])
 
 
@@ -291,22 +288,30 @@ const displayScores = async ()=>{
               </CustomTextField>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
-            <Button onClick={displayScores} variant='contained' disabled={!staffId || !subjectId || !classId || !sessionId} sx={{ '& svg': { mr: 2 } }}>
+            
+
+
+          </Grid>
+
+          <Grid container sx={{mt: 10}}>
+          <Grid item xs={12} sm={12} sx={{display: 'flex', gap: '20px'}}>
+            <Button onClick={displayScores} variant='contained' disabled={!staffId || !subjectId || !classId || !sessionId} sx={{ '& svg': { mr: 2 }, backgroundColor: 'info.light' }}>
           <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
           Display Scores
         </Button>
-            </Grid>
 
-            <Grid item xs={12} sm={6}>
+            {/* </Grid> */}
+
+            {/* <Grid item xs={12} sm={6}> */}
+
             <Button onClick={toggleScoreDrawer} variant='contained'  sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}>
           <Icon fontSize='1.125rem' icon='tabler:plus' />
           Input Student Score
         </Button>
+
             </Grid>
 
-
-          </Grid>
+            </Grid>
         </CardContent>
       </Card> 
 

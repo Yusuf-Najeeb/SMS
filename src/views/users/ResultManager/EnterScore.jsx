@@ -14,7 +14,7 @@ import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 
-import { Alert, CircularProgress, MenuItem } from '@mui/material'
+import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,7 +28,7 @@ import { inputScoreSchema } from 'src/@core/Formschema'
 import FormController from '../component/FormController'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
+import { fetchStudentsTakingSubject, fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { useStaff } from '../../../hooks/useStaff'
@@ -67,13 +67,16 @@ const defaultValues = {
 }
 
 const EnterStudentScore = ({ open, closeModal }) => {
-  const [ClassRoomId, setClassRoomId] = useState()
-  const [StudentData] = useStudent()
+  
 
-  const [studentsInClass, setStudentsInClass] = useState([])
+  const [ClassRoomId, setClassRoomId] = useState()
+  const [subjectId, setSubjectId] = useState(null)
+  const [teacherId, setTeacherId] = useState(null)
+  const [studentsTakingSubject, setStudentsTakingSubject] = useState([])
 
   // ** Hooks
   const dispatch = useDispatch()
+  const [StudentData] = useStudent()
   const [StaffData] = useStaff()
   const [CategoriesData] = useCategories()
   const [SubjectsList] = useSubjects()
@@ -81,6 +84,8 @@ const EnterStudentScore = ({ open, closeModal }) => {
   const [SessionData] = useSession()
 
   const handleChangeClass = (e)=> setClassRoomId(Number(e.target.value))
+  const handleChangeSubject = (e)=> Number(setSubjectId(e.target.value))
+  const handleChangeTeacher = (e)=> Number(setTeacherId(e.target.value))
 
 
   useEffect(() => {
@@ -94,21 +99,30 @@ const EnterStudentScore = ({ open, closeModal }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (ClassRoomId) {
-      fetchStudentsInClass(ClassRoomId).then(res => {
-        if (res?.data?.success) {
-          setStudentsInClass(res?.data?.data)
+  useEffect(()=>{
+    if(subjectId && teacherId){
+      fetchStudentsTakingSubject(subjectId, teacherId).then((res)=>{
+        if(res.data.success){
+          setStudentsTakingSubject(res?.data?.data)
         }
       })
-
     }
-  }, [ClassRoomId])
+  },[subjectId,teacherId ])
+
+
+  // useEffect(() => {
+  //   if (ClassRoomId) {
+  //     fetchStudentsInClass(ClassRoomId).then(res => {
+  //       if (res?.data?.success) {
+  //         setStudentsInClass(res?.data?.data)
+  //       }
+  //     })
+
+  //   }
+  // }, [ClassRoomId])
 
   const {
     control,
-    setValue,
-    getValues,
     reset,
     handleSubmit,
     formState: { errors, isSubmitting }
@@ -245,6 +259,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         label='Subject'
                         onChange={e => {
                           onChange(e)
+                          handleChangeSubject(e)
                         }}
                         id='stepper-linear-personal-paymentMode'
                         error={Boolean(errors.subjectId)}
@@ -276,6 +291,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         label='Subject Teacher'
                         onChange={e => {
                           onChange(e)
+                          handleChangeTeacher(e)
                         }}
                         id='stepper-linear-personal-paymentMode'
                         error={Boolean(errors.staffId)}
@@ -313,12 +329,14 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-studentId-helper'
                         {...(errors.studentId && { helperText: errors.studentId.message })}
                       >
-                        <MenuItem value=''>Select Student</MenuItem>
-                        {StudentData?.result?.map(item => (
+                        <MenuItem value=''>Select Student Taking Subject</MenuItem>
+                        {studentsTakingSubject?.length > 0 ?  studentsTakingSubject?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item.firstName} ${item.lastName}`}
                           </MenuItem>
-                        ))}
+                        )): 
+                        <Typography sx={{textAlign: 'center'}}>No student registered</Typography>
+                        }
                       </CustomTextField>
                     )}
                   />

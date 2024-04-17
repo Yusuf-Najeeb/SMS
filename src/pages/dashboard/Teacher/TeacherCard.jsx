@@ -62,20 +62,17 @@ const TeacherCardInDasboard = ({user}) => {
 
         {/* <Typography variant='h4' sx={{ mb: 0.75, color: 'primary.main' }}></Typography> */}
         <Typography  sx={{ mb: 2, color: 'text.secondary', textTransform: 'uppercase' }}>User ID: {user?.identificationNumber}</Typography>
-        <Typography variant='h5' sx={{ mb: 2, color: 'primary.main', textTransform: 'uppercase' }}>Role: {user?.role.name}</Typography>
+        <Typography variant='h5' sx={{ mb: 2, textTransform: 'uppercase' }}>Role: {user?.role.name}</Typography>
         
 
-        <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
+        {/* <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
                 <CustomAvatar skin='light' variant='rounded' sx={{ mr: 2.5, width: 38, height: 38 }}>
                   <Icon fontSize='1.75rem' icon='mdi:account-payment' />
                 </CustomAvatar>
                 <div>
                   <Typography variant='body2'>No Outstanding Payment</Typography>
-                  {/* <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                    {formatDateToReadableFormat(user?.registrationDate) || 'No available date'}
-                  </Typography> */}
                 </div>
-              </Box>
+              </Box> */}
 
         {/* <Button variant='contained' onClick={() => handleRedirectToSale('/users/sales')}>
           View Sales

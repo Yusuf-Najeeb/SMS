@@ -85,9 +85,12 @@ const UserDropdown = props => {
   }
 
   const handleLogout = () => {
+    const logoutRoute = userType?.role?.name == 'student' || userType?.role?.name == 'parent' ? '/userlogin' : '/login'
     window.localStorage.removeItem('authToken')
-    handleDropdownClose('/login')
+    handleDropdownClose(logoutRoute)
   }
+
+
 
   useEffect(() => {
     const userType = JSON.parse(window.localStorage.getItem('authUser'))
@@ -96,7 +99,7 @@ const UserDropdown = props => {
 
   const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
-  const { role, profilePicture, firstName, lastName } = userType
+  const { role, firstName, lastName } = userType
 
   const renderClient = row => {
     const initials = `${row.firstName} ${row.lastName}`

@@ -104,3 +104,13 @@ export const fetchSubjects = createAsyncThunk('subjects', async (query) => {
       notifyError('Unable to Assign Category To Subject')
     }
   }
+
+  export const fetchStudentsTakingSubject = async (subjectId, teacherId)=> {
+    try {
+      const res = await axios.get(`/gradebook/students/${subjectId}/${teacherId}`)
+
+      return res
+    } catch (error) {
+      
+    }
+  }
