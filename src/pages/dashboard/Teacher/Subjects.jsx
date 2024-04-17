@@ -10,8 +10,6 @@ import CardContent from '@mui/material/CardContent'
 import Icon from 'src/@core/components/icon'
 
 // ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
-import OptionsMenu from 'src/@core/components/option-menu'
 import { useEffect, useState } from 'react'
 import { fetchTeacherSubjects } from '../../../store/apps/staff/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
@@ -45,19 +43,12 @@ const TeacherSubjects = ({ user }) => {
     <Card>
       <CardHeader
         title='Subjects'
-
-        // subheader='38.4k Visitors'
-
-        // action={
-        //   <OptionsMenu
-        //     options={['Last Week', 'Last Month', 'Last Year']}
-        //     iconButtonProps={{ size: 'small', sx: { color: 'text.disabled' } }}
-        //   />
-        // }
       />
       <CardContent>
         {Subjects?.map((item, index) => {
-          const subjectCategory = CategoriesData.find(c => c.id === item.categoryId)
+          // const subjectCategory = CategoriesData.find(c => c.id === item.categoryId)
+
+
 
           return (
             <Box
@@ -94,7 +85,7 @@ const TeacherSubjects = ({ user }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {/* <Typography sx={{ mr: 4, color: 'text.secondary' }}>{item.amount}</Typography> */}
 
-                  <CustomChip
+                  {/* <CustomChip
                     rounded
                     size='small'
                     skin='light'
@@ -103,7 +94,7 @@ const TeacherSubjects = ({ user }) => {
                     
                     // label={`${item.trend === 'negative' ? '-' : '+'}${item.trendNumber}%`}
                     label={subjectCategory?.name}
-                  />
+                  /> */}
                 </Box>
               </Box>
             </Box>

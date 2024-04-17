@@ -16,11 +16,9 @@ import NoData from 'src/@core/components/emptydata/NoData'
 import { styled } from '@mui/material/styles'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
-import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Utils Import
-import { getInitials } from 'src/@core/utils/get-initials'
-import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
+import PageHeaderWithSearch from './ClassesPageHeader'
 import { useClasses } from '../../../hooks/useClassess'
 import { deleteClass, fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import ManageClass from './ManageClass'
@@ -28,39 +26,11 @@ import ViewClass from './ViewClass'
 import ManageClassSubject from './ManageClassSubject'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
-import ViewTimeTable from './ViewTimeTable'
 import UploadTimetable from './UploadTimetableModal'
 import ViewClassTimeTable from './ViewClassTimetable'
+import GetUserData from '../../../@core/utils/getUserData'
 
-const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
-
-const renderClient = row => {
-  const initials = `${row.firstName} ${row.lastName}`
-  if (row.profilePicture?.length) {
-    return (
-      <CustomAvatar
-        src={`${backendURL?.replace('api', '')}/${row.profilePicture}`}
-        sx={{ mr: 2.5, width: 38, height: 38 }}
-      />
-    )
-  } else {
-    return (
-      <CustomAvatar
-        skin='light'
-        //eslint-disable-next-line
-        // color={row?.title.length > 2 ? 'primary' : 'secondary'}
-        color='primary'
-        sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
-      >
-        {getInitials(initials || 'John Doe')}
-      </CustomAvatar>
-    )
-  }
-}
-
-const TableCellStyled = styled(TableCell)(({ theme }) => ({
-  color: `${theme.palette.primary.main} !important`
-}))
+const userInfo = GetUserData()
 
 const ClassesTable = () => {
   const dispatch = useAppDispatch()
@@ -68,13 +38,10 @@ const ClassesTable = () => {
   const [ClassesList, loading, paging] = useClasses()
   const [CurrentSessionData] = useCurrentSession()
 
-  // console.log(CurrentSessionData?.includes(id), "length")
-  // console.log(CurrentSessionData, "current session data")
 
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [showModal, setShowModal] = useState(false)
-  const [openEditDrawer, setEditDrawer] = useState(false)
   const [openViewDrawer, setViewDrawer] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [selectedClass, setSelectedClass] = useState()
@@ -312,27 +279,20 @@ const ClassesTable = () => {
                                 }}
                                 PaperProps={{ style: { minWidth: '8rem' } }}
                               >
-                                <MenuItem onClick={() => setClassToEdit(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
+                                {userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin' && <MenuItem onClick={() => setClassToEdit(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:edit' fontSize={20} />
                                   Edit Class
-                                </MenuItem>
+                                </MenuItem>}
 
                                 <MenuItem onClick={() => setClassToView(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:eye' fontSize={20} />
                                   View Class
                                 </MenuItem>
 
-                                <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                                {userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin' && <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:trash' fontSize={20} />
                                   Delete Class
-                                </MenuItem>
-
-                                {/* {CurrentSessionData && (
-                                  <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>
-                                    <Icon icon='mdi:timetable' fontSize={20} />
-                                    Add Period
-                                  </MenuItem>
-                                )} */}
+                                </MenuItem>}
 
                                 {CurrentSessionData && (
                                   <MenuItem onClick={() => setClassToAddPeriod(item)} sx={{ '& svg': { mr: 2 } }}>

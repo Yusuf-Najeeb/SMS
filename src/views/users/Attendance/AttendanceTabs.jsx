@@ -117,7 +117,7 @@ const AttendanceTabs = ({ tab }) => {
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='carbon:prompt-session' />
-                        {!hideText && 'Session Attendance'}
+                        {!hideText && 'View Student Session Attendance'}
                       </Box>
                     }
                   />

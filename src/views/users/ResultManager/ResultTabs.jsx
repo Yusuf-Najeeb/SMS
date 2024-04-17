@@ -97,8 +97,8 @@ const ResultsTab = ({ tab }) => {
                     value='scores'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
-                        <Icon fontSize='1.125rem' icon='fluent:payment-16-regular' />
-                        {!hideText && 'Overall Scores'}
+                        <Icon fontSize='1.125rem' icon='dashicons:media-spreadsheet' />
+                        {!hideText && 'Score sheet'}
                       </Box>
                     }
                   />
