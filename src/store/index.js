@@ -33,6 +33,7 @@ import singleTeacherSubjects from 'src/store/apps/singleTeacherSubjects'
 import attendance from 'src/store/apps/attendance'
 import applicants from 'src/store/apps/applicants'
 import cbt from 'src/store/apps/cbt'
+import applicantsSubjects from 'src/store/apps/applicantsSubjects'
 
 
 export const store = configureStore({
@@ -67,7 +68,8 @@ export const store = configureStore({
     singleTeacherSubjects,
     attendance,
     applicants,
-    cbt
+    cbt,
+    applicantsSubjects
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

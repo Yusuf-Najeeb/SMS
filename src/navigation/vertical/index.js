@@ -107,6 +107,19 @@ const navigation = () => {
         icon: 'tabler:smart-home',
         path: '/dashboard'
       },
+      {
+        sectionTitle: 'Applicants'
+      },
+      {
+        title: ' Applicants',
+        icon: 'fluent:people-sync-16-filled',
+        path: '/apps/applicants'
+      },
+      {
+        title: ' Applicants Subjects',
+        icon: 'mdi:learn-outline',
+        path: '/apps/applicantsSubjects'
+      },
 
       {
         sectionTitle: 'Student Management'
@@ -199,6 +212,11 @@ const navigation = () => {
         title: ' Applicants',
         icon: 'fluent:people-sync-16-filled',
         path: '/apps/applicants'
+      },
+      {
+        title: ' Applicants Subjects',
+        icon: 'mdi:learn-outline',
+        path: '/apps/applicantsSubjects'
       },
 
       {
