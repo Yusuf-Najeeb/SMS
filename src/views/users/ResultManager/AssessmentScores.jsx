@@ -24,6 +24,9 @@ import CustomSpinner from '../../../@core/components/custom-spinner'
 import { extractAssessmentScoresData } from '../../../@core/utils/extractAssessmentScores'
 import UpdateScore from './UpdateStudentScore'
 import EnterStudentScore from './EnterScore'
+import PageHeader from './AssessmentScorePageHeader'
+import DownloadScoresheetDialog from './DownloadScoreSheetDialog'
+import UploadScoreSheetDialog from './UploadScoreSheetDialog'
 
 const StudentsAssessmentsScoreTable = () => {
   // Hooks
@@ -53,6 +56,11 @@ const StudentsAssessmentsScoreTable = () => {
   const [scoreId, setScoreId] = useState(null)
   const [assessmentToUpdateName, setAssessmentName] = useState('')
   const [anchorEl, setAnchorEl] = useState([])
+
+  const [refEl, setRefEl] = useState(null)
+  const [referenceEl, setReferenceEl] = useState(null)
+  const [openDownloadDialog, setOpenDialog] = useState(false)
+  const [openUploadDialog, setDialog] = useState(false)
 
 
   const handleRowOptionsClick = (event, index) => {
@@ -181,6 +189,19 @@ const displayScores = async ()=>{
       }
 }
   
+
+const toggleDownloadDialog = (e) => {
+  setRefEl(e.currentTarget)
+  setOpenDialog(!openDownloadDialog)
+}
+
+const toggleUploadDialog = (e) => {
+  setReferenceEl(e.currentTarget)
+  setDialog(!openUploadDialog)
+}
+
+const closeDownloadDialog = () => setOpenDialog(!openDownloadDialog)
+const closeUploadDialog = () => setDialog(!openUploadDialog)
 
   const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
 
@@ -315,6 +336,7 @@ const displayScores = async ()=>{
         </CardContent>
       </Card> 
 
+<PageHeader toggle1={toggleDownloadDialog} toggle2={toggleUploadDialog}/>
 
 {(!loading && showScores  && StudentsScores?.length > 0)  &&
       (
@@ -511,6 +533,26 @@ const displayScores = async ()=>{
           closeModal={toggleScoreDrawer}
         />
       )}
+
+      {
+       openDownloadDialog && (
+        <DownloadScoresheetDialog 
+        open={openDownloadDialog}
+        anchorEl={refEl}
+        handleClose={closeDownloadDialog}
+        />
+       ) 
+      }
+
+{
+       openUploadDialog && (
+        <UploadScoreSheetDialog 
+        open={openUploadDialog}
+        anchorEl={referenceEl}
+        handleClose={closeUploadDialog}
+        />
+       ) 
+      }
 
     </div>
   )

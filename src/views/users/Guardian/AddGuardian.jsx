@@ -329,31 +329,6 @@ const AddGuardian = ({ open, closeModal, refetchData }) => {
               </Grid>
 
 
-              {/* <Grid item xs={12} sm={4}>
-                <Controller
-                  name='maritalStatus'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <CustomTextField
-                      select
-                      fullWidth
-                      value={value}
-                      label='Marital Status'
-                      onChange={onChange}
-                      id='stepper-linear-maritalStatus'
-                      error={Boolean(errors.maritalStatus)}
-                      aria-describedby='stepper-linear-maritalStatus-helper'
-                      {...(errors.maritalStatus && { helperText: errors.maritalStatus.message})}
-                    >
-                      <MenuItem value='Single'>Single</MenuItem>
-                      <MenuItem value='Married'>Married</MenuItem>
-                      <MenuItem value='Divorced'>Divorced</MenuItem>
-                    </CustomTextField>
-                  )}
-                />
-              </Grid> */}
-
               <Grid item xs={12} sm={12} md={4}>
                 <Controller
                   name='phone'

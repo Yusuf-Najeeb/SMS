@@ -21,6 +21,7 @@ import { useSession } from '../../../hooks/useSession'
 import { deleteSession, fetchSession, makeCurrentSession } from '../../../store/apps/session/asyncthunk'
 import ManageSession from './ManageSession'
 import MakeCurrentSessionDialog from './MakeCurrentSession'
+import EditSession from './EditSession'
 
 
 
@@ -32,6 +33,7 @@ const SessionTable = () => {
 
   const [SessionData, loading, paging] = useSession()
   const [deleteModal, setDeleteModal] = useState(false)
+  const [editModal, setEditModal] = useState(false)
   const [currentSessionModal, setCurrentSessionModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -39,16 +41,10 @@ const SessionTable = () => {
   const [SessionToMakeCurrent, setSessionToMakeCurrent] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [selectedSession, setSelectedSession] = useState(null)
+  const [sessionToEdit, setSessionToEdit] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const rowOptionsOpen = Boolean(anchorEl)
 
-  const handleRowOptionsClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
 
   const OpenSessionModal = () => {
     if (openModal) {
@@ -60,9 +56,13 @@ const SessionTable = () => {
   }
 
   const setActiveSession = (value) => {
-    handleRowOptionsClose()
-    OpenSessionModal()
-    setSelectedSession(value)
+    setEditModal(true)
+    setSessionToEdit(value)
+  }
+
+  const closeEditModal = ()=>{
+    setEditModal(false)
+    setSessionToEdit(null)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -119,7 +119,7 @@ const SessionTable = () => {
     dispatch(fetchSession({ page: page + 1, limit: 10 }))
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage])
+  }, [page, rowsPerPage,])
 
   return (
     <Fragment>
@@ -208,37 +208,13 @@ const SessionTable = () => {
                         </IconButton>
                         </Tooltip>
 
-                      {/* <>
-                        <IconButton size='small' onClick={handleRowOptionsClick}>
-                          <Icon icon='tabler:dots-vertical' />
+                        <Tooltip title='Edit Session'>
+                        <IconButton size='small' onClick={() => setActiveSession(item)}>
+                          <Icon icon='tabler:edit' />
                         </IconButton>
-                        <Menu
-                          keepMounted
-                          anchorEl={anchorEl}
-                          open={rowOptionsOpen}
-                          onClose={handleRowOptionsClose}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right'
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                          }}
-                          PaperProps={{ style: { minWidth: '8rem' } }}
-                        >
-                         
-                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='tabler:trash' fontSize={20} />
-                            Delete Session
-                          </MenuItem>
-                          <MenuItem onClick={() => toggleCurrentSessionModal(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
-                            Make Current Session
-                          </MenuItem>
-                          
-                        </Menu>
-                      </> */}
+                        </Tooltip>
+
+                     
                     </TableCell>
                   </TableRow>
                 ))}
@@ -267,6 +243,7 @@ const SessionTable = () => {
       />
 
         {openModal && <ManageSession open={openModal} toggle={OpenSessionModal} sessionToEdit={selectedSession} />}
+        {editModal && <EditSession open={editModal} toggle={closeEditModal} sessionToEdit={sessionToEdit} />}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
       <MakeCurrentSessionDialog open={currentSessionModal} handleClose={doCancelMakeSession} handleConfirm={onConfirmation} />
     </Fragment>

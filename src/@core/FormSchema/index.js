@@ -431,3 +431,33 @@ export const updateAttendanceSchema = yup.object().shape({
   attendanceStatus: yup.boolean().required('Attendance Status is required'),
   reasonForAbsence: yup.string()
 })
+
+export const affectiveTraitsSchema = yup.object().shape({
+  studentId: yup.string().required('Student is required'),
+    sessionId: yup.string().required('Session is required'),
+    classId: yup.string().required('Class is required'),
+    punctuality: yup.string().required('Punctuality Score is required'),
+    mentalAlertness: yup.string().required('Mental Alertness Score is required'),
+    attentiveness: yup.string().required('Attentiveness Score is required'),
+    respect: yup.string().required('Respect Score is required'),
+    neatness: yup.string().required('Neatness Score is required'),
+    politeness: yup.string().required('Politeness Score is required'),
+    honesty: yup.string().required('Honesty Score is required'),
+    relating_with_peers: yup.string().required('Peer Relation Score is required'),
+    attitude_to_school: yup.string().required('Attitude to School Score is required'),
+    spirit_of_team_work: yup.string().required('Teamwork Score is required'),
+    completes_school_work_promptly: yup.string().required('Promptness to School Score is required')
+})
+
+export const psychomotorSkillsSchema = yup.object().shape({
+  studentId: yup.string().required('Student is required'),
+    sessionId: yup.string().required('Session is required'),
+    classId: yup.string().required('Class is required'),
+    reading: yup.string().required('Reading Score is required'),
+    verbal_fluency_diction: yup.string().required('Verbal Fluency Score is required'),
+    handwriting: yup.string().required('Hand Writing Score is required'),
+    musical_skills: yup.string().required('Musical Skills Score is required'),
+    creative_arts: yup.string().required('Creative Arts Score is required'),
+    physical_education: yup.string().required('Physical Education Score is required'),
+    general_reasoning: yup.string().required('General Reasoning Score is required'),
+})

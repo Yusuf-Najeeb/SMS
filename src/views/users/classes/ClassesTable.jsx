@@ -32,6 +32,8 @@ import GetUserData from '../../../@core/utils/getUserData'
 
 const userInfo = GetUserData()
 
+console.log(userInfo, 'user info')
+
 const ClassesTable = () => {
   const dispatch = useAppDispatch()
 
@@ -279,7 +281,7 @@ const ClassesTable = () => {
                                 }}
                                 PaperProps={{ style: { minWidth: '8rem' } }}
                               >
-                                {userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin' && <MenuItem onClick={() => setClassToEdit(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
+                                {(userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin') && <MenuItem onClick={() => setClassToEdit(item, 'item')} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:edit' fontSize={20} />
                                   Edit Class
                                 </MenuItem>}
@@ -289,7 +291,7 @@ const ClassesTable = () => {
                                   View Class
                                 </MenuItem>
 
-                                {userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin' && <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
+                                {(userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin') && <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
                                   <Icon icon='tabler:trash' fontSize={20} />
                                   Delete Class
                                 </MenuItem>}
