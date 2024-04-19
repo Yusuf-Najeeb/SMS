@@ -17,11 +17,8 @@ import MuiTabList from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import ClassesTable from './ClassesTable'
-import CategoriesTable from './Categories'
-import GetUserData from '../../../@core/utils/getUserData'
-
-const userInfo = GetUserData()
+import AffectiveTraitsTable from './AffectiveTraitsTable'
+import AffectiveTraitsTableForStudents from './StudentAffectiveTraitsTable'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -52,7 +49,7 @@ const TabList = styled(MuiTabList)(({ theme }) => ({
   }
 }))
 
-const ClassTab = ({ tab }) => {
+const AffectiveTraitsTabs = ({ tab }) => {
   // ** State
   const [activeTab, setActiveTab] = useState(tab)
 
@@ -74,8 +71,8 @@ const ClassTab = ({ tab }) => {
   }, [tab])
 
   const tabContentList = {
-    classes: <ClassesTable />,
-    categories: <CategoriesTable />,
+    class: <AffectiveTraitsTable />,
+    students: <AffectiveTraitsTableForStudents />,
   }
 
   return (
@@ -85,28 +82,27 @@ const ClassTab = ({ tab }) => {
           <TabContext value={activeTab}>
             <Grid container spacing={6}>
               <Grid item xs={12}>
-                <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='payroll tabs'>
+                <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='affective traits tabs'>
                   <Tab
-                    value='classes'
+                    value='class'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                         <Icon fontSize='1.125rem' icon='fluent:payment-16-regular' />
-                        {!hideText && 'Classes'}
+                        {!hideText && 'Affective Traits For Class'}
                       </Box>
                     }
                   />
 
-                  {(userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin') &&
-                  <Tab
-                    value='categories'
+                    <Tab
+                    value='students'
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
-                        <Icon fontSize='1.125rem' icon='ic:twotone-minus' />
-                        {!hideText && 'Categories'}
+                        <Icon fontSize='1.125rem' icon='fa6-solid:people-line' />
+                        {!hideText && 'Affective Traits For Students'}
                       </Box>
                     }
                   />
-                }
+
                 </TabList>
               </Grid>
               <Grid item xs={12}>
@@ -122,4 +118,4 @@ const ClassTab = ({ tab }) => {
   )
 }
 
-export default ClassTab
+export default AffectiveTraitsTabs
