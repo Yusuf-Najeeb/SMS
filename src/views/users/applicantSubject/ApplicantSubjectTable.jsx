@@ -21,7 +21,8 @@ import PageHeader from '../component/PageHeader'
 import { fetchApplicantsSubjects } from '../../../store/apps/applicantsSubjects/asyncthunk'
 import { useApplicantsSubjects } from '../../../hooks/useApplicantsSubjects'
 import { useSubjects } from '../../../hooks/useSubjects'
-import ManageSubjects from '../subjects/ManageSubjects'
+import ManageApplicantsSubjects from './ManageApplicantSubject'
+import ManageApplicant from './ManageApplicant'
 
 const ApplicantsSubjectsTable = () => {
   const dispatch = useAppDispatch()
@@ -30,7 +31,11 @@ const ApplicantsSubjectsTable = () => {
   const [ApplicantsSubjectsData, loading] = useApplicantsSubjects()
   const [deleteModal, setDeleteModal] = useState(false)
   const [subjectToDelete, setSubjectToDelete] = useState(null)
+  const [openAssignSubjectModal, setAssignSubjectModal] = useState(false)
+  const [assignSubject, setAssignSubject] = useState(false)
+  const [subjectToAssign, setSubjectToAssign] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+  const [refetch, setFetch] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState(null)
   const [anchorEl, setAnchorEl] = useState(Array(ApplicantsSubjectsData?.length)?.fill(null))
 
@@ -55,6 +60,10 @@ const ApplicantsSubjectsTable = () => {
     }
   }
 
+  const updateFetch = ()=> {
+    setFetch(!refetch)
+  }
+
 
   const setActiveSubject = value => {
     handleRowOptionsClose(ApplicantsSubjectsData?.indexOf(value))
@@ -62,11 +71,36 @@ const ApplicantsSubjectsTable = () => {
     setSelectedSubject(value)
   }
 
+  const toggleAssignModal = () => {
+    if (openAssignSubjectModal) {
+      setAssignSubjectModal(false)
+      setSubjectToAssign(null)
+    } else {
+      setAssignSubjectModal(true)
+    }
+  }
 
-  const doDelete = category => {
+  const setSubjectToAssignApplicant = value => {
+    setAssignSubject(true)
+    toggleAssignModal()
+
+    handleRowOptionsClose(ApplicantsSubjectsData?.indexOf(value))
+    setSubjectToAssign(value)
+  }
+
+  const setSubjectToRemoveApplicant = value => {
+    setAssignSubject(false)
+    toggleAssignModal()
+
+    handleRowOptionsClose(ApplicantsSubjectsData?.indexOf(value))
+    setSubjectToAssign(value)
+  }
+
+
+  const doDelete = value => {
     handleRowOptionsClose(ApplicantsSubjectsData?.indexOf(value))
     setDeleteModal(true)
-    setSubjectToDelete(category.id)
+    setSubjectToDelete(value.id)
   }
 
   const doCancelDelete = () => {
@@ -76,8 +110,8 @@ const ApplicantsSubjectsTable = () => {
 
   const ondeleteClick = () => {
     deleteSubject(subjectToDelete).then(res => {
-      if (res.data.success) {
-        dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
+      if (res?.data?.success) {
+        dispatch(fetchApplicantsSubjects())
       }
     })
     doCancelDelete()
@@ -87,7 +121,7 @@ const ApplicantsSubjectsTable = () => {
     dispatch(fetchApplicantsSubjects())
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [refetch])
 
   useEffect(() => {
     dispatch(fetchSubjects({ page: 1, limit: 100, categoryId: '' }))
@@ -179,10 +213,19 @@ const ApplicantsSubjectsTable = () => {
                             <Icon icon='tabler:edit' fontSize={20} />
                             Edit Subject
                           </MenuItem>
-                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='tabler:trash' fontSize={20} />
-                            Delete Subject
+                          <MenuItem onClick={() => setSubjectToAssignApplicant(item)} sx={{ '& svg': { mr: 2 } }}>
+                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
+                            Assign Applicant
                           </MenuItem>
+
+                          {/* {item?.staffs?.length > 0 && ( */}
+
+                            <MenuItem onClick={() => setSubjectToRemoveApplicant(item)} sx={{ '& svg': { mr: 2 } }}>
+                              <Icon icon='mingcute:user-remove-fill' fontSize={20} />
+                              Remove Applicant
+                            </MenuItem>
+
+                          {/* )} */}
                         </Menu>
                       </>
                     </TableCell>
@@ -203,11 +246,20 @@ const ApplicantsSubjectsTable = () => {
       </TableContainer>
      
 
-      {openModal && <ManageSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} />}
+      {openModal && <ManageApplicantsSubjects open={openModal} toggle={OpenSubjectModal} subjectToEdit={selectedSubject} updateData={updateFetch} />}
 
     
 
-      <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
+      {deleteModal && <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />}
+
+      {openAssignSubjectModal && (
+        <ManageApplicant
+          open={openAssignSubjectModal}
+          toggle={toggleAssignModal}
+          subject={subjectToAssign}
+          status={assignSubject}
+        />
+      )}
      
     </Fragment>
   )

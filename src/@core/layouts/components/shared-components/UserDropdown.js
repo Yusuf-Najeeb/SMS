@@ -159,7 +159,7 @@ const UserDropdown = props => {
             </Badge>
             <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 500 }}>{`${firstName} ${lastName}`}</Typography>
-              <Typography variant='body2'>{role?.name}</Typography>
+              <Typography variant='body2'>{role?.name == "others"  ? 'Applicant': role?.name }</Typography>
             </Box>
           </Box>
         </Box>
@@ -172,12 +172,12 @@ const UserDropdown = props => {
           </Box>
        
         </MenuItemStyled>
-        <MenuItemStyled sx={{ p: 0 }} onClick={handleResetPassword}>
+        {userType?.role?.name !== 'others' && <MenuItemStyled sx={{ p: 0 }} onClick={handleResetPassword}>
           <Box sx={styles}>
             <Icon icon='mdi:key-change' />
             Reset Password
           </Box>
-        </MenuItemStyled>
+        </MenuItemStyled> }
       </Menu>
     </Fragment>
   )

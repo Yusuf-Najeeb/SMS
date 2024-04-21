@@ -10,8 +10,15 @@ import FormControl from '@mui/material/FormControl'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import GetUserData from '../../../@core/utils/getUserData'
+
 
 const PageHeader = ({ toggle1, toggle2  }) => {
+
+
+  const userData = GetUserData()
+
+
   const [isFocus, setIsFocus] = React.useState(false)
 
   const handleFocus = () => {
@@ -40,10 +47,10 @@ const PageHeader = ({ toggle1, toggle2  }) => {
         Download Scoresheet Template
       </Button>
 
-      <Button onClick={toggle2} variant='contained' sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}>
+     {userData?.role?.name == 'teacher' && <Button onClick={toggle2} variant='contained' sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}>
         <Icon fontSize='1.125rem' icon='gridicons:cloud-upload' />
         Upload Scoresheet
-      </Button>
+      </Button> }
     </Box>
   )
 }

@@ -35,17 +35,17 @@ import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { deleteQuestion, fetchCBTAnswers } from '../../../store/apps/cbt/asyncthunk'
+import { deleteQuestion, fetchApplicantCBTAnswers, fetchCBTAnswers } from '../../../store/apps/cbt/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
-import GradeEssayAnswer from './GradeEssayAnswer'
 import { fetchApplicants } from '../../../store/apps/applicants/asyncthunk'
 import { useApplicants } from '../../../hooks/useApplicants'
+import GradeEssayAnswer from '../cbt/GradeEssayAnswer'
 
-const CBTAnswers = ({studentDropdownLabelTitle}) => {
+const ApplicantCBTAnswers = () => {
 
   // Hooks
   const dispatch = useAppDispatch()
@@ -65,7 +65,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
   const [staffId, setStaffId] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [subjectId, setSubjectId] = useState('')
-  const [studentId, setStudentId] = useState('')
+  const [applicantId, setApplicantId] = useState('')
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
   const [answers, setAnswers] = useState([])
@@ -96,7 +96,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
   }
 
   const handleChangeStudent = e => {
-    Number(setStudentId(e.target.value))
+    Number(setApplicantId(e.target.value))
   }
 
   const handleChangeCategory = e => {
@@ -142,7 +142,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
     setLoading(true)
 
     const res = await dispatch(
-      fetchCBTAnswers({ page: page + 1, limit, staffId, classId, subjectId, categoryId, sessionId, studentId })
+      fetchApplicantCBTAnswers({ page: page + 1, limit, staffId, classId, subjectId, categoryId, sessionId, applicantId })
     )
 
     if (res.payload.data.data.length > 0) {
@@ -178,43 +178,21 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-            <Grid item xs={12} sm={3}>
-              <CustomTextField
-                select
-                fullWidth
-                label='Class*'
-                SelectProps={{ value: classId, onChange: e => handleChangeClass(e) }}
-              >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
-                {ClassesList?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.name} ${item.type}`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
+            
 
             <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
                 fullWidth
-                label={studentDropdownLabelTitle}
-                SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
+                label={'Applicant*'}
+                SelectProps={{ value: applicantId, onChange: e => handleChangeStudent(e) }}
               >
-                <MenuItem value=''>{ studentDropdownLabelTitle == 'Students*' ? `Select Student` : `Select Applicant`}</MenuItem> 
-                {studentDropdownLabelTitle == 'Students*' ? 
-                (StudentData?.result?.map(item => (
+                <MenuItem value=''>{ `Select Applicant`}</MenuItem> 
+                {ApplicantsData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item?.firstName} ${item.lastName}`}
                   </MenuItem>
-                )))
-                
-                : 
-                (ApplicantsData?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.firstName} ${item.lastName}`}
-                  </MenuItem>
-                )))
+                ))
               }
               </CustomTextField>
             </Grid>
@@ -285,7 +263,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
             <Grid item xs={12} sm={6} md={3} sx={{ mt: 5 }}>
               <Button
                 onClick={fetchAnswers}
-                disabled={!studentId || !subjectId || !classId || !sessionId || !staffId || !categoryId}
+                disabled={!applicantId || !subjectId  || !sessionId || !staffId || !categoryId}
                 variant='contained'
                 sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}
               >
@@ -437,4 +415,4 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
   )
 }
 
-export default CBTAnswers
+export default ApplicantCBTAnswers

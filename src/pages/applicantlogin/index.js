@@ -2,7 +2,6 @@
 
 // ** React Imports
 import { useState } from 'react'
-import { useRouter } from 'next/router'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -31,7 +30,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-import useBgColor from 'src/@core/hooks/useBgColor'
+
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Configs
@@ -44,8 +43,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
 
-// import {handleStaffLogin} from 'src/app/action'
-
+// import {handleUserLogin} from 'src/app/action'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -92,19 +90,17 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'SuperAdmin@123',
-  userId: 'super.admin@email.com'
+  password: '',
+  userId: ''
 }
 
-const LoginPage = ({getCsrfToken, getProviders}) => {
+const ApplicantLoginPage = () => {
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
   const auth = useAuth()
   const theme = useTheme()
-  const router = useRouter()
-  const bgColors = useBgColor()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -114,7 +110,6 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
   const {
     control,
     setError,
-    getValues,
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm({
@@ -125,16 +120,9 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
 
   const onSubmit = async data => {
 
-   auth.staffLogin(data)
+    
 
-  
-  //  handleStaffLogin(data).then((data)=>{
-  //   if(data.success){
-  //     const returnUrl = router.query.returnUrl
-  //     const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
-  //     router.replace(redirectURL)
-  //   }
-  //  })
+    auth.applicantLogin(data)
 
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
@@ -156,7 +144,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
         >
           {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} /> */}
 
-          <LoginIllustration alt='login-illustration' src={`/images/staff.svg`} />
+          <LoginIllustration alt='login-illustration' src={`/images/student.svg`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -199,6 +187,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
                 d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
               />
             </svg> */}
+
             <Box component={'div'} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <img src='/images/logo.webp' style={{objectPosition: 'center', objectFit: 'cover'}} width={'80px'} height={'80px'} alt='' />
             </Box>
@@ -219,15 +208,6 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
               </Typography>
             </Alert> */}
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
-
-            {/* <form noValidate autoComplete='off' action={ handleStaffLogin({userId: getValues('userId'), password: getValues('password')}).then((data)=>{
-    if(data?.success){
-      const returnUrl = router.query.returnUrl
-      const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
-      router.replace(redirectURL)
-    }
-   })}> */}
-
               <Box sx={{ mb: 4 }}>
                 <Controller
                   name='userId'
@@ -294,20 +274,21 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
-                <Typography component={LinkStyled} sx={{color: 'text.secondary'}} href='/reset-password'>
+
+                {/* <Typography component={LinkStyled} href='/reset-password'>
                   Reset Password
-                </Typography>
+                </Typography> */}
+
               </Box>
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, backgroundColor: 'success.main' }} disabled={isSubmitting}>
+              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 , backgroundColor: 'success.main'}} disabled={isSubmitting}>
                 {isSubmitting ? <SubmitSpinnerMessage message={'Logging In'} /> : 'Login'}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ mr: 2 }}>Not a Staff?</Typography>
-                <Typography href='/userlogin' sx={{color: 'success.light'}} component={LinkStyled}>
-                  Login as Student/Guardian/Applicant
+                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Not an Applicant?</Typography>
+                <Typography href='/login' sx={{color: 'success.light'}} component={LinkStyled}>
+                  Login as Staff
                 </Typography>
               </Box>
-              
               
             </form>
           </Box>
@@ -316,7 +297,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
     </Box>
   )
 }
-LoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
-LoginPage.guestGuard = true
+ApplicantLoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
+ApplicantLoginPage.guestGuard = true
 
-export default LoginPage
+export default ApplicantLoginPage

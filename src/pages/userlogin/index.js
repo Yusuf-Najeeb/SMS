@@ -128,16 +128,15 @@ const UserLoginPage = () => {
 
   const onSubmit = async data => {
 
-    auth.userLogin(data)
+    if(data?.userId.includes('APP')){
+      auth.applicantLogin(data)
+    } else {
+      auth.userLogin(data)
+
+    }
+
 
     
-    // handleUserLogin(data).then((data)=>{
-    //   if(data.success){
-    //     const returnUrl = router.query.returnUrl
-    //     const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
-    //     router.replace(redirectURL)
-    //   }
-    //  })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 
@@ -296,7 +295,7 @@ const UserLoginPage = () => {
                 {isSubmitting ? <SubmitSpinnerMessage message={'Logging In'} /> : 'Login'}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Not a Student/Guardian?</Typography>
+                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Not a Student/Guardian/Applicant?</Typography>
                 <Typography href='/login' sx={{color: 'success.light'}} component={LinkStyled}>
                   Login as Staff
                 </Typography>

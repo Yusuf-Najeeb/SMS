@@ -105,7 +105,7 @@ const UploadScoreSheetDialog = ({ open, anchorEl, handleClose }) => {
     const subjectId = Number(values.subjectId)
 
     const formData = new FormData()
-    formData.append('file', selectedFile)
+    formData.append('score', selectedFile)
 
       try {
         const response = await axios.post(`/upload/scores?subjectId=${subjectId}&classId=${classId}`, formData, {
@@ -207,10 +207,10 @@ const UploadScoreSheetDialog = ({ open, anchorEl, handleClose }) => {
           <Grid
           item
           xs={12}
-          sm={6}
-          sx={{ mb: 6, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+          sm={12}
+          sx={{ mb: 6, display: 'flex', flexDirection: 'column', gap: 2, justifyContent: 'space-between', }}
         >
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={6} sm={6}>
             <Box
               sx={{
                 border: '3px dotted black',
@@ -239,19 +239,22 @@ const UploadScoreSheetDialog = ({ open, anchorEl, handleClose }) => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={12}>
+          {/* <Grid item xs={12} sm={12} md={12} sx={{border: '1px solid red'}}> */}
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column',
-              textAlign: 'center',
               alignItems: 'center',
-              alignSelf: 'center'
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              width: '100%'
             }}
           >
-            <Typography variant='body2'>{fileName}</Typography>
+          
+            <Typography variant='body2' sx={{ width:'100%'}}>{fileName}</Typography>
+
           </Box>
-          </Grid>
+
+          {/* </Grid> */}
 
         </Grid>
 

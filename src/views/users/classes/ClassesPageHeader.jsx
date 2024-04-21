@@ -57,7 +57,7 @@ const PageHeaderWithSearch = ({ toggle, action, handleFilter, searchPlaceholder 
         </FormControl>
       </Box>
 
-     {userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin' &&  <Button onClick={toggle} variant='contained' sx={{ '& svg': { mr: 2 } }}>
+     {(userInfo?.role?.name == 'super-admin' || userInfo?.role?.name == 'admin') &&  <Button onClick={toggle} variant='contained' sx={{ '& svg': { mr: 2 } }}>
         <Icon fontSize='1.125rem' icon='tabler:plus' />
         {action}
       </Button>

@@ -9,7 +9,6 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
-import TablePagination from '@mui/material/TablePagination'
 import { Box, FormControlLabel, FormGroup, IconButton, Switch, Typography } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -28,11 +27,8 @@ import {  fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 
 import { useClasses } from '../../../hooks/useClassess'
-import AddStudent from '../Student/AddStudent'
 import { deleteApplicant, fetchApplicants, updateApplicant } from '../../../store/apps/applicants/asyncthunk'
 import { useApplicants } from '../../../hooks/useApplicants'
-import PageHeader from '../component/PageHeader'
-import GetUserData from '../../../@core/utils/getUserData'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 

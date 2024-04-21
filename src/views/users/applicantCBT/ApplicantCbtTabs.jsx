@@ -24,8 +24,8 @@ import MuiTabList from '@mui/lab/TabList'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import GetUserData from '../../../@core/utils/getUserData'
-import CBTQuestions from './CBTQuestions'
-import CBTAnswers from './CbtAnswers'
+import CBTQuestions from '../cbt/CBTQuestions'
+import ApplicantCBTAnswers from './ViewApplicantCBTAnswers'
 
 const TabList = styled(MuiTabList)(({ theme }) => ({
   borderBottom: '0 !important',
@@ -58,7 +58,7 @@ const TabList = styled(MuiTabList)(({ theme }) => ({
 
 const userData = GetUserData()
 
-const CbtTab = ({ tab }) => {
+const ApplicantCbtTabs = ({ tab }) => {
   // ** State
   const [activeTab, setActiveTab] = useState(tab)
 
@@ -80,7 +80,7 @@ const CbtTab = ({ tab }) => {
 
   const tabContentList = {
     questions: <CBTQuestions />,
-    answers: <CBTAnswers  studentDropdownLabelTitle={'Students*'}/>
+    answers: <ApplicantCBTAnswers  />
   }
 
   if(userData?.role?.name == 'super-admin' || userData?.role?.name == 'admin' || userData?.role?.name == 'teacher' ) {
@@ -134,4 +134,4 @@ return (
 
 }
 
-export default CbtTab
+export default ApplicantCbtTabs

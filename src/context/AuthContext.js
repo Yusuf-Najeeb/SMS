@@ -24,6 +24,7 @@ const defaultProvider = {
   setLoading: () => Boolean,
   staffLogin: () => Promise.resolve(),
   userLogin: () => Promise.resolve(),
+  applicantLogin: () => Promise.resolve(),
   logout: () => Promise.resolve()
 }
 const AuthContext = createContext(defaultProvider)
@@ -126,6 +127,39 @@ const AuthProvider = ({ children }) => {
       }
   }
 
+  const handleApplicantLogin = async (values) => {
+
+    try {
+        const { data } = await axios({
+          method: 'post',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8'
+          },
+          url: `${baseUrl}/auth/login?type=others`,
+          data: {
+            ...values
+          }
+        })
+        if (data) {
+          // const returnUrl = router.query.returnUrl
+    
+          const userObject = JSON.stringify(data?.data?.user)
+          setUser({...data?.data?.user})
+          localStorage.setItem(authConfig.storageTokenKeyName, data?.data?.token)
+          localStorage.setItem(authConfig.storageUserKeyName, userObject)
+          notifySuccess('Login successful')
+
+
+              // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+              router.replace('/apps/applicantCBTExam')
+        }
+    
+      } catch (error) {
+        notifyError(error.response.data.message || 'Login failed')
+      }
+  }
+
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem(authConfig.storageUserKeyName)
@@ -140,6 +174,7 @@ const AuthProvider = ({ children }) => {
     setLoading,
     staffLogin: handleStaffLogin,
     userLogin: handleUserLogin,
+    applicantLogin: handleApplicantLogin,
     logout: handleLogout
   }
 
