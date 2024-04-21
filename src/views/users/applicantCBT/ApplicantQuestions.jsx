@@ -4,8 +4,7 @@ import { Box, Card, Divider, Grid, Typography } from '@mui/material'
 import { Controller } from 'react-hook-form'
 
 // ** Custom Component Import
-import { submitAnswers } from '../../../store/apps/cbt/asyncthunk'
-import SubmitDialog from './SubmitDialog'
+import { submitAnswers, submitApplicantAnswers } from '../../../store/apps/cbt/asyncthunk'
 import GetUserData from '../../../@core/utils/getUserData'
 
 import { ButtonStyled } from '../../../@core/components/mui/button/ButtonStyledComponent'
@@ -16,11 +15,12 @@ import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { notifyError } from '../../../@core/components/toasts/notifyError'
 import { notifyWarn } from '../../../@core/components/toasts/notifyWarn'
 import axios from 'axios'
+import SubmitDialog from '../cbt/SubmitDialog'
 
 const userData = GetUserData()
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
-const StudentQuestions = ({ Questions, setStartCbt }) => {
+const ApplicantQuestions = ({ Questions, setStartCbt }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedOption, setSelectedOption] = useState('')
   const [typedAnswers, setTypedAnswers] = useState(Array.from({ length: Questions.length }, () => ''))
@@ -45,16 +45,15 @@ const StudentQuestions = ({ Questions, setStartCbt }) => {
 
   const onSubmitClick = async () => {
     const payload = {
-      studentId: userData?.id,
+      applicantId: userData?.id,
       classId: Questions[0].classId,
       subjectId: Questions[0].subjectId,
       categoryId: Questions[0].categoryId,
-      staffId: Questions[0].staffId,
       sessionId: Questions[0].sessionId,
       answers
     }
 
-    submitAnswers(payload).then(res => {
+    submitApplicantAnswers(payload).then(res => {
       if (res?.data?.success) {
         setStartCbt(false)
         doCancelSubmit()
@@ -354,4 +353,4 @@ const StudentQuestions = ({ Questions, setStartCbt }) => {
   )
 }
 
-export default StudentQuestions
+export default ApplicantQuestions

@@ -25,6 +25,20 @@ const navigation = () => {
     ]
   }
 
+  if (userData?.role?.name == 'others') {
+    return [
+      {
+        sectionTitle: 'Applicant Examination'
+      },
+
+      {
+        title: 'CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicantCBTExam'
+      },
+    ]
+  }
+
   if (userData?.role?.name == 'student') {
     return [
       {
@@ -119,6 +133,11 @@ const navigation = () => {
         title: ' Applicants Subjects',
         icon: 'mdi:learn-outline',
         path: '/apps/applicantsSubjects'
+      },
+      {
+        title: 'Applicants CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicantCBT'
       },
 
       {
@@ -218,6 +237,11 @@ const navigation = () => {
         icon: 'mdi:learn-outline',
         path: '/apps/applicantsSubjects'
       },
+      {
+        title: 'Applicants CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicantCBT'
+      },
 
       {
         sectionTitle: 'Student Management'
@@ -233,17 +257,6 @@ const navigation = () => {
         path: '/apps/attendance'
       },
 
-      // {
-      //   title: 'New Student',
-      //   icon: 'tabler:mail',
-      //   path: '/apps/newStudent/list'
-      // },
-
-      // {
-      //   title: 'Students Attendence',
-      //   icon: 'material-symbols:co-present-rounded',
-      //   path: '/apps/student-attendence/list'
-      // },
       {
         sectionTitle: 'Guardians'
       },
@@ -253,11 +266,6 @@ const navigation = () => {
         path: '/apps/guardian'
       },
 
-      // {
-      //   title: 'New Guardian',
-      //   icon: 'raphael:parent',
-      //   path: '/apps/newGuardian/list'
-      // },
       {
         sectionTitle: 'Academics '
       },
@@ -285,19 +293,6 @@ const navigation = () => {
         path: '/apps/session'
       },
 
-
-
-      // {
-      //   title: 'Time Table',
-      //   icon: 'mdi:timetable',
-      //   path: '/apps/timetable'
-      // },
-
-      // {
-      //   title: 'Tests and Exams',
-      //   icon: 'healthicons:i-exam-multiple-choice',
-      //   path: '/apps/tests-exams/list'
-      // },
 
       {
         sectionTitle: 'Non-Academic Assessment '

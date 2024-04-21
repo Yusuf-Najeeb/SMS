@@ -114,7 +114,7 @@ const StudentsQuestionPreview = ({setShowQuestionsPreview, subjectName, assessme
 
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  margin: '40px auto 25px auto' }}>
             
-            <Typography sx={{color: '#000', fontSize: '18px',}} >No CBT questions set for this subject and assessment category. CONTACT YOUR TEACHER </Typography>
+            <Typography sx={{color: '#000', fontSize: '18px',}} >No CBT questions set for this subject and assessment category. CONTACT THE SUBJECT TEACHER </Typography>
           </Box>
 
         }
