@@ -122,7 +122,7 @@ const CBTQuestionsForApplicants = () => {
 
                 SelectProps={{ value: subjectId, onChange: e => handleChangeSubject(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem value=''>{ `Select Subject`}</MenuItem>
                 {SubjectsList?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{textTransform: 'uppercase'}}>
                     {`${item?.name}` }
@@ -141,7 +141,7 @@ const CBTQuestionsForApplicants = () => {
 
                 SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem value=''>{`Select Academic Session`}</MenuItem>
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{textTransform: 'uppercase'}}>
                     {`${item.name} ${item.term} term`}

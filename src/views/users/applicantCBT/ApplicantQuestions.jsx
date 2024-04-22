@@ -44,14 +44,19 @@ const ApplicantQuestions = ({ Questions, setStartCbt }) => {
   }
 
   const onSubmitClick = async () => {
+    
+
     const payload = {
       applicantId: userData?.id,
-      classId: Questions[0].classId,
+      
+      // classId: Questions[0].classId,
       subjectId: Questions[0].subjectId,
       categoryId: Questions[0].categoryId,
       sessionId: Questions[0].sessionId,
+      staffId: Questions[0].staffId,
       answers
     }
+    console.log(payload, 'payload')
 
     submitApplicantAnswers(payload).then(res => {
       if (res?.data?.success) {

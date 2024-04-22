@@ -368,13 +368,13 @@ const ApplicantCBTAnswers = () => {
                             '--'
                           )}
                         </TableCell>
-                        <TableCell align='left' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
+                        <TableCell align='center' sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
                         {item?.score ? item?.score : !item?.score ? '--' : "--"}
                         </TableCell>
                         <TableCell align='center' sx={{ fontSize: '13px' }}>
                           {`${item?.value}` || '--'}
                         </TableCell>
-                        <TableCell align='left' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                        <TableCell align='left' sx={{display: 'flex', justifyContent: 'center',gap: '10px'}} >
                             {item.type == 'essay' && 
                             <Tooltip title='Grade Answer'>
                           <IconButton size='small' onClick={() => setAnswerToUpdateScore(item)}>

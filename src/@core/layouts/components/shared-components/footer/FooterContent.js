@@ -7,6 +7,8 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
+import themeConfig from 'src/configs/themeConfig'
+
 const StyledCompanyName = styled(Link)(({ theme }) => ({
   fontWeight: 500,
   textDecoration: 'none',
@@ -28,18 +30,19 @@ const FooterContent = () => {
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
       <Typography sx={{ mr: 2, display: 'flex', color: 'text.secondary' }}>
-        {`© ${new Date().getFullYear()}, Made with `}
-        <Box component='span' sx={{ mx: 1, color: 'error.main' }}>
+        {`© ${new Date().getFullYear()} ${themeConfig.templateName}. All Rights Reserved.`}
+
+        {/* <Box component='span' sx={{ mx: 1, color: 'error.main' }}>
           ❤️
-        </Box>
-        {`by`}
-        <Typography sx={{ ml: 1 }} target='_blank' href='https://pixinvent.com' component={StyledCompanyName}>
+        </Box> */}
+        
+        {/* <Typography sx={{ ml: 1 }} target='_blank' href='https://pixinvent.com' component={StyledCompanyName}>
           Pixinvent
-        </Typography>
+        </Typography> */}
       </Typography>
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-          <Typography target='_blank' component={LinkStyled} href='https://themeforest.net/licenses/standard'>
+          {/* <Typography target='_blank' component={LinkStyled} href='https://themeforest.net/licenses/standard'>
             License
           </Typography>
           <Typography target='_blank' component={LinkStyled} href='https://1.envato.market/pixinvent_portfolio'>
@@ -54,7 +57,7 @@ const FooterContent = () => {
           </Typography>
           <Typography target='_blank' component={LinkStyled} href='https://pixinvent.ticksy.com'>
             Support
-          </Typography>
+          </Typography> */}
         </Box>
       )}
     </Box>
