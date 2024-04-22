@@ -105,8 +105,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
 
-  console.log('items array', itemsArray)
-
   const toggleParentModal = () => {
     closeModal()
     setParentModal(!openParentModal)

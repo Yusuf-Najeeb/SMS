@@ -304,7 +304,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography sx={{ mr: 2 }}>Not a Staff?</Typography>
                 <Typography href='/userlogin' sx={{color: 'success.light'}} component={LinkStyled}>
-                  Login as Student/Guardian/Applicant
+                  Login as Student/Guardian
                 </Typography>
               </Box>
               
