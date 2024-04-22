@@ -62,3 +62,18 @@ export const deleteExpenditure = async id => {
     notifyError('Failed to delete expenditure')
   }
 }
+
+
+export const exportExpenditure = async (payload) => {
+  try {
+    const res = await axios.post(`/accounts/sheet`, payload)
+
+    if (res?.data?.success) {
+      notifySuccess('Expenditure Exported')
+    }
+
+    return res
+  } catch (error) {
+    notifyError(error?.response?.data?.message || 'Failed to export expenditure')
+  }
+}

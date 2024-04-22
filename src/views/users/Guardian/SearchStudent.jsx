@@ -14,42 +14,22 @@ import TableContainer from '@mui/material/TableContainer'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControl from '@mui/material/FormControl'
 
-
-import { styled } from '@mui/material/styles'
-import { Stack } from '@mui/system'
-import { useAppDispatch } from 'src/hooks'
 import SearchSpinner from 'src/@core/components/custom-spinner/SearchSpinner'
 import {  Drawer,IconButton, Input, TableHead } from '@mui/material'
 import { Header } from '../staff/ViewStaff'
 import { searchStudent } from '../../../store/apps/Student/asyncthunk'
-import { CustomCloseIcon, CustomSearchIcon } from '../component/CustomIcons'
+import { CustomCloseIcon, CustomDeleteIcon, CustomSearchIcon } from '../component/CustomIcons'
 
-const CustomCloseButton = styled(IconButton)(({ theme }) => ({
-  top: 0,
-  right: 0,
-  color: 'grey.500',
-  position: 'absolute',
-  zIndex: 50,
-  boxShadow: theme.shadows[2],
-  transform: 'translate(10px, -10px)',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: `${theme.palette.background.paper} !important`,
-  transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out',
-  '&:hover': {
-    transform: 'translate(7px, -5px)'
-  }
-}))
+
 
 const SearchStudent = ({ openModal, closeModal, itemsArray, setItemsArray }) => {
-  const dispatch = useAppDispatch()
 
   const [queryStudents, setQueryStudents] = useState([])
   const [isFocus, setIsFocus] = useState(false)
 
-  //   const [value, setValue] = useState<string>('')
   const [searching, setSearching] = useState(false)
+  const [searchNotFound, setSearchNotFound] = useState(false)
 
-  //   const [itemsArray, setItemsArray] = useState([])
   const handleFocus = () => {
     setIsFocus(true)
   }
@@ -59,10 +39,12 @@ const SearchStudent = ({ openModal, closeModal, itemsArray, setItemsArray }) => 
 
     searchStudent(value).then(res => {
       // Check if response is not empty before setting it
-      if (res && res.length > 0) {
+      if (res.length > 0) {
+        setSearchNotFound(false)
         setQueryStudents(res)
         setSearching(false)
       } else {
+        setSearchNotFound(true)
         setQueryStudents([])
         setSearching(false)
       }
@@ -87,7 +69,7 @@ const SearchStudent = ({ openModal, closeModal, itemsArray, setItemsArray }) => 
     }
   }
 
-  const removeitem = studentId => {
+  const removeItem = studentId => {
     const filteredItems = itemsArray.filter(item => item.id !== studentId)
 
     setItemsArray(filteredItems)
@@ -190,7 +172,7 @@ const SearchStudent = ({ openModal, closeModal, itemsArray, setItemsArray }) => 
                     </Fragment>
                   ))}
 
-                  {queryStudents.length === 0 && !searching && (
+                  {(queryStudents.length === 0 && !searching && !searchNotFound) && (
                     <tr className='text-center'>
                       <td colSpan={6}>
                         <Typography
@@ -202,7 +184,25 @@ const SearchStudent = ({ openModal, closeModal, itemsArray, setItemsArray }) => 
                             justifyContent: 'center'
                           }}
                         >
-                          Oops! 😖 No Available Students.
+                          Search Results will appear here
+                        </Typography>
+                      </td>
+                    </tr>
+                  )}
+
+              {(queryStudents.length === 0 && searchNotFound) && (
+                    <tr className='text-center'>
+                      <td colSpan={6}>
+                        <Typography
+                          sx={{
+                            my: 6,
+                            color: 'text.secondary',
+                            textAlign: 'center',
+                            display: 'flex',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          Oops! 😖 Search Keyword Not Found, try another keyword.
                         </Typography>
                       </td>
                     </tr>
@@ -240,22 +240,14 @@ const SearchStudent = ({ openModal, closeModal, itemsArray, setItemsArray }) => 
                       <TableCell align='center'>{item.lastName}</TableCell>
                       <TableCell align='center'>{item.gender}</TableCell>
                       <TableCell align='center'>
-                        <div
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => {
-                            removeitem(item.id)
-                          }}
-                        >
-                          🗑️
-                        </div>
-                        {/* <IconButton
+                      <IconButton
                     size='small'
                     onClick={() => {
-                        removeitem(item.id)
+                        removeItem(item.id)
                     }}
                   >
-                    <Icon icon='tabler:trash' />
-                  </IconButton> */}
+                    <CustomDeleteIcon />
+                  </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}

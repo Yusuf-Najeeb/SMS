@@ -199,7 +199,7 @@ const handleRowOptionsClose = (index) => {
                 Capacity
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
-                Category
+                Hostel
               </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Status
