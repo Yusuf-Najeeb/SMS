@@ -26,13 +26,13 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
-import { useClasses } from '../../../hooks/useClassess'
 import { fetchStaffs, updateStaff } from '../../../store/apps/staff/asyncthunk'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { useStaff } from '../../../hooks/useStaff'
 import UpdateStaff from './UpdateStaff'
 import ViewStaff from './ViewStaff'
 import AddStaff from './AddStaff'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const userRoleObj = {
   'super-admin': { icon: 'grommet-icons:user-admin', color: 'info' },
@@ -233,7 +233,7 @@ const StaffTable = () => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.title}. ${item?.firstName} ${item?.lastName}`}
+                                {`${item?.title}. ${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}

@@ -25,6 +25,7 @@ import { useAppDispatch } from 'src/hooks'
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
 import { getStudentByIdentification } from '../../../store/apps/Student/asyncthunk'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -145,7 +146,6 @@ const GuardianTable = ({ user }) => {
                 <Fragment>
                   {GuardianData?.length &&
                     GuardianData.map(item => {
-                    //   const className = ClassesList.find(c => c.id === item.classId)
 
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
@@ -153,7 +153,7 @@ const GuardianTable = ({ user }) => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.firstName} ${item?.lastName}`}
+                                {`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}

@@ -27,6 +27,7 @@ import { useAppDispatch } from 'src/hooks'
 import { getInitials } from 'src/@core/utils/get-initials'
 import { formatDate } from '../../../@core/utils/format'
 import ViewStudent from './ViewStudent'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 // import ViewStudent from '../../../views/users/Student/ViewStudent'
 
@@ -157,7 +158,7 @@ const WardTable = ({ user }) => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.firstName} ${item?.lastName}`}
+                                {`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}

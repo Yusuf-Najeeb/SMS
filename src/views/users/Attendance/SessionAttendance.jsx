@@ -255,11 +255,7 @@ const SessionAttendanceTable = () => {
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>{`${
                         item?.reasonForAbsence ? item?.reasonForAbsence : '--'
                       }`}</TableCell>
-                      {/* <TableCell title='Edit Guardian'>
-                        <IconButton size='small' onClick={() => setAttendanceToEdit(item)}>
-                          <Icon icon='tabler:edit' />
-                        </IconButton>
-                      </TableCell> */}
+                      
                     </TableRow>
                   )
                 })}

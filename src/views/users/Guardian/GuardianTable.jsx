@@ -32,6 +32,7 @@ import { deleteGuardian, fetchGuardian, updateGuardian } from '../../../store/ap
 import AddGuardian from './AddGuardian'
 import EditGuardian from './EditGuardian'
 import ViewGuardian from './ViewGuardian'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -222,7 +223,7 @@ const GuardianTable = () => {
                           {renderClient(item)}
                           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                             <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                              {`${item?.firstName} ${item?.lastName}`}
+                              {`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                             </Typography>
                             <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                               {item?.email}

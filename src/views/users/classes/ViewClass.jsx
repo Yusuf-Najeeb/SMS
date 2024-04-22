@@ -30,6 +30,7 @@ import { TableCellStyled } from '../Guardian/GuardianTable'
 import { fetchClassTimetable } from '../../../store/apps/timetable/asyncthunk'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -230,7 +231,7 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                         <TableRow key={item.id}>
                           <TableCell>{i + 1}</TableCell>
 
-                          <TableCell>{`${item?.firstName} ${item?.lastName}` || '--'}</TableCell>
+                          <TableCell>{`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}` || '--'}</TableCell>
                           <TableCell>{item?.gender || '--'}</TableCell>
                           <TableCell component={TableCellStyled} sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
                             {item?.identificationNumber}
