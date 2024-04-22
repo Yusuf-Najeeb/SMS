@@ -231,9 +231,6 @@ const GuardianTable = () => {
                           </Box>
                         </TableCell>
 
-                        {/* <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                        {item?.religion || '--'}
-                      </TableCell> */}
                         <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                           {item?.phone || '--'}
                         </TableCell>
