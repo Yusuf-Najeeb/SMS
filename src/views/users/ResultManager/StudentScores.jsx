@@ -103,8 +103,6 @@ const displayScores = async ()=>{
   useEffect(()=>{
     if(StudentsScoresData?.length > 0){
 
-      console.log(StudentsScoresData, 'students scores data')
-
      const res =  extractScoresData(StudentsScoresData)
 
      const ress = extractAssessmentScoresData(StudentsScoresData)

@@ -40,6 +40,7 @@ import { useAttendance } from '../../../hooks/useAttendance'
 import EditAttendance from './EditAttendance'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const defaultValues = {
   date: ''
@@ -265,7 +266,7 @@ const ClassAttendanceTable = () => {
                       <TableCell
                         align='left'
                         sx={{ textTransform: 'uppercase' }}
-                      >{`${Student.firstName} ${Student.lastName}`}</TableCell>
+                      >{`${truncateText(Student.firstName)} ${truncateText(Student.lastName)}`}</TableCell>
                       <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                         {item.checkInTime?.slice(0, 5)}
                       </TableCell>

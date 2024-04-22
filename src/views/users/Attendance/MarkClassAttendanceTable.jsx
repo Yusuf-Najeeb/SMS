@@ -35,6 +35,7 @@ import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { CustomInput } from './EditAttendance'
 import { saveStudentAttendance } from '../../../store/apps/attendance/asyncthunk'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const defaultValues = {
   date: ''
@@ -377,7 +378,7 @@ const ClassAttendance = () => {
                           />
                         </TableCell>
 
-                        <TableCell align='center'>{`${student?.firstName} ${student?.lastName}`}</TableCell>
+                        <TableCell align='center'>{`${truncateText(student?.firstName)} ${truncateText(student?.lastName)}`}</TableCell>
 
                         <TableCell>{classInView}</TableCell>
 

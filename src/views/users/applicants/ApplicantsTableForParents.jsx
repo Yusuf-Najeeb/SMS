@@ -30,6 +30,7 @@ import GetUserData from '../../../@core/utils/getUserData'
 import { useGuardianApplicants } from '../../../hooks/useGuardianApplicants'
 import AddApplicant from './AddApplicant'
 import EditApplicant from './EditApplicant'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -172,7 +173,7 @@ const ApplicantsTableForParents = () => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.firstName} ${item?.lastName}`}
+                                {`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}

@@ -27,6 +27,7 @@ import EnterStudentScore from './EnterScore'
 import PageHeader from './AssessmentScorePageHeader'
 import DownloadScoresheetDialog from './DownloadScoreSheetDialog'
 import UploadScoreSheetDialog from './UploadScoreSheetDialog'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const StudentsAssessmentsScoreTable = () => {
   // Hooks
@@ -359,9 +360,6 @@ const closeUploadDialog = () => setDialog(!openUploadDialog)
                 <TableCell align='left' sx={{ minWidth: 200 }}>
                   STUDENT
                 </TableCell>
-                {/* <TableCell align='center' sx={{ minWidth: 150 }}>
-                Religion
-              </TableCell> */}
                 <TableCell align='center' sx={{ minWidth: 180 }}>
                   C.A 1
                 </TableCell>
@@ -405,8 +403,6 @@ const closeUploadDialog = () => setDialog(!openUploadDialog)
                   </TableCell>
                 </TableRow>
               ) : (
-                // eslint_disable-next-line
-                // </Box>
                 <Fragment>
                   {StudentsScores?.length > 0 &&
                     StudentsScores?.map((item, i) => {
@@ -415,7 +411,7 @@ const closeUploadDialog = () => setDialog(!openUploadDialog)
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
                           <TableCell align='left' sx={{ textTransform: 'uppercase' }}>
-                            {`${Student?.firstName} ${Student.lastName}` || '--'}
+                            {`${truncateText(Student?.firstName)} ${truncateText(Student.lastName)}` || '--'}
                           </TableCell>
 
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
