@@ -36,6 +36,7 @@ const AuthProvider = ({ children }) => {
 
   // ** Hooks
   const router = useRouter()
+
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
@@ -52,7 +53,11 @@ const AuthProvider = ({ children }) => {
             setLoading(false)
         }
       
-      } else {
+      } else if(router.asPath.includes('applicantlogin')) {
+        router.push('/applicantlogin')
+        setLoading(false)
+      }
+      else {
         router.push('/login')
         setLoading(false)
       }
