@@ -167,7 +167,6 @@ const CreateIncome = ({ open, closeModal, fetchData }) => {
 
   const {
     control,
-    setValue,
     getValues,
     reset,
     handleSubmit,

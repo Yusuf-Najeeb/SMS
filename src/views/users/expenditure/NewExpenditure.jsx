@@ -24,7 +24,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Utils Import
 import { useExpenditure } from '../../../hooks/useExpenditure'
-import { deleteExpenditure, fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
+import { deleteExpenditure, exportExpenditure, fetchExpenditure } from '../../../store/apps/expenditure/asyncthunk'
 
 import EditExpenditure from './EditExpenditure'
 import PayExpenditureBalance from './PayExpenditure'
@@ -34,11 +34,9 @@ import DeleteDialog from '../../../@core/components/delete-dialog'
 import { formatDate } from '../../../@core/utils/format'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import PageHeader from '../component/PageHeader'
+import PageHeader from '../Income/IncomePageHeader'
 
-const TableCellStyled = styled(TableCell)(({ theme }) => ({
-  color: `${theme.palette.primary.main} !important`
-}))
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const ExpenditureTable = () => {
   // ** State
@@ -157,6 +155,19 @@ const ExpenditureTable = () => {
     doCancelDelete()
   }
 
+  const exportExpenditureToExcel = ()=>{
+
+    const payload = {data: ExpenditureData}
+
+    exportExpenditure(payload).then((res)=>{
+      if(res?.data?.success){
+        const downloadLink = `${backendURL?.replace('api', '')}${res?.data?.data?.slice(7)}`
+       window.location.href = downloadLink
+      }
+    })
+
+  }
+
   useEffect(() => {
     if (SessionData?.length > 0) {
       const filteredSession = SessionData.reduce((acc, curr) => {
@@ -224,7 +235,9 @@ const ExpenditureTable = () => {
         </CardContent>
       </Card>
 
-      <PageHeader action='Add Expenditure' toggle={toggleModal} />
+      {/* <PageHeader action='Add Expenditure' toggle={toggleModal} /> */}
+
+      <PageHeader action1='Add Expenditure' toggle1={toggleModal} action2={'Export Expenditure'} toggle2={exportExpenditureToExcel} disabled={ExpenditureData?.length == 0} />
 
       <Fragment>
         <TableContainer component={Paper} sx={{ maxHeight: 840 }}>

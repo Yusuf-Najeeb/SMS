@@ -14,49 +14,21 @@ import TableContainer from '@mui/material/TableContainer'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControl from '@mui/material/FormControl'
 
-// ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
-
-// ** Custom Components Imports
-import CustomAvatar from 'src/@core/components/mui/avatar'
-import CustomChip from 'src/@core/components/mui/chip'
-
-import { styled } from '@mui/material/styles'
-import { Stack } from '@mui/system'
-import { useAppDispatch } from 'src/hooks'
 import SearchSpinner from 'src/@core/components/custom-spinner/SearchSpinner'
-import { searchParent } from '../../../store/apps/guardian/asyncthunk'
-import { Dialog, DialogContent, Drawer, Icon, IconButton, Input, TableHead } from '@mui/material'
+import { Drawer, IconButton, Input, TableHead } from '@mui/material'
 import { Header } from '../staff/ViewStaff'
 import { searchStaff } from '../../../store/apps/staff/asyncthunk'
-import { CustomCloseIcon, CustomSearchIcon } from './CustomIcons'
+import { CustomCloseIcon, CustomDeleteIcon, CustomSearchIcon } from './CustomIcons'
 
-const CustomCloseButton = styled(IconButton)(({ theme }) => ({
-  top: 0,
-  right: 0,
-  color: 'grey.500',
-  position: 'absolute',
-  zIndex: 50,
-  boxShadow: theme.shadows[2],
-  transform: 'translate(10px, -10px)',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: `${theme.palette.background.paper} !important`,
-  transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out',
-  '&:hover': {
-    transform: 'translate(7px, -5px)'
-  }
-}))
 
 const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearStudentArray, clearGuardianArray }) => {
-  const dispatch = useAppDispatch()
 
   const [queryStaff, setQueryStaff] = useState([])
   const [isFocus, setIsFocus] = useState(false)
 
-  //   const [value, setValue] = useState<string>('')
   const [searching, setSearching] = useState(false)
+  const [searchNotFound, setSearchNotFound] = useState(false)
 
-  //   const [itemsArray, setItemsArray] = useState([])
   const handleFocus = () => {
     setIsFocus(true)
   }
@@ -65,11 +37,14 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
     setSearching(true)
 
     searchStaff(value).then(res => {
+      
       // Check if response is not empty before setting it
-      if (res && res.length > 0) {
+      if (res.length > 0) {
+        setSearchNotFound(false)
         setQueryStaff(res)
         setSearching(false)
       } else {
+        setSearchNotFound(true)
         setQueryStaff([])
         setSearching(false)
       }
@@ -93,11 +68,12 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
       setItemsArray(prevItems => [...prevItems, newItem])
     }
 
-    // clearGuardianArray()
-    // clearStudentArray()
+    clearStudentArray()
+    clearGuardianArray()
+
   }
 
-  const removeitem = parentId => {
+  const removeItem = parentId => {
     const filteredItems = itemsArray.filter(item => item.id !== parentId)
 
     setItemsArray(filteredItems)
@@ -182,23 +158,20 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
                           <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
                             {staff.firstName}
                           </Typography>
-                          {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          </Box> */}
+                          
                         </TableCell>
 
                         <TableCell>
                           <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
                             {staff.lastName}
                           </Typography>
-                          {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-
-                          </Box> */}
+                        
                         </TableCell>
                       </TableRow>
                     </Fragment>
                   ))}
 
-                  {queryStaff.length === 0 && !searching && (
+                  {(queryStaff.length === 0 && !searching && !searchNotFound) && (
                     <tr className='text-center'>
                       <td colSpan={6}>
                         <Typography
@@ -210,11 +183,31 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
                             justifyContent: 'center'
                           }}
                         >
-                          Oops! 😖 No Available Staff.
+                          Search Results will appear here
                         </Typography>
                       </td>
                     </tr>
                   )}
+
+                  {(queryStaff.length === 0 && searchNotFound) && (
+                    <tr className='text-center'>
+                      <td colSpan={6}>
+                        <Typography
+                          sx={{
+                            my: 6,
+                            color: 'text.secondary',
+                            textAlign: 'center',
+                            display: 'flex',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          Oops! 😖 Search Keyword Not Found, try another keyword.
+                        </Typography>
+                      </td>
+                    </tr>
+                  )}
+
+
                 </Fragment>
               )}
             </TableBody>
@@ -248,22 +241,14 @@ const SearchStaff = ({ openModal, closeModal, itemsArray, setItemsArray, clearSt
                       <TableCell align='center'>{item.lastName}</TableCell>
                       <TableCell align='center'>{item.gender}</TableCell>
                       <TableCell align='center'>
-                        <div
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => {
-                            removeitem(item.id)
-                          }}
-                        >
-                          🗑️
-                        </div>
-                        {/* <IconButton
+                      <IconButton
                     size='small'
                     onClick={() => {
-                        removeitem(item.id)
+                        removeItem(item.id)
                     }}
                   >
-                    <Icon icon='tabler:trash' />
-                  </IconButton> */}
+                    <CustomDeleteIcon />
+                  </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
