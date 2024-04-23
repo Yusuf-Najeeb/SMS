@@ -259,7 +259,7 @@ export const createStudentSchema = yup.object().shape({
   lastName: yup.string().required('Last Name is required'),
   middleName: yup.string(),
   email: yup.string(),
-  password: yup.string(),
+  password: yup.string().required('Password is required'),
   phone: yup.string(),
   dateOfBirth: yup.string().required('Date of Birth is required'),
   currentClassId: yup.string().required('Current Class is required'),

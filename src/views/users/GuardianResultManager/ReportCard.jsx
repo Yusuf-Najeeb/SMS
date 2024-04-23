@@ -20,11 +20,12 @@ import { useStudentSubjectPosition } from '../../../hooks/useStudentsSubjectPosi
 import { useTheme } from '@mui/material/styles'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
-import StudentReportCardDetails from './ReportCardDetails'
 import SchoolDetails from '../ResultManager/SchoolDetails'
 import CustomResultTable from '../component/CustomResultTable'
 import DismissibleAlert from '../component/DismissibleAlert'
 import GetUserData from '../../../@core/utils/getUserData'
+import { getStudentsUnderGuardian } from '../../../store/apps/guardian/asyncthunk'
+import StudentReportCardDetails from '../StudentResultManager/ReportCardDetails'
 
 const userData = GetUserData()
 
@@ -48,16 +49,23 @@ const ReportCardTable = () => {
   const [classRoom, setClassroom] = useState({})
   const [showResult, setShowResult] = useState(false)
   const [noResult, setNoResult] = useState(false)
+  const [wardData, setWard] = useState([])
 
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
   }
 
-  useEffect(() => {
-   setClassId(userData?.classId)
-    setStudentId(userData?.id)
-  }, [])
+  const handleChangeStudent = e => {
+
+      Number(setStudentId(e.target.value))
+    const student = wardData.find((ward)=> ward?.id == Number(e.target.value))
+    const studentClassId = student?.classId
+    setClassId(studentClassId)
+  }
+
+
+
 
   const displayReportCard = async () => {
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
@@ -75,6 +83,20 @@ const ReportCardTable = () => {
       setActiveStudent({})
     }
   }
+
+  useEffect(() => {
+    if (userData) {
+      getStudentsUnderGuardian(userData?.email)
+        .then(res => {
+          if (res?.data?.success) {
+            setWard(res?.data?.data)
+          } else {
+            setWard([])
+          }
+        })
+        
+    }
+  }, [])
 
 
   useEffect(() => {
@@ -112,6 +134,27 @@ const ReportCardTable = () => {
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
+
+          <Grid item xs={12} sm={3}>
+              <CustomTextField
+                select
+                fullWidth
+                label='Student*'
+                SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
+              >
+                {wardData?.length > 0 ?  wardData?.map(item => (
+                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
+                    {`${item.firstName} ${item.lastName}`}
+                  </MenuItem>
+                ))
+                : 
+               
+                    <MenuItem value='' sx={{ textTransform: 'uppercase' }}>
+                      {`No wards assigned`}
+                    </MenuItem>
+            }
+              </CustomTextField>
+            </Grid>
 
             <Grid item xs={12} sm={3}>
               <CustomTextField
