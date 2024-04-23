@@ -15,7 +15,8 @@ import {
   TableContainer,
   TableHead,
   TablePagination,
-  TableRow
+  TableRow,
+  Box
 } from '@mui/material'
 import Paper from '@mui/material/Paper'
 
@@ -35,7 +36,7 @@ import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { deleteQuestion, fetchApplicantCBTAnswers, fetchCBTAnswers } from '../../../store/apps/cbt/asyncthunk'
+import { deleteQuestion, fetchApplicantCBTAnswers, fetchCBTAnswers, submitApplicantCBTScore } from '../../../store/apps/cbt/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import DeleteDialog from '../../../@core/components/delete-dialog'
@@ -51,11 +52,9 @@ const ApplicantCBTAnswers = () => {
   const dispatch = useAppDispatch()
   const [StaffData] = useStaff()
   const [SubjectsList] = useSubjects()
-  const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [CategoriesData] = useCategories()
   const [ApplicantsData] = useApplicants()
-  const [StudentData] = useStudent()
   
   //   States
   const [loading, setLoading] = useState(false)
@@ -64,6 +63,7 @@ const ApplicantCBTAnswers = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [staffId, setStaffId] = useState('')
   const [categoryId, setCategoryId] = useState('')
+  const [selectedSubjectName, setSelectedSubjectName] = useState('')
   const [subjectId, setSubjectId] = useState('')
   const [applicantId, setApplicantId] = useState('')
   const [classId, setClassId] = useState('')
@@ -111,9 +111,6 @@ const ApplicantCBTAnswers = () => {
     Number(setSubjectId(e.target.value))
   }
 
-  const handleChangeClass = e => {
-    Number(setClassId(e.target.value))
-  }
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
@@ -151,11 +148,24 @@ const ApplicantCBTAnswers = () => {
       setAnswers([...res.payload.data.data])
       setPaging({ currentPage, totalItems, itemsPerPage, totalPages })
       setLoading(false)
+      const subjectSelected = SubjectsList?.find((sub)=> sub.id == subjectId)
+      let subjectName = subjectSelected?.name
+      setSelectedSubjectName(subjectName)
+
     } else {
+      setSelectedSubjectName('')
       setLoading(false)
       setAnswers([])
       setPaging({ currentPage: 1, totalItems: 0, itemsPerPage: 0, totalPages: 0 })
     }
+  }
+
+  const submitApplicantScore = async ()=> {
+
+    const identifier = answers[0]?.identifier
+    const payload = {applicantId}
+
+    submitApplicantCBTScore(identifier, payload, selectedSubjectName)
   }
 
   useEffect(() => {
@@ -398,15 +408,29 @@ const ApplicantCBTAnswers = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
+
+        {/* <TablePagination
           page={page}
           component='div'
-          count={paging?.totalItems} // Handle when paging is undefined
+          count={paging?.totalItems}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        /> */}
+
+          {answers?.length > 0 &&  
+          <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+          <Button
+                onClick={submitApplicantScore}
+                disabled={!applicantId}
+                variant='contained'
+                sx={{ '& svg': { mr: 2, }, backgroundColor: 'info.light',  mt: 5, ml: 'auto' }}
+              >
+                <Icon fontSize='1.125rem' icon='carbon:send-alt-filled' />
+                {`Submit Applicant Score For ${selectedSubjectName?.toUpperCase()}`}
+              </Button> 
+               </Box>}
       </Fragment>
 
       {deleteModal && <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />}

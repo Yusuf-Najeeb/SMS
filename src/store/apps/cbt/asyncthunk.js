@@ -151,3 +151,18 @@ export const fetchApplicantCBTQuestions = createAsyncThunk('/CBT/FetchCBTQuestio
   
     }
   })
+
+  export const submitApplicantCBTScore = async (identifier, payload, subjectName)=> {
+    try {
+        const res = await axios.post(`/cbt/submitapplicant/${identifier}`, payload)
+
+        if(res?.data?.success){
+            notifySuccess(`Applicant CBT Score for ${subjectName?.toUpperCase()} Submitted`)
+        }
+
+        return res
+    } catch (error) {
+        notifyError(error?.response?.data?.message || `Unable to Submit Applicant CBT Score for ${subjectName?.toUpperCase()}`)
+        
+    }
+}
