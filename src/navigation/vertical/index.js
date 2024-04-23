@@ -21,7 +21,15 @@ const navigation = () => {
         title: ' Applicants',
         icon: 'fluent:people-sync-16-filled',
         path: '/apps/applicants'
-      }
+      },
+      {
+        sectionTitle: 'Assessment & Results'
+      },
+      {
+        title: 'Result Manager',
+        icon: 'healthicons:i-exam-qualification',
+        path: '/apps/ward-result-manager'
+      },
     ]
   }
 

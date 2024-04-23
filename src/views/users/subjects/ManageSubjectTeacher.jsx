@@ -25,15 +25,6 @@ import { assignTeacher,  fetchSubjects, removeTeacher } from '../../../store/app
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { useStaff } from '../../../hooks/useStaff'
 
-const showErrors = (field, valueLen, min) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
 
 const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -54,18 +45,6 @@ const ManageSubjectTeacher = ({ open, toggle, subject, status }) => {
   const dispatch = useAppDispatch()
   const [StaffData] = useStaff()
 
-  const [openTeacherModal, setTeacherModal] = useState(false)
-  const [itemsArray, setItemsArray] = useState([])
-
-
-  const toggleTeacherModal = ()=> {
-    // toggle()
-    setTeacherModal(!openTeacherModal)
-  }
-
-  const handleChange = event => {
-    setShowInputField(event.target.checked)
-  }
 
   useEffect(() => {
     dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))

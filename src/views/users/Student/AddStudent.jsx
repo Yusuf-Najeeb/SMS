@@ -461,6 +461,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       <CustomTextField
                         fullWidth
                         value={value}
+                        required
                         onBlur={onBlur}
                         label='Password'
                         onChange={onChange}
@@ -942,12 +943,8 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   Back
                 </Button>
 
-                {/* <Button type='button' variant='outlined' onClick={toggleParentModal}>
-              Select Guardian
-            </Button> */}
-
                 <Button type='submit' variant='contained'>
-                  Create
+                  Add
                 </Button>
               </Grid>
             </Grid>
@@ -1012,6 +1009,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                         errors.lastName ||
                         errors.firstName ||
                         errors.dateOfBirth ||
+                        errors.password ||
                         errors.isStaffChild ||
                         (errors.gender && activeStep === 0)
                       ) {

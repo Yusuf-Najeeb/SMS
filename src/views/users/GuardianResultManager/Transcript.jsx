@@ -17,10 +17,11 @@ import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthu
 import { useTranscript } from '../../../hooks/useTranscript'
 import { extractTranscriptData } from '../../../@core/utils/extractTranscriptData'
 import SchoolDetails from '../ResultManager/SchoolDetails'
-import StudentTranscriptDetails from './TranscriptDetails'
 import CustomTable from '../component/CustomTable'
 import DismissibleAlert from '../component/DismissibleAlert'
 import GetUserData from '../../../@core/utils/getUserData'
+import StudentTranscriptDetails from '../StudentResultManager/TranscriptDetails'
+import { getStudentsUnderGuardian } from '../../../store/apps/guardian/asyncthunk'
 
 const userData = GetUserData()
 
@@ -39,11 +40,11 @@ const StudentsTranscript = () => {
   const [showResult, setShowResult] = useState(false)
   const [TranscriptData, setTranscriptData] = useState([])
   const [noResult, setNoResult] = useState(false)
+  const [wardData, setWard] = useState([])
 
-
-  useEffect(() => {
-    setStudentId(userData?.id)
-  }, [])
+  const handleChangeStudent = e => {
+    Number(setStudentId(e.target.value))
+}
 
   const displayTranscript = async () => {
     const res = await dispatch(fetchStudentTranscript({ studentId }))
@@ -58,6 +59,20 @@ const StudentsTranscript = () => {
       setShowResult(false)
     }
   }
+
+  useEffect(() => {
+    if (userData) {
+      getStudentsUnderGuardian(userData?.email)
+        .then(res => {
+          if (res?.data?.success) {
+            setWard(res?.data?.data)
+          } else {
+            setWard([])
+          }
+        })
+        
+    }
+  }, [])
 
   useEffect(() => {
     if (activeStudent) {
@@ -93,6 +108,27 @@ const StudentsTranscript = () => {
         <CardHeader title='Transcript' />
         <CardContent>
           <Grid container spacing={12}>
+
+          <Grid item xs={12} sm={3}>
+              <CustomTextField
+                select
+                fullWidth
+                label='Student*'
+                SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
+              >
+                {wardData?.length > 0 ?  wardData?.map(item => (
+                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
+                    {`${item.firstName} ${item.lastName}`}
+                  </MenuItem>
+                ))
+                : 
+               
+                    <MenuItem value='' sx={{ textTransform: 'uppercase' }}>
+                      {`No wards assigned`}
+                    </MenuItem>
+            }
+              </CustomTextField>
+            </Grid>
            
 
             <Grid item xs={12} sm={12}>

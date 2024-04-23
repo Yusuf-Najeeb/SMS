@@ -85,7 +85,7 @@ const UserDropdown = props => {
   }
 
   const handleLogout = () => {
-    const logoutRoute = userType?.role?.name == 'student' || userType?.role?.name == 'parent' ? '/userlogin' : '/login'
+    const logoutRoute = (userType?.role?.name == 'student' || userType?.role?.name == 'parent') ? '/userlogin' :  userType?.role?.name == 'others' ?  '/applicantlogin' : '/login'
     window.localStorage.removeItem('authToken')
     handleDropdownClose(logoutRoute)
   }
