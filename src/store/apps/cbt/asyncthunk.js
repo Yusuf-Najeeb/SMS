@@ -166,3 +166,18 @@ export const fetchApplicantCBTQuestions = createAsyncThunk('/CBT/FetchCBTQuestio
         
     }
 }
+
+export const fetchApplicantCBTResult = async (id)=> {
+    try {
+        const res = await axios.get(`/applicants/getapplicants/${id}`,)
+
+        // if(res?.data?.success){
+        //     notifySuccess(`Applicant CBT Score for ${subjectName?.toUpperCase()} Submitted`)
+        // }
+
+        return res
+    } catch (error) {
+        // notifyError(error?.response?.data?.message || `Unable to Submit Applicant CBT Score for ${subjectName?.toUpperCase()}`)
+        
+    }
+}
