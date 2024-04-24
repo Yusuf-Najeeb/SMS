@@ -24,6 +24,10 @@ import SchoolDetails from './SchoolDetails'
 import StudentReportCardDetails from './StudentReportCardDetails'
 import CustomResultTable from '../component/CustomResultTable'
 import DismissibleAlert from '../component/DismissibleAlert'
+import CustomAffectiveTraitsTable from '../component/CustomAffectiveTraitsTable'
+import CustomPsychomotorSkillsTable from '../component/CustomPsychomotorSkillsTable'
+import { fetchPsychomotorSkillsForStudents } from '../../../store/apps/psychomotorSkills/asyncthunk'
+import { fetchAffectiveTraitsForStudents } from '../../../store/apps/affectiveTraits/asyncthunk'
 
 const StudentsReportCardTable = () => {
   // Hooks
@@ -47,7 +51,8 @@ const StudentsReportCardTable = () => {
   const [classRoom, setClassroom] = useState({})
   const [showResult, setShowResult] = useState(false)
   const [classStudents, setClassStudents] = useState([])
-
+  const [PsychomotorSkills, setStudentSkills] = useState({})
+  const [AffectiveTraits, setAffectiveTraits] = useState({})
   const [noResult, setNoResult] = useState(false)
 
   const handleChangeClass = e => {
@@ -67,7 +72,32 @@ const StudentsReportCardTable = () => {
     Number(setStudentId(e.target.value))
   }
 
+  const fetchSkills = async ()=>{
+    const res = await  dispatch(fetchPsychomotorSkillsForStudents({ studentId, classId, sessionId }))
+
+      if(res?.payload?.data?.data){
+        setStudentSkills({...res.payload.data.data})
+      }
+        else {
+          setStudentSkills({})
+        }
+  }
+
+  const fetchTraits = async ()=>{
+    const res = await  dispatch(fetchAffectiveTraitsForStudents({ studentId, classId, sessionId }))
+
+      if(res?.payload?.data?.data){
+        setAffectiveTraits({...res.payload.data.data})
+      }
+        else {
+          setAffectiveTraits({})
+
+        }
+  }
+
   const displayReportCard = async () => {
+    await fetchSkills()
+    await fetchTraits()
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
 
     if (Object.keys(res.payload.data.data.subject).length > 0) {
@@ -220,11 +250,24 @@ const StudentsReportCardTable = () => {
             </CardContent>
           )}
 
+          <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+
+          <Box sx={{width: '80%'}}>
           <CustomResultTable
             tableData={StudentReportCard}
             positionArray={StudentSubjectPosition}
             studentId={studentId}
           />
+        </Box>
+
+        <Box sx={{width: '18.8%', display: 'flex', flexDirection: 'column'}}>
+
+          <CustomAffectiveTraitsTable traits={AffectiveTraits} />
+          <CustomPsychomotorSkillsTable skills={PsychomotorSkills} />
+        </Box>
+
+
+      </Box>
         </Box>
       )}
 
