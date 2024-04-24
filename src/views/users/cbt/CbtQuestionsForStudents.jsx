@@ -9,16 +9,14 @@ import Icon from 'src/@core/components/icon'
 
 import { useSession } from '../../../hooks/useSession'
 import { useSubjects } from '../../../hooks/useSubjects'
-import { useStaff } from '../../../hooks/useStaff'
-import { useAppDispatch } from '../../../hooks'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { deleteQuestion, fetchCBTQuestions } from '../../../store/apps/cbt/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import { useCBTQuestions } from '../../../hooks/useCBTQuestions'
 import GetUserData from '../../../@core/utils/getUserData'
 import StudentQuestions from './StudentQuestions'
 import StudentsQuestionPreview from './StudentsQuestionPreview'
@@ -29,11 +27,10 @@ const userData = GetUserData()
 const CBTQuestionsForStudents = () => {
      // Hooks
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [SubjectsList] = useSubjects()
   const [SessionData] = useSession()
   const [CategoriesData] = useCategories()
-  const [QuestionsData, loading,] = useCBTQuestions()
 
   //   States
   const [showQuestionsPreview, setShowQuestionsPreview] = useState(false)
@@ -73,13 +70,6 @@ const CBTQuestionsForStudents = () => {
   }
 
 
-
-  const doCancelDelete = () => {
-    setDeleteModal(false)
-    setQuestionToDelete(null)
-  }
-
-
   const fetchQuestions = async ()=>{
     const res = await  dispatch(fetchCBTQuestions({ page: page + 1, limit, staffId, classId: userData?.classId, subjectId, categoryId, sessionId }))
 
@@ -102,7 +92,7 @@ const CBTQuestionsForStudents = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
     dispatch(fetchSession({ page: 1, limit: 300 }))

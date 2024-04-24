@@ -19,7 +19,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import PageHeader from '../component/PageHeader'
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
@@ -43,6 +43,7 @@ const PsychomotorSkillsTableForStudents = () => {
   const [skillToDelete, setSkillsToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [selectedSkills, setSelectedSkills] = useState(null)
+  const [StudentsInClass, setClassStudents] = useState([])
   const [PsychomotorSkills, setStudentSkills] = useState([])
 
   const OpenSkillsModal = () => {
@@ -60,6 +61,11 @@ const PsychomotorSkillsTableForStudents = () => {
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
+    fetchStudentsInClass(e.target.value).then(res => {
+      if (res?.data?.success) {
+        setClassStudents(res.data.data)
+      }
+    })
   }
 
   const handleChangeSession = e => {
@@ -147,10 +153,10 @@ const PsychomotorSkillsTableForStudents = () => {
                 label='Student*'
                 SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
               >
-                <MenuItem value=''>Select Student</MenuItem>
-                {StudentData?.result?.map(student => (
-                  <MenuItem key={student?.id} value={student?.id} sx={{textTransform: 'uppercase'}}>
-                    {`${student?.firstName} ${student?.lastName}` }
+                  <MenuItem>{StudentsInClass.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
+                {StudentsInClass.map(item => (
+                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
+                    {`${item?.firstName} ${item?.lastName}`}
                   </MenuItem>
                 ))}
               </CustomTextField>

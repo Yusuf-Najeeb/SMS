@@ -30,17 +30,16 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { useStaff } from '../../../hooks/useStaff'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
-import { useStudent } from '../../../hooks/useStudent'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { updateAttendance } from '../../../store/apps/attendance/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -80,11 +79,8 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData, studentNa
 
   // ** Hooks
   const dispatch = useDispatch()
-  const [StaffData] = useStaff()
-  const [StudentData] = useStudent()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
 
-  // const [CategoriesData] = useCategories()
-  // const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
 
@@ -99,7 +95,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData, studentNa
   }
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -272,7 +268,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData, studentNa
                         aria-describedby='stepper-linear-personal-staffId-helper'
                         {...(errors.staffId && { helperText: errors.staffId.message })}
                       >
-                        <MenuItem value=''>Select Class Teacher</MenuItem>
+                        <MenuItem>Select Class Teacher</MenuItem>
                         {StaffData?.result?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item?.firstName} ${item?.lastName}`}

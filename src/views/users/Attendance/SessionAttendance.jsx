@@ -8,34 +8,23 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 
-import IconButton from '@mui/material/IconButton'
-
 import Icon from 'src/@core/components/icon'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomChip from 'src/@core/components/mui/chip'
 
-// ** Third Party Imports
-import * as yup from 'yup'
-import DatePicker from 'react-datepicker'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 
 import { useAppDispatch } from '../../../hooks'
 import NoData from '../../../@core/components/emptyData/NoData'
 import CustomSpinner from '../../../@core/components/custom-spinner'
-import { formatDateToYYYMMDDD, formatFirstLetter } from '../../../@core/utils/format'
 import { Button, Card, CardContent, CardHeader, Grid, MenuItem, Tooltip } from '@mui/material'
-import { useStaff } from '../../../hooks/useStaff'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
-import { useSubjects } from '../../../hooks/useSubjects'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { useStudentsScores } from '../../../hooks/useStudentsScores'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import { studentAttendanceBySession } from '../../../store/apps/attendance/asyncthunk'
@@ -45,13 +34,10 @@ const SessionAttendanceTable = () => {
   // Hooks
   const dispatch = useAppDispatch()
 
-  // const [StaffData] = useStaff()
-  // const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [StudentData] = useStudent()
 
-  // const [StudentsScoresData] = useStudentsScores()
   const [ClassAttendanceData, loading] = useAttendance()
 
   // States
@@ -76,13 +62,6 @@ const SessionAttendanceTable = () => {
     setEditDrawer(!openEditDrawer)
     setAttendanceToUpdate(null)
   }
-
-  // const setAttendanceToEdit = value => {
-  //   setEditDrawer(!openEditDrawer)
-  //   setAttendanceToUpdate(value)
-
-  //   // handleRowOptionsClose()
-  // }
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
@@ -207,9 +186,7 @@ const SessionAttendanceTable = () => {
               <TableCell align='center' sx={{ minWidth: 200 }}>
                 REASON FOR ABSENCE
               </TableCell>
-              {/* <TableCell align='left' sx={{ minWidth: 50 }}>
-                ACTIONS
-              </TableCell> */}
+           
             </TableRow>
           </TableHead>
           <TableBody>
@@ -273,24 +250,7 @@ const SessionAttendanceTable = () => {
         </Table>
       </TableContainer>
 
-      {/* <TablePagination
-        page={page}
-        component='div'
-        count={Paging?.totalItems}
-        rowsPerPage={rowsPerPage}
-        onPageChange={handleChangePage}
-        rowsPerPageOptions={[5, 10, 20]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
-
-      {/* {openAttendanceModal && <MarkAttendance open={openAttendanceModal} closeModal={toggleMarkAttendanceDrawer} />} */}
-
-      {/* <EditAttendance
-        open={openEditDrawer}
-        closeModal={toggleModal}
-        selectedRecord={attendanceToUpdate}
-        fetchData={updateFetch}
-      /> */}
+  
     </div>
   )
 }

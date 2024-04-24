@@ -167,7 +167,7 @@ const StaffTable = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: page + 1, limit: 10, key }))
+    dispatch(fetchStaffs({ page: page + 1, limit: 10, key,  }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, key, refetch])

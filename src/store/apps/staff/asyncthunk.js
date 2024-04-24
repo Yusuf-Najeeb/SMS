@@ -16,39 +16,29 @@ export const fetchStaffs = createAsyncThunk('/StaffData/fetchStaffs', async (que
   }
 })
 
-// export const fetchStaffByRoom = async email => {
-//   try {
-//     const response = await axios.get(`/staffs/gethousemasterroom/${email}`)
+export const fetchStaffByType = createAsyncThunk('staff-by-type', async (query) => {
+  try {
+    const response = await axios.get(`/staffs?page=${query.page}&limit=${query.limit}&key=${query.key}&type=${query.type}`)
 
-//     // notifySuccess('student created successfully')
 
-//     return response
-//   } catch (error) {
-//     console.log(error, 'error')
-//     notifyError('Error fetching staff Exams')
+    return response
+  } catch (error) {
 
-//     // return {
-//     //   success: false
-//     // }
-//   }
-// }
+  }
+})
 
-// export const fetchStafftBySubjectTaught = async email => {
-//   try {
-//     const response = await axios.get(`/staffs/gethousemasterroom/${email}`)
+export const fetchStaffByRole = createAsyncThunk('/StaffData/fetchStaffs', async (query) => {
+  try {
+    const response = await axios.get(`/staffs?page=${query.page}&limit=${query.limit}&role=${query.role}`)
 
-//     // notifySuccess('student created successfully')
+    // console.log(response, 'response')
 
-//     return response
-//   } catch (error) {
-//     console.log(error, 'error')
-//     notifyError('Error fetching staffs Exams')
+    return response
+  } catch (error) {
 
-//     // return {
-//     //   success: false
-//     // }
-//   }
-// }
+  }
+})
+
 
 
 

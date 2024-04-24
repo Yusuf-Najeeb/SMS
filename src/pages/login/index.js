@@ -203,9 +203,20 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
             <img src='/images/logo.webp' style={{objectPosition: 'center', objectFit: 'cover'}} width={'80px'} height={'80px'} alt='' />
             </Box>
             <Box sx={{ my: 6 }}>
-              <Typography variant='h4' sx={{ mb: 1.5 }}>
-                {`Welcome to ${themeConfig.templateName}! 👋🏻`}
+              <Typography variant='h4' sx={{ mb: 1.5, position: 'relative' }}>
+                {`Welcome to ${themeConfig.templateName}!`}
+                <span><IconButton
+                sx={{
+                  bottom: 0 ,
+                  color: 'grey.100',
+                  position: 'absolute'
+                }}
+              >
+                <Icon icon='tdesign:wave-left' fontSize={23} />
+              </IconButton></span>
               </Typography>
+             
+              
               <Typography sx={{ color: 'text.secondary' }}>
                 Please sign-in to your account to access your portal
               </Typography>

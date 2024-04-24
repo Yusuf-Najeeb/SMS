@@ -21,7 +21,7 @@ import { useForm, Controller } from 'react-hook-form'
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, MenuItem } from '@mui/material'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { useStaff } from '../../../hooks/useStaff'
 import { useSession } from '../../../hooks/useSession'
 import { useCurrentSession } from '../../../hooks/useCurrentSession'
@@ -29,6 +29,7 @@ import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthu
 import { createTimetablePeriod } from '../../../store/apps/timetable/asyncthunk'
 import { useSubjects } from '../../../hooks/useSubjects'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 const showErrors = (field, valueLen, min) => {
   if (valueLen === 0) {
@@ -72,7 +73,7 @@ const defaultValues = {
 
 const AddPeriod = ({ open, toggle, classRoom }) => {
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [SessionData] = useSession()
   const [CurrentSessionData] = useCurrentSession()
   const [SubjectsList] = useSubjects()
@@ -118,7 +119,7 @@ const AddPeriod = ({ open, toggle, classRoom }) => {
  
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchCurrentSession())
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     

@@ -27,7 +27,7 @@ import { inputScoreSchema } from 'src/@core/Formschema'
 
 import FormController from '../component/FormController'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchStudentsTakingSubject, fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
@@ -39,6 +39,7 @@ import { useCategories } from '../../../hooks/useCategories'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import { saveStudentScore } from '../../../store/apps/reportCard/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -77,7 +78,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
   // ** Hooks
   const dispatch = useDispatch()
   const [StudentData] = useStudent()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [CategoriesData] = useCategories()
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
@@ -89,7 +90,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
 
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -108,18 +109,6 @@ const EnterStudentScore = ({ open, closeModal }) => {
       })
     }
   },[subjectId,teacherId ])
-
-
-  // useEffect(() => {
-  //   if (ClassRoomId) {
-  //     fetchStudentsInClass(ClassRoomId).then(res => {
-  //       if (res?.data?.success) {
-  //         setStudentsInClass(res?.data?.data)
-  //       }
-  //     })
-
-  //   }
-  // }, [ClassRoomId])
 
   const {
     control,
@@ -202,7 +191,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-categoryId-helper'
                         {...(errors.categoryId && { helperText: errors.categoryId.message })}
                       >
-                        <MenuItem value=''>Select Assessment Category</MenuItem>
+                        <MenuItem>Select Assessment Category</MenuItem>
                         {CategoriesData?.map(category => (
                           <MenuItem key={category?.id} value={category?.id}>
                             {category.name}
@@ -234,7 +223,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-classId-helper'
                         {...(errors.classId && { helperText: errors.classId.message })}
                       >
-                        <MenuItem value=''>Select Class</MenuItem>
+                        <MenuItem>Select Class</MenuItem>
                         {ClassesList?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item.name} ${item.type}`}
@@ -266,7 +255,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-subjectId-helper'
                         {...(errors.subjectId && { helperText: errors.subjectId.message })}
                       >
-                        <MenuItem value=''>Select Subject</MenuItem>
+                        <MenuItem >Select Subject</MenuItem>
                         {SubjectsList?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {item.name}
@@ -298,7 +287,7 @@ const EnterStudentScore = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-staffId-helper'
                         {...(errors.staffId && { helperText: errors.staffId.message })}
                       >
-                        <MenuItem value=''>Select Teacher</MenuItem>
+                        <MenuItem>Select Teacher</MenuItem>
                         {StaffData?.result?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item?.firstName} ${item?.lastName}`}

@@ -30,7 +30,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { updateQuestionsSchema } from 'src/@core/Formschema'
 
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
@@ -46,6 +46,7 @@ import { notifyWarn } from '../../../@core/components/toasts/notifyWarn'
 import { notifyError } from '../../../@core/components/toasts/notifyError'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import axios from 'axios'
+import { useAppSelector } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -86,7 +87,7 @@ const EditQuestion = ({ open, closeModal, questionToEdit, fetchQuestions }) => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [CategoriesData] = useCategories()
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
@@ -137,7 +138,7 @@ const EditQuestion = ({ open, closeModal, questionToEdit, fetchQuestions }) => {
   }
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -194,7 +195,6 @@ const EditQuestion = ({ open, closeModal, questionToEdit, fetchQuestions }) => {
       return acc
     }, {})
 
-    console.log(changedFields, 'changed fields')
 
     const formattedDueDate = formatDateToYYYMMDDD(data.dueDate)
     const dueDate = `${formattedDueDate} ${data.dueTime}`

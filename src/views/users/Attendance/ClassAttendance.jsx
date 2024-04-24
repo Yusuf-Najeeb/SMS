@@ -56,7 +56,7 @@ const ClassAttendanceTable = () => {
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [StudentData] = useStudent()
-  const [ClassAttendanceData, loading] = useAttendance()
+  const [loading] = useAttendance()
 
   // States
 

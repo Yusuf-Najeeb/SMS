@@ -21,13 +21,13 @@ import DatePicker from 'react-datepicker'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-import { useAppDispatch } from '../../../hooks'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
 import NoData from '../../../@core/components/emptyData/NoData'
 import CustomSpinner from '../../../@core/components/custom-spinner'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { Button, Card, CardContent, CardHeader, Grid, MenuItem, Tooltip } from '@mui/material'
 import { useStaff } from '../../../hooks/useStaff'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import {  fetchStaffByRole, fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
@@ -36,6 +36,8 @@ import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { CustomInput } from './EditAttendance'
 import { saveStudentAttendance } from '../../../store/apps/attendance/asyncthunk'
 import { truncateText } from '../../../@core/utils/truncateText'
+import { useStaffByRole } from '../../../hooks/useStaffByRole'
+import { fetchTeachers } from '../../../store/apps/staffByRole/asyncthunk'
 
 const defaultValues = {
   date: ''
@@ -48,9 +50,9 @@ const schema = yup.object().shape({
 const ClassAttendance = () => {
   // Hooks
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
 
 
   // States
@@ -62,6 +64,7 @@ const ClassAttendance = () => {
   const [date, setDate] = useState('')
   const [classInView, setClassInView] = useState('')
   const [loading, setLoading ] = useState(false)
+
 
   const [selectedDate, setSelectedDate] = useState('')
 
@@ -161,8 +164,6 @@ const ClassAttendance = () => {
     formState: { errors, isSubmitting }
   } = useForm({ defaultValues, mode: 'onChange', resolver: yupResolver(schema) })
 
-  const toggleMarkAttendanceDrawer = () => setAttendanceModal(!openAttendanceModal)
-
   useEffect(() => {
     if (studentsInClass.length > 0) {
       // Fill the attendanceData array with objects containing classId, sessionId, date, and studentId
@@ -181,10 +182,11 @@ const ClassAttendance = () => {
   }, [studentsInClass, classId, sessionId, date, staffId])
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
     dispatch(fetchSession({ page: 1, limit: 300 }))
+
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
