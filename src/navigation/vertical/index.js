@@ -44,6 +44,15 @@ const navigation = () => {
         icon: 'healthicons:i-exam-multiple-choice',
         path: '/apps/applicantCBTExam'
       },
+      {
+        sectionTitle: 'Applicant Examination Result'
+      },
+
+      {
+        title: 'CBT Result',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicant-cbt-result'
+      },
     ]
   }
 

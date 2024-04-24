@@ -182,7 +182,16 @@ code[class*='language-'] {
     /* color: '#fff'; */
     border-radius: 50px;
   }
+
+  .applicantResultPageWrapper {
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+  }
   
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
  
   /*  */
   /* .css-2a9k90-MuiTablePagination-selectLabel{
