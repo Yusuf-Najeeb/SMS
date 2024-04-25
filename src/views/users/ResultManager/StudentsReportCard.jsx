@@ -28,6 +28,9 @@ import CustomAffectiveTraitsTable from '../component/CustomAffectiveTraitsTable'
 import CustomPsychomotorSkillsTable from '../component/CustomPsychomotorSkillsTable'
 import { fetchPsychomotorSkillsForStudents } from '../../../store/apps/psychomotorSkills/asyncthunk'
 import { fetchAffectiveTraitsForStudents } from '../../../store/apps/affectiveTraits/asyncthunk'
+import { fetchGradeParameters } from '../../../store/apps/gradingParameters/asyncthunk'
+import CustomReportCardSummary from '../component/CustomReportSummary'
+import CustomGradingSystem from '../component/CustomGradingSystem'
 
 const StudentsReportCardTable = () => {
   // Hooks
@@ -39,7 +42,7 @@ const StudentsReportCardTable = () => {
   const [StudentReportCard, loading] = useStudentReportCard()
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
-
+  
   // States
 
   const [openScoreModal, setScoreModal] = useState(false)
@@ -54,6 +57,8 @@ const StudentsReportCardTable = () => {
   const [PsychomotorSkills, setStudentSkills] = useState({})
   const [AffectiveTraits, setAffectiveTraits] = useState({})
   const [noResult, setNoResult] = useState(false)
+  const [GradingParametersList, setGradingParametersList] = useState([])
+  const [nextAcadmeicSession, setNextAcademicSession] = useState({})
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
@@ -71,6 +76,8 @@ const StudentsReportCardTable = () => {
   const handleChangeStudent = e => {
     Number(setStudentId(e.target.value))
   }
+
+  const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
 
   const fetchSkills = async ()=>{
     const res = await  dispatch(fetchPsychomotorSkillsForStudents({ studentId, classId, sessionId }))
@@ -100,7 +107,20 @@ const StudentsReportCardTable = () => {
     await fetchTraits()
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
 
-    if (Object.keys(res.payload.data.data.subject).length > 0) {
+    if (Object.keys(res?.payload?.data?.data?.subject).length > 0) {
+
+      fetchGradeParameters({ page: 1, limit: 10 , classCategoryId: classRoom?.categoryId}).then((res)=> {
+        if(res?.data?.success){
+          setGradingParametersList([...res?.data.data])
+        } else {
+          setGradingParametersList([])
+        }
+      }).catch(()=>{
+        setGradingParametersList([])
+      })
+
+      const nextTerm = SessionData?.find((session)=>session?.id == (CurrentSessionData?.id + 1) )
+      setNextAcademicSession(nextTerm)
       dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
       setShowResult(true)
       setNoResult(false)
@@ -108,13 +128,14 @@ const StudentsReportCardTable = () => {
 
       setActiveStudent({ ...selectedStudent })
     } else {
+      setNextAcademicSession({})
       setShowResult(false)
       setNoResult(true)
       setActiveStudent({})
     }
   }
 
-  const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
+  
 
   useEffect(() => {
     if (activeStudent) {
@@ -242,6 +263,7 @@ const StudentsReportCardTable = () => {
                 </Typography>
               </Box>
               <StudentReportCardDetails
+                nextAcadmeicSession={nextAcadmeicSession}
                 activeStudent={activeStudent}
                 profilePictureUrl={profilePictureUrl}
                 classRoom={classRoom}
@@ -250,8 +272,7 @@ const StudentsReportCardTable = () => {
             </CardContent>
           )}
 
-          <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-
+          <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
           <Box sx={{width: '80%'}}>
           <CustomResultTable
             tableData={StudentReportCard}
@@ -265,8 +286,15 @@ const StudentsReportCardTable = () => {
           <CustomAffectiveTraitsTable traits={AffectiveTraits} />
           <CustomPsychomotorSkillsTable skills={PsychomotorSkills} />
         </Box>
+      </Box>
 
-
+      <Box sx={{display: 'flex', justifyContent: 'space-between', width: '80%'}}>
+      <Box sx={{width: '52%'}}>
+        <CustomReportCardSummary  reportCardData={StudentReportCard} numberOfSubjects={StudentReportCard?.length} />
+      </Box>
+      <Box sx={{width: '47%'}}> 
+      <CustomGradingSystem ClassGradingParameters={GradingParametersList} />
+      </Box>
       </Box>
         </Box>
       )}

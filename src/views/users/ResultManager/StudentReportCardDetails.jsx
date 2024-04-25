@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from '@mui/material'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-import { formatFirstLetter } from '../../../@core/utils/format'
+import { formatDate, formatFirstLetter } from '../../../@core/utils/format'
 
-const StudentReportCardDetails = ({activeStudent,profilePictureUrl, classRoom, CurrentSessionData }) => {
+const StudentReportCardDetails = ({activeStudent,profilePictureUrl, classRoom, CurrentSessionData , nextAcadmeicSession}) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Stack spacing={2} sx={{width: '30%', }}>
@@ -43,6 +43,14 @@ const StudentReportCardDetails = ({activeStudent,profilePictureUrl, classRoom, C
 
               <Typography sx={{ color: '#666', textTransform: 'uppercase' }}>
                 {`${CurrentSessionData?.term} `}
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography sx={{ color: '#666', fontWeight: 700 }}>Next Term Begins:</Typography>
+
+              <Typography sx={{ color: '#666', textTransform: 'uppercase' }}>
+                {formatDate(nextAcadmeicSession?.startDate) || '--'}
               </Typography>
             </Box>
           </Stack>

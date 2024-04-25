@@ -20,7 +20,6 @@ import CustomSpinner from 'src/@core/components/custom-spinner'
 import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { useStaff } from '../../../hooks/useStaff'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
@@ -31,7 +30,6 @@ import { useAppSelector } from '../../../hooks'
 const PsychomotorSkillsTable = () => {
   const dispatch = useAppDispatch()
   const StaffDataByType = useAppSelector(store => store.staff.StaffDataByType)
-  const [StaffData] = useStaff()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [StudentData] = useStudent()

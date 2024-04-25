@@ -20,9 +20,10 @@ import { useForm, Controller } from 'react-hook-form'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, MenuItem } from '@mui/material'
 import { createCategory, fetchCategories, updateCategory } from '../../../store/apps/categories/asyncthunk'
 import { createGradingParameter, fetchGradingParameters, updateGradingParameter } from '../../../store/apps/gradingParameters/asyncthunk'
+import { useCategories } from '../../../hooks/useCategories'
 
 
 
@@ -35,19 +36,22 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  percentage: yup.string().required(),
+  percentage: yup.string().required('Percentage is required'),
   name: yup
     .string()
-    .required()
+    .required("Grading Parameter Name is required"),
+  classCategoryId: yup.string().required('Class Category is required')
 })
 
 const defaultValues = {
   name: '',
-  percentage: ''
+  percentage: '',
+  classCategoryId: ''
 }
 
 const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
   const dispatch = useAppDispatch()
+  const [CategoriesData] = useCategories()
 
   const {
     reset,
@@ -71,14 +75,14 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
 
     const payload = {
         name: data.name,
-        percentage: Number(data.percentage)
+        percentage: data.percentage,
+        classCategoryId: Number(data?.classCategoryId)
       }
 
 
       createGradingParameter(payload).then((response)=>{
           if (response?.data.success){
             handleClose()
-            dispatch(fetchGradingParameters({ page: 1, limit: 10 }))
           }
       })
 
@@ -87,15 +91,15 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
   const onUpdate = async (data) => {
     
       const payload = {
-         name: data.name ,  
-        percentage: Number(data.percentage) ,
+        name: data.name,  
+        percentage: data.percentage,
+        classCategoryId: Number(data?.classCategoryId)
       }
 
 
       updateGradingParameter(parameterToEdit?.id, payload).then((response)=>{
         if (response?.data.success){
             handleClose()
-            dispatch(fetchGradingParameters({ page: 1, limit: 10 }))
           }
       })
 
@@ -104,10 +108,17 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
 
   }
 
+  useEffect(()=>{
+    dispatch(fetchCategories({ page: 1, limit: 300, type: 'class' }))
+
+    // eslint-disable-next-line 
+  },[])
+
   useEffect(() => {
     if (parameterToEdit !== null) {
       setValue('name', parameterToEdit.name)
       setValue('percentage', parameterToEdit.percentage)
+      Number(setValue('classCategoryId', parameterToEdit.classCategoryId))
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,7 +165,7 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
                 label='Name'
                 required
                 onChange={onChange}
-                placeholder='Name'
+                placeholder='Excellent'
                 error={Boolean(errors.name)}
                 {...(errors.name && { helperText: errors.name.message })}
               />
@@ -172,10 +183,39 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
                 label='Percentage'
                 value={value}
                 sx={{ mb: 4 }}
+                placeholder='80-90%'
                 onChange={onChange}
                 error={Boolean(errors.percentage)}
                 {...(errors.percentage && { helperText: errors.percentage.message })}
               />
+                
+            )}
+          />
+
+        <Controller
+            name='classCategoryId'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                required
+                select
+                fullWidth
+                label='Class Category'
+                value={value}
+                sx={{ mb: 4 }}
+                placeholder='80-90%'
+                onChange={onChange}
+                error={Boolean(errors.classCategoryId)}
+                {...(errors.classCategoryId && { helperText: errors.classCategoryId.message })}
+              >
+                <MenuItem>Select Class Category</MenuItem>
+                        {CategoriesData?.map(category => (
+                          <MenuItem key={category?.id} value={category?.id}>
+                            {category.name}
+                          </MenuItem>
+                        ))}
+                </CustomTextField>
                 
             )}
           />
