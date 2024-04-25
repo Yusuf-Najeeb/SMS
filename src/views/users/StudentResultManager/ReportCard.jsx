@@ -1,4 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+
+import generatePDF from 'react-to-pdf';
 
 import Icon from 'src/@core/components/icon'
 
@@ -46,6 +48,9 @@ const ReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
+  // Ref
+  const targetRef = useRef();
+
   // States
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
@@ -59,6 +64,7 @@ const ReportCardTable = () => {
   const [noResult, setNoResult] = useState(false)
   const [GradingParametersList, setGradingParametersList] = useState([])
   const [nextAcadmeicSession, setNextAcademicSession] = useState({})
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false)
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
@@ -102,6 +108,7 @@ const ReportCardTable = () => {
           setGradingParametersList([])
         })
 
+        setShowDownloadBtn(true)
       const nextTerm = SessionData?.find(session => session?.id == CurrentSessionData?.id + 1)
       setNextAcademicSession(nextTerm)
       dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
@@ -111,6 +118,7 @@ const ReportCardTable = () => {
 
       setActiveStudent({ ...selectedStudent })
     } else {
+      setShowDownloadBtn(false)
       setNextAcademicSession({})
       setShowResult(false)
       setNoResult(true)
@@ -167,8 +175,10 @@ const ReportCardTable = () => {
                 ))}
               </CustomTextField>
             </Grid>
+            </Grid>
 
-            <Grid item xs={12} sm={12}>
+            <Grid container spacing={12} sx={{mt: 3}}>
+            <Grid item xs={12} sm={4}>
               <Button
                 onClick={displayReportCard}
                 variant='contained'
@@ -179,12 +189,27 @@ const ReportCardTable = () => {
                 Display Report Card
               </Button>
             </Grid>
+
+           {showDownloadBtn &&  <Grid item xs={12} sm={4}>
+              <Button
+                onClick={() => generatePDF(targetRef, {filename: `${activeStudent?.firstName}-${activeStudent?.lastName}-report-card.pdf`})}
+                variant='contained'
+                disabled={!studentId || !classId || !sessionId}
+                sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.main' }}
+              >
+                <Icon fontSize='1.125rem' icon='octicon:download-16' />
+                Download Report Card
+              </Button>
+            </Grid> }
+
+
           </Grid>
         </CardContent>
       </Card>
 
       {!loading && showResult && (
         <Box
+        ref={targetRef}
           className='resultBg'
           sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#fff' }}
         >

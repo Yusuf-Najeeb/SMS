@@ -1,4 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, Fragment, useRef } from 'react'
+
+import generatePDF from 'react-to-pdf';
 
 import Icon from 'src/@core/components/icon'
 
@@ -27,6 +29,8 @@ const StudentsTranscript = () => {
   const [StudentData] = useStudent()
   const [StudentTranscript, loading] = useTranscript()
 
+    // Ref
+    const targetRef = useRef();
 
   // States
 
@@ -36,6 +40,7 @@ const StudentsTranscript = () => {
   const [showResult, setShowResult] = useState(false)
   const [TranscriptData, setTranscriptData] = useState([])
   const [noResult, setNoResult] = useState(false)
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false)
 
 
 //   const [studentTranscriptDetails, setStudents] 
@@ -56,9 +61,11 @@ const StudentsTranscript = () => {
     if(Object.keys(res?.payload?.data?.data).length > 0){
       setShowResult(true)
       setNoResult(false)
+      setShowDownloadBtn(true)
      const result = extractTranscriptData(res?.payload?.data?.data)
      setTranscriptData([...result])
     }else {
+      setShowDownloadBtn(false)
         setNoResult(true)
         setShowResult(false)
     }
@@ -117,9 +124,11 @@ const StudentsTranscript = () => {
                 ))}
               </CustomTextField>
             </Grid>
+            </Grid>
 
 
-            <Grid item xs={12} sm={12}>
+            <Grid container spacing={12} sx={{mt: 3}}>
+            <Grid item xs={12} sm={4}>
               <Button
                 onClick={displayTranscript}
                 variant='contained'
@@ -130,13 +139,26 @@ const StudentsTranscript = () => {
                 Display Student Transcript
               </Button>
             </Grid>
+
+            {showDownloadBtn && <Grid item xs={12} sm={6}>
+              <Button
+                onClick={() => generatePDF(targetRef, {filename: `${activeStudent?.firstName}-${activeStudent?.lastName}-transcript.pdf`})}
+                variant='contained'
+                disabled={!studentId}
+                sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.main' }}
+              >
+                <Icon fontSize='1.125rem' icon='octicon:download-16' />
+                Download Transcript
+              </Button>
+            </Grid> }
+
           </Grid>
         </CardContent>
       </Card>
 
       {(!loading && showResult )  &&
 
-      <Box  sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#eee"}}>
+      <Box  ref={targetRef} sx={{pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: "#eee"}}>
 
 
 
@@ -147,7 +169,7 @@ const StudentsTranscript = () => {
           <SchoolDetails />
 
           <Box sx={{color: '#fff', backgroundColor: "#333333", height: '50px', width: '100%', mt: 10, mb: 10, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-           <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center', color: '#fff', textTransform: 'uppercase'}}> {`Student Transcript`}</Typography> 
+           <Typography sx={{fontSize: '1.4rem', fontWeight: 600, fontStyle: 'italic', textAlign: 'center', color: '#fff', textTransform: 'uppercase'}}> Student&nbsp;&nbsp;Transcript</Typography> 
            </Box>
 
            <StudentTranscriptDetails activeStudent={activeStudent} profilePictureUrl={profilePictureUrl} classRoom={sessionData.class} SessionData={sessionData}/>
@@ -157,7 +179,7 @@ const StudentsTranscript = () => {
 
           <Box sx={{mt: 15, mb: 15, position:'relative'}}>
             <Box sx={{ height: '1px', backgroundColor: '#3333334d',  width: '100%', }}>  </Box>
-            <Box className="linePosition" sx={{  backgroundColor: '#fff', color: "#333", textTransform: 'uppercase', fontWeight: 700, pl: 2, pr: 2  }}> Academic Records </Box>
+            <Box className="linePosition" sx={{  backgroundColor: '#fff', color: "#333", textTransform: 'uppercase', fontWeight: 700, pl: 2, pr: 2  }}> Academic &nbsp;&nbsp; Records </Box>
 
           </Box>
 
