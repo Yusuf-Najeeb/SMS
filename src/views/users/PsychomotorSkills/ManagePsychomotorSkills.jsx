@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 
 // ** MUI Imports
 import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
@@ -19,9 +18,7 @@ import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, Dialog, DialogContent, DialogTitle, Grid, MenuItem } from '@mui/material'
 import { CustomCloseButton } from '../Guardian/AddGuardian'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import {  fetchClasses } from '../../../store/apps/classes/asyncthunk'
-import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
@@ -54,8 +51,8 @@ const ManagePsychomotorSkills = ({ open, toggle, skillsToEdit = null, updateData
 
 
   useEffect(() => {
-    dispatch(fetchStaffs({page: 1, limit: 500, key: 'teacher'}))
-    dispatch(fetchCategories({ page: 1, limit: 30, type: 'class' }))
+    
+
     dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
     dispatch(fetchSession({ page: 1, limit: 300 }))
     dispatch(fetchStudents({ page: 1, limit: 3000, key: '' }))

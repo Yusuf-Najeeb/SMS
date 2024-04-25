@@ -9,18 +9,14 @@ import Icon from 'src/@core/components/icon'
 
 import { useSession } from '../../../hooks/useSession'
 import { useSubjects } from '../../../hooks/useSubjects'
-import { useStaff } from '../../../hooks/useStaff'
 import { useAppDispatch } from '../../../hooks'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { deleteQuestion, fetchApplicantCBTQuestions, fetchCBTQuestions } from '../../../store/apps/cbt/asyncthunk'
-import { useCategories } from '../../../hooks/useCategories'
+import { deleteQuestion, fetchApplicantCBTQuestions, } from '../../../store/apps/cbt/asyncthunk'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import { useCBTQuestions } from '../../../hooks/useCBTQuestions'
 import GetUserData from '../../../@core/utils/getUserData'
-import StudentQuestions from '../cbt/StudentQuestions'
 import StudentsQuestionPreview from '../cbt/StudentsQuestionPreview'
 import ApplicantQuestions from './ApplicantQuestions'
 
@@ -30,11 +26,8 @@ const userData = GetUserData()
 const CBTQuestionsForApplicants = () => {
      // Hooks
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
   const [SubjectsList] = useSubjects()
   const [SessionData] = useSession()
-  const [CategoriesData] = useCategories()
-  const [QuestionsData, loading,] = useCBTQuestions()
 
   //   States
   const [showQuestionsPreview, setShowQuestionsPreview] = useState(false)
@@ -77,11 +70,8 @@ const CBTQuestionsForApplicants = () => {
     setShowQuestionsPreview(true)
     const subject = SubjectsList?.find((sub)=> sub.id == subjectId)
 
-    // const assessment = CategoriesData?.find((cat)=> cat.id == categoryId )
-
     setSubjectName(subject.name)
 
-    // setAssessmentCategory(assessment.name)
 
       if(res?.payload?.data.data.length > 0){
         
@@ -91,7 +81,6 @@ const CBTQuestionsForApplicants = () => {
         else {
           setQuestions([])
 
-        //   setShowQuestionsPreview(false)
         }
   }
 

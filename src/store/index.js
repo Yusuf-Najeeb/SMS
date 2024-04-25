@@ -34,6 +34,7 @@ import attendance from 'src/store/apps/attendance'
 import applicants from 'src/store/apps/applicants'
 import cbt from 'src/store/apps/cbt'
 import applicantsSubjects from 'src/store/apps/applicantsSubjects'
+import staffByRole from 'src/store/apps/staffByRole'
 
 
 export const store = configureStore({
@@ -69,7 +70,8 @@ export const store = configureStore({
     attendance,
     applicants,
     cbt,
-    applicantsSubjects
+    applicantsSubjects,
+    staffByRole
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

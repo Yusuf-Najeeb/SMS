@@ -14,8 +14,8 @@ import { useSession } from '../../../hooks/useSession'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSubjects } from '../../../hooks/useSubjects'
 import { useStaff } from '../../../hooks/useStaff'
-import { useAppDispatch } from '../../../hooks'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
@@ -31,7 +31,7 @@ import DeleteDialog from '../../../@core/components/delete-dialog'
 const CBTQuestions = () => {
      // Hooks
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
@@ -133,7 +133,7 @@ const CBTQuestions = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
     dispatch(fetchSession({ page: 1, limit: 300 }))

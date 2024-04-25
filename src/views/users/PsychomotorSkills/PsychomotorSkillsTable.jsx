@@ -17,19 +17,20 @@ import NoData from 'src/@core/components/emptydata/NoData'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { useStaff } from '../../../hooks/useStaff'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
-import { fetchAffectiveTraitsForClass } from '../../../store/apps/affectiveTraits/asyncthunk'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import { fetchPsychomotorSkillsForClass } from '../../../store/apps/psychomotorSkills/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 const PsychomotorSkillsTable = () => {
   const dispatch = useAppDispatch()
+  const StaffDataByType = useAppSelector(store => store.staff.StaffDataByType)
   const [StaffData] = useStaff()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
@@ -40,9 +41,6 @@ const PsychomotorSkillsTable = () => {
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
   const [loading, setLoading] = useState(false)
-  const [openModal, setOpenModal] = useState(false)
-  const [openParameterModal, setOpenParameterModal] = useState(false)
-  const [selectedSubject, setSelectedSubject] = useState(null)
   const [PsychomotorSkills, setPsychomotorSkills] = useState([])
 
 
@@ -76,7 +74,7 @@ const PsychomotorSkillsTable = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
     dispatch(fetchSession({ page: 1, limit: 300 }))
     dispatch(fetchStudents({ page: 1, limit: 3000, key: '' }))
@@ -115,7 +113,7 @@ const PsychomotorSkillsTable = () => {
                 SelectProps={{ value: staffId, onChange: e => handleChangeStaff(e) }}
               >
                 <MenuItem value=''>Select Class Teacher</MenuItem>
-                {StaffData?.result?.map(staff => (
+                {StaffDataByType?.result?.map(staff => (
                   <MenuItem key={staff?.id} value={staff?.id} sx={{textTransform: 'uppercase'}}>
                     {`${staff?.firstName} ${staff?.lastName}` }
                   </MenuItem>

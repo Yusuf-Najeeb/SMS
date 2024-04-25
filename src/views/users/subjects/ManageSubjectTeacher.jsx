@@ -20,10 +20,10 @@ import { useForm, Controller } from 'react-hook-form'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
-import { CircularProgress, FormControlLabel, FormGroup, MenuItem, Switch } from '@mui/material'
+import { CircularProgress, MenuItem, } from '@mui/material'
 import { assignTeacher,  fetchSubjects, removeTeacher } from '../../../store/apps/subjects/asyncthunk'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import { useStaff } from '../../../hooks/useStaff'
+import { fetchStaffByType } from '../../../store/apps/staff/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 
 const Header = styled(Box)(({ theme }) => ({
@@ -43,11 +43,11 @@ const defaultValues = {
 
 const ManageSubjectTeacher = ({ open, toggle, subject, status }) => {
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
 
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -145,7 +145,7 @@ const ManageSubjectTeacher = ({ open, toggle, subject, status }) => {
                 error={Boolean(errors.teacherId)}
                 {...(errors.teacherId && { helperText: errors.teacherId.message })}
               >
-                <MenuItem value=''>Select Subject Teacher</MenuItem>
+                <MenuItem >Select Subject Teacher</MenuItem>
                 {StaffData?.result?.map((item, i) => {
                   return (
                     <MenuItem key={i} value={item.id}>

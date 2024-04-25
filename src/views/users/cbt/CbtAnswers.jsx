@@ -33,7 +33,7 @@ import { useStaff } from '../../../hooks/useStaff'
 import { useAppDispatch } from '../../../hooks'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
-import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { deleteQuestion, fetchCBTAnswers } from '../../../store/apps/cbt/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
@@ -54,8 +54,6 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [CategoriesData] = useCategories()
-  const [ApplicantsData] = useApplicants()
-  const [StudentData] = useStudent()
   
   //   States
   const [loading, setLoading] = useState(false)
@@ -70,6 +68,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
   const [sessionId, setSessionId] = useState('')
   const [answers, setAnswers] = useState([])
   const [showGradeModal, setShowGradeModal] = useState(false)
+  const [StudentsInClass, setClassStudents] = useState([])
   const [activeAnswer, setActiveAnswer] = useState(null)
   const [questionToDelete, setQuestionToDelete] = useState(null)
   const [deleteModal, setDeleteModal] = useState(false)
@@ -113,6 +112,11 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
+    fetchStudentsInClass(e.target.value).then(res => {
+      if (res?.data?.success) {
+        setClassStudents(res.data.data)
+      }
+    })
   }
 
   const handleChangeSession = e => {
@@ -201,21 +205,15 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
                 label={studentDropdownLabelTitle}
                 SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
               >
-                <MenuItem value=''>{ studentDropdownLabelTitle == 'Students*' ? `Select Student` : `Select Applicant`}</MenuItem> 
-                {studentDropdownLabelTitle == 'Students*' ? 
-                (StudentData?.result?.map(item => (
+               
+                  <MenuItem>{StudentsInClass.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
+                {StudentsInClass.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.firstName} ${item.lastName}`}
+                    {`${item?.firstName} ${item?.lastName}`}
                   </MenuItem>
-                )))
-                
-                : 
-                (ApplicantsData?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.firstName} ${item.lastName}`}
-                  </MenuItem>
-                )))
-              }
+                ))}
+        
+             
               </CustomTextField>
             </Grid>
 
@@ -226,7 +224,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
                 label='Subject*'
                 SelectProps={{ value: subjectId, onChange: e => handleChangeSubject(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem>{`Select Subject`}</MenuItem>
                 {SubjectsList?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item?.name}`}
@@ -241,7 +239,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
                 label='Teacher*'
                 SelectProps={{ value: staffId, onChange: e => handleChangeStaff(e) }}
               >
-
+                 <MenuItem>{StaffData?.result?.length > 0 ?  `Select Subject Teacher` : 'No Teacher Created'}</MenuItem>
                 {StaffData?.result?.map(staff => (
                   <MenuItem key={staff?.id} value={staff?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${staff?.firstName} ${staff?.lastName}`}
@@ -257,7 +255,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
                 label='Session*'
                 SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem>{SessionData?.length > 0 ?  `Select Session` : 'No Session Created'}</MenuItem>
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name} ${item.term} term`}
@@ -273,7 +271,7 @@ const CBTAnswers = ({studentDropdownLabelTitle}) => {
                 label='Assessment Category*'
                 SelectProps={{ value: categoryId, onChange: e => handleChangeCategory(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem>{CategoriesData?.length > 0 ?  `Select Assessment Category` : 'No Assessment Category Created'}</MenuItem>
                 {CategoriesData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name}`}

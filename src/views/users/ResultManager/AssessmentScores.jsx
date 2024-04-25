@@ -5,10 +5,10 @@ import Icon from 'src/@core/components/icon'
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-import { useAppDispatch } from '../../../hooks'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { Box, Button, Card, CardContent, CardHeader, Grid, IconButton, Menu, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Paper, Typography } from '@mui/material'
 import { useStaff } from '../../../hooks/useStaff'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { useSubjects } from '../../../hooks/useSubjects'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
@@ -32,7 +32,8 @@ import { truncateText } from '../../../@core/utils/truncateText'
 const StudentsAssessmentsScoreTable = () => {
   // Hooks
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
+  // const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
@@ -225,7 +226,7 @@ const closeUploadDialog = () => setDialog(!openUploadDialog)
 
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({page: 1, limit: 300, key: ''}))
     dispatch(fetchSession({ page: 1, limit: 300 }))

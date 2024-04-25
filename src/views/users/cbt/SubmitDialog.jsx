@@ -48,7 +48,6 @@ const SubmitDialog = ({ open, handleClose, handleSubmit }) => {
       maxWidth='sm'
       scroll='body'
       onClose={handleClose}
-      onBackdropClick={handleClose}
       TransitionComponent={Transition}
       sx={{ '& .MuiDialog-paper': { overflow: 'visible' } }}
     >

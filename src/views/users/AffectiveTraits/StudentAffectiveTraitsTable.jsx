@@ -24,7 +24,7 @@ import { useSubjects } from '../../../hooks/useSubjects'
 import { deleteSubject, fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import ManageGradingParameter from '../subjects/ManageGradingParameter'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
@@ -36,7 +36,6 @@ import { deletePsychomotorSkills } from '../../../store/apps/psychomotorSkills/a
 
 const AffectiveTraitsTableForStudents = () => {
   const dispatch = useAppDispatch()
-  const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [StudentData] = useStudent()
@@ -49,6 +48,8 @@ const AffectiveTraitsTableForStudents = () => {
   const [deleteModal, setDeleteModal] = useState(false)
   const [traitsToDelete, setTraitsToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+
+  const [StudentsInClass, setClassStudents] = useState([])
   const [openParameterModal, setOpenParameterModal] = useState(false)
   const [selectedTraits, setSelectedTraits] = useState(null)
   const [subjectToAssignParameter, setSubjectToAssignParameter] = useState(null)
@@ -70,6 +71,11 @@ const AffectiveTraitsTableForStudents = () => {
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
+    fetchStudentsInClass(e.target.value).then(res => {
+      if (res?.data?.success) {
+        setClassStudents(res.data.data)
+      }
+    })
   }
 
   const handleChangeSession = e => {
@@ -167,10 +173,10 @@ const AffectiveTraitsTableForStudents = () => {
                 label='Student*'
                 SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
               >
-                <MenuItem value=''>Select Student</MenuItem>
-                {StudentData?.result?.map(student => (
-                  <MenuItem key={student?.id} value={student?.id} sx={{textTransform: 'uppercase'}}>
-                    {`${student?.firstName} ${student?.lastName}` }
+                  <MenuItem>{StudentsInClass.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
+                {StudentsInClass.map(item => (
+                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
+                    {`${item?.firstName} ${item?.lastName}`}
                   </MenuItem>
                 ))}
               </CustomTextField>

@@ -13,7 +13,6 @@ import { Box, IconButton, Menu, MenuItem } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
-import { styled } from '@mui/material/styles'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
 
@@ -31,8 +30,6 @@ import ViewClassTimeTable from './ViewClassTimetable'
 import GetUserData from '../../../@core/utils/getUserData'
 
 const userInfo = GetUserData()
-
-console.log(userInfo, 'user info')
 
 const ClassesTable = () => {
   const dispatch = useAppDispatch()
@@ -237,8 +234,7 @@ const ClassesTable = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                // eslint_disable-next-line
-                // </Box>
+                
                 <Fragment>
                   {ClassesList?.length &&
                     ClassesList?.map((item, i) => {
@@ -248,9 +244,7 @@ const ClassesTable = () => {
                             {`${item?.name} ${item.type}` || '--'}
                           </TableCell>
 
-                          {/* <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                        {item?.religion || '--'}
-                      </TableCell> */}
+                       
                           <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                             {item?.type || '--'}
                           </TableCell>

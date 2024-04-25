@@ -39,9 +39,10 @@ import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
 import { createSubject, fetchSubjects, updateSubject } from '../../../store/apps/subjects/asyncthunk'
 import SearchTeacher from './SearchTeacher'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { useStaff } from '../../../hooks/useStaff'
 import { private_safeEmphasize } from '@mui/system'
+import { useAppSelector } from '../../../hooks'
 
 const showErrors = (field, valueLen, min) => {
   if (valueLen === 0) {
@@ -89,12 +90,8 @@ const defaultValues = {
 const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   const dispatch = useAppDispatch()
   const [CategoriesData] = useCategories()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
 
-  const [openTeacherModal, setTeacherModal] = useState(false)
-  const [itemsArray, setItemsArray] = useState([])
-
-  // const [TeacherNames, setTeacherNames] = useState([])
 
   const [showInputField, setShowInputField] = useState(false)
 
@@ -104,16 +101,6 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
     setShowInputField(event.target.checked)
   }
 
-  // const handleChangeTeachers = event => {
-  //   const {
-  //     target: { value }
-  //   } = event
-  //   setTeacherNames(
-
-  //     // On autofill we get a stringified value.
-  //     typeof value === 'string' ? value.split(',') : value
-  //   )
-  // }
 
   const {
     reset,
@@ -141,36 +128,21 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
     let payload = { name: data.name }
 
-    // const teacherIds = TeacherNames.map(item => {
-    //   const matchingObject = StaffData?.result?.find(obj => obj.email === item)
-
-    //   return matchingObject ? matchingObject.id : null
-    // })
-
 
     if (data.categoryId !== '') {
       payload = {
         name: data.name,
-
-        // categoryId: Number(data.categoryId),
-
-        // teacherIds
       }
     } else {
       payload = {
         name: data.name,
 
-        // category_name: data.category_name,
-
-        // teacherIds
       }
     }
 
 
     createSubject(payload).then(response => {
       if (response?.data?.success) {
-
-        // setTeacherNames([])
         handleClose()
         dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }
@@ -188,38 +160,22 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
 
     const existingStaffIds = subjectToEdit.staffs.map(item => item.id)
 
-    // const teacherIds = TeacherNames.map(item => {
-    //   const matchingObject = StaffData?.result?.find(obj => obj.email === item)
-
-    //   return matchingObject ? matchingObject.id : null
-    // })
-
-    // const ids = [...existingStaffIds, ...teacherIds]
 
     let payload
 
     if (data.categoryId !== '') {
       payload = {
-
-        // teacherIds: ids,
         ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),
 
-        // ...(changedFields.hasOwnProperty('categoryId') && { categoryId: Number(changedFields.categoryId) })
       }
     } else {
       payload = {
-
-        // teacherIds: ids,
         ...(changedFields.hasOwnProperty('name') && { name: changedFields.name }),
-
-        // ...(changedFields.hasOwnProperty('category_name') && { category_name: changedFields.category_name })
       }
     }
 
     updateSubject(subjectToEdit?.id, payload).then(response => {
       if (response.data.success) {
-
-        // setTeacherNames([])
         handleClose()
         dispatch(fetchSubjects({ page: 1, limit: 10, categoryId: '' }))
       }
@@ -229,8 +185,6 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   useEffect(() => {
     if (subjectToEdit !== null) {
       setValue('name', subjectToEdit.name)
-
-      // setValue('categoryId', subjectToEdit.categoryId)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -243,7 +197,7 @@ const ManageSubjects = ({ open, toggle, subjectToEdit = null }) => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

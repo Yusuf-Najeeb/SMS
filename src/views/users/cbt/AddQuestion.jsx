@@ -29,11 +29,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { inputQuestionsSchema } from 'src/@core/Formschema'
 
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { useStaff } from '../../../hooks/useStaff'
 import { useSubjects } from '../../../hooks/useSubjects'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
@@ -42,6 +41,7 @@ import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import Questions from './Questions'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { submitQuestions } from '../../../store/apps/cbt/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -84,7 +84,7 @@ const AddQuestion = ({ open, closeModal }) => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [CategoriesData] = useCategories()
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
@@ -97,7 +97,7 @@ const AddQuestion = ({ open, closeModal }) => {
   const handleChangeClass = e => setClassRoomId(Number(e.target.value))
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -284,7 +284,7 @@ const AddQuestion = ({ open, closeModal }) => {
                         aria-describedby='stepper-linear-personal-staffId-helper'
                         {...(errors.staffId && { helperText: errors.staffId.message })}
                       >
-                        <MenuItem value=''>Select Teacher</MenuItem>
+                        <MenuItem>Select Teacher</MenuItem>
                         {StaffData?.result?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item?.firstName} ${item?.lastName}`}
