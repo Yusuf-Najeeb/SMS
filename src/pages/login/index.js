@@ -50,15 +50,24 @@ import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessa
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
   zIndex: 2,
-  maxHeight: 680,
-  marginTop: theme.spacing(12),
-  marginBottom: theme.spacing(12),
-  [theme.breakpoints.down(1540)]: {
-    maxHeight: 550
-  },
-  [theme.breakpoints.down('lg')]: {
-    maxHeight: 500
-  }
+
+  // maxHeight: 680,
+
+  display: 'block',
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  objectPosition: 'center',
+  borderRadius: '20px',
+
+  // marginTop: theme.spacing(12),
+  // marginBottom: theme.spacing(12),
+  // [theme.breakpoints.down(1540)]: {
+  //   maxHeight: 550
+  // },
+  // [theme.breakpoints.down('lg')]: {
+  //   maxHeight: 500
+  // }
 }))
 
 const RightWrapper = styled(Box)(({ theme }) => ({
@@ -96,7 +105,7 @@ const defaultValues = {
   userId: 'super.admin@email.com'
 }
 
-const LoginPage = ({getCsrfToken, getProviders}) => {
+const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -104,7 +113,6 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
   const auth = useAuth()
   const theme = useTheme()
   const router = useRouter()
-  const bgColors = useBgColor()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -113,8 +121,6 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
 
   const {
     control,
-    setError,
-    getValues,
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm({
@@ -146,6 +152,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
           sx={{
             flex: 1,
             display: 'flex',
+            width: '60%',
             position: 'relative',
             alignItems: 'center',
             borderRadius: '20px',
@@ -156,7 +163,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
         >
           {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} /> */}
 
-          <LoginIllustration alt='login-illustration' src={`/images/staff.svg`} />
+          <LoginIllustration alt='login-illustration' src={`/images/students.jpg`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -171,34 +178,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 400 }}>
-            {/* <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                fill={theme.palette.primary.main}
-                d='M0.00172773 0V6.85398C0.00172773 6.85398 -0.133178 9.01207 1.98092 10.8388L13.6912 21.9964L19.7809 21.9181L18.8042 9.88248L16.4951 7.17289L9.23799 0H0.00172773Z'
-              />
-              <path
-                fill='#161616'
-                opacity={0.06}
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M7.69824 16.4364L12.5199 3.23696L16.5541 7.25596L7.69824 16.4364Z'
-              />
-              <path
-                fill='#161616'
-                opacity={0.06}
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M8.07751 15.9175L13.9419 4.63989L16.5849 7.28475L8.07751 15.9175Z'
-              />
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                fill={theme.palette.primary.main}
-                d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
-              />
-            </svg> */}
+          
             <Box component={'div'} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <img src='/images/logo.webp' style={{objectPosition: 'center', objectFit: 'cover'}} width={'80px'} height={'80px'} alt='' />
             </Box>
@@ -231,13 +211,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
             </Alert> */}
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
 
-            {/* <form noValidate autoComplete='off' action={ handleStaffLogin({userId: getValues('userId'), password: getValues('password')}).then((data)=>{
-    if(data?.success){
-      const returnUrl = router.query.returnUrl
-      const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
-      router.replace(redirectURL)
-    }
-   })}> */}
+        
 
               <Box sx={{ mb: 4 }}>
                 <Controller

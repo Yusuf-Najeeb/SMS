@@ -49,15 +49,12 @@ import { Alert } from '@mui/material'
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
   zIndex: 2,
-  maxHeight: 680,
-  marginTop: theme.spacing(12),
-  marginBottom: theme.spacing(12),
-  [theme.breakpoints.down(1540)]: {
-    maxHeight: 550
-  },
-  [theme.breakpoints.down('lg')]: {
-    maxHeight: 500
-  }
+  display: 'block',
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  objectPosition: 'center',
+  borderRadius: '20px',
 }))
 
 const RightWrapper = styled(Box)(({ theme }) => ({
@@ -134,6 +131,7 @@ const ApplicantLoginPage = () => {
           sx={{
             flex: 1,
             display: 'flex',
+            width: '60%',
             position: 'relative',
             alignItems: 'center',
             borderRadius: '20px',
@@ -144,7 +142,7 @@ const ApplicantLoginPage = () => {
         >
           {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} /> */}
 
-          <LoginIllustration alt='login-illustration' src={`/images/student.svg`} />
+          <LoginIllustration alt='login-illustration' src={`/images/students.jpg`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
