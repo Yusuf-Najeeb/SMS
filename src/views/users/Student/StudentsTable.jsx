@@ -407,10 +407,7 @@ const StudentsTable = () => {
                             <Icon icon='tabler:eye' fontSize={20} />
                             View Student
                           </MenuItem>
-                          {/* <MenuItem onClick={() => setStudentToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                            Assign Category
-                          </MenuItem> */}
+                         
                            <MenuItem onClick={() => setStudentToAssignClassRoom(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
                             Change Class
@@ -449,7 +446,7 @@ const StudentsTable = () => {
           count={paging?.totalItems}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10]}
+          rowsPerPageOptions={[ 10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 

@@ -234,6 +234,11 @@ const navigation = () => {
         icon: 'pepicons-print:people',
         path: '/apps/staff'
       },
+      {
+        title: 'Staff Activity Log',
+        icon: 'tdesign:system-log',
+        path: '/apps/staff-activity-log'
+      },
 
       // {
       //   title: 'Staff Attendance',
