@@ -30,9 +30,9 @@ import ViewRoom from './ViewRoom'
 
 const RoomsTable = () => {
   const dispatch = useAppDispatch()
-
   const [CategoriesData] = useCategories()
   const [RoomsList, loading, paging] = useRooms()
+
   const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -47,7 +47,6 @@ const RoomsTable = () => {
   const [assignRoomToStaff, setAssignRoomToStaff] = useState(false)
   const [assignRoomToStudent, setAssignRoomToStudent] = useState(false)
   const [selectedRoom, setSelectedRoom] = useState(null)
-  const [type, setType] = useState('')
   const [key, setKey] = useState('')
 
 const [anchorEl, setAnchorEl] = useState(Array(RoomsList?.length)?.fill(null));
@@ -136,8 +135,6 @@ const handleRowOptionsClose = (index) => {
   const setActiveCategory = value => {
     OpenSubjectModal()
     handleRowOptionsClose(RoomsList?.indexOf(value))
-
-    // console.log(RoomsList?.indexOf(value), 'index')
     setSelectedRoom(value)
   }
 
@@ -169,14 +166,10 @@ const handleRowOptionsClose = (index) => {
     doCancelDelete()
   }
 
-  useEffect(() => {
-    dispatch(fetchCategories({ page: 1, limit: 300, type: 'room' }))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     dispatch(fetchRooms({ page: page + 1, limit: 10, key }))
+    dispatch(fetchCategories({ page: 1, limit: 300, type: 'room' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage, key])

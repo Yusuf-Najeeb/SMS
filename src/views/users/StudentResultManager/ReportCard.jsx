@@ -25,6 +25,13 @@ import SchoolDetails from '../ResultManager/SchoolDetails'
 import CustomResultTable from '../component/CustomResultTable'
 import DismissibleAlert from '../component/DismissibleAlert'
 import GetUserData from '../../../@core/utils/getUserData'
+import CustomAffectiveTraitsTable from '../component/CustomAffectiveTraitsTable'
+import CustomPsychomotorSkillsTable from '../component/CustomPsychomotorSkillsTable'
+import { fetchPsychomotorSkillsForStudents } from '../../../store/apps/psychomotorSkills/asyncthunk'
+import { fetchAffectiveTraitsForStudents } from '../../../store/apps/affectiveTraits/asyncthunk'
+import { fetchGradeParameters } from '../../../store/apps/gradingParameters/asyncthunk'
+import CustomReportCardSummary from '../component/CustomReportSummary'
+import CustomGradingSystem from '../component/CustomGradingSystem'
 
 const userData = GetUserData()
 
@@ -46,23 +53,57 @@ const ReportCardTable = () => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [activeStudent, setActiveStudent] = useState({})
   const [classRoom, setClassroom] = useState({})
+  const [PsychomotorSkills, setStudentSkills] = useState({})
+  const [AffectiveTraits, setAffectiveTraits] = useState({})
   const [showResult, setShowResult] = useState(false)
   const [noResult, setNoResult] = useState(false)
-
+  const [GradingParametersList, setGradingParametersList] = useState([])
+  const [nextAcadmeicSession, setNextAcademicSession] = useState({})
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
   }
 
-  useEffect(() => {
-   setClassId(userData?.classId)
-    setStudentId(userData?.id)
-  }, [])
+  const fetchSkills = async () => {
+    const res = await dispatch(fetchPsychomotorSkillsForStudents({ studentId, classId, sessionId }))
+
+    if (res?.payload?.data?.data) {
+      setStudentSkills({ ...res.payload.data.data })
+    } else {
+      setStudentSkills({})
+    }
+  }
+
+  const fetchTraits = async () => {
+    const res = await dispatch(fetchAffectiveTraitsForStudents({ studentId, classId, sessionId }))
+
+    if (res?.payload?.data?.data) {
+      setAffectiveTraits({ ...res.payload.data.data })
+    } else {
+      setAffectiveTraits({})
+    }
+  }
 
   const displayReportCard = async () => {
+    await fetchSkills()
+    await fetchTraits()
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
 
     if (Object.keys(res.payload.data.data.subject).length > 0) {
+      fetchGradeParameters({ page: 1, limit: 10, classCategoryId: classRoom?.categoryId })
+        .then(res => {
+          if (res?.data?.success) {
+            setGradingParametersList([...res?.data.data])
+          } else {
+            setGradingParametersList([])
+          }
+        })
+        .catch(() => {
+          setGradingParametersList([])
+        })
+
+      const nextTerm = SessionData?.find(session => session?.id == CurrentSessionData?.id + 1)
+      setNextAcademicSession(nextTerm)
       dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
       setShowResult(true)
       setNoResult(false)
@@ -70,12 +111,17 @@ const ReportCardTable = () => {
 
       setActiveStudent({ ...selectedStudent })
     } else {
+      setNextAcademicSession({})
       setShowResult(false)
       setNoResult(true)
       setActiveStudent({})
     }
   }
 
+  useEffect(() => {
+    setClassId(userData?.classId)
+    setStudentId(userData?.id)
+  }, [])
 
   useEffect(() => {
     if (activeStudent) {
@@ -86,14 +132,9 @@ const ReportCardTable = () => {
   }, [activeStudent])
 
   useEffect(() => {
-    let isMounted = true
-
     if (classId && ClassesList?.length > 0) {
       const selectedClass = ClassesList?.find(classroom => classroom.id == classId)
-
-      if (isMounted) {
-        setClassroom({ ...selectedClass })
-      }
+      setClassroom({ ...selectedClass })
     }
   }, [classId, ClassesList])
 
@@ -112,7 +153,6 @@ const ReportCardTable = () => {
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-
             <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
@@ -172,6 +212,7 @@ const ReportCardTable = () => {
                 </Typography>
               </Box>
               <StudentReportCardDetails
+                nextAcadmeicSession={nextAcadmeicSession}
                 activeStudent={activeStudent}
                 profilePictureUrl={profilePictureUrl}
                 classRoom={classRoom}
@@ -180,16 +221,36 @@ const ReportCardTable = () => {
             </CardContent>
           )}
 
-          <CustomResultTable
-            tableData={StudentReportCard}
-            positionArray={StudentSubjectPosition}
-            studentId={studentId}
-          />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Box sx={{ width: '80%' }}>
+              <CustomResultTable
+                tableData={StudentReportCard}
+                positionArray={StudentSubjectPosition}
+                studentId={studentId}
+              />
+            </Box>
+
+            <Box sx={{ width: '18.8%', display: 'flex', flexDirection: 'column' }}>
+              <CustomAffectiveTraitsTable traits={AffectiveTraits} />
+              <CustomPsychomotorSkillsTable skills={PsychomotorSkills} />
+            </Box>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
+            <Box sx={{ width: '52%' }}>
+              <CustomReportCardSummary
+                reportCardData={StudentReportCard}
+                numberOfSubjects={StudentReportCard?.length}
+              />
+            </Box>
+            <Box sx={{ width: '47%' }}>
+              <CustomGradingSystem ClassGradingParameters={GradingParametersList} />
+            </Box>
+          </Box>
         </Box>
       )}
 
       {noResult && <DismissibleAlert AlertMessage={'No Records Found'} />}
-
     </div>
   )
 }

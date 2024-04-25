@@ -35,12 +35,19 @@ const Header = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between'
 }))
 
-const schema = yup.object().shape({
+const createSchema = yup.object().shape({
   percentage: yup.string().required('Percentage is required'),
   name: yup
     .string()
     .required("Grading Parameter Name is required"),
   classCategoryId: yup.string().required('Class Category is required')
+})
+
+const editSchema = yup.object().shape({
+  percentage: yup.string().required('Percentage is required'),
+  name: yup
+    .string()
+    .required("Grading Parameter Name is required"),
 })
 
 const defaultValues = {
@@ -62,7 +69,7 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
   } = useForm({
     defaultValues,
     mode: 'onChange',
-    resolver: yupResolver(schema)
+    resolver: yupResolver(parameterToEdit ? editSchema : createSchema)
   })
 
   const handleClose = () => {
@@ -93,7 +100,8 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
       const payload = {
         name: data.name,  
         percentage: data.percentage,
-        classCategoryId: Number(data?.classCategoryId)
+
+        // classCategoryId: Number(data?.classCategoryId)
       }
 
 
@@ -118,7 +126,6 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
     if (parameterToEdit !== null) {
       setValue('name', parameterToEdit.name)
       setValue('percentage', parameterToEdit.percentage)
-      Number(setValue('classCategoryId', parameterToEdit.classCategoryId))
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -192,7 +199,7 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
             )}
           />
 
-        <Controller
+        {!parameterToEdit &&  <Controller
             name='classCategoryId'
             control={control}
             rules={{ required: true }}
@@ -218,7 +225,7 @@ const ManageGradingParameters = ({ open, toggle, parameterToEdit = null }) => {
                 </CustomTextField>
                 
             )}
-          />
+          /> }
 
         
 

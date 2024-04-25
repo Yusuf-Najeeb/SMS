@@ -45,8 +45,8 @@ const CustomResultTable = ({tableData,positionArray, studentId}) => {
                         <td align="left"  style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{ClassExercise?.score || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{Project?.score || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{Exam?.score || '--'}</td>
-                        <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{positionArray[0]?.highestscore || '--'}</td>
-                        <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{positionArray[0]?.lowestscore || '--'}</td>
+                        <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{positionArray[i]?.highestscore || '--'}</td>
+                        <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{positionArray[i]?.lowestscore || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{data?.total || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{subjectPosition?.position || '--'}</td>
                         <td align="left" style={{textTransform:'uppercase', paddingLeft: '2px', color: '#000'}}>{data?.grade || '--'}</td>
