@@ -17,7 +17,7 @@ const CustomResultTable = ({tableData,positionArray, studentId}) => {
                 <th align="left" style={{paddingLeft: '2px'}}>Exam</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Class Highest Score</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Class Lowest Score</th>
-                <th align="left" style={{paddingLeft: '2px'}}>Total (100%)</th>
+                <th align="left" style={{paddingLeft: '2px'}}>Total Score (100%)</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Subject Position</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Grade</th>
                 <th align="left" style={{paddingLeft: '2px'}}>Remark</th>

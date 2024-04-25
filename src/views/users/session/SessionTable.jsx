@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -22,14 +22,12 @@ import { deleteSession, fetchSession, makeCurrentSession } from '../../../store/
 import ManageSession from './ManageSession'
 import MakeCurrentSessionDialog from './MakeCurrentSession'
 import EditSession from './EditSession'
+import { formatDate } from '../../../@core/utils/format'
 
 
 
 const SessionTable = () => {
   const dispatch = useAppDispatch()
-
-
-//   const [GradingParametersList, loading, paging] = useCategories()
 
   const [SessionData, loading, paging] = useSession()
   const [deleteModal, setDeleteModal] = useState(false)
@@ -42,8 +40,8 @@ const SessionTable = () => {
   const [openModal, setOpenModal] = useState(false)
   const [selectedSession, setSelectedSession] = useState(null)
   const [sessionToEdit, setSessionToEdit] = useState(null)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const rowOptionsOpen = Boolean(anchorEl)
+
+  console.log(SessionData, 'session data')
 
 
   const OpenSessionModal = () => {
@@ -140,9 +138,12 @@ const SessionTable = () => {
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Term
               </TableCell>
-              {/* <TableCell align='center' sx={{ minWidth: 100 }}>
-                Created By
-              </TableCell> */}
+              <TableCell align='center' sx={{ minWidth: 150 }}>
+                Start Date
+              </TableCell>
+              <TableCell align='center' sx={{ minWidth: 150 }}>
+                End Date
+              </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Current 
               </TableCell>
@@ -160,7 +161,6 @@ const SessionTable = () => {
               </TableRow>
             ) : (
 
-              // </Box>
               <Fragment>
                 {SessionData?.map((item, i) => (
                   <TableRow hover role='checkbox' key={item.id}>
@@ -171,7 +171,12 @@ const SessionTable = () => {
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {item?.term || '--'}
                     </TableCell>
-                    {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
+                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                      {formatDate(item?.startDate) || '--'}
+                    </TableCell>
+                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                      {formatDate(item?.endDate) || '--'}
+                    </TableCell>
                     <TableCell align='center'>
                       {item.isCurrent ? 
 
@@ -208,7 +213,7 @@ const SessionTable = () => {
                         </IconButton>
                         </Tooltip>
 
-                        <Tooltip title='Edit Session'>
+                        <Tooltip title='Edit Session Dates'>
                         <IconButton size='small' onClick={() => setActiveSession(item)}>
                           <Icon icon='tabler:edit' />
                         </IconButton>

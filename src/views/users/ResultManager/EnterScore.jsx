@@ -77,14 +77,13 @@ const EnterStudentScore = ({ open, closeModal }) => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  const [StudentData] = useStudent()
   const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [CategoriesData] = useCategories()
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
 
-  const handleChangeClass = (e)=> setClassRoomId(Number(e.target.value))
+  const handleChangeClass = (e)=> Number(setClassRoomId(e.target.value))
   const handleChangeSubject = (e)=> Number(setSubjectId(e.target.value))
   const handleChangeTeacher = (e)=> Number(setTeacherId(e.target.value))
 
@@ -103,12 +102,12 @@ const EnterStudentScore = ({ open, closeModal }) => {
   useEffect(()=>{
     if(subjectId && teacherId){
       fetchStudentsTakingSubject(subjectId, teacherId).then((res)=>{
-        if(res.data.success){
+        if(res?.data?.success){
           setStudentsTakingSubject(res?.data?.data)
         }
       })
     }
-  },[subjectId,teacherId ])
+  },[subjectId, teacherId])
 
   const {
     control,

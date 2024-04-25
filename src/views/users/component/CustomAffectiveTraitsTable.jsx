@@ -7,7 +7,7 @@ const CustomAffectiveTraitsTable = ({traits}) => {
     <table width={'100%'} style={{border: "1px solid #eeeeee", }} className='customReportTable affectiveTraitsTable'>
         <thead className='customTableHead'>
             <tr style={{height: '40px'}}>
-                <th align="left" style={{paddingLeft: '2px', fontSize: '13px'}} >AFFECTIVE TRAITS</th>
+                <th align="center" style={{paddingLeft: '2px', fontSize: '13px'}} >AFFECTIVE TRAITS</th>
                 <th align="left" style={{paddingLeft: '2px'}} ></th>
             </tr>
         </thead>

@@ -9,39 +9,44 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton } from '@mui/material'
-import CustomChip from 'src/@core/components/mui/chip'
+import { Button, Card, CardContent, CardHeader, Grid, IconButton, MenuItem } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
+import CustomTextField from 'src/@core/components/mui/text-field'
 
 import CustomSpinner from 'src/@core/components/custom-spinner'
 import { useGradingParameters } from '../../../hooks/useGradingParameters'
-import { deleteGradingParameter, fetchGradingParameters } from '../../../store/apps/gradingParameters/asyncthunk'
+import { deleteGradingParameter, fetchGradeParameters, fetchGradingParameters } from '../../../store/apps/gradingParameters/asyncthunk'
 import PageHeader from '../component/PageHeader'
 import ManageGradingParameters from './ManageGradingParameters'
-import { formatDate, formatDateToReadableFormat } from '../../../@core/utils/format'
+import { formatDate } from '../../../@core/utils/format'
 import GetUserData from '../../../@core/utils/getUserData'
+import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
+import { useCategories } from '../../../hooks/useCategories'
 
 
 
 const GradingParametersTable = () => {
 
-    const userData = GetUserData()
-
+  const userData = GetUserData()
+    
   const dispatch = useAppDispatch()
+  const [CategoriesData] = useCategories()
+
+  // const [GradingParametersList] = useGradingParameters()
 
 
-//   const [GradingParametersList, loading, paging] = useCategories()
-
-  const [GradingParametersList, loading, paging] = useGradingParameters()
+  const [GradingParametersList, setGradingParametersList] = useState([])
+  const [classCategoryId, setClassCategoryId] = useState('')
   const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [ParameterToDelete, setParameterToDelete] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [selectedParameter, setSelectedParameter] = useState(null)
-  const [type, setType] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [paging, setPaging] = useState({ currentPage: 1, totalItems: 0, itemsPerPage: 0, totalPages: 0 })
 
   const OpenParameterModal = () => {
     if (openModal) {
@@ -55,6 +60,10 @@ const GradingParametersTable = () => {
   const setActiveCategory = (value) => {
     OpenParameterModal()
     setSelectedParameter(value)
+  }
+
+  const handleChangeClassCategory = e => {
+    Number(setClassCategoryId(e.target.value))
   }
 
   const handleChangePage = (event, newPage) => {
@@ -79,20 +88,73 @@ const GradingParametersTable = () => {
   const ondeleteClick = () => {
     deleteGradingParameter(ParameterToDelete).then((res)=>{
       if(res.data.success){
-        dispatch(fetchGradingParameters({ page: 1, limit: 10 }))
+        fetchGradeParameters({ page: 1, limit: 10 , classCategoryId})
       }
     })
     doCancelDelete()
   }
 
+  const fetchParameters = async () => {
+    setLoading(true)
+
+    const res = await fetchGradeParameters({ page: 1, limit: 10 , classCategoryId})
+
+
+    if (res?.data?.data?.length > 0) {
+      const { currentPage, totalItems, itemsPerPage, totalPages } = res?.data.paging
+
+      setGradingParametersList([...res?.data.data])
+      setPaging({ currentPage, totalItems, itemsPerPage, totalPages })
+      setLoading(false)
+    } else {
+      setLoading(false)
+
+      setGradingParametersList([])
+      setPaging({ currentPage: 1, totalItems: 0, itemsPerPage: 0, totalPages: 0 })
+    }
+  }
+
   useEffect(() => {
-    dispatch(fetchGradingParameters({ page: page + 1, limit: 10 }))
+    dispatch(fetchCategories({ page: 1, limit: 300, type: 'class' }))
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage])
 
   return (
     <Fragment>
+
+<Card>
+        <CardHeader title='Filter' />
+        <CardContent>
+          <Grid container spacing={12}>
+          <Grid item xs={12} sm={3}>
+              <CustomTextField
+                select
+                fullWidth
+                label='Class Category*'
+                SelectProps={{ value: classCategoryId, onChange: e => handleChangeClassCategory(e) }}
+              >
+                <MenuItem>Select Class Category</MenuItem>
+                {CategoriesData?.map(item => (
+                  <MenuItem key={item?.id} value={item?.id} sx={{textTransform: 'uppercase'}}>
+                    {`${item?.name}`}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={6} sx={{mt: 5}}>
+            <Button onClick={fetchParameters} 
+              disabled= {!classCategoryId}
+            variant='contained'  sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.light' }}>
+          <Icon fontSize='1.125rem' icon='ic:baseline-cloud-download' />
+          Fetch Grading Parameters
+        </Button>
+            </Grid>
+
+            </Grid>
+            </CardContent>
+            </Card>
 
 
    {(userData?.role?.name == 'super-admin' || userData?.role?.name == 'admin') &&  <PageHeader toggle={OpenParameterModal} action={'Add Grading Parameter'} /> }

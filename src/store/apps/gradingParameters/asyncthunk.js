@@ -7,7 +7,7 @@ import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 
 export const fetchGradingParameters = createAsyncThunk('grading-parameters', async (query) => {
     try {
-      const response = await axios.get(`/settings/grading-parameter?page=${query.page}&limit=${query.limit}`)
+      const response = await axios.get(`/settings/grading-parameter?page=${query.page}&limit=${query.limit}&classCategoryId=${query.classCategoryId}`)
 
       return response
     } catch (error) {
@@ -16,6 +16,17 @@ export const fetchGradingParameters = createAsyncThunk('grading-parameters', asy
   
     }
   })
+
+  export const fetchGradeParameters =  async (query) => {
+    try {
+      const response = await axios.get(`/settings/grading-parameter?page=${query.page}&limit=${query.limit}&classCategoryId=${query.classCategoryId}`)
+
+      return response
+    } catch (error) {
+
+  
+    }
+  }
 
   export const createGradingParameter = async (payload)=>{
     try {
