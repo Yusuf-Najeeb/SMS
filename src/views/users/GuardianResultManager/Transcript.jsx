@@ -1,4 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, Fragment, useRef } from 'react'
+
+import generatePDF from 'react-to-pdf';
 
 import Icon from 'src/@core/components/icon'
 
@@ -32,6 +34,9 @@ const StudentsTranscript = () => {
   const [StudentData] = useStudent()
   const [StudentTranscript, loading] = useTranscript()
 
+  // Ref
+  const targetRef = useRef();
+
   // States
 
   const [studentId, setStudentId] = useState('')
@@ -41,6 +46,7 @@ const StudentsTranscript = () => {
   const [TranscriptData, setTranscriptData] = useState([])
   const [noResult, setNoResult] = useState(false)
   const [wardData, setWard] = useState([])
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false)
 
   const handleChangeStudent = e => {
     Number(setStudentId(e.target.value))
@@ -52,9 +58,11 @@ const StudentsTranscript = () => {
     if (Object.keys(res?.payload?.data?.data).length > 0) {
       setShowResult(true)
       setNoResult(false)
+      setShowDownloadBtn(true)
       const result = extractTranscriptData(res?.payload?.data?.data)
       setTranscriptData([...result])
     } else {
+      setShowDownloadBtn(false)
       setNoResult(true)
       setShowResult(false)
     }
@@ -129,14 +137,35 @@ const StudentsTranscript = () => {
             }
               </CustomTextField>
             </Grid>
+            </Grid>
            
 
-            <Grid item xs={12} sm={12}>
+            <Grid container spacing={12} sx={{mt: 3}}>
+            <Grid item xs={12} sm={4}>
               <Button onClick={displayTranscript} variant='contained' disabled={!studentId} sx={{ '& svg': { mr: 2 }, backgroundColor: 'info.main' }}>
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
                 Display Transcript
               </Button>
             </Grid>
+
+            {showDownloadBtn && (
+              <Grid item xs={12} sm={6}>
+                <Button
+                  onClick={() =>
+                    generatePDF(targetRef, {
+                      filename: `${activeStudent?.firstName}-${activeStudent?.lastName}-transcript.pdf`
+                    })
+                  }
+                  variant='contained'
+                  disabled={!studentId }
+                  sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.main' }}
+                >
+                  <Icon fontSize='1.125rem' icon='octicon:download-16' />
+                  Download Transcript
+                </Button>
+              </Grid>
+            )}
+
           </Grid>
         </CardContent>
       </Card>
@@ -144,7 +173,7 @@ const StudentsTranscript = () => {
       
 
       {!loading && showResult && (
-        <Box sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#eee' }}>
+        <Box ref={targetRef} sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#eee' }}>
           {!loading &&
             showResult &&
             TranscriptData.map((sessionData, index) => (
@@ -180,8 +209,7 @@ const StudentsTranscript = () => {
                       textTransform: 'uppercase'
                     }}
                   >
-                    {' '}
-                    {`Student Transcript`}
+                    Student&nbsp;&nbsp;Transcript
                   </Typography>
                 </Box>
 
@@ -207,8 +235,7 @@ const StudentsTranscript = () => {
                       pr: 2
                     }}
                   >
-                    {' '}
-                    Academic Records{' '}
+                    Academic&nbsp;&nbsp;Records
                   </Box>
                 </Box>
 

@@ -1,4 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+
+import generatePDF from 'react-to-pdf'
 
 import Icon from 'src/@core/components/icon'
 
@@ -47,6 +49,9 @@ const ReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
+  // Ref
+  const targetRef = useRef()
+
   // States
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
@@ -61,20 +66,18 @@ const ReportCardTable = () => {
   const [AffectiveTraits, setAffectiveTraits] = useState({})
   const [GradingParametersList, setGradingParametersList] = useState([])
   const [nextAcadmeicSession, setNextAcademicSession] = useState({})
-
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false)
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
   }
 
   const handleChangeStudent = e => {
-
-      Number(setStudentId(e.target.value))
-    const student = wardData.find((ward)=> ward?.id == Number(e.target.value))
+    Number(setStudentId(e.target.value))
+    const student = wardData.find(ward => ward?.id == Number(e.target.value))
     const studentClassId = student?.classId
     setClassId(studentClassId)
   }
-
 
   const fetchSkills = async () => {
     const res = await dispatch(fetchPsychomotorSkillsForStudents({ studentId, classId, sessionId }))
@@ -96,25 +99,26 @@ const ReportCardTable = () => {
     }
   }
 
-
-
   const displayReportCard = async () => {
     await fetchSkills()
     await fetchTraits()
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
 
     if (Object.keys(res.payload.data.data.subject).length > 0) {
-      fetchGradeParameters({ page: 1, limit: 10 , classCategoryId: classRoom?.categoryId}).then((res)=> {
-        if(res?.data?.success){
-          setGradingParametersList([...res?.data.data])
-        } else {
+      fetchGradeParameters({ page: 1, limit: 10, classCategoryId: classRoom?.categoryId })
+        .then(res => {
+          if (res?.data?.success) {
+            setGradingParametersList([...res?.data.data])
+          } else {
+            setGradingParametersList([])
+          }
+        })
+        .catch(() => {
           setGradingParametersList([])
-        }
-      }).catch(()=>{
-        setGradingParametersList([])
-      })
+        })
 
-      const nextTerm = SessionData?.find((session)=>session?.id == (CurrentSessionData?.id + 1) )
+      setShowDownloadBtn(true)
+      const nextTerm = SessionData?.find(session => session?.id == CurrentSessionData?.id + 1)
       setNextAcademicSession(nextTerm)
       dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
       setShowResult(true)
@@ -123,6 +127,7 @@ const ReportCardTable = () => {
 
       setActiveStudent({ ...selectedStudent })
     } else {
+      setShowDownloadBtn(false)
       setNextAcademicSession({})
       setShowResult(false)
       setNoResult(true)
@@ -132,18 +137,15 @@ const ReportCardTable = () => {
 
   useEffect(() => {
     if (userData) {
-      getStudentsUnderGuardian(userData?.email)
-        .then(res => {
-          if (res?.data?.success) {
-            setWard(res?.data?.data)
-          } else {
-            setWard([])
-          }
-        })
-        
+      getStudentsUnderGuardian(userData?.email).then(res => {
+        if (res?.data?.success) {
+          setWard(res?.data?.data)
+        } else {
+          setWard([])
+        }
+      })
     }
   }, [])
-
 
   useEffect(() => {
     if (activeStudent) {
@@ -180,25 +182,24 @@ const ReportCardTable = () => {
         <CardHeader title='Filter' />
         <CardContent>
           <Grid container spacing={12}>
-
-          <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3}>
               <CustomTextField
                 select
                 fullWidth
                 label='Student*'
                 SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
               >
-                {wardData?.length > 0 ?  wardData?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item.firstName} ${item.lastName}`}
-                  </MenuItem>
-                ))
-                : 
-               
-                    <MenuItem value='' sx={{ textTransform: 'uppercase' }}>
-                      {`No wards assigned`}
+                {wardData?.length > 0 ? (
+                  wardData?.map(item => (
+                    <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
+                      {`${item.firstName} ${item.lastName}`}
                     </MenuItem>
-            }
+                  ))
+                ) : (
+                  <MenuItem value='' sx={{ textTransform: 'uppercase' }}>
+                    {`No wards assigned`}
+                  </MenuItem>
+                )}
               </CustomTextField>
             </Grid>
 
@@ -216,8 +217,10 @@ const ReportCardTable = () => {
                 ))}
               </CustomTextField>
             </Grid>
+          </Grid>
 
-            <Grid item xs={12} sm={12}>
+          <Grid container spacing={12} sx={{ mt: 3 }}>
+            <Grid item xs={12} sm={4}>
               <Button
                 onClick={displayReportCard}
                 variant='contained'
@@ -228,12 +231,32 @@ const ReportCardTable = () => {
                 Display Report Card
               </Button>
             </Grid>
+
+            {showDownloadBtn && (
+              <Grid item xs={12} sm={6}>
+                <Button
+                  onClick={() =>
+                    generatePDF(targetRef, {
+                      filename: `${activeStudent?.firstName}-${activeStudent?.lastName}-report-card.pdf`
+                    })
+                  }
+                  variant='contained'
+                  disabled={!studentId || !classId || !sessionId}
+                  sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.main' }}
+                >
+                  <Icon fontSize='1.125rem' icon='octicon:download-16' />
+                  Download Report Card
+                </Button>
+              </Grid>
+            )}
+            
           </Grid>
         </CardContent>
       </Card>
 
       {!loading && showResult && (
         <Box
+          ref={targetRef}
           className='resultBg'
           sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#fff' }}
         >
@@ -270,20 +293,19 @@ const ReportCardTable = () => {
             </CardContent>
           )}
 
-<Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-          <Box sx={{width: '80%'}}>
-          <CustomResultTable
-            tableData={StudentReportCard}
-            positionArray={StudentSubjectPosition}
-            studentId={studentId}
-          />
-          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Box sx={{ width: '80%' }}>
+              <CustomResultTable
+                tableData={StudentReportCard}
+                positionArray={StudentSubjectPosition}
+                studentId={studentId}
+              />
+            </Box>
 
-          <Box sx={{width: '18.8%', display: 'flex', flexDirection: 'column'}}>
-
-<CustomAffectiveTraitsTable traits={AffectiveTraits} />
-<CustomPsychomotorSkillsTable skills={PsychomotorSkills} />
-</Box>
+            <Box sx={{ width: '18.8%', display: 'flex', flexDirection: 'column' }}>
+              <CustomAffectiveTraitsTable traits={AffectiveTraits} />
+              <CustomPsychomotorSkillsTable skills={PsychomotorSkills} />
+            </Box>
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
@@ -297,13 +319,10 @@ const ReportCardTable = () => {
               <CustomGradingSystem ClassGradingParameters={GradingParametersList} />
             </Box>
           </Box>
-
-
         </Box>
       )}
 
       {noResult && <DismissibleAlert AlertMessage={'No Records Found'} />}
-
     </div>
   )
 }

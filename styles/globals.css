@@ -115,9 +115,19 @@ code[class*='language-'] {
     
   }
 
+  .customTableHead tr th {
+    font-size: 12px;
+  }
+
   .customTable, .customReportTable {
     border-collapse: collapse;
     border-spacing: 0;
+  }
+
+  /* .customTable tbody tr td, */
+  .customReportTable tbody tr td {
+    font-size: 12px;
+    /* font-weight: bold; */
   }
 
   .customTable > thead, 
@@ -152,11 +162,13 @@ code[class*='language-'] {
 
 
   .customReportTable tbody tr:nth-child(odd) {
-    background-color: transparent;
+    /* background-color: transparent; */
+    background-color: #fff;
   }
 
   .customReportTable tbody tr:nth-child(even) {
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color: transparent;
   }
 
   .iconBtnWrapper{
