@@ -32,7 +32,7 @@ const CustomResultTable = ({tableData,positionArray, studentId}) => {
                 const ClassExercise = data?.result?.find(res => res.category == 'class exercise')
                 const Exam = data?.result?.find(res => res.category == 'Final exam')
                 const Project = data?.result?.find(res => res.category == 'project / practical')
-                const subjectPosition = positionArray[0]?.position?.find((pos)=> pos.student == studentId)
+                const subjectPosition = positionArray[i]?.position?.find((pos)=> pos.student == studentId)
 
 
                 return (

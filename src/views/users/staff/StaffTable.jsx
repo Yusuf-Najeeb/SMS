@@ -34,7 +34,7 @@ import ViewStaff from './ViewStaff'
 import AddStaff from './AddStaff'
 import { truncateText } from '../../../@core/utils/truncateText'
 
-const userRoleObj = {
+export const userRoleObj = {
   'super-admin': { icon: 'grommet-icons:user-admin', color: 'info' },
   admin: { icon: 'tabler:device-laptop', color: 'secondary' },
   teacher: { icon: 'tabler:circle-check', color: 'success' },

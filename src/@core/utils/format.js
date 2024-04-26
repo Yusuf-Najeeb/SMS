@@ -96,6 +96,33 @@ export const formatCVC = (value, cardNumber, Payment) => {
   return clearValue.slice(0, maxLength)
 }
 
+export const formatTime =(createdAt)=> {
+  // Parse the createdAt string into a Date object
+  const date = new Date(createdAt);
+  
+  // Extract the hours and minutes from the Date object
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  // Determine whether it's morning or afternoon
+  const period = hours >= 12 ? 'PM' : 'AM';
+
+  // Convert hours from 24-hour format to 12-hour format
+  const formattedHours = hours % 12 || 12;
+
+  // Add leading zero to minutes if needed
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+  // Construct the formatted time string
+  const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
+
+  return formattedTime;
+}
+
+
+
+
+
 export const formatFirstLetter = letter => {
   if (letter) {
     const formattedString = letter[0].toUpperCase() + letter.slice(1)
