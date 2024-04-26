@@ -9,24 +9,35 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import {  Card, CardContent, CardHeader, Grid, IconButton, MenuItem } from '@mui/material'
+import {  Box, Card, CardContent, CardHeader, Grid, IconButton, MenuItem, Typography } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import NoData from 'src/@core/components/emptydata/NoData'
-import CustomTextField from 'src/@core/components/mui/text-field'
 
+import CustomTextField from 'src/@core/components/mui/text-field'
+import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomSpinner from 'src/@core/components/custom-spinner'
-import { formatDate } from '../../../@core/utils/format'
+
+import { formatDate, formatTime } from '../../../@core/utils/format'
 import GetUserData from '../../../@core/utils/getUserData'
 import { fetchStaffActivityLog } from '../../../store/apps/staffActivityLog/asyncthunk'
 import { useStaffActivityLog } from '../../../hooks/useStaffActivityLog'
 import { useStaff } from '../../../hooks/useStaff'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { userRoleObj } from '../staff/StaffTable'
 
+
+ const dbTableObj = {
+  'grading parameters': { icon: 'carbon:result', color: 'info' },
+  'class': { icon: 'mdi:google-classroom', color: 'secondary' },
+
+  subject: { icon: 'mdi:learn-outline', color: 'success' },
+  'academic grades': { icon: 'carbon:result', color: 'info' },
+  sessions: { icon: 'iwwa:year', color: 'primary' },
+  'others': { icon: 'tdesign:system-log', color: 'success' }
+}
 
 
 const StaffActivityLog = () => {
-
-  const userData = GetUserData()
     
   const dispatch = useAppDispatch()
   const [StaffData] = useStaff()
@@ -35,26 +46,12 @@ const StaffActivityLog = () => {
 
 
   const [staffId, setStaffId] = useState('')
-  const [GradingParametersList, setGradingParametersList] = useState([])
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [openModal, setOpenModal] = useState(false)
-  const [selectedParameter, setSelectedParameter] = useState(null)
 
 
-  const OpenParameterModal = () => {
-    if (openModal) {
-      setOpenModal(false)
-      setSelectedParameter(null)
-    } else {
-      setOpenModal(true)
-    }
-  }
 
-  const setActiveCategory = (value) => {
-    OpenParameterModal()
-    setSelectedParameter(value)
-  }
+
 
   const handleChangeStaff = e => {
     Number(setStaffId(e.target.value))
@@ -115,26 +112,25 @@ const StaffActivityLog = () => {
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
-              <TableCell align='left' sx={{ minWidth: 50, maxWidth: 50 }}>
+              <TableCell align='left' sx={{ minWidth: 80, }}>
                 S/N
               </TableCell>
-              <TableCell align='center' sx={{ minWidth: 100 }}>
-                Name
+              <TableCell align='center' sx={{ minWidth: 150 }}>
+                Table
               </TableCell>
-              <TableCell align='center' sx={{ minWidth: 100 }}>
-                Percentage
+              <TableCell align='center' sx={{ minWidth: 200 }}>
+                Action
               </TableCell>
-              {/* <TableCell align='center' sx={{ minWidth: 100 }}>
-                Created By
-              </TableCell> */}
-              <TableCell align='center' sx={{ minWidth: 100 }}>
-                Date Created
+
+              <TableCell align='center' sx={{ minWidth: 150 }}>
+                Staff Role
               </TableCell>
-              {(userData?.role?.name == 'super-admin' || userData?.role?.name == 'admin') && 
-              <TableCell align='center' sx={{ minWidth: 100 }}>
-                Actions
+            
+              <TableCell align='center' sx={{ minWidth: 150 }}>
+                Date
               </TableCell>
-                }
+
+             
             </TableRow>
           </TableHead>
           <TableBody>
@@ -148,31 +144,49 @@ const StaffActivityLog = () => {
 
               // </Box>
               <Fragment>
-                {GradingParametersList?.map((item, i) => (
+                {StaffActivityLogData?.map((item, i) => (
                   <TableRow hover role='checkbox' key={item.id}>
                     <TableCell align='left'>{i + 1}</TableCell>
-                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
-                      {item?.name || '--'}
-                    </TableCell>
+                    <TableCell align='left' sx={{ textTransform: 'uppercase', fontSize: '13px', }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <CustomAvatar
+                                skin='light'
+                                sx={{ mr: 4, width: 30, height: 30 }}
+                                color={dbTableObj[item?.table]?.color || dbTableObj['others']?.color }
+                              >
+                                <Icon icon={dbTableObj[item?.table]?.icon || dbTableObj['others'].icon } />
+                              </CustomAvatar>
+                              <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                                {item?.table || '--'}
+                              </Typography>
+                            </Box>
+                          </TableCell>
                     <TableCell align='center' sx={{ textTransform: 'capitalize' }}>
-                      {item?.percentage || '--'}
+                      {item?.action || '--'}
                     </TableCell>
+                    <TableCell align='left' sx={{ textTransform: 'uppercase', fontSize: '13px', }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <CustomAvatar
+                                skin='light'
+                                sx={{ mr: 4, width: 30, height: 30 }}
+                                color={userRoleObj[item?.role].color || 'primary'}
+                              >
+                                <Icon icon={userRoleObj[item?.role].icon} />
+                              </CustomAvatar>
+                              <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                                {item?.role || '--'}
+                              </Typography>
+                            </Box>
+                          </TableCell>
                     <TableCell align='center'>
-                      {formatDate(item?.createdAt)}
+                      {`${formatDate(item?.createdAt)}, ${formatTime(item?.createdAt)}`}
 
                     </TableCell>
 
-                    {(userData?.role?.name == 'super-admin' || userData?.role?.name == 'admin') && 
-                    <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <IconButton size='small' onClick={() => setActiveCategory(item)}>
-                        <Icon icon='tabler:edit' />
-                      </IconButton>
-                    </TableCell>
-                   }
                   </TableRow>
                 ))}
 
-                {GradingParametersList?.length === 0 && (
+                {StaffActivityLogData?.length === 0 && (
                   <tr className='text-center'>
                     <td colSpan={6}>
                       <NoData />

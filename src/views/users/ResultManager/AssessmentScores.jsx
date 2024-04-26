@@ -32,7 +32,6 @@ import { truncateText } from '../../../@core/utils/truncateText'
 const StudentsAssessmentsScoreTable = () => {
   // Hooks
   const dispatch = useAppDispatch()
-  // const [StaffData] = useStaff()
   const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
