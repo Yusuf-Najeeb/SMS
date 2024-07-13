@@ -112,48 +112,6 @@ const ViewSubject = ({ open, closeCanvas, Subject }) => {
               }
 
 
-
-              {/* <Divider sx={{ mt: '10px', mb: '10px' }}>Subject Teachers</Divider>
-
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>S/N</TableCell>
-                      <TableCell>NAME</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody
-                    sx={{
-                      '& .MuiTableCell-root': {
-                        py: `${theme.spacing(2.5)} !important`,
-                        fontSize: theme.typography.body1.fontSize
-                      }
-                    }}
-                  >
-                    {Subject?.staffs?.length > 0 ? (
-                      Subject?.staffs?.map((item, i) => (
-                        <TableRow key={item.id}>
-                          <TableCell>{i + 1}</TableCell>
-
-                          <TableCell>{`${item?.firstName} ${item?.lastName}` || '--'}</TableCell>
-
-                         
-                        </TableRow>
-                      ))
-                    ) : (
-                      <tr className='text-center'>
-                        <td colSpan={6}>
-                          <NoData />
-                        </td>
-                      </tr>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-              <Divider /> */}
-
 {Subject?.staffs?.length > 0 ? 
             <ListTeachers Users={Subject?.staffs}  />
 

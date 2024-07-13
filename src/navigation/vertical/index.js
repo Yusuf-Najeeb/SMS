@@ -21,6 +21,37 @@ const navigation = () => {
         title: ' Applicants',
         icon: 'fluent:people-sync-16-filled',
         path: '/apps/applicants'
+      },
+      {
+        sectionTitle: 'Assessment & Results'
+      },
+      {
+        title: 'Result Manager',
+        icon: 'healthicons:i-exam-qualification',
+        path: '/apps/ward-result-manager'
+      }
+    ]
+  }
+
+  if (userData?.role?.name == 'others') {
+    return [
+      {
+        sectionTitle: 'Applicant Examination'
+      },
+
+      {
+        title: 'CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicantCBTExam'
+      },
+      {
+        sectionTitle: 'Applicant Examination Result'
+      },
+
+      {
+        title: 'CBT Result',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicant-cbt-result'
       }
     ]
   }
@@ -50,7 +81,7 @@ const navigation = () => {
         path: '/apps/student-result-manager'
       },
       {
-        sectionTitle: 'Academics'
+        sectionTitle: 'Academics '
       },
       {
         title: 'Time Table',
@@ -71,12 +102,68 @@ const navigation = () => {
         path: '/dashboard'
       },
       {
+        sectionTitle: 'Applicants'
+      },
+      {
+        title: ' Applicants',
+        icon: 'fluent:people-sync-16-filled',
+        path: '/apps/applicants'
+      },
+      {
+        title: ' Applicants Subjects',
+        icon: 'mdi:learn-outline',
+        path: '/apps/applicantsSubjects'
+      },
+      {
+        title: 'Applicants CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicantCBT'
+      },
+
+      {
+        sectionTitle: 'Student Management'
+      },
+      {
+        title: 'Attendance',
+        icon: 'mdi:timetable',
+        path: '/apps/attendance'
+      },
+      {
         sectionTitle: 'Academics '
       },
       {
         title: 'Subjects',
         icon: 'mdi:learn-outline',
         path: '/apps/subjects'
+      },
+      {
+        title: 'Classes',
+        icon: 'mdi:google-classroom',
+        path: '/apps/classes'
+      },
+
+      {
+        sectionTitle: 'Non-Academic Assessment '
+      },
+      {
+        title: 'Affective Traits',
+        icon: 'game-icons:skills',
+        path: '/apps/affectiveTraits'
+      },
+      {
+        title: 'Psychomotor Skills',
+        icon: 'game-icons:skills',
+        path: '/apps/psychomotorSkills'
+      },
+
+      {
+        sectionTitle: 'Assessment & Results'
+      },
+
+      {
+        title: 'CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/cbt'
       },
       {
         title: 'Grading Parameters',
@@ -110,6 +197,12 @@ const navigation = () => {
         path: '/apps/staff'
       },
 
+      {
+        title: 'Staff Activity Log',
+        icon: 'tdesign:system-log',
+        path: '/apps/staff-activity-log'
+      },
+
       // {
       //   title: 'Staff Attendance',
       //   icon: 'material-symbols:co-present-rounded',
@@ -124,27 +217,31 @@ const navigation = () => {
         icon: 'fluent:people-sync-16-filled',
         path: '/apps/applicants'
       },
+      {
+        title: ' Applicants Subjects',
+        icon: 'mdi:learn-outline',
+        path: '/apps/applicantsSubjects'
+      },
+      {
+        title: 'Applicants CBT',
+        icon: 'healthicons:i-exam-multiple-choice',
+        path: '/apps/applicantCBT'
+      },
 
       {
-        sectionTitle: 'Students'
+        sectionTitle: 'Student Management'
       },
       {
         title: ' Students',
         icon: 'fa6-solid:people-line',
         path: '/apps/students'
       },
+      {
+        title: 'Attendance',
+        icon: 'mdi:timetable',
+        path: '/apps/attendance'
+      },
 
-      // {
-      //   title: 'New Student',
-      //   icon: 'tabler:mail',
-      //   path: '/apps/newStudent/list'
-      // },
-
-      // {
-      //   title: 'Students Attendence',
-      //   icon: 'material-symbols:co-present-rounded',
-      //   path: '/apps/student-attendence/list'
-      // },
       {
         sectionTitle: 'Guardians'
       },
@@ -154,11 +251,6 @@ const navigation = () => {
         path: '/apps/guardian'
       },
 
-      // {
-      //   title: 'New Guardian',
-      //   icon: 'raphael:parent',
-      //   path: '/apps/newGuardian/list'
-      // },
       {
         sectionTitle: 'Academics '
       },
@@ -187,22 +279,18 @@ const navigation = () => {
       },
 
       {
-        title: 'Attendance',
-        icon: 'mdi:timetable',
-        path: '/apps/attendance'
+        sectionTitle: 'Non-Academic Assessment '
       },
-
-      // {
-      //   title: 'Time Table',
-      //   icon: 'mdi:timetable',
-      //   path: '/apps/timetable'
-      // },
-
-      // {
-      //   title: 'Tests and Exams',
-      //   icon: 'healthicons:i-exam-multiple-choice',
-      //   path: '/apps/tests-exams/list'
-      // },
+      {
+        title: 'Affective Traits',
+        icon: 'game-icons:skills',
+        path: '/apps/affectiveTraits'
+      },
+      {
+        title: 'Psychomotor Skills',
+        icon: 'game-icons:skills',
+        path: '/apps/psychomotorSkills'
+      },
 
       {
         sectionTitle: 'Assessment & Results'
@@ -312,6 +400,12 @@ const navigation = () => {
       path: '/apps/staff'
     },
 
+    {
+      title: 'Staff Activity Log',
+      icon: 'tdesign:system-log',
+      path: '/apps/staff-activity-log'
+    },
+
     // {
     //   title: 'Staff Attendance',
     //   icon: 'material-symbols:co-present-rounded',
@@ -319,25 +413,38 @@ const navigation = () => {
     // },
 
     {
-      sectionTitle: 'Students'
+      sectionTitle: 'Applicants'
+    },
+    {
+      title: ' Applicants',
+      icon: 'fluent:people-sync-16-filled',
+      path: '/apps/applicants'
+    },
+    {
+      title: ' Applicants Subjects',
+      icon: 'mdi:learn-outline',
+      path: '/apps/applicantsSubjects'
+    },
+    {
+      title: 'Applicants CBT',
+      icon: 'healthicons:i-exam-multiple-choice',
+      path: '/apps/applicantCBT'
+    },
+
+    {
+      sectionTitle: 'Student Management'
     },
     {
       title: ' Students',
       icon: 'fa6-solid:people-line',
       path: '/apps/students'
     },
+    {
+      title: 'Attendance',
+      icon: 'mdi:timetable',
+      path: '/apps/attendance'
+    },
 
-    // {
-    //   title: 'New Student',
-    //   icon: 'tabler:mail',
-    //   path: '/apps/newStudent/list'
-    // },
-
-    // {
-    //   title: 'Students Attendence',
-    //   icon: 'material-symbols:co-present-rounded',
-    //   path: '/apps/student-attendence/list'
-    // },
     {
       sectionTitle: 'Guardians'
     },
@@ -347,11 +454,6 @@ const navigation = () => {
       path: '/apps/guardian'
     },
 
-    // {
-    //   title: 'New Guardian',
-    //   icon: 'raphael:parent',
-    //   path: '/apps/newGuardian/list'
-    // },
     {
       sectionTitle: 'Academics '
     },
@@ -380,22 +482,18 @@ const navigation = () => {
     },
 
     {
-      title: 'Attendance',
-      icon: 'mdi:timetable',
-      path: '/apps/attendance'
+      sectionTitle: 'Non-Academic Assessment '
     },
-
-    // {
-    //   title: 'Time Table',
-    //   icon: 'mdi:timetable',
-    //   path: '/apps/timetable'
-    // },
-
-    // {
-    //   title: 'Tests and Exams',
-    //   icon: 'healthicons:i-exam-multiple-choice',
-    //   path: '/apps/tests-exams/list'
-    // },
+    {
+      title: 'Affective Traits',
+      icon: 'game-icons:skills',
+      path: '/apps/affectiveTraits'
+    },
+    {
+      title: 'Psychomotor Skills',
+      icon: 'game-icons:skills',
+      path: '/apps/psychomotorSkills'
+    },
 
     {
       sectionTitle: 'Assessment & Results'
@@ -407,17 +505,17 @@ const navigation = () => {
       path: '/apps/result-manager'
     },
 
-    {
-      title: 'CBT',
-      icon: 'healthicons:i-exam-multiple-choice',
-      path: '/apps/cbt'
-    },
-
     // {
     //   title: 'Library',
     //   icon: 'arcticons:classroom',
     //   path: '/apps/library/list'
     // },
+
+    {
+      title: 'CBT',
+      icon: 'healthicons:i-exam-multiple-choice',
+      path: '/apps/cbt'
+    },
 
     {
       sectionTitle: 'Hostel'

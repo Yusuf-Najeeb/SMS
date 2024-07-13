@@ -1,4 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+
+import generatePDF from 'react-to-pdf';
 
 import Icon from 'src/@core/components/icon'
 
@@ -24,6 +26,13 @@ import SchoolDetails from './SchoolDetails'
 import StudentReportCardDetails from './StudentReportCardDetails'
 import CustomResultTable from '../component/CustomResultTable'
 import DismissibleAlert from '../component/DismissibleAlert'
+import CustomAffectiveTraitsTable from '../component/CustomAffectiveTraitsTable'
+import CustomPsychomotorSkillsTable from '../component/CustomPsychomotorSkillsTable'
+import { fetchPsychomotorSkillsForStudents } from '../../../store/apps/psychomotorSkills/asyncthunk'
+import { fetchAffectiveTraitsForStudents } from '../../../store/apps/affectiveTraits/asyncthunk'
+import { fetchGradeParameters } from '../../../store/apps/gradingParameters/asyncthunk'
+import CustomReportCardSummary from '../component/CustomReportSummary'
+import CustomGradingSystem from '../component/CustomGradingSystem'
 
 const StudentsReportCardTable = () => {
   // Hooks
@@ -36,6 +45,9 @@ const StudentsReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
+  // Ref
+  const targetRef = useRef();
+  
   // States
 
   const [openScoreModal, setScoreModal] = useState(false)
@@ -47,8 +59,12 @@ const StudentsReportCardTable = () => {
   const [classRoom, setClassroom] = useState({})
   const [showResult, setShowResult] = useState(false)
   const [classStudents, setClassStudents] = useState([])
-
+  const [PsychomotorSkills, setStudentSkills] = useState({})
+  const [AffectiveTraits, setAffectiveTraits] = useState({})
   const [noResult, setNoResult] = useState(false)
+  const [GradingParametersList, setGradingParametersList] = useState([])
+  const [nextAcadmeicSession, setNextAcademicSession] = useState({})
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false)
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
@@ -67,10 +83,51 @@ const StudentsReportCardTable = () => {
     Number(setStudentId(e.target.value))
   }
 
+  const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
+
+  const fetchSkills = async ()=>{
+    const res = await  dispatch(fetchPsychomotorSkillsForStudents({ studentId, classId, sessionId }))
+
+      if(res?.payload?.data?.data){
+        setStudentSkills({...res.payload.data.data})
+      }
+        else {
+          setStudentSkills({})
+        }
+  }
+
+  const fetchTraits = async ()=>{
+    const res = await  dispatch(fetchAffectiveTraitsForStudents({ studentId, classId, sessionId }))
+
+      if(res?.payload?.data?.data){
+        setAffectiveTraits({...res.payload.data.data})
+      }
+        else {
+          setAffectiveTraits({})
+
+        }
+  }
+
   const displayReportCard = async () => {
+    await fetchSkills()
+    await fetchTraits()
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
 
-    if (Object.keys(res.payload.data.data.subject).length > 0) {
+    if (Object.keys(res?.payload?.data?.data?.subject).length > 0) {
+
+      fetchGradeParameters({ page: 1, limit: 10 , classCategoryId: classRoom?.categoryId}).then((res)=> {
+        if(res?.data?.success){
+          setGradingParametersList([...res?.data.data])
+        } else {
+          setGradingParametersList([])
+        }
+      }).catch(()=>{
+        setGradingParametersList([])
+      })
+
+      setShowDownloadBtn(true)
+      const nextTerm = SessionData?.find((session)=>session?.id == (CurrentSessionData?.id + 1) )
+      setNextAcademicSession(nextTerm)
       dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
       setShowResult(true)
       setNoResult(false)
@@ -78,13 +135,15 @@ const StudentsReportCardTable = () => {
 
       setActiveStudent({ ...selectedStudent })
     } else {
+      setShowDownloadBtn(false)
+      setNextAcademicSession({})
       setShowResult(false)
       setNoResult(true)
       setActiveStudent({})
     }
   }
 
-  const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
+  
 
   useEffect(() => {
     if (activeStudent) {
@@ -168,23 +227,37 @@ const StudentsReportCardTable = () => {
               </CustomTextField>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Button
                 onClick={displayReportCard}
                 variant='contained'
                 disabled={!studentId || !classId || !sessionId}
-                sx={{ '& svg': { mr: 2 } }}
+                sx={{ '& svg': { mr: 2 }, backgroundColor: 'info.main' }}
               >
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
                 Display Student Report Card
               </Button>
             </Grid>
+
+            {showDownloadBtn && 
+            <Grid item xs={12} sm={6}>
+              <Button
+                onClick={() => generatePDF(targetRef, {filename: `${activeStudent?.firstName}-${activeStudent?.lastName}-report-card.pdf`})}
+                variant='contained'
+                disabled={!studentId || !classId || !sessionId}
+                sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.main' }}
+              >
+                <Icon fontSize='1.125rem' icon='octicon:download-16' />
+                Download Report Card
+              </Button>
+            </Grid> }
+
           </Grid>
         </CardContent>
       </Card>
 
       {!loading && showResult && (
-        <Box
+        <Box ref={targetRef}
           className='resultBg'
           sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#fff' }}
         >
@@ -212,6 +285,7 @@ const StudentsReportCardTable = () => {
                 </Typography>
               </Box>
               <StudentReportCardDetails
+                nextAcadmeicSession={nextAcadmeicSession}
                 activeStudent={activeStudent}
                 profilePictureUrl={profilePictureUrl}
                 classRoom={classRoom}
@@ -220,11 +294,30 @@ const StudentsReportCardTable = () => {
             </CardContent>
           )}
 
+          <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+          <Box sx={{width: '80%'}}>
           <CustomResultTable
             tableData={StudentReportCard}
             positionArray={StudentSubjectPosition}
             studentId={studentId}
           />
+        </Box>
+
+        <Box sx={{width: '18.8%', display: 'flex', flexDirection: 'column'}}>
+
+          <CustomAffectiveTraitsTable traits={AffectiveTraits} />
+          <CustomPsychomotorSkillsTable skills={PsychomotorSkills} />
+        </Box>
+      </Box>
+
+      <Box sx={{display: 'flex', justifyContent: 'space-between', width: '80%'}}>
+      <Box sx={{width: '52%'}}>
+        <CustomReportCardSummary  reportCardData={StudentReportCard} numberOfSubjects={StudentReportCard?.length} />
+      </Box>
+      <Box sx={{width: '47%'}}> 
+      <CustomGradingSystem ClassGradingParameters={GradingParametersList} />
+      </Box>
+      </Box>
         </Box>
       )}
 

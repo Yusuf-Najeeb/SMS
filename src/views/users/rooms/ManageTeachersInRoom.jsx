@@ -21,9 +21,9 @@ import { useForm, Controller } from 'react-hook-form'
 import Icon from 'src/@core/components/icon'
 import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, MenuItem,  } from '@mui/material'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
-import { useStaff } from '../../../hooks/useStaff'
+import { fetchStaffByType } from '../../../store/apps/staff/asyncthunk'
 import { assignRoomToStaff, fetchRooms, removeStaffInRoom } from '../../../store/apps/rooms/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 
 const Header = styled(Box)(({ theme }) => ({
@@ -43,23 +43,12 @@ const defaultValues = {
 
 const ManageTeacherInRoom = ({ open, toggle, room, status }) => {
   const dispatch = useAppDispatch()
-  const [StaffData] = useStaff()
-
-  const [openTeacherModal, setTeacherModal] = useState(false)
-  const [itemsArray, setItemsArray] = useState([])
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
 
 
-  const toggleTeacherModal = ()=> {
-    // toggle()
-    setTeacherModal(!openTeacherModal)
-  }
-
-  const handleChange = event => {
-    setShowInputField(event.target.checked)
-  }
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: '' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -157,7 +146,7 @@ const ManageTeacherInRoom = ({ open, toggle, room, status }) => {
                 error={Boolean(errors.staffId)}
                 {...(errors.staffId && { helperText: errors.staffId.message })}
               >
-                <MenuItem value=''>Select Staff</MenuItem>
+                <MenuItem>Select Staff</MenuItem>
                 {StaffData?.result?.map((item, i) => {
                   return (
                     <MenuItem key={i} value={item.id}>
@@ -171,11 +160,6 @@ const ManageTeacherInRoom = ({ open, toggle, room, status }) => {
 
 
           <Box sx={{ mt: 5,  }}>
-
-          {/* <Button type='button' variant='outlined' onClick={toggleTeacherModal} sx={{ width: '45%' }}>
-              Select Teachers
-            </Button> */}
-            
 
             <Button type='submit' variant='contained' sx={{ width: '100%' }}>
               {isSubmitting && <CircularProgress size={20} color='secondary' sx={{ ml: 2 }} /> }

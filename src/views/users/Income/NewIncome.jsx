@@ -28,7 +28,6 @@ import EditIncome from './EditIncome'
 import ViewIncome from './ViewIncome'
 import PayIncomeBalance from './PayIncome'
 
-import { useCurrentSession } from '../../../hooks/useCurrentSession'
 import DeleteDialog from '../../../@core/components/delete-dialog'
 import { formatCurrency, formatDate } from '../../../@core/utils/format'
 
@@ -37,9 +36,7 @@ import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import PageHeader from './IncomePageHeader'
 
-const TableCellStyled = styled(TableCell)(({ theme }) => ({
-  color: `${theme.palette.primary.main} !important`
-}))
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const IncomeTable = () => {
   // ** Hooks
@@ -50,7 +47,6 @@ const IncomeTable = () => {
 
   // ** State
   const [page, setPage] = useState(0)
-  const [key, setKey] = useState('')
   const [year, setYear] = useState('')
   const [termYear, setTermYear] = useState('')
   const [term, setTerm] = useState('')
@@ -159,13 +155,17 @@ const IncomeTable = () => {
     doCancelDelete()
   }
 
-  console.log(IncomeData, 'income data')
 
   const exportIncomeToExcel = ()=>{
 
     const payload = {data: IncomeData}
 
-    exportIncome(payload)
+    exportIncome(payload).then((res)=>{
+      if(res?.data?.success){
+        const downloadLink = `${backendURL?.replace('api', '')}${res?.data?.data?.slice(7)}`
+       window.location.href = downloadLink
+      }
+    })
 
   }
 

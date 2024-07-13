@@ -1,10 +1,11 @@
 // ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchStaffs } from './asyncthunk'
+import { fetchStaffByType, fetchStaffs } from './asyncthunk'
 
 const initialState = {
   loading: false,
   StaffData: [],
+  StaffDataByType: [],
   paging: {
     currentPage: 1,
     totalItems: 0,
@@ -29,6 +30,13 @@ export const staffsSlice = createSlice({
     builder.addCase(fetchStaffs.rejected, state => {
       state.loading = false
     })
+
+    builder.addCase(fetchStaffByType.fulfilled, (state, action)=> {
+      state.StaffDataByType = action?.payload?.data?.data
+    })
+    
+
+
   }
 })
 

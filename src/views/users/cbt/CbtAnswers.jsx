@@ -33,7 +33,7 @@ import { useStaff } from '../../../hooks/useStaff'
 import { useAppDispatch } from '../../../hooks'
 import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
-import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
+import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
 import { deleteQuestion, fetchCBTAnswers } from '../../../store/apps/cbt/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
@@ -42,8 +42,11 @@ import DeleteDialog from '../../../@core/components/delete-dialog'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { useStudent } from '../../../hooks/useStudent'
 import GradeEssayAnswer from './GradeEssayAnswer'
+import { fetchApplicants } from '../../../store/apps/applicants/asyncthunk'
+import { useApplicants } from '../../../hooks/useApplicants'
 
-const CBTAnswers = () => {
+const CBTAnswers = ({studentDropdownLabelTitle}) => {
+
   // Hooks
   const dispatch = useAppDispatch()
   const [StaffData] = useStaff()
@@ -51,8 +54,6 @@ const CBTAnswers = () => {
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
   const [CategoriesData] = useCategories()
-
-  const [StudentData] = useStudent()
   
   //   States
   const [loading, setLoading] = useState(false)
@@ -67,12 +68,11 @@ const CBTAnswers = () => {
   const [sessionId, setSessionId] = useState('')
   const [answers, setAnswers] = useState([])
   const [showGradeModal, setShowGradeModal] = useState(false)
+  const [StudentsInClass, setClassStudents] = useState([])
   const [activeAnswer, setActiveAnswer] = useState(null)
   const [questionToDelete, setQuestionToDelete] = useState(null)
   const [deleteModal, setDeleteModal] = useState(false)
   const [paging, setPaging] = useState({ currentPage: 1, totalItems: 0, itemsPerPage: 0, totalPages: 0 })
-
-  console.log(answers, 'answers')
   
 
   const toggleGradeModal = () => {
@@ -112,6 +112,11 @@ const CBTAnswers = () => {
 
   const handleChangeClass = e => {
     Number(setClassId(e.target.value))
+    fetchStudentsInClass(e.target.value).then(res => {
+      if (res?.data?.success) {
+        setClassStudents(res.data.data)
+      }
+    })
   }
 
   const handleChangeSession = e => {
@@ -165,6 +170,8 @@ const CBTAnswers = () => {
     dispatch(fetchCategories({ page: 1, limit: 300, type: 'assessment' }))
 
     dispatch(fetchStudents({ page: 1, limit: 3000, key: '' }))
+    dispatch(fetchApplicants())
+
 
     // eslint-disable-next-line
   }, [])
@@ -195,15 +202,18 @@ const CBTAnswers = () => {
               <CustomTextField
                 select
                 fullWidth
-                label='Student*'
+                label={studentDropdownLabelTitle}
                 SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
-                {StudentData?.result?.map(item => (
+               
+                  <MenuItem>{StudentsInClass.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
+                {StudentsInClass.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.firstName} ${item.lastName}`}
+                    {`${item?.firstName} ${item?.lastName}`}
                   </MenuItem>
                 ))}
+        
+             
               </CustomTextField>
             </Grid>
 
@@ -214,7 +224,7 @@ const CBTAnswers = () => {
                 label='Subject*'
                 SelectProps={{ value: subjectId, onChange: e => handleChangeSubject(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem>{`Select Subject`}</MenuItem>
                 {SubjectsList?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item?.name}`}
@@ -229,7 +239,7 @@ const CBTAnswers = () => {
                 label='Teacher*'
                 SelectProps={{ value: staffId, onChange: e => handleChangeStaff(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                 <MenuItem>{StaffData?.result?.length > 0 ?  `Select Subject Teacher` : 'No Teacher Created'}</MenuItem>
                 {StaffData?.result?.map(staff => (
                   <MenuItem key={staff?.id} value={staff?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${staff?.firstName} ${staff?.lastName}`}
@@ -245,7 +255,7 @@ const CBTAnswers = () => {
                 label='Session*'
                 SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem>{SessionData?.length > 0 ?  `Select Session` : 'No Session Created'}</MenuItem>
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name} ${item.term} term`}
@@ -261,7 +271,7 @@ const CBTAnswers = () => {
                 label='Assessment Category*'
                 SelectProps={{ value: categoryId, onChange: e => handleChangeCategory(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
+                <MenuItem>{CategoriesData?.length > 0 ?  `Select Assessment Category` : 'No Assessment Category Created'}</MenuItem>
                 {CategoriesData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name}`}

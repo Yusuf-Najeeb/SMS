@@ -217,7 +217,6 @@ const SubjectsTable = () => {
 
                    
                     <TableCell align='center'>
-                      {/* {item.status ? ( */}
                       <CustomChip
                         rounded
                         skin='light'
@@ -226,16 +225,7 @@ const SubjectsTable = () => {
                         color='success'
                         sx={{ textTransform: 'capitalize' }}
                       />
-                      {/* ) : (
-                        <CustomChip
-                          rounded
-                          skin='light'
-                          size='small'
-                          label='Inactive'
-                          color='warning'
-                          sx={{ textTransform: 'capitalize' }}
-                        />
-                      )} */}
+                    
                     </TableCell>
                     <TableCell align='center' sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                       <>

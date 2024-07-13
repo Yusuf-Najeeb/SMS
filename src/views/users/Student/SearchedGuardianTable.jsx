@@ -4,6 +4,7 @@ import { Alert, Grid, Typography } from '@mui/material'
 
 const SearchedGuardianTable = ({ tableData }) => {
   return (
+    
     // <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
 
     <Fragment>

@@ -60,3 +60,13 @@ export const fetchClassTimetable = createAsyncThunk('timetable', async (query) =
       
     }
   }
+
+  export const fetchClassTimeTable = async (className)=>{
+    try {
+      const res = await axios.get(`/timetable/image?className=${className}`)
+
+      return res
+    } catch (error) {
+      
+    }
+  }

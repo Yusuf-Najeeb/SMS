@@ -9,7 +9,6 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
-import TablePagination from '@mui/material/TablePagination'
 import { Box, FormControlLabel, FormGroup, IconButton, Switch, Typography } from '@mui/material'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -28,11 +27,9 @@ import {  fetchStudents } from '../../../store/apps/Student/asyncthunk'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 
 import { useClasses } from '../../../hooks/useClassess'
-import AddStudent from '../Student/AddStudent'
 import { deleteApplicant, fetchApplicants, updateApplicant } from '../../../store/apps/applicants/asyncthunk'
 import { useApplicants } from '../../../hooks/useApplicants'
-import PageHeader from '../component/PageHeader'
-import GetUserData from '../../../@core/utils/getUserData'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -174,9 +171,7 @@ const AllApplicantsTable = () => {
                 <TableCell align='left' sx={{ minWidth: 250 }}>
                   Applicant
                 </TableCell>
-                {/* <TableCell align='center' sx={{ minWidth: 150 }}>
-                Religion
-              </TableCell> */}
+               
                 <TableCell align='left' sx={{ minWidth: 160 }}>
                   Class
                 </TableCell>
@@ -212,7 +207,6 @@ const AllApplicantsTable = () => {
                 <Fragment>
                   {ApplicantsData?.length > 0 &&
                     ApplicantsData?.map((item, i) => {
-                      const className = ClassesList?.find(c => c.id === item.classId)
 
                       return (
                         <TableRow hover role='checkbox' key={item.id}>
@@ -231,7 +225,7 @@ const AllApplicantsTable = () => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.firstName} ${item?.lastName}`}
+                                {`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}

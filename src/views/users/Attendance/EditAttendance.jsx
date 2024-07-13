@@ -17,7 +17,7 @@ import { styled } from '@mui/material/styles'
 import { Alert, CircularProgress, MenuItem, Typography } from '@mui/material'
 
 // ** Store & Actions Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import DialogContent from '@mui/material/DialogContent'
 import IconButton from '@mui/material/IconButton'
@@ -29,21 +29,17 @@ import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
-import FormController from '../component/FormController'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { fetchSubjects } from '../../../store/apps/subjects/asyncthunk'
 import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
-import { useStaff } from '../../../hooks/useStaff'
-import { useSubjects } from '../../../hooks/useSubjects'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
-import { useCategories } from '../../../hooks/useCategories'
 import { fetchStudents } from '../../../store/apps/Student/asyncthunk'
-import { useStudent } from '../../../hooks/useStudent'
 import { formatDateToYYYMMDDD } from '../../../@core/utils/format'
 import { updateAttendance } from '../../../store/apps/attendance/asyncthunk'
+import { useAppSelector } from '../../../hooks'
 
 export const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   top: 0,
@@ -66,7 +62,7 @@ export const CustomInput = forwardRef(({ ...props }, ref) => {
 
 const defaultValues = {
   staffId: '',
-  studentId: '',
+  studentName: '',
   classId: '',
   sessionId: '',
   date: new Date(),
@@ -75,7 +71,7 @@ const defaultValues = {
   reasonForAbsence: ''
 }
 
-const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
+const EditAttendance = ({ open, closeModal, selectedRecord, fetchData, studentName }) => {
   const [ClassRoomId, setClassRoomId] = useState()
   const [studentsInClass, setStudentsInClass] = useState([])
   const [attendanceState, setAttendanceState] = useState(false)
@@ -83,11 +79,8 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  const [StaffData] = useStaff()
-  const [StudentData] = useStudent()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
 
-  // const [CategoriesData] = useCategories()
-  // const [SubjectsList] = useSubjects()
   const [ClassesList] = useClasses()
   const [SessionData] = useSession()
 
@@ -102,7 +95,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
   }
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: 1, limit: 300, key: 'teacher' }))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchSubjects({ page: 1, limit: 300, categoryId: '' }))
     dispatch(fetchClasses({ page: 1, limit: 300, key: '' }))
     dispatch(fetchSession({ page: 1, limit: 300 }))
@@ -133,10 +126,9 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
 
   useEffect(() => {
     if (selectedRecord) {
-      selectedRecord.classId !== null ? setValue('classId', selectedRecord.classId) : setValue('classId', '')
-      selectedRecord.studentId !== null ? setValue('studentId', selectedRecord.studentId) : setValue('studentId', '')
-      selectedRecord.staffId !== null ? setValue('staffId', selectedRecord.staffId) : setValue('staffId', '')
-      selectedRecord.sessionId !== null ? setValue('sessionId', selectedRecord.sessionId) : setValue('sessionId', '')
+      selectedRecord.classId !== null ? Number(setValue('classId', selectedRecord.classId)) : setValue('classId', '')
+      selectedRecord.staffId !== null ? Number(setValue('staffId', selectedRecord.staffId)) : setValue('staffId', '')
+      selectedRecord.sessionId !== null ? Number(setValue('sessionId', selectedRecord.sessionId)) : setValue('sessionId', '')
 
       selectedRecord.date !== null ? setValue('date', new Date(selectedRecord.date)) : setValue('date', '')
       selectedRecord.checkInTime !== null
@@ -148,6 +140,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
       selectedRecord.reasonForAbsence !== null
         ? setValue('reasonForAbsence', selectedRecord.reasonForAbsence)
         : setValue('reasonForAbsence', '')
+        setValue('studentName', studentName)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,15 +164,17 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
     const formattedDate = formatDateToYYYMMDDD(date)
 
     const payload = {
-      ...(changedFields.hasOwnProperty('studentId') && { studentId: changedFields.studentId }),
-      ...(changedFields.hasOwnProperty('staffId') && { staffId: changedFields.staffId }),
-      ...(changedFields.hasOwnProperty('sessionId') && { sessionId: changedFields.sessionId }),
-      ...(changedFields.hasOwnProperty('classId') && { classId: changedFields.classId }),
+      studentId: selectedRecord.studentId,
+      ...(changedFields.hasOwnProperty('staffId') && { staffId: Number(changedFields.staffId) }),
+      ...(changedFields.hasOwnProperty('sessionId') && { sessionId: Number(changedFields.sessionId) }),
+      ...(changedFields.hasOwnProperty('classId') && { classId: Number(changedFields.classId) }),
       ...(changedFields.hasOwnProperty('date') && { date: formattedDate }),
       ...(changedFields.hasOwnProperty('checkInTime') && { checkInTime: changedFields.checkInTime.slice(0, 5) }),
       ...(changedFields.hasOwnProperty('attendanceStatus') && { attendanceStatus: changedFields.attendanceStatus }),
       ...(changedFields.hasOwnProperty('reasonForAbsence') && { reasonForAbsence: changedFields.reasonForAbsence })
     }
+
+
     updateAttendance(payload, selectedRecord.id).then(response => {
       if (response?.data?.success) {
         reset()
@@ -189,15 +184,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
     })
   }
 
-  const handleChange = e => {
-    const selectedStudent = StudentData.result.filter(c => c.id === e.target.value)
-    if (selectedStudent.length > 0) {
-      const { id, firstName, lastName } = selectedStudent?.[0]
-      setItemsArray(`${id}. ${firstName} ${lastName}`)
-    } else {
-      setItemsArray('')
-    }
-  }
+
 
   return (
     <Fragment>
@@ -281,7 +268,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
                         aria-describedby='stepper-linear-personal-staffId-helper'
                         {...(errors.staffId && { helperText: errors.staffId.message })}
                       >
-                        <MenuItem value=''>Select Class Teacher</MenuItem>
+                        <MenuItem>Select Class Teacher</MenuItem>
                         {StaffData?.result?.map(item => (
                           <MenuItem key={item?.id} value={item?.id}>
                             {`${item?.firstName} ${item?.lastName}`}
@@ -294,36 +281,27 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
 
                 <Grid item xs={12} sm={6}>
                   <Controller
-                    name='studentId'
+                    name='studentName'
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <CustomTextField
-                        select
                         fullWidth
                         required
-                        value={value}
+                        value={studentName}
                         label='Student'
+                        disabled
                         onChange={e => {
                           onChange(e)
-
-                          //
-                          handleChange(e)
                         }}
                         id='stepper-linear-personal-paymentMode'
-                        error={Boolean(errors.studentId)}
-                        aria-describedby='stepper-linear-personal-studentId-helper'
-                        {...(errors.studentId && { helperText: errors.studentId.message })}
-                      >
-                        <MenuItem>{studentsInClass.length > 0 ? 'Select Student' : 'No student registered'}</MenuItem>
-                        {studentsInClass?.map(item => (
-                          <MenuItem key={item?.id} value={item?.id}>
-                            {`${item.firstName} ${item.lastName}`}
-                          </MenuItem>
-                        ))}
-                      </CustomTextField>
-                    )}
-                  />
+                        error={Boolean(errors.studentName)}
+                        aria-describedby='stepper-linear-personal-studentName-helper'
+                        {...(errors.studentName && { helperText: errors.studentName.message })}
+                        />
+                        )}
+                        
+                        />
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
@@ -384,7 +362,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name='checkInTime'
                     control={control}
@@ -406,7 +384,7 @@ const EditAttendance = ({ open, closeModal, selectedRecord, fetchData }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={12}>
                   <Controller
                     name='attendanceStatus'
                     control={control}

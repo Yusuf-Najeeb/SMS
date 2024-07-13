@@ -8,7 +8,6 @@ import { useRouter } from 'next/router'
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import Badge from '@mui/material/Badge'
-import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -64,6 +63,12 @@ const UserDropdown = props => {
     setAnchorEl(null)
   }
 
+  const handleResetPassword = () => {
+    
+      router.push('/reset-password')
+    
+  }
+
   const styles = {
     px: 4,
     py: 1.75,
@@ -80,20 +85,21 @@ const UserDropdown = props => {
   }
 
   const handleLogout = () => {
+    const logoutRoute = (userType?.role?.name == 'student' || userType?.role?.name == 'parent') ? '/userlogin' :  userType?.role?.name == 'others' ?  '/applicantlogin' : '/login'
     window.localStorage.removeItem('authToken')
-    handleDropdownClose('/login')
+    handleDropdownClose(logoutRoute)
   }
+
+
 
   useEffect(() => {
     const userType = JSON.parse(window.localStorage.getItem('authUser'))
     setUser(userType)
   }, [])
 
-  console.log(userType, 'user type')
-
   const backEndURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
-  const { role, profilePicture, firstName, lastName } = userType
+  const { role, firstName, lastName } = userType
 
   const renderClient = row => {
     const initials = `${row.firstName} ${row.lastName}`
@@ -153,7 +159,7 @@ const UserDropdown = props => {
             </Badge>
             <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 500 }}>{`${firstName} ${lastName}`}</Typography>
-              <Typography variant='body2'>{role?.name}</Typography>
+              <Typography variant='body2'>{role?.name == "others"  ? 'Applicant': role?.name }</Typography>
             </Box>
           </Box>
         </Box>
@@ -164,7 +170,14 @@ const UserDropdown = props => {
             <Icon icon='tabler:logout' />
             Sign Out
           </Box>
+       
         </MenuItemStyled>
+        {userType?.role?.name !== 'others' && <MenuItemStyled sx={{ p: 0 }} onClick={handleResetPassword}>
+          <Box sx={styles}>
+            <Icon icon='mdi:key-change' />
+            Reset Password
+          </Box>
+        </MenuItemStyled> }
       </Menu>
     </Fragment>
   )

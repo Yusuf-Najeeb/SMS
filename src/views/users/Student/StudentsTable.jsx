@@ -38,6 +38,7 @@ import AssignHostelCategory from './AssignHostelCategory'
 import AssignSubject from './AssignSubject'
 import AssignClass from './AssignClass'
 import ManageStudentInRoom from './AssignStudentToRoom'
+import { truncateText } from '../../../@core/utils/truncateText'
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -313,7 +314,7 @@ const StudentsTable = () => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.firstName} ${item?.lastName}`}
+                                {`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}
@@ -406,10 +407,7 @@ const StudentsTable = () => {
                             <Icon icon='tabler:eye' fontSize={20} />
                             View Student
                           </MenuItem>
-                          {/* <MenuItem onClick={() => setStudentToAssignCategories(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='clarity:assign-user-solid' fontSize={20} />
-                            Assign Category
-                          </MenuItem> */}
+                         
                            <MenuItem onClick={() => setStudentToAssignClassRoom(item)} sx={{ '& svg': { mr: 2 } }}>
                             <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
                             Change Class
@@ -448,7 +446,7 @@ const StudentsTable = () => {
           count={paging?.totalItems}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10]}
+          rowsPerPageOptions={[ 10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 

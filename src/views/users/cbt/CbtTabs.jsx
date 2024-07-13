@@ -1,3 +1,5 @@
+'use client'
+
 // ** React Imports
 import { useState, useEffect } from 'react'
 
@@ -78,7 +80,7 @@ const CbtTab = ({ tab }) => {
 
   const tabContentList = {
     questions: <CBTQuestions />,
-    answers: <CBTAnswers />
+    answers: <CBTAnswers  studentDropdownLabelTitle={'Students*'}/>
   }
 
   if(userData?.role?.name == 'super-admin' || userData?.role?.name == 'admin' || userData?.role?.name == 'teacher' ) {

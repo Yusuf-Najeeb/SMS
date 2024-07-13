@@ -26,15 +26,15 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import Stats from '../component/Stats'
 import PageHeaderWithSearch from '../component/PageHeaderWithSearch'
 import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
-import { useClasses } from '../../../hooks/useClassess'
 import { fetchStaffs, updateStaff } from '../../../store/apps/staff/asyncthunk'
 import { notifySuccess } from '../../../@core/components/toasts/notifySuccess'
 import { useStaff } from '../../../hooks/useStaff'
 import UpdateStaff from './UpdateStaff'
 import ViewStaff from './ViewStaff'
 import AddStaff from './AddStaff'
+import { truncateText } from '../../../@core/utils/truncateText'
 
-const userRoleObj = {
+export const userRoleObj = {
   'super-admin': { icon: 'grommet-icons:user-admin', color: 'info' },
   admin: { icon: 'tabler:device-laptop', color: 'secondary' },
   teacher: { icon: 'tabler:circle-check', color: 'success' },
@@ -167,7 +167,7 @@ const StaffTable = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchStaffs({ page: page + 1, limit: 10, key }))
+    dispatch(fetchStaffs({ page: page + 1, limit: 10, key,  }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, key, refetch])
@@ -233,7 +233,7 @@ const StaffTable = () => {
                             {renderClient(item)}
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                               <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                {`${item?.title}. ${item?.firstName} ${item?.lastName}`}
+                                {`${item?.title}. ${truncateText(item?.firstName)} ${truncateText(item?.lastName)}`}
                               </Typography>
                               <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
                                 {item?.email || '--'}
@@ -351,7 +351,7 @@ const StaffTable = () => {
           count={paging?.totalItems}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10]}
+          rowsPerPageOptions={[10]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 

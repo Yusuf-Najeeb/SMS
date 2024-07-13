@@ -2,7 +2,6 @@ import React, { useState, useEffect, Fragment } from 'react'
 import Drawer from '@mui/material/Drawer'
 
 import IconButton from '@mui/material/IconButton'
-import { useAppDispatch } from 'src/hooks'
 
 import Grid from '@mui/material/Grid'
 import Table from '@mui/material/Table'
@@ -11,11 +10,11 @@ import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import Typography from '@mui/material/Typography'
-import Box, { BoxProps } from '@mui/material/Box'
+import Box from '@mui/material/Box'
 import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
 import TableContainer from '@mui/material/TableContainer'
-import TableCell, { TableCellBaseProps } from '@mui/material/TableCell'
+import TableCell from '@mui/material/TableCell'
 
 import CustomChip from 'src/@core/components/mui/chip'
 import NoData from 'src/@core/components/emptydata/NoData'
@@ -24,21 +23,9 @@ import Icon from 'src/@core/components/icon'
 import { Alert, Stack } from '@mui/material'
 import { fetchStudentsInClass, getSingleClass } from '../../../store/apps/classes/asyncthunk'
 
-import { useClasses } from '../../../hooks/useClassess'
-
 import { TableCellStyled } from '../Guardian/GuardianTable'
-import { fetchClassTimetable } from '../../../store/apps/timetable/asyncthunk'
-import { useCurrentSession } from '../../../hooks/useCurrentSession'
-import { fetchCurrentSession } from '../../../store/apps/currentSession/asyncthunk'
+import { truncateText } from '../../../@core/utils/truncateText'
 
-const CalcWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  '&:not(:last-of-type)': {
-    marginBottom: theme.spacing(2)
-  }
-}))
 
 const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -48,28 +35,14 @@ const Header = styled(Box)(({ theme }) => ({
 }))
 
 const ViewClass = ({ open, closeCanvas, classRoom }) => {
+
   const [studentsInClass, setStudentsInClass] = useState([])
   const [classSubjects, setClassSubjects] = useState([])
 
   const theme = useTheme()
-  const dispatch = useAppDispatch()
-  const [CurrentSessionData] = useCurrentSession()
-  const [ClassesList] = useClasses()
   const [classTeacher, setClassTeacher] = useState('')
 
-  useEffect(() => {
-    dispatch(fetchCurrentSession())
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (classRoom && CurrentSessionData) {
-      dispatch(fetchClassTimetable({ classId: classRoom?.id, sessionId: CurrentSessionData?.id }))
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classRoom, CurrentSessionData])
 
   useEffect(() => {
     if (classRoom) {
@@ -84,12 +57,12 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
           setClassSubjects(res?.data?.data?.subjects)
         }
       })
-      if (ClassesList[0]?.staff) {
-        const { title, firstName, lastName } = ClassesList[0]?.staff
+      if (classRoom?.staff) {
+        const { title, firstName, lastName } = classRoom?.staff
         setClassTeacher(`${title}. ${firstName} ${lastName}`)
       }
     }
-  }, [classRoom, ClassesList])
+  }, [classRoom])
 
   return (
     <Drawer
@@ -165,14 +138,7 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography sx={{ color: 'text.secondary' }}>Class Teacher:</Typography>
                     {classTeacher ? (
-                      <CustomChip
-                        rounded
-                        skin='light'
-                        size='small'
-                        label={classTeacher}
-                        color='success'
-                        sx={{ textTransform: 'capitalize' }}
-                      />
+                     <Typography sx={{ color: 'text.secondary' }}>{classTeacher}</Typography>
                     ) : (
                       <CustomChip
                         rounded
@@ -201,7 +167,7 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                 </Grid>
               ) : (
                 <Grid item sx={{ mt: 5, mb: 5 }} xs={12} sm={12} md={12}>
-                  <Alert severity='error'>No Registered Subjects For Class</Alert>
+                  <Alert severity='error'>No Registered Subjects For This Class</Alert>
                 </Grid>
               )}
 
@@ -230,7 +196,7 @@ const ViewClass = ({ open, closeCanvas, classRoom }) => {
                         <TableRow key={item.id}>
                           <TableCell>{i + 1}</TableCell>
 
-                          <TableCell>{`${item?.firstName} ${item?.lastName}` || '--'}</TableCell>
+                          <TableCell>{`${truncateText(item?.firstName)} ${truncateText(item?.lastName)}` || '--'}</TableCell>
                           <TableCell>{item?.gender || '--'}</TableCell>
                           <TableCell component={TableCellStyled} sx={{ textTransform: 'uppercase', fontSize: '13px' }}>
                             {item?.identificationNumber}

@@ -1,4 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+
+import generatePDF from 'react-to-pdf';
 
 import Icon from 'src/@core/components/icon'
 
@@ -7,7 +9,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 
 import { useAppDispatch } from '../../../hooks'
 import { Box, Button, Card, CardContent, CardHeader, Grid, MenuItem, Typography } from '@mui/material'
-import { fetchClasses, fetchStudentsInClass } from '../../../store/apps/classes/asyncthunk'
+import { fetchClasses } from '../../../store/apps/classes/asyncthunk'
 import { useClasses } from '../../../hooks/useClassess'
 import { useSession } from '../../../hooks/useSession'
 import { fetchSession } from '../../../store/apps/session/asyncthunk'
@@ -24,6 +26,16 @@ import StudentReportCardDetails from './ReportCardDetails'
 import SchoolDetails from '../ResultManager/SchoolDetails'
 import CustomResultTable from '../component/CustomResultTable'
 import DismissibleAlert from '../component/DismissibleAlert'
+import GetUserData from '../../../@core/utils/getUserData'
+import CustomAffectiveTraitsTable from '../component/CustomAffectiveTraitsTable'
+import CustomPsychomotorSkillsTable from '../component/CustomPsychomotorSkillsTable'
+import { fetchPsychomotorSkillsForStudents } from '../../../store/apps/psychomotorSkills/asyncthunk'
+import { fetchAffectiveTraitsForStudents } from '../../../store/apps/affectiveTraits/asyncthunk'
+import { fetchGradeParameters } from '../../../store/apps/gradingParameters/asyncthunk'
+import CustomReportCardSummary from '../component/CustomReportSummary'
+import CustomGradingSystem from '../component/CustomGradingSystem'
+
+const userData = GetUserData()
 
 const ReportCardTable = () => {
   // Hooks
@@ -36,6 +48,9 @@ const ReportCardTable = () => {
   const [StudentSubjectPosition] = useStudentSubjectPosition()
   const [CurrentSessionData] = useCurrentSession()
 
+  // Ref
+  const targetRef = useRef();
+
   // States
   const [classId, setClassId] = useState('')
   const [sessionId, setSessionId] = useState('')
@@ -43,33 +58,59 @@ const ReportCardTable = () => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('')
   const [activeStudent, setActiveStudent] = useState({})
   const [classRoom, setClassroom] = useState({})
+  const [PsychomotorSkills, setStudentSkills] = useState({})
+  const [AffectiveTraits, setAffectiveTraits] = useState({})
   const [showResult, setShowResult] = useState(false)
-  const [classStudents, setClassStudents] = useState([])
-
   const [noResult, setNoResult] = useState(false)
-
-  const handleChangeClass = e => {
-    Number(setClassId(e.target.value))
-    fetchStudentsInClass(e.target.value).then(res => {
-      if (res.status) {
-        setClassStudents(res.data.data)
-      }
-    })
-  }
+  const [GradingParametersList, setGradingParametersList] = useState([])
+  const [nextAcadmeicSession, setNextAcademicSession] = useState({})
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false)
 
   const handleChangeSession = e => {
     Number(setSessionId(e.target.value))
   }
 
-  useEffect(() => {
-    const user = JSON.parse(window.localStorage.getItem('authUser'))
-    setStudentId(user?.id)
-  }, [])
+  const fetchSkills = async () => {
+    const res = await dispatch(fetchPsychomotorSkillsForStudents({ studentId, classId, sessionId }))
+
+    if (res?.payload?.data?.data) {
+      setStudentSkills({ ...res.payload.data.data })
+    } else {
+      setStudentSkills({})
+    }
+  }
+
+  const fetchTraits = async () => {
+    const res = await dispatch(fetchAffectiveTraitsForStudents({ studentId, classId, sessionId }))
+
+    if (res?.payload?.data?.data) {
+      setAffectiveTraits({ ...res.payload.data.data })
+    } else {
+      setAffectiveTraits({})
+    }
+  }
 
   const displayReportCard = async () => {
+    await fetchSkills()
+    await fetchTraits()
     const res = await dispatch(fetchStudentReportCard({ classId, studentId, sessionId }))
 
     if (Object.keys(res.payload.data.data.subject).length > 0) {
+      fetchGradeParameters({ page: 1, limit: 10, classCategoryId: classRoom?.categoryId })
+        .then(res => {
+          if (res?.data?.success) {
+            setGradingParametersList([...res?.data.data])
+          } else {
+            setGradingParametersList([])
+          }
+        })
+        .catch(() => {
+          setGradingParametersList([])
+        })
+
+        setShowDownloadBtn(true)
+      const nextTerm = SessionData?.find(session => session?.id == CurrentSessionData?.id + 1)
+      setNextAcademicSession(nextTerm)
       dispatch(fetchStudentSubjectPosition({ classId, sessionId }))
       setShowResult(true)
       setNoResult(false)
@@ -77,13 +118,18 @@ const ReportCardTable = () => {
 
       setActiveStudent({ ...selectedStudent })
     } else {
+      setShowDownloadBtn(false)
+      setNextAcademicSession({})
       setShowResult(false)
       setNoResult(true)
       setActiveStudent({})
     }
   }
 
-  // const toggleScoreDrawer = () => setScoreModal(!openScoreModal)
+  useEffect(() => {
+    setClassId(userData?.classId)
+    setStudentId(userData?.id)
+  }, [])
 
   useEffect(() => {
     if (activeStudent) {
@@ -94,14 +140,9 @@ const ReportCardTable = () => {
   }, [activeStudent])
 
   useEffect(() => {
-    let isMounted = true
-
     if (classId && ClassesList?.length > 0) {
       const selectedClass = ClassesList?.find(classroom => classroom.id == classId)
-
-      if (isMounted) {
-        setClassroom({ ...selectedClass })
-      }
+      setClassroom({ ...selectedClass })
     }
   }, [classId, ClassesList])
 
@@ -124,26 +165,9 @@ const ReportCardTable = () => {
               <CustomTextField
                 select
                 fullWidth
-                label='Class*'
-                SelectProps={{ value: classId, onChange: e => handleChangeClass(e) }}
-              >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
-                {ClassesList?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.name} ${item.type}`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomTextField
-                select
-                fullWidth
                 label='Session*'
                 SelectProps={{ value: sessionId, onChange: e => handleChangeSession(e) }}
               >
-                {/* <MenuItem value=''>{ staffId ? `All Staff` : `Select Staff`}</MenuItem> */}
                 {SessionData?.map(item => (
                   <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
                     {`${item.name} ${item.term} term`}
@@ -151,24 +175,41 @@ const ReportCardTable = () => {
                 ))}
               </CustomTextField>
             </Grid>
+            </Grid>
 
-            <Grid item xs={12} sm={12}>
+            <Grid container spacing={12} sx={{mt: 3}}>
+            <Grid item xs={12} sm={4}>
               <Button
                 onClick={displayReportCard}
                 variant='contained'
                 disabled={!studentId || !classId || !sessionId}
-                sx={{ '& svg': { mr: 2 } }}
+                sx={{ '& svg': { mr: 2 }, backgroundColor: 'info.main' }}
               >
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
                 Display Report Card
               </Button>
             </Grid>
+
+           {showDownloadBtn &&  <Grid item xs={12} sm={4}>
+              <Button
+                onClick={() => generatePDF(targetRef, {filename: `${activeStudent?.firstName}-${activeStudent?.lastName}-report-card.pdf`})}
+                variant='contained'
+                disabled={!studentId || !classId || !sessionId}
+                sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.main' }}
+              >
+                <Icon fontSize='1.125rem' icon='octicon:download-16' />
+                Download Report Card
+              </Button>
+            </Grid> }
+
+
           </Grid>
         </CardContent>
       </Card>
 
       {!loading && showResult && (
         <Box
+        ref={targetRef}
           className='resultBg'
           sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#fff' }}
         >
@@ -196,6 +237,7 @@ const ReportCardTable = () => {
                 </Typography>
               </Box>
               <StudentReportCardDetails
+                nextAcadmeicSession={nextAcadmeicSession}
                 activeStudent={activeStudent}
                 profilePictureUrl={profilePictureUrl}
                 classRoom={classRoom}
@@ -204,17 +246,36 @@ const ReportCardTable = () => {
             </CardContent>
           )}
 
-          <CustomResultTable
-            tableData={StudentReportCard}
-            positionArray={StudentSubjectPosition}
-            studentId={studentId}
-          />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Box sx={{ width: '80%' }}>
+              <CustomResultTable
+                tableData={StudentReportCard}
+                positionArray={StudentSubjectPosition}
+                studentId={studentId}
+              />
+            </Box>
+
+            <Box sx={{ width: '18.8%', display: 'flex', flexDirection: 'column' }}>
+              <CustomAffectiveTraitsTable traits={AffectiveTraits} />
+              <CustomPsychomotorSkillsTable skills={PsychomotorSkills} />
+            </Box>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
+            <Box sx={{ width: '52%' }}>
+              <CustomReportCardSummary
+                reportCardData={StudentReportCard}
+                numberOfSubjects={StudentReportCard?.length}
+              />
+            </Box>
+            <Box sx={{ width: '47%' }}>
+              <CustomGradingSystem ClassGradingParameters={GradingParametersList} />
+            </Box>
+          </Box>
         </Box>
       )}
 
       {noResult && <DismissibleAlert AlertMessage={'No Records Found'} />}
-
-      {/* {openScoreModal && <EnterStudentScore open={openScoreModal} closeModal={toggleScoreDrawer} />} */}
     </div>
   )
 }

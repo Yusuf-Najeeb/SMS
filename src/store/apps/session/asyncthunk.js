@@ -77,6 +77,21 @@ export const fetchSession = createAsyncThunk('session', async (query) => {
     }
   }
 
+  export const updateSessionDate = async (id, payload)=>{
+    try {
+      const res = await axios.patch(`/settings/sessions/date/${id}`, payload)
+      if(res.data.success){
+        notifySuccess('Session Date Updated')
+      }
+
+      return res
+      
+    } catch (error) {
+      notifyError('Unable to Update Session Date')
+      
+    }
+  }
+
 
 
 

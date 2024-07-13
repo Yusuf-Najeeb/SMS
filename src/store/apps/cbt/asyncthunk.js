@@ -26,6 +26,16 @@ export const fetchCBTAnswers = createAsyncThunk('/CBT/FetchCBTAnwers', async (qu
     }
   })
 
+  export const fetchApplicantCBTAnswers = createAsyncThunk('/ApplicantCBT/FetchCBTAnwers', async (query) => {
+    try {
+      const response = await axios.get(`/cbt/getanswers?page=${query.page}&limit=300&staffId=${query.staffId}&subjectId=${query.subjectId}&categoryId=${query.categoryId}&sessionId=${query.sessionId}&applicantId=${query.applicantId}`)
+  
+      return response
+    } catch (error) {
+  
+    }
+  })
+
 export const submitQuestions = async (payload)=> {
     try {
         const res = await axios.post(`/cbt/questions`, payload)
@@ -37,6 +47,21 @@ export const submitQuestions = async (payload)=> {
         return res
     } catch (error) {
         notifyError(error?.response?.data?.message || 'Unable to Submit Questions')
+        
+    }
+}
+
+export const submitApplicantCBTQuestions = async (payload)=> {
+    try {
+        const res = await axios.post(`/cbt/questions?type=applicant`, payload)
+
+        if(res?.data?.success){
+            notifySuccess('Applicants CBT Questions Submitted')
+        }
+
+        return res
+    } catch (error) {
+        notifyError(error?.response?.data?.message || 'Unable to Submit Applicants CBT Questions')
         
     }
 }
@@ -87,6 +112,21 @@ export const submitAnswers = async (payload)=> {
     }
 }
 
+export const submitApplicantAnswers = async (payload)=> {
+    try {
+        const res = await axios.post(`/cbt/createapplicant`, payload)
+
+        if(res?.data?.success){
+            notifySuccess('Anwers Submitted')
+        }
+
+        return res
+    } catch (error) {
+        notifyError(error?.response?.data?.message || 'Unable to Submit Answer')
+        
+    }
+}
+
 export const gradeEssayAnswer = async (id, payload)=> {
     try {
         const res = await axios.put(`/cbt/addessayscore/${id}`, payload)
@@ -98,6 +138,46 @@ export const gradeEssayAnswer = async (id, payload)=> {
         return res
     } catch (error) {
         notifyError(error?.response?.data?.message || 'Unable to Grade Answer')
+        
+    }
+}
+
+export const fetchApplicantCBTQuestions = createAsyncThunk('/CBT/FetchCBTQuestions', async (query) => {
+    try {
+      const response = await axios.get(`/cbt/applicantquestions?page=${query.page}&limit=${query.limit}&applicantId=${query.applicantId}&subjectId=${query.subjectId}&sessionId=${query.sessionId}`)
+  
+      return response
+    } catch (error) {
+  
+    }
+  })
+
+  export const submitApplicantCBTScore = async (identifier, payload, subjectName)=> {
+    try {
+        const res = await axios.post(`/cbt/submitapplicant/${identifier}`, payload)
+
+        if(res?.data?.success){
+            notifySuccess(`Applicant CBT Score for ${subjectName?.toUpperCase()} Submitted`)
+        }
+
+        return res
+    } catch (error) {
+        notifyError(error?.response?.data?.message || `Unable to Submit Applicant CBT Score for ${subjectName?.toUpperCase()}`)
+        
+    }
+}
+
+export const fetchApplicantCBTResult = async (id)=> {
+    try {
+        const res = await axios.get(`/applicants/getapplicants/${id}`,)
+
+        // if(res?.data?.success){
+        //     notifySuccess(`Applicant CBT Score for ${subjectName?.toUpperCase()} Submitted`)
+        // }
+
+        return res
+    } catch (error) {
+        // notifyError(error?.response?.data?.message || `Unable to Submit Applicant CBT Score for ${subjectName?.toUpperCase()}`)
         
     }
 }

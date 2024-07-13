@@ -1,3 +1,5 @@
+
+
 // ** React Imports
 import { useState } from 'react'
 import { useRouter } from 'next/router'
@@ -42,19 +44,30 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import SubmitSpinnerMessage from '../../views/users/component/SubmitSpinnerMessage'
 
+// import {handleStaffLogin} from 'src/app/action'
+
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
   zIndex: 2,
-  maxHeight: 680,
-  marginTop: theme.spacing(12),
-  marginBottom: theme.spacing(12),
-  [theme.breakpoints.down(1540)]: {
-    maxHeight: 550
-  },
-  [theme.breakpoints.down('lg')]: {
-    maxHeight: 500
-  }
+
+  // maxHeight: 680,
+
+  display: 'block',
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  objectPosition: 'center',
+  borderRadius: '20px',
+
+  // marginTop: theme.spacing(12),
+  // marginBottom: theme.spacing(12),
+  // [theme.breakpoints.down(1540)]: {
+  //   maxHeight: 550
+  // },
+  // [theme.breakpoints.down('lg')]: {
+  //   maxHeight: 500
+  // }
 }))
 
 const RightWrapper = styled(Box)(({ theme }) => ({
@@ -92,7 +105,7 @@ const defaultValues = {
   userId: 'super.admin@email.com'
 }
 
-const LoginPage = ({getCsrfToken, getProviders}) => {
+const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -100,7 +113,6 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
   const auth = useAuth()
   const theme = useTheme()
   const router = useRouter()
-  const bgColors = useBgColor()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -109,7 +121,6 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
 
   const {
     control,
-    setError,
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm({
@@ -122,6 +133,15 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
 
    auth.staffLogin(data)
 
+  
+  //  handleStaffLogin(data).then((data)=>{
+  //   if(data.success){
+  //     const returnUrl = router.query.returnUrl
+  //     const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/dashboard'
+  //     router.replace(redirectURL)
+  //   }
+  //  })
+
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 
@@ -132,6 +152,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
           sx={{
             flex: 1,
             display: 'flex',
+            width: '60%',
             position: 'relative',
             alignItems: 'center',
             borderRadius: '20px',
@@ -142,7 +163,7 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
         >
           {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} /> */}
 
-          <LoginIllustration alt='login-illustration' src={`/images/staff.svg`} />
+          <LoginIllustration alt='login-illustration' src={`/images/students.jpg`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -157,41 +178,25 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 400 }}>
-            {/* <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                fill={theme.palette.primary.main}
-                d='M0.00172773 0V6.85398C0.00172773 6.85398 -0.133178 9.01207 1.98092 10.8388L13.6912 21.9964L19.7809 21.9181L18.8042 9.88248L16.4951 7.17289L9.23799 0H0.00172773Z'
-              />
-              <path
-                fill='#161616'
-                opacity={0.06}
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M7.69824 16.4364L12.5199 3.23696L16.5541 7.25596L7.69824 16.4364Z'
-              />
-              <path
-                fill='#161616'
-                opacity={0.06}
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M8.07751 15.9175L13.9419 4.63989L16.5849 7.28475L8.07751 15.9175Z'
-              />
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                fill={theme.palette.primary.main}
-                d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
-              />
-            </svg> */}
+          
             <Box component={'div'} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <img src='/images/logo.webp' style={{objectPosition: 'center', objectFit: 'cover'}} width={'80px'} height={'80px'} alt='' />
             </Box>
             <Box sx={{ my: 6 }}>
-              <Typography variant='h4' sx={{ mb: 1.5 }}>
-                {`Welcome to ${themeConfig.templateName}! 👋🏻`}
+              <Typography variant='h4' sx={{ mb: 1.5, position: 'relative' }}>
+                {`Welcome to ${themeConfig.templateName}!`}
+                <span><IconButton
+                sx={{
+                  bottom: 0 ,
+                  color: 'grey.100',
+                  position: 'absolute'
+                }}
+              >
+                <Icon icon='tdesign:wave-left' fontSize={23} />
+              </IconButton></span>
               </Typography>
+             
+              
               <Typography sx={{ color: 'text.secondary' }}>
                 Please sign-in to your account to access your portal
               </Typography>
@@ -204,7 +209,10 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
                 Client: <strong>client@vuexy.com</strong> / Pass: <strong>client</strong>
               </Typography>
             </Alert> */}
-            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
+
+        
+
               <Box sx={{ mb: 4 }}>
                 <Controller
                   name='userId'
@@ -271,8 +279,8 @@ const LoginPage = ({getCsrfToken, getProviders}) => {
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
-                <Typography component={LinkStyled} sx={{color: 'text.secondary'}} href='/forgot-password'>
-                  Forgot Password?
+                <Typography component={LinkStyled} sx={{color: 'text.secondary'}} href='/reset-password'>
+                  Reset Password
                 </Typography>
               </Box>
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, backgroundColor: 'success.main' }} disabled={isSubmitting}>

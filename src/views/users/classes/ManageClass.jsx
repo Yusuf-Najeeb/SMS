@@ -21,10 +21,11 @@ import { useAppDispatch } from 'src/hooks'
 import { CircularProgress, Dialog, DialogContent, DialogTitle, Grid, MenuItem } from '@mui/material'
 import { CustomCloseButton } from '../Guardian/AddGuardian'
 import { useStaff } from '../../../hooks/useStaff'
-import { fetchStaffs } from '../../../store/apps/staff/asyncthunk'
+import { fetchStaffByType, fetchStaffs } from '../../../store/apps/staff/asyncthunk'
 import { createClass, fetchClasses, updateClass } from '../../../store/apps/classes/asyncthunk'
 import { fetchCategories } from '../../../store/apps/categories/asyncthunk'
 import { useCategories } from '../../../hooks/useCategories'
+import { useAppSelector } from '../../../hooks'
 
 
 
@@ -67,12 +68,12 @@ const defaultValues = {
 const ManageClass = ({ open, toggle, classToEdit = null }) => {
   const dispatch = useAppDispatch()
 
-  const [StaffData] = useStaff()
+  const StaffData = useAppSelector(store => store.staff.StaffDataByType)
   const [CategoriesData] = useCategories()
 
 
   useEffect(() => {
-    dispatch(fetchStaffs({page: 1, limit: 500, key: 'teacher'}))
+    dispatch(fetchStaffByType({ page: 1, limit: 300, key: '', type: 'teacher' }))
     dispatch(fetchCategories({ page: 1, limit: 30, type: 'class' }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

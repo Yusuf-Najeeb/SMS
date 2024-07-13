@@ -10,6 +10,9 @@ export const getStaticPaths = () => {
   return {
     paths: [
       { params: { tab: 'classAttendance' } },
+      { params: { tab: 'editClassAttendance' } },
+      { params: { tab: 'sessionAttendance' } },
+      
       
     //   { params: { tab: 'reportCard' } },
     ],

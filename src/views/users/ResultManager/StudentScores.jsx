@@ -23,6 +23,7 @@ import { useStudent } from '../../../hooks/useStudent'
 import CustomScoreSheetTable from '../component/CustomScoreSheetTable'
 import { extractScoresData } from '../../../@core/utils/extractScoreData'
 import DismissibleAlert from '../component/DismissibleAlert'
+import { extractAssessmentScoresData } from '../../../@core/utils/extractAssessmentScores'
 
 const StudentsScoreTable = () => {
   // Hooks
@@ -103,6 +104,8 @@ const displayScores = async ()=>{
     if(StudentsScoresData?.length > 0){
 
      const res =  extractScoresData(StudentsScoresData)
+
+     const ress = extractAssessmentScoresData(StudentsScoresData)
 
      setStudentsScores([...res])
     }

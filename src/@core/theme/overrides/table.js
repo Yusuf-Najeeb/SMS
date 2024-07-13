@@ -71,7 +71,8 @@ const router = useRouter()
 
           // borderSpacing: router?.pathname == "/apps/result-manager" && 1,
           borderCollapse:  'collapse',
-          minHeight: router?.pathname == "/apps/cbt" && '120px',
+
+          minHeight: (router?.pathname == "/apps/cbt" || router?.pathname == "/apps/applicantCBT" ) && '120px',
         }),
         paddingCheckbox: ({ theme }) => ({
           paddingLeft: theme.spacing(3.25)

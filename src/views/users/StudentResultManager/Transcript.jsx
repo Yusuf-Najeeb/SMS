@@ -1,9 +1,9 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, Fragment, useRef } from 'react'
+
+import generatePDF from 'react-to-pdf';
 
 import Icon from 'src/@core/components/icon'
 
-// ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
 
 import { useAppDispatch } from '../../../hooks'
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, MenuItem, Typography } from '@mui/material'
@@ -20,6 +20,9 @@ import SchoolDetails from '../ResultManager/SchoolDetails'
 import StudentTranscriptDetails from './TranscriptDetails'
 import CustomTable from '../component/CustomTable'
 import DismissibleAlert from '../component/DismissibleAlert'
+import GetUserData from '../../../@core/utils/getUserData'
+
+const userData = GetUserData()
 
 const StudentsTranscript = () => {
   // Hooks
@@ -27,6 +30,9 @@ const StudentsTranscript = () => {
   const dispatch = useAppDispatch()
   const [StudentData] = useStudent()
   const [StudentTranscript, loading] = useTranscript()
+
+   // Ref
+   const targetRef = useRef();
 
   // States
 
@@ -36,18 +42,11 @@ const StudentsTranscript = () => {
   const [showResult, setShowResult] = useState(false)
   const [TranscriptData, setTranscriptData] = useState([])
   const [noResult, setNoResult] = useState(false)
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false)
 
-  // const handleChangeClass = e => {
-  //   Number(setClassId(e.target.value))
-  // }
-
-  // const handleChangeStudent = e => {
-  //   Number(setStudentId(e.target.value))
-  // }
 
   useEffect(() => {
-    const user = JSON.parse(window.localStorage.getItem('authUser'))
-    setStudentId(user?.id)
+    setStudentId(userData?.id)
   }, [])
 
   const displayTranscript = async () => {
@@ -56,9 +55,11 @@ const StudentsTranscript = () => {
     if (Object.keys(res?.payload?.data?.data).length > 0) {
       setShowResult(true)
       setNoResult(false)
+      setShowDownloadBtn(true)
       const result = extractTranscriptData(res?.payload?.data?.data)
       setTranscriptData([...result])
     } else {
+      setShowDownloadBtn(false)
       setNoResult(true)
       setShowResult(false)
     }
@@ -98,33 +99,35 @@ const StudentsTranscript = () => {
         <CardHeader title='Transcript' />
         <CardContent>
           <Grid container spacing={12}>
-            {/* <Grid item xs={12} sm={3}>
-              <CustomTextField
-                select
-                fullWidth
-                label='Student*'
-                SelectProps={{ value: studentId, onChange: e => handleChangeStudent(e) }}
-              >
-                {StudentData?.result?.map(item => (
-                  <MenuItem key={item?.id} value={item?.id} sx={{ textTransform: 'uppercase' }}>
-                    {`${item?.firstName} ${item?.lastName}`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid> */}
+           
 
-            <Grid item xs={12} sm={12}>
-              <Button onClick={displayTranscript} variant='contained' disabled={!studentId} sx={{ '& svg': { mr: 2 } }}>
+            <Grid item xs={12} sm={3}>
+              <Button onClick={displayTranscript} variant='contained' disabled={!studentId} sx={{ '& svg': { mr: 2 }, backgroundColor: 'info.main' }}>
                 <Icon fontSize='1.125rem' icon='tabler:keyboard-show' />
                 Display Transcript
               </Button>
             </Grid>
+
+            {showDownloadBtn && <Grid item xs={12} sm={6}>
+              <Button
+                onClick={() => generatePDF(targetRef, {filename: `${activeStudent?.firstName}-${activeStudent?.lastName}-transcript.pdf`})}
+                variant='contained'
+                disabled={!studentId}
+                sx={{ '& svg': { mr: 2 }, backgroundColor: 'success.main' }}
+              >
+                <Icon fontSize='1.125rem' icon='octicon:download-16' />
+                Download Transcript
+              </Button>
+            </Grid> }
+
           </Grid>
         </CardContent>
       </Card>
 
+      
+
       {!loading && showResult && (
-        <Box sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#eee' }}>
+        <Box ref={targetRef} sx={{ pt: 5, pb: 10, paddingLeft: 3, paddingRight: 3, mt: 10, backgroundColor: '#eee' }}>
           {!loading &&
             showResult &&
             TranscriptData.map((sessionData, index) => (
@@ -160,8 +163,7 @@ const StudentsTranscript = () => {
                       textTransform: 'uppercase'
                     }}
                   >
-                    {' '}
-                    {`Student Transcript`}
+                    Student&nbsp;&nbsp;Transcript
                   </Typography>
                 </Box>
 
@@ -187,8 +189,7 @@ const StudentsTranscript = () => {
                       pr: 2
                     }}
                   >
-                    {' '}
-                    Academic Records{' '}
+                    Academic &nbsp;&nbsp; Records
                   </Box>
                 </Box>
 

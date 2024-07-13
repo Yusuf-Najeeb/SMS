@@ -105,8 +105,6 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
 
-  console.log('items array', itemsArray)
-
   const toggleParentModal = () => {
     closeModal()
     setParentModal(!openParentModal)
@@ -127,8 +125,9 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
       setItemsArray(staffItemsArray)
       setGuardianItemsArray([])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [guardianItemsArray, staffItemsArray])
+
+    //eslint_disable-next-line react-hooks/exhaustive-deps
+  }, [guardianItemsArray, staffItemsArray, itemsArray])
 
   useEffect(() => {
     prevItemsArray.current = itemsArray
@@ -462,6 +461,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                       <CustomTextField
                         fullWidth
                         value={value}
+                        required
                         onBlur={onBlur}
                         label='Password'
                         onChange={onChange}
@@ -943,12 +943,8 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                   Back
                 </Button>
 
-                {/* <Button type='button' variant='outlined' onClick={toggleParentModal}>
-              Select Guardian
-            </Button> */}
-
                 <Button type='submit' variant='contained'>
-                  Create
+                  Add
                 </Button>
               </Grid>
             </Grid>
@@ -1013,6 +1009,7 @@ const AddStudent = ({ open, closeModal, refetchData }) => {
                         errors.lastName ||
                         errors.firstName ||
                         errors.dateOfBirth ||
+                        errors.password ||
                         errors.isStaffChild ||
                         (errors.gender && activeStep === 0)
                       ) {

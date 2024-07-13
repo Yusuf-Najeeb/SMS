@@ -29,7 +29,6 @@ const StudentQuestions = ({ Questions, setStartCbt }) => {
   const [fileName, setFileName] = useState(Array.from({ length: Questions.length }, () => ''))
   const [fileUploadRes, setFileUploadRes] = useState(Array.from({ length: Questions.length }, () => ''))
 
-  console.log(fileUploadRes, 'file upload res')
 
   const [submittingAnswerResource, setSubmittingAnswerResource] = useState([])
 
@@ -54,8 +53,6 @@ const StudentQuestions = ({ Questions, setStartCbt }) => {
       sessionId: Questions[0].sessionId,
       answers
     }
-
-    console.log(payload, 'payload')
 
     submitAnswers(payload).then(res => {
       if (res?.data?.success) {

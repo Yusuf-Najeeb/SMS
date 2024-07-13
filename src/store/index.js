@@ -33,6 +33,9 @@ import singleTeacherSubjects from 'src/store/apps/singleTeacherSubjects'
 import attendance from 'src/store/apps/attendance'
 import applicants from 'src/store/apps/applicants'
 import cbt from 'src/store/apps/cbt'
+import applicantsSubjects from 'src/store/apps/applicantsSubjects'
+import staffByRole from 'src/store/apps/staffByRole'
+import staffActivityLog from 'src/store/apps/staffActivityLog'
 
 
 export const store = configureStore({
@@ -67,7 +70,10 @@ export const store = configureStore({
     singleTeacherSubjects,
     attendance,
     applicants,
-    cbt
+    cbt,
+    applicantsSubjects,
+    staffByRole,
+    staffActivityLog
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

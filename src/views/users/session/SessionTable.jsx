@@ -9,7 +9,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import DeleteDialog from 'src/@core/components/delete-dialog'
 import Icon from 'src/@core/components/icon'
@@ -21,17 +21,17 @@ import { useSession } from '../../../hooks/useSession'
 import { deleteSession, fetchSession, makeCurrentSession } from '../../../store/apps/session/asyncthunk'
 import ManageSession from './ManageSession'
 import MakeCurrentSessionDialog from './MakeCurrentSession'
+import EditSession from './EditSession'
+import { formatDate } from '../../../@core/utils/format'
 
 
 
 const SessionTable = () => {
   const dispatch = useAppDispatch()
 
-
-//   const [GradingParametersList, loading, paging] = useCategories()
-
   const [SessionData, loading, paging] = useSession()
   const [deleteModal, setDeleteModal] = useState(false)
+  const [editModal, setEditModal] = useState(false)
   const [currentSessionModal, setCurrentSessionModal] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -39,16 +39,10 @@ const SessionTable = () => {
   const [SessionToMakeCurrent, setSessionToMakeCurrent] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [selectedSession, setSelectedSession] = useState(null)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const rowOptionsOpen = Boolean(anchorEl)
+  const [sessionToEdit, setSessionToEdit] = useState(null)
 
-  const handleRowOptionsClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
+  console.log(SessionData, 'session data')
 
-  const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
 
   const OpenSessionModal = () => {
     if (openModal) {
@@ -60,9 +54,13 @@ const SessionTable = () => {
   }
 
   const setActiveSession = (value) => {
-    handleRowOptionsClose()
-    OpenSessionModal()
-    setSelectedSession(value)
+    setEditModal(true)
+    setSessionToEdit(value)
+  }
+
+  const closeEditModal = ()=>{
+    setEditModal(false)
+    setSessionToEdit(null)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -119,7 +117,7 @@ const SessionTable = () => {
     dispatch(fetchSession({ page: page + 1, limit: 10 }))
 
      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage])
+  }, [page, rowsPerPage,])
 
   return (
     <Fragment>
@@ -140,9 +138,12 @@ const SessionTable = () => {
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Term
               </TableCell>
-              {/* <TableCell align='center' sx={{ minWidth: 100 }}>
-                Created By
-              </TableCell> */}
+              <TableCell align='center' sx={{ minWidth: 150 }}>
+                Start Date
+              </TableCell>
+              <TableCell align='center' sx={{ minWidth: 150 }}>
+                End Date
+              </TableCell>
               <TableCell align='center' sx={{ minWidth: 100 }}>
                 Current 
               </TableCell>
@@ -160,7 +161,6 @@ const SessionTable = () => {
               </TableRow>
             ) : (
 
-              // </Box>
               <Fragment>
                 {SessionData?.map((item, i) => (
                   <TableRow hover role='checkbox' key={item.id}>
@@ -171,7 +171,12 @@ const SessionTable = () => {
                     <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
                       {item?.term || '--'}
                     </TableCell>
-                    {/* <TableCell align='center'>{item?.createdBy || '--'}</TableCell> */}
+                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                      {formatDate(item?.startDate) || '--'}
+                    </TableCell>
+                    <TableCell align='center' sx={{ textTransform: 'uppercase' }}>
+                      {formatDate(item?.endDate) || '--'}
+                    </TableCell>
                     <TableCell align='center'>
                       {item.isCurrent ? 
 
@@ -208,37 +213,13 @@ const SessionTable = () => {
                         </IconButton>
                         </Tooltip>
 
-                      {/* <>
-                        <IconButton size='small' onClick={handleRowOptionsClick}>
-                          <Icon icon='tabler:dots-vertical' />
+                        <Tooltip title='Edit Session Dates'>
+                        <IconButton size='small' onClick={() => setActiveSession(item)}>
+                          <Icon icon='tabler:edit' />
                         </IconButton>
-                        <Menu
-                          keepMounted
-                          anchorEl={anchorEl}
-                          open={rowOptionsOpen}
-                          onClose={handleRowOptionsClose}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right'
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                          }}
-                          PaperProps={{ style: { minWidth: '8rem' } }}
-                        >
-                         
-                          <MenuItem onClick={() => doDelete(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='tabler:trash' fontSize={20} />
-                            Delete Session
-                          </MenuItem>
-                          <MenuItem onClick={() => toggleCurrentSessionModal(item)} sx={{ '& svg': { mr: 2 } }}>
-                            <Icon icon='fluent:stack-add-20-filled' fontSize={20} />
-                            Make Current Session
-                          </MenuItem>
-                          
-                        </Menu>
-                      </> */}
+                        </Tooltip>
+
+                     
                     </TableCell>
                   </TableRow>
                 ))}
@@ -267,6 +248,7 @@ const SessionTable = () => {
       />
 
         {openModal && <ManageSession open={openModal} toggle={OpenSessionModal} sessionToEdit={selectedSession} />}
+        {editModal && <EditSession open={editModal} toggle={closeEditModal} sessionToEdit={sessionToEdit} />}
       <DeleteDialog open={deleteModal} handleClose={doCancelDelete} handleDelete={ondeleteClick} />
       <MakeCurrentSessionDialog open={currentSessionModal} handleClose={doCancelMakeSession} handleConfirm={onConfirmation} />
     </Fragment>
